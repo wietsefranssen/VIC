@@ -82,7 +82,8 @@ HOSTNAME := $(shell uname -n)
 
 # set routing extension here (rout_stub means: no routing)
 #ROUT=rout_stub
-ROUT=rout_rvic
+#ROUT=rout_rvic
+ROUT=rout_irr
 
 include ${EXTPATH}/${ROUT}/rout.mk
 
