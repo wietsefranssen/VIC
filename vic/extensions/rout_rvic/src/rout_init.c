@@ -95,7 +95,7 @@ rout_init(void)
     get_nc_field_int(rout.param_filename,
                      "source_time_offset",
                      &i1start, &rout.rout_param.nSources, ivar);
-    for (i = 0; i < rout.rout_param.nSources; i++) {
+    for (i = 0; i < rout.rout_paparam_filenameram.nSources; i++) {
         rout.rout_param.source_time_offset[i] = (int) ivar[i];
     }
 
