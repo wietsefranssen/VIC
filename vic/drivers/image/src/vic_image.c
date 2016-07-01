@@ -108,11 +108,11 @@ main(int    argc,
     // allocate memory
     vic_alloc();
 
-    // allocate memory for routing
-    rout_alloc();   // Routing routine (extension)
-
     // initialize model parameters from parameter files
     vic_image_init();
+
+    // allocate memory for routing
+    rout_alloc();   // Routing routine (extension)
 
     // initialize routing parameters from parameter files
     rout_init();    // Routing routine (extension)
@@ -122,7 +122,7 @@ main(int    argc,
 
     // initialize output structures
     vic_init_output(&(dmy[0]));
-
+    
     // loop over all timesteps
     for (current = 0; current < global_param.nrecs; current++) {
         // read forcing data
