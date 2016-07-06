@@ -9,213 +9,496 @@
 #include <vic_driver_image.h>
 #include <netcdf.h>
 #include <rout.h>
+#include <math.h>
+#define M_PI 3.14159265358979323846
 
 void rout_init(void){
+    
+    set_cell_location();
+    make_location_file("./debug_output/location.txt");
+    
+    set_upstream("./input/VIC_Params/RVIC_input_NL.nc","flow_direction");
+    make_nr_upstream_file("./debug_output/nr_upstream.txt");
+    
+    sort_cells();
+    make_ranked_cells_file("./debug_output/ranked_cells.txt");
+    
+    set_uh("./input/VIC_Params/RVIC_input_NL.nc","flow_distance");
+    make_uh_file("./debug_output/uh.txt");
+    
+    //only use on small domains since netCDF cannot hold size_t values!
+    //----------------------------------------------------------------------
+    make_debug_file("./debug_output/debug.nc");
+}
+
+//connects the cells to a location
+//and puts them in a grid
+void set_cell_location(){
     extern rout_struct rout;
+    extern domain_struct global_domain;
+    extern domain_struct local_domain;
+    extern global_param_struct global_param;
+         
+    size_t i;
+    double min_lat=DBL_MAX;
+    double min_lon=DBL_MAX;
+    for(i=0;i<global_domain.ncells_active;i++){
+            rout.cells[i].id=i;
+            rout.cells[i].location=&local_domain.locations[i];
+
+            if(rout.cells[i].location->latitude<min_lat){
+                min_lat=rout.cells[i].location->latitude;
+            }
+            if(rout.cells[i].location->longitude<min_lon){
+                min_lon=rout.cells[i].location->longitude;
+            }
+            //log_info("Cell %d location is (%f;%f)",i,rout.cells[i].location->longitude,rout.cells[i].location->latitude);
+    }
+    
+    for(i=0;i<global_domain.ncells_active;i++){
+        size_t x = (size_t)((rout.cells[i].location->longitude - min_lon)/global_param.resolution);
+        size_t y = (size_t)((rout.cells[i].location->latitude - min_lat)/global_param.resolution);
+        rout.gridded_cells[x][y]=&rout.cells[i];
+        rout.cells[i].x=x;
+        rout.cells[i].y=y;
+    }
+}
+
+//determines the upstream cells from the direction map
+//and sets the number of upstream cells
+void set_upstream(char file_path[], char variable_name[]){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    
+    int *direction;
+    if((direction = malloc(global_domain.ncells_total * sizeof(*direction)))==NULL){
+        log_err("Memory allocation for <set_upstream> direction failed!");
+    }
+    
+    size_t start[]={0, 0};
+    size_t count[]={global_domain.n_ny, global_domain.n_nx};
+    
+    get_nc_field_int(file_path,variable_name,start,count,direction);
+        
+    size_t i;    
+    for(i=0;i<global_domain.ncells_total;i++){
+        size_t x=(size_t)i%global_domain.n_nx;
+        size_t y=(size_t)i/global_domain.n_nx;
+        if(direction[i]!=-1){
+            int j;
+            if(direction[i]==1){
+                if(y+1<global_domain.n_ny && rout.gridded_cells[x][y+1]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x][y+1]->upstream[j]==NULL){
+                            rout.gridded_cells[x][y+1]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;
+                        }
+                    }
+                }
+            }else if(direction[i]==2){
+                if(x+1<global_domain.n_nx && y+1<global_domain.n_ny && rout.gridded_cells[x+1][y+1]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x+1][y+1]->upstream[j]==NULL){
+                            rout.gridded_cells[x+1][y+1]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }else if(direction[i]==3){
+                if(x+1<global_domain.n_nx && rout.gridded_cells[x+1][y]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x+1][y]->upstream[j]==NULL){
+                            rout.gridded_cells[x+1][y]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }else if(direction[i]==4){
+                if(x+1<global_domain.n_nx && y>=1 && rout.gridded_cells[x+1][y-1]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x+1][y-1]->upstream[j]==NULL){
+                            rout.gridded_cells[x+1][y-1]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }else if(direction[i]==5){
+                if(y>=1 && rout.gridded_cells[x][y-1]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x][y-1]->upstream[j]==NULL){
+                            rout.gridded_cells[x][y-1]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }else if(direction[i]==6){
+                if(y>=1 && x>=1 && rout.gridded_cells[x-1][y-1]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x-1][y-1]->upstream[j]==NULL){
+                            rout.gridded_cells[x-1][y-1]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }else if(direction[i]==7){
+                if(x>=1 && rout.gridded_cells[x-1][y]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x-1][y]->upstream[j]==NULL){
+                            rout.gridded_cells[x-1][y]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }else if(direction[i]==8){
+                if(x>=1 && y+1<global_domain.n_ny && rout.gridded_cells[x-1][y+1]!=NULL){
+                    for(j=0;j<8;j++){
+                        if(rout.gridded_cells[x-1][y+1]->upstream[j]==NULL){
+                            rout.gridded_cells[x-1][y+1]->upstream[j] = rout.gridded_cells[x][y];  
+                            break;                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    for(i=0;i<global_domain.ncells_active;i++){
+        rout.cells[i].nr_upstream=0;
+        
+        int j;
+        for(j=0;j<8;j++){
+            if(rout.cells[i].upstream[j]!=NULL){
+                rout.cells[i].nr_upstream++;
+            }
+        }
+    }
+    
+    free(direction);
+}
+
+//sorts cells
+void sort_cells(void){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    
+    //used to see which cells are already sorted
+    int *sorted_map;
+    if((sorted_map = malloc(global_domain.ncells_active * sizeof(*sorted_map)))==NULL){
+        log_err("Memory allocation for <sort_cells> sorted_map failed!");
+    }
+    
+    size_t i;
+    for(i=0;i<global_domain.ncells_active;i++){
+        sorted_map[i]=0;
+    }
+    
+    
+    size_t rank=0;
+    int j;
+    while(1){
+        for(i=0;i<global_domain.ncells_active;i++){
+            if(sorted_map[i]==0){
+                int count=0;
+                for(j=0;j<rout.cells[i].nr_upstream;j++){
+                    if(sorted_map[rout.cells[i].upstream[j]->id]==0){
+                        count++;
+                    }
+                }
+
+                if(count==0){
+                    rout.sorted_cells[rank]=&rout.cells[i];
+                    rout.cells[i].rank=rank;
+                    rank++;
+                }  
+            }
+        }
+        
+        for(i=0;i<rank;i++){
+            sorted_map[rout.sorted_cells[i]->id]=1;
+        }
+        
+        if(rank == global_domain.ncells_active){
+            break;
+        }else if(rank > global_domain.ncells_active){
+            log_warn("rank_cells made %zu loops and escaped because this is more than %zu, the number of active cells",(rank+1),global_domain.ncells_active);
+            break;
+        }
+    }
+    
+    free(sorted_map);
+}
+
+void set_uh(char file_path[], char variable_name[]){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    extern global_param_struct global_param;
+    
+    double *distance_total;
+    if((distance_total = malloc(global_domain.ncells_total * sizeof(*distance_total)))==NULL){
+        log_err("Memory allocation for <set_uh> distance_total failed!");
+    }
+    double *distance;
+    if((distance = malloc(global_domain.ncells_active * sizeof(*distance)))==NULL){
+        log_err("Memory allocation for <set_uh> distance failed!");
+    }
+    double *uh_precise;
+    if((uh_precise = malloc((UH_MAX_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_precise)))==NULL){
+        log_err("Memory allocation for <set_uh> uh_precise failed!");
+    }
+    double *uh_cumulative;
+    if((uh_cumulative = malloc((UH_MAX_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative)))==NULL){
+        log_err("Memory allocation for <set_uh> uh_cumulative failed!");
+    }
+    double uh_sum;
+    
+    const double overland_flow_velocity=1;
+    const double overland_flow_diffusivity=2000;
+    
+    size_t start[]={0, 0};
+    size_t count[]={global_domain.n_ny, global_domain.n_nx};
+    
+    get_nc_field_double(file_path,variable_name,start,count,distance_total);
+    
+    size_t i;
+    size_t j=0;
+    for(i=0;i<global_domain.ncells_total;i++){
+        if(distance_total[i]!=-1){
+            distance[j]=distance_total[i];
+            j++;
+        }
+    }
+    
+    free(distance_total);
+    
+    for (i=0;i<global_domain.ncells_active;i++){
+        if(distance[i]!=-1){
+            size_t time=0;
+            uh_sum=0.0;
+
+            //calculate precise unit hydrograph based on timestep
+            for(j=0;j< UH_MAX_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+                time += (3600 * 24) / (global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP);
+                uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * overland_flow_diffusivity)))
+                        * exp(-(pow(overland_flow_velocity * time - distance[i],2)) / (4 * overland_flow_diffusivity * time));
+                uh_sum += uh_precise[j];
+            }
+
+            //normalize unit hydrograph so sum is 1 and make cumulative unit hydrograph
+            for(j=0;j< UH_MAX_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+                uh_precise[j] = uh_precise[j] / uh_sum;
+                if(j>0){
+                    uh_cumulative[j] = uh_cumulative [j-1] + uh_precise[j];
+                    if(uh_cumulative[j]>1){
+                        uh_cumulative[j]=1.0;
+                    }
+                }else{
+                    uh_cumulative[j] = uh_precise[j];
+                }
+            }
+            
+            //make final daily unit hydrograph based on cumulative unity hydrograph
+            for(j=0;j< UH_MAX_DAYS * global_param.model_steps_per_day;j++){
+                if(j<(UH_MAX_DAYS * global_param.model_steps_per_day)- 1){
+                    rout.cells[i].uh[j]=uh_cumulative[(j+1) * UH_STEPS_PER_TIMESTEP] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
+                }else{
+                    rout.cells[i].uh[j]=uh_cumulative[((j+1) * UH_STEPS_PER_TIMESTEP)-1] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
+                }
+            }
+        }
+    }
+    
+    free(uh_precise);
+    free(uh_cumulative);
+    free(distance);
+}
+
+void make_debug_file(char file_path[]){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    extern global_param_struct global_param;
+    
+    int nr_upstream[global_domain.n_nx][global_domain.n_ny];
+    int rank[global_domain.n_nx][global_domain.n_ny];
+    int id[global_domain.n_nx][global_domain.n_ny];
+    double uh[global_domain.n_nx][global_domain.n_ny][UH_MAX_DAYS * global_param.model_steps_per_day];
     
     size_t x;
     size_t y;
     size_t t;
-    
-    for (y=0;y<rout.y_size;y++){
-        for(x=0;x<rout.x_size;x++){
-            rout.cells[y][x].x=x;
-            rout.cells[y][x].y=y;
-            
-            if(rout.cells[y][x].nr_upstream==-1){
-                rout.cells[y][x].active=0;
-            }else{
-                rout.cells[y][x].active=1;
+    for(x=0;x<global_domain.n_nx;x++){
+        for(y=0;y<global_domain.n_ny;y++){
+            nr_upstream[x][y]=-1;
+            rank[x][y]=-1;
+            id[x][y]=-1;
+            for(t=0;t<UH_MAX_DAYS * global_param.model_steps_per_day;t++){
+                uh[x][y][t]=-1.0;
             }
-            
-            for(t=0;t<rout.total_time;t++){
-                rout.cells[y][x].outflow[t]=0.0;
-            }
-            
-            /*for (ui = 0; ui < local_domain.ncells_active; ui++) {
-                if (lat[x][y] == local_domain.locations[ui].latitude &&
-                    lon[x][y] == local_domain.locations[ui].longitude) {
-                    rout.cells[x][y].vic_id = ui;
-                }
-            }*/
         }
     }
-        
-    set_upstream("/home/bram/VIC5.0Routing/VICTestSetup/input/VIC_Params/RVIC_input_NL.nc","flow_direction");
     
-    //debug
-    make_upstream_file("/home/bram/VIC5.0Routing/VICTestSetup/debug_output/upstream.txt");
-    
-    rank_cells();
-}
+    for(y=0;y<global_domain.n_ny;y++){
+        for(x=0;x<global_domain.n_nx;x++){
+            if(rout.gridded_cells[x][y]!=NULL){
+                nr_upstream[x][global_domain.n_ny - y-1]=(int)rout.gridded_cells[x][y]->nr_upstream;
 
-void set_upstream(char file_path[], char variable_name[]){
-    extern rout_struct rout;
-    
-    int direction[rout.y_size][rout.x_size];
-    
-    int nc_status, nc_id, nc_varid;
-    if((nc_status = nc_open(file_path,NC_NOWRITE,&nc_id))){
-        log_err("Unable to open nc file");
-    }
-    if((nc_status = nc_inq_varid(nc_id,variable_name,&nc_varid))){
-        log_err("Unable to inquire variable id from nc file");
-    }
-    if((nc_status = nc_get_var_int(nc_id,nc_varid,&direction[0][0]))){
-        log_err("Unable to get variable from nc file");
-    }
-    if((nc_status=nc_close(nc_id))){
-        log_err("Unable to close nc file");
-    }
-    
-    size_t x;
-    size_t y;
-    for(y=0; y<rout.y_size;y++){
-        for(x=0; x<rout.x_size; x++){
-            int i;
-            if(direction[y][x]==1){
-                if(y+1<rout.y_size){
-                    for(i=0;i<rout.cells[y+1][x].nr_upstream;i++){
-                        if(rout.cells[y+1][x].upstream[i]==NULL){
-                            rout.cells[y+1][x].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
+                size_t r;
+                for(r=0;r<global_domain.ncells_active;r++){
+                    if(rout.sorted_cells[r]==rout.gridded_cells[x][y]){
+                        rank[x][global_domain.n_ny - y-1]=(int)r;
                     }
                 }
-            }else if(direction[y][x]==2){
-                if(y+1<rout.y_size && x+1<rout.x_size){
-                    for(i=0;i<rout.cells[y+1][x+1].nr_upstream;i++){
-                        if(rout.cells[y+1][x+1].upstream[i]==NULL){
-                            rout.cells[y+1][x+1].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
-                }
-            }else if(direction[y][x]==3){
-                if(x+1<rout.x_size){
-                    for(i=0;i<rout.cells[y][x+1].nr_upstream;i++){
-                        if(rout.cells[y][x+1].upstream[i]==NULL){
-                            rout.cells[y][x+1].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
-                }
-            }else if(direction[y][x]==4){
-                if(y>=1 && x+1<rout.x_size){
-                    for(i=0;i<rout.cells[y-1][x+1].nr_upstream;i++){
-                        if(rout.cells[y-1][x+1].upstream[i]==NULL){
-                            rout.cells[y-1][x+1].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
-                }
-            }else if(direction[y][x]==5){
-                if(y>=1){
-                    for(i=0;i<rout.cells[y-1][x].nr_upstream;i++){
-                        if(rout.cells[y-1][x].upstream[i]==NULL){
-                            rout.cells[y-1][x].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
-                }
-            }else if(direction[y][x]==6){
-                if(y>=1 && x>=1){
-                    for(i=0;i<rout.cells[y-1][x-1].nr_upstream;i++){
-                        if(rout.cells[y-1][x-1].upstream[i]==NULL){
-                            rout.cells[y-1][x-1].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
-                }
-            }else if(direction[y][x]==7){
-                if(x>=1){
-                    for(i=0;i<rout.cells[y][x-1].nr_upstream;i++){
-                        if(rout.cells[y][x-1].upstream[i]==NULL){
-                            rout.cells[y][x-1].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
-                }
-            }else if(direction[y][x]==8){
-                if(y+1<rout.y_size && x>=1){
-                    for(i=0;i<rout.cells[y+1][x-1].nr_upstream;i++){
-                        if(rout.cells[y+1][x-1].upstream[i]==NULL){
-                            rout.cells[y+1][x-1].upstream[i]=&rout.cells[y][x];
-                            break;
-                        }
-                    }
+
+                id[x][global_domain.n_ny - y-1]=(int)rout.gridded_cells[x][y]->id;
+                for(t=0;t<UH_MAX_DAYS * global_param.model_steps_per_day;t++){
+                    uh[x][global_domain.n_ny - y-1][t]=rout.gridded_cells[x][y]->uh[t];
                 }
             }
         }
+    }
+    
+    int nc_status, nc_id, nc_nr_upstream_varid,nc_rank_varid,nc_vic_id_varid,nc_uh_varid,x_dimid,y_dimid,uh_dimid;
+    int dimids[3];
+    
+    if((nc_status = nc_create(file_path, NC_CLOBBER, &nc_id))){
+        log_err("Unable to create .nc file");
+    }
+    if((nc_status = nc_def_dim(nc_id, "x_axis", global_domain.n_nx, &x_dimid))){
+        log_err("Unable to define dimension");
+    }
+    if((nc_status = nc_def_dim(nc_id, "y_axis", global_domain.n_ny, &y_dimid))){
+        log_err("Unable to define dimension");
+    }
+    if((nc_status = nc_def_dim(nc_id, "uh_length", (UH_MAX_DAYS * global_param.model_steps_per_day), &uh_dimid))){
+        log_err("Unable to define dimension");
+    }
+    dimids[0]=x_dimid;
+    dimids[1]=y_dimid;
+    dimids[2]=uh_dimid;
+    
+    if((nc_status = nc_def_var(nc_id,"nr_upstream",NC_INT,2,dimids,&nc_nr_upstream_varid))){
+        log_err("Unable to define variable");
+    }
+    if((nc_status = nc_def_var(nc_id,"rank",NC_INT,2,dimids,&nc_rank_varid))){
+        log_err("Unable to define variable");
+    }
+    if((nc_status = nc_def_var(nc_id,"vic_id",NC_INT,2,dimids,&nc_vic_id_varid))){
+        log_err("Unable to define variable");
+    }
+    if((nc_status = nc_def_var(nc_id,"uh",NC_DOUBLE,3,dimids,&nc_uh_varid))){
+        log_err("Unable to define variable");
+    }
+    if((nc_status = nc_enddef(nc_id))){
+        log_err("Unable to end defining .nc file");
+    }
+    
+    if((nc_status = nc_put_var_int(nc_id,nc_nr_upstream_varid,&nr_upstream[0][0]))){
+        log_err("Unable to put variable in .nc file");
+    }
+    if((nc_status = nc_put_var_int(nc_id,nc_rank_varid,&rank[0][0]))){
+        log_err("Unable to put variable in .nc file");
+    }
+    if((nc_status = nc_put_var_int(nc_id,nc_vic_id_varid,&id[0][0]))){
+        log_err("Unable to put variable in .nc file");
+    }
+    if((nc_status = nc_put_var_double(nc_id,nc_uh_varid,&uh[0][0][0]))){
+        log_err("Unable to put variable in .nc file");
+    }
+    
+    /*static int missing_value[] = {0, 8};
+    if((nc_status = nc_put_att_int(nc_id,nc_nr_upstream_varid,"valid_range",NC_INT,2,missing_value))){
+        log_err("Unable to define missing value");
+    }*/
+    
+    if((nc_status = nc_close(nc_id))){
+        log_err("Unable to close .nc file");
     }
 }
 
-void rank_cells(void){
+//create ascii file with id's in a grid
+void make_location_file(char file_path[]){
     extern rout_struct rout;
-    extern domain_struct local_domain;
-    
-    int ranked_map[rout.y_size][rout.x_size]; // used to see which cells are already ranked
-    
-    size_t x;
-    size_t y;
-    int i;
-    size_t ui;
-    size_t rank=0;
-    
-    for(y=0; y<rout.y_size;y++){
-        for(x=0;x<rout.x_size;x++){
-            ranked_map[y][x]=0;
-        }
-    }
-    
-    while(1){
-        for(y=0; y<rout.y_size;y++){
-            for(x=0;x<rout.x_size;x++){
-                if(rout.cells[y][x].active==1 && ranked_map[y][x]==0){
-                    int count=0;
-                    for(i=0;i<rout.cells[y][x].nr_upstream;i++){
-                        if(ranked_map[rout.cells[y][x].upstream[i]->y][rout.cells[y][x].upstream[i]->x]==0){
-                            count++;
-                        }
-                    }
-
-                    if(count==0){
-                        rout.ranked_cells[rank]=&rout.cells[y][x];
-                        rank++;
-                    }        
-                }
-            }
-        }
-        
-        for(ui=0;ui<rank;ui++){
-            ranked_map[rout.ranked_cells[ui]->y][rout.ranked_cells[ui]->x]=1;
-        }
-        
-        if(rank == local_domain.ncells_active-1){
-            log_info("Finished ranking cells");
-            break;
-        }else if(rank > local_domain.ncells_active-1){
-            log_warn("rank_cells made %zu loops and escaped because this is more than %zu, the number of active cells",(rank+1),local_domain.ncells_active);
-            break;
-        }
-    }
-}
-
-void make_upstream_file(char file_path[]){
-    extern rout_struct rout;
+    extern domain_struct global_domain;
     
     FILE *file;
     
     if((file = fopen(file_path, "w"))!=NULL){
         size_t x;
         size_t y;
-        int i;
-        for(y=rout.y_size;y>0;y--){
-            for(x=0;x<rout.x_size;x++){
-                for(i=0;i<rout.cells[y-1][x].nr_upstream;i++){
-                    fprintf(file,"(%zu,%zu)",rout.cells[y-1][x].upstream[i]->y,rout.cells[y-1][x].upstream[i]->x);
+        for(y=global_domain.n_ny;y>0;y--){
+            for(x=0;x<global_domain.n_nx;x++){
+                if(rout.gridded_cells[x][y-1]!=NULL){
+                    fprintf(file,"%zu;",rout.gridded_cells[x][y-1]->id);
+                }else{
+                    fprintf(file," ;");                    
                 }
-                fprintf(file,"; ");
+            }
+            fprintf(file,"\n");
+        }
+        fclose(file);
+    }
+}
+
+//create ascii file with the number of upstream cells in a grid
+void make_nr_upstream_file(char file_path[]){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    
+    FILE *file;
+    
+    if((file = fopen(file_path, "w"))!=NULL){
+        size_t x;
+        size_t y;
+        for(y=global_domain.n_ny;y>0;y--){
+            for(x=0;x<global_domain.n_nx;x++){
+                if(rout.gridded_cells[x][y-1]!=NULL){
+                    fprintf(file,"%d;",rout.gridded_cells[x][y-1]->nr_upstream);
+                }else{
+                    fprintf(file," ;");                    
+                }
+            }
+            fprintf(file,"\n");
+        }
+        fclose(file);
+    }
+}
+
+//create ascii file with the cell rankings in a grid
+void make_ranked_cells_file(char file_path[]){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    
+    FILE *file;
+    
+    if((file = fopen(file_path, "w"))!=NULL){
+        size_t x;
+        size_t y;
+        for(y=global_domain.n_ny;y>0;y--){
+            for(x=0;x<global_domain.n_nx;x++){
+                if(rout.gridded_cells[x][y-1]!=NULL){
+                    fprintf(file,"%zu;",rout.gridded_cells[x][y-1]->rank);
+                }else{
+                    fprintf(file," ;");                    
+                }
+            }
+            fprintf(file,"\n");
+        }
+        fclose(file);
+    }
+}
+
+void make_uh_file(char file_path[]){
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    extern global_param_struct global_param;
+    
+    FILE *file;
+    
+    if((file = fopen(file_path, "w"))!=NULL){
+        size_t i;
+        size_t j;
+        for(i=0;i<global_domain.ncells_active;i++){
+            for(j=0;j<UH_MAX_DAYS * global_param.model_steps_per_day;j++){
+                fprintf(file,"%2f;",rout.cells[i].uh[j]);
             }
             fprintf(file,"\n");
         }

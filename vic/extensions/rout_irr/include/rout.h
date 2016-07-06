@@ -14,49 +14,60 @@
 #ifndef ROUT_H
 #define ROUT_H
 
-#include <vic_def.h>
+#define VIC_RESOLUTION 0.5;
+
+#define UH_STEPS_PER_TIMESTEP 20
+#define UH_MAX_DAYS 2
+
+#include <vic_driver_shared_image.h>
 
 typedef struct rout_cells {
+    //id (also for VIC)
+    size_t id;
+    //gridnumber on longitude axis
     size_t x;
+    //gridnumber on latitude axis
     size_t y;
-    size_t vic_id;
-    
-    int active;
-    
-    struct rout_cells **upstream; //Arrary of pointer pointing to struct routCell pointing to upstream cells
-    int nr_upstream;            //int containing the number of upstream cells
-    double *uh;                 //Points to array of doubles containing Unit Hydrograph
-    double *outflow;          //Points to array of doubles containing outflow
-    
-    //double *water_demand;      //Points to array of doubles containing water demand
-    //double *local_water_use     //Points to array of doubles containing local water withdrawal
-    //double *reservoir_water_use //Points to array of doubles containing reservoir water withdrawal
-    //int nr_reservoirs
-    //struct rout_reservoir **reservoir       //Points to struct routDam containing the reservoir of this cell
-    //struct rout_cell *downstream
+    //rank in sorting of cell
+    size_t rank;
+    //pointer to struct holding location information
+    location_struct *location;
+    //number of upstream cells
+    int nr_upstream;
+    //1d array with uh-values for every timestep
+    double *uh;                 
+    //1d array with outflow values for every uh-timestep
+    double *outflow;
+    //1d array with cell pointers to upstream cells
+    struct rout_cells **upstream;    
 }rout_cell;
 
 typedef struct rout_structs {
-    rout_cell **cells;     //Points to 2d array of struct routCell containing all cells in area
-    rout_cell **ranked_cells;
-    //char fileName[MAXSTRING];      //char containing the routing filename
-    size_t x_size;                     //int containing x size of area
-    size_t y_size;                     //int containing y size of area
-    size_t total_time;                 //int containing the total timesteps
-    size_t uh_length;                  //int containing the length of an Unit Hydrograph
+    //1d array with active cells
+    rout_cell *cells;
+    //1d array with cell pointers sorted upstream to downstream
+    rout_cell **sorted_cells;
+    //2d array with cell pointers in a grid
+    rout_cell ***gridded_cells;
 }rout_struct;
 
-void rout_start(void);      // read global parameters for routing
-void rout_alloc(void);      // allocate memory
-void rout_init(void);       // initialize model parameters from parameter files
-void rout_run(size_t time_step);        // run routing over the domain
-void rout_write(void);      // write routine for routing
-void rout_finalize(void);   // clean up routine for routing
-void rank_cells(void);
-void calculate_nr_upstream(char file_path[], char variable_name[]);
-void make_nr_upstream_file(char file_path[]);
-void make_upstream_file(char file_path[]);
+void rout_start(void);
+void rout_alloc(void);
+void rout_init(void);
+void rout_run(size_t time_step);
+void rout_write(void);    
+void rout_finalize(void); 
+
+void set_cell_location(void);
+void sort_cells(void);
 void set_upstream(char file_path[], char variable_name[]);
+void set_uh(char file_path[], char variable_name[]);
+
+void make_location_file(char file_path[]);
+void make_nr_upstream_file(char file_path[]);
+void make_ranked_cells_file(char file_path[]);
+void make_uh_file(char file_path[]);
+void make_debug_file(char file_path[]);
 
 #endif /* ROUT_H */
 

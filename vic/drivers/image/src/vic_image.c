@@ -101,7 +101,7 @@ main(int    argc,
 
     // read global parameters
     vic_image_start();
-
+    
     // read global parameters for routing
     rout_start();   // Routing routine (extension)
 
@@ -132,7 +132,7 @@ main(int    argc,
         vic_image_run(&(dmy[current]));
 
         // run routing over the domain
-//        rout_run();     // Routing routine (extension)
+        rout_run(current);     // Routing routine (extension)
 
         // Write history files
         vic_write_output(&(dmy[current]));
