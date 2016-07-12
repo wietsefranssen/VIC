@@ -133,6 +133,7 @@ main(int    argc,
 
         // run routing over the domain
         rout_run(current);     // Routing routine (extension)
+        //rout_run();
 
         // Write history files
         vic_write_output(&(dmy[current]));

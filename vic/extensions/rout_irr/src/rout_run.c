@@ -23,7 +23,8 @@ void rout_run(size_t time_step){
     //goes through cells from upstream to downstream;
     for(current_rank=0;current_rank<global_domain.ncells_active;current_rank++){
         rout_cell *current_cell = rout.sorted_cells[current_rank];
-                                
+        
+        //determine runoff and inflow
         runoff = out_data[current_cell->id][OUT_RUNOFF][0]+out_data[current_cell->id][OUT_BASEFLOW][0];
 
         inflow=0.0;
@@ -37,14 +38,17 @@ void rout_run(size_t time_step){
 
         //convolute runoff and inflow to future
         size_t t;
-        //size_t tmax = time_step + MAX_UH_DAY;
-        size_t tmax = 5;
-        if(tmax>global_param.nrecs){
-            tmax=global_param.nrecs;
+        for(t=0;t<UH_MAX_DAYS * global_param.model_steps_per_day;t++){
+            current_cell->outflow[t]+=current_cell->uh[t] * runoff;
+            current_cell->outflow[t]+=current_cell->uh[t] * inflow;
         }
-        for(t=time_step;t<tmax;t++){
-            current_cell->outflow[t]+=current_cell->uh[t-time_step] * runoff;
-            current_cell->outflow[t]+=current_cell->uh[t-time_step] * inflow;
+        
+        //write data and shift array
+        out_data[current_cell->id][OUT_DISCHARGE][0] = current_cell->outflow[0];
+        
+        for(t=0;t<(UH_MAX_DAYS * global_param.model_steps_per_day)-1;t++){
+            *(current_cell->outflow + t) = *(current_cell->outflow + (t+1));
         }
+        *(current_cell->outflow + t) = 0.0;
     }
 }

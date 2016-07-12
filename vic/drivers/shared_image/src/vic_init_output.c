@@ -220,10 +220,14 @@ vic_init_output(dmy_struct *dmy_current)
                            output_streams[streamnum].type);
 
         if (mpi_rank == VIC_MPI_ROOT) {
+            //---------------------------------------------------------------
+            //tijdelijk uitgezet vanwege error
+            //---------------------------------------------------------------
+            
             // open the netcdf history file
-            initialize_history_file(&(nc_hist_files[streamnum]),
-                                    &(output_streams[streamnum]),
-                                    dmy_current);
+            //initialize_history_file(&(nc_hist_files[streamnum]),
+            //                        &(output_streams[streamnum]),
+            //                        dmy_current);
         }
     }
     // validate streams
@@ -453,6 +457,10 @@ initialize_history_file(nc_file_struct *nc,
 
         set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
 
+        //---------------------------------------------------------------
+        //hier vind de error plaats, nc_def_var blijkt niet te kloppen?
+        //---------------------------------------------------------------
+        
         // define the variable
         status = nc_def_var(nc->nc_id,
                             out_metadata[varid].varname,
