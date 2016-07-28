@@ -44,7 +44,7 @@ rout_init(void)
         int                 *ivar = NULL;
         double              *dvar = NULL;
         double              lat_first, lon_first;
-        size_t                 inv_reslat, inv_reslon;
+        double              inv_reslat, inv_reslon;
         size_t              offset_x, offset_y;
 
         size_t               i, j;
@@ -186,8 +186,8 @@ rout_init(void)
         lat_first = global_domain.locations[0].latitude;
         lon_first = global_domain.locations[0].longitude;
         
-        inv_reslat = 1./abs(global_domain.locations[0].latitude - global_domain.locations[global_domain.n_nx].latitude);
-        inv_reslon = 1./abs(global_domain.locations[0].longitude - global_domain.locations[1].longitude);
+        inv_reslat = abs(1./(global_domain.locations[0].latitude - global_domain.locations[global_domain.n_nx].latitude));
+        inv_reslon = abs(1./(global_domain.locations[0].longitude - global_domain.locations[1].longitude));
         
         
         for (iSource = 0; iSource < rout.rout_param.nSources; iSource++) {
@@ -238,5 +238,5 @@ rout_init(void)
         free(dvar);
         //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
     }
-    log_err("stop");
+    //log_err("stop");
 }
