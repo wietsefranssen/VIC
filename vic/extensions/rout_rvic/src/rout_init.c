@@ -182,10 +182,6 @@ rout_init(void)
 //                }
 //            }
 //        }
-        for (i = 0; i < global_domain.ncells_total; i++) {
-            printf("% 7d %7.2f %7.2f\n", i, global_domain.locations[i].latitude, global_domain.locations[i].longitude);
-       
-        }
         
         lat_first = global_domain.locations[0].latitude;
         lon_first = global_domain.locations[0].longitude;
