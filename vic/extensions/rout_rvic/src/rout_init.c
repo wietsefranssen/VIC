@@ -43,6 +43,9 @@ rout_init(void)
 
         int                 *ivar = NULL;
         double              *dvar = NULL;
+        double              lat_first, lon_first;
+        int                 inv_reslat, inv_reslon;
+        size_t              offset_x, offset_y;
 
         size_t               i, j;
         size_t               i1start;
@@ -164,7 +167,7 @@ rout_init(void)
             rout.rout_param.unit_hydrograph[i] = (double) dvar[i];
         }
 
-        clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
+        clock_gettime(CLOCK_MONOTONIC, &tstart);
         // TODO: Check inbouwen: wat als er geen VIC gridcell bestaat voor een Rout source?!
         // Mapping: Let the routing-source index numbers correspond to the VIC index numbers
         size_t iSource;
@@ -179,17 +182,23 @@ rout_init(void)
 //                }
 //            }
 //        }
+        for (i = 0; i < global_domain.ncells_total; i++) {
+            printf("% 7d %7.2f %7.2f\n", i, global_domain.locations[i].latitude, global_domain.locations[i].longitude);
+       
+        }
+        
+        lat_first = global_domain.locations[0].latitude;
+        lon_first = global_domain.locations[0].longitude;
+        
+        inv_reslat = 1./abs(global_domain.locations[0].latitude - global_domain.locations[global_domain.n_nx].latitude);
+        inv_reslon = 1./abs(global_domain.locations[0].longitude - global_domain.locations[1].longitude);
+        
+        
         for (iSource = 0; iSource < rout.rout_param.nSources; iSource++) {
-            for (i = 0; i < global_domain.ncells_total; i++) {
-                if (rout.rout_param.source_lat[iSource] ==
-                    global_domain.locations[i].latitude) {
-                        if (rout.rout_param.source_lon[iSource] ==
-                            global_domain.locations[i].longitude) {
-                    rout.rout_param.source_VIC_index[iSource] = i;
-                    break;
-                    }
-                } else {break;}
-            }
+            offset_x = (rout.rout_param.source_lat[iSource] -lat_first)*inv_reslat;
+            offset_y = (rout.rout_param.source_lon[iSource] -lon_first)*inv_reslon;
+
+            rout.rout_param.source_VIC_index[iSource] = offset_x*global_domain.n_nx + offset_y;
         }
 
         clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
