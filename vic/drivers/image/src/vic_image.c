@@ -145,11 +145,11 @@ main(int    argc,
         vic_image_run(&(dmy[current]));
 
         // run routing over the domain
-//        rout_run();     // Routing routine (extension)
+        // rout_run();     // Routing routine (extension)
 
         // Write history files
         vic_write_output(&(dmy[current]));
-  
+
         // if output (routing)
         rout_write(); // Routing routine (extension)
 
