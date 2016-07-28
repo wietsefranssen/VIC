@@ -44,7 +44,7 @@ rout_init(void)
         int                 *ivar = NULL;
         double              *dvar = NULL;
         double              lat_first, lon_first;
-        int                 inv_reslat, inv_reslon;
+        size_t                 inv_reslat, inv_reslon;
         size_t              offset_x, offset_y;
 
         size_t               i, j;
