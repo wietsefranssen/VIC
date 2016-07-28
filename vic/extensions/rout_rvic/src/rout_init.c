@@ -58,12 +58,16 @@ rout_init(void)
         d3count[1] = rout.rout_param.nSources;
         d3count[2] = 1; // tracers dimension
 
+        struct timespec tstart={0,0}, tend={0,0};
+        clock_gettime(CLOCK_MONOTONIC, &tstart);
+
         // allocate memory for variables to be read
         ivar = (int *) malloc(sizeof(int) * rout.rout_param.nSources);
         if (ivar == NULL) {
             log_err("Memory allocation error in vic_init().");
         }
 
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // allocate memory for variables to be read
         dvar = (double *) malloc(
             rout.rout_param.nTimesteps * rout.rout_param.nSources *
@@ -140,6 +144,7 @@ rout_init(void)
             rout.rout_param.outlet_lat[i] = (double) dvar[i];
         }
 
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // outlet_lon: Longitude coordinate of source grid cell
         get_nc_field_double(rout.param_filename,
                             "outlet_lon",
@@ -148,6 +153,7 @@ rout_init(void)
             rout.rout_param.outlet_lon[i] = (double) dvar[i];
         }
 
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // Unit Hydrograph:
         get_nc_field_double(rout.param_filename,
                             "unit_hydrograph",
@@ -158,20 +164,35 @@ rout_init(void)
             rout.rout_param.unit_hydrograph[i] = (double) dvar[i];
         }
 
+        clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // TODO: Check inbouwen: wat als er geen VIC gridcell bestaat voor een Rout source?!
         // Mapping: Let the routing-source index numbers correspond to the VIC index numbers
         size_t iSource;
+//        for (iSource = 0; iSource < rout.rout_param.nSources; iSource++) {
+//            for (i = 0; i < global_domain.ncells_total; i++) {
+//                if (rout.rout_param.source_lat[iSource] ==
+//                    global_domain.locations[i].latitude &&
+//                    rout.rout_param.source_lon[iSource] ==
+//                    global_domain.locations[i].longitude) {
+//                    rout.rout_param.source_VIC_index[iSource] = i;
+//                    break;
+//                }
+//            }
+//        }
         for (iSource = 0; iSource < rout.rout_param.nSources; iSource++) {
             for (i = 0; i < global_domain.ncells_total; i++) {
                 if (rout.rout_param.source_lat[iSource] ==
-                    global_domain.locations[i].latitude &&
-                    rout.rout_param.source_lon[iSource] ==
-                    global_domain.locations[i].longitude) {
+                    global_domain.locations[i].latitude) {
+                        if (rout.rout_param.source_lon[iSource] ==
+                            global_domain.locations[i].longitude) {
                     rout.rout_param.source_VIC_index[iSource] = i;
-                }
+                    break;
+                    }
+                } else {break;}
             }
         }
 
+        clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // Check source index of VIC gridcell
         for (iSource = 0; iSource < rout.rout_param.nSources; iSource++) {
             if ((size_t)rout.rout_param.source_VIC_index[iSource] < 0 ||
@@ -181,6 +202,7 @@ rout_init(void)
             }
         }
 
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // Mapping: Let the routing-outlet index numbers correspond to the VIC index numbers
         size_t iOutlet;
         for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
@@ -190,10 +212,12 @@ rout_init(void)
                     rout.rout_param.outlet_lon[iOutlet] ==
                     global_domain.locations[i].longitude) {
                     rout.rout_param.outlet_VIC_index[iOutlet] = i;
+                    //break;
                 }
             }
         }
 
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // Check outlet index of VIC gridcell
         for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
             if ((size_t)rout.rout_param.outlet_VIC_index[iOutlet] < 0 ||
@@ -203,8 +227,11 @@ rout_init(void)
             }
         }
 
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // cleanup
         free(ivar);
         free(dvar);
+        //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
     }
+    log_err("stop");
 }
