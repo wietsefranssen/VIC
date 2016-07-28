@@ -209,19 +209,29 @@ rout_init(void)
 
         //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // Mapping: Let the routing-outlet index numbers correspond to the VIC index numbers
+//        size_t iOutlet;
+//        for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
+//            for (i = 0; i < global_domain.ncells_total; i++) {
+//                if (rout.rout_param.outlet_lat[iOutlet] ==
+//                    global_domain.locations[i].latitude &&
+//                    rout.rout_param.outlet_lon[iOutlet] ==
+//                    global_domain.locations[i].longitude) {
+//                    rout.rout_param.outlet_VIC_index[iOutlet] = i;
+//                    //break;
+//                }
+//            }
+//        }
+        
         size_t iOutlet;
-        for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
-            for (i = 0; i < global_domain.ncells_total; i++) {
-                if (rout.rout_param.outlet_lat[iOutlet] ==
-                    global_domain.locations[i].latitude &&
-                    rout.rout_param.outlet_lon[iOutlet] ==
-                    global_domain.locations[i].longitude) {
-                    rout.rout_param.outlet_VIC_index[iOutlet] = i;
-                    //break;
-                }
-            }
-        }
+        for (iOutlet = 0; iSource < rout.rout_param.nOutlets; Outlet++) {
+            offset_x = (rout.rout_param.outlet_lat[iOutlet] -lat_first)*inv_reslat;
+            offset_y = (rout.rout_param.outlet_lon[iOutlet] -lon_first)*inv_reslon;
 
+            rout.rout_param.outlet_VIC_index[iOutlet] = offset_x*global_domain.n_nx + offset_y;
+        }
+        
+        
+        
         //clock_gettime(CLOCK_MONOTONIC, &tend); log_info("time: %.5f seconds\n",((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)); clock_gettime(CLOCK_MONOTONIC, &tstart);
         // Check outlet index of VIC gridcell
         for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
