@@ -76,9 +76,10 @@ rout_run(void) {
 
         // Zero out current ring
         // in python: (from variables.py) self.ring[tracer][0, :] = 0.
-        for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
-            rout.ring[iOutlet] = 0.0;
-        }
+//        for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
+//            rout.ring[iOutlet] = 0.0;
+//        }
+        memset(rout.ring,0,rout.rout_param.nOutlets);
 
         // Equivalent to Fortran 90 cshift function, in python: (from variables.py) self.ring[tracer] = np.roll(self.ring[tracer], -1, axis=0)
         cshift(rout.ring, rout.rout_param.full_time_length,
@@ -86,6 +87,7 @@ rout_run(void) {
                 1);
 
         /*Loop through all sources*/
+//        for (iSource = rout.rout_param.nSources; iSource--; ) {
         for (iSource = 0; iSource < rout.rout_param.nSources; iSource++) {
             iOutlet = rout.rout_param.source2outlet_ind[iSource];
             offset = rout.rout_param.source_time_offset[iSource];
@@ -93,6 +95,7 @@ rout_run(void) {
             /* Do the convolution */
             // iTimestep is the position in the unit hydrograph
             // jTimestep is the position in the ring
+//            for (iTimestep = rout.rout_param.nTimesteps; iTimestep--; ) {
             for (iTimestep = 0; iTimestep < rout.rout_param.nTimesteps;
                     iTimestep++) {
                 jTimestep = iTimestep + offset;
