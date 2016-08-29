@@ -15,7 +15,7 @@ void rout_alloc(void){
     extern global_param_struct global_param;
     extern domain_struct global_domain;
     
-    //allocate memory based on data
+    //allocate memory based on data    
     if((rout.cells = malloc(global_domain.ncells_active * sizeof(*rout.cells)))==NULL){
         log_err("Memory allocation for rout.cells failed!");
     }
@@ -23,19 +23,19 @@ void rout_alloc(void){
     if((rout.sorted_cells = malloc(global_domain.ncells_active * sizeof(*rout.sorted_cells)))!=NULL){
         size_t i;
         for(i=0;i<global_domain.ncells_active;i++){
-            rout.sorted_cells[i]=NULL;
+            rout.sorted_cells[i] = NULL;
         }
     }else{
         log_err("Memory allocation for rout.sorted_cells failed!");
     }
-        
+    
     if((rout.gridded_cells = malloc(global_domain.n_nx * sizeof(*rout.gridded_cells)))!=NULL){
         size_t x;
         for(x=0;x<global_domain.n_nx;x++){
             if((rout.gridded_cells[x] = malloc(global_domain.n_ny * sizeof(*rout.gridded_cells[x])))!=NULL){
                 size_t y;
-                for(y=0;y<global_domain.n_nx;y++){
-                    rout.gridded_cells[x][y]=NULL;
+                for(y=0;y<global_domain.n_ny;y++){
+                    rout.gridded_cells[x][y]= NULL;
                 }                
             }else{
                 log_err("Memory allocation for rout.gridded_cells[x] failed!");

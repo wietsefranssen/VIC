@@ -20,11 +20,11 @@ void rout_init(void){
     set_upstream("./input/VIC_Params/RVIC_input_NL.nc","flow_direction");
     make_nr_upstream_file("./debug_output/nr_upstream.txt");
     
-    sort_cells();
-    make_ranked_cells_file("./debug_output/ranked_cells.txt");
-    
     set_uh("./input/VIC_Params/RVIC_input_NL.nc","flow_distance");
     make_uh_file("./debug_output/uh.txt");
+    
+    sort_cells();
+    make_ranked_cells_file("./debug_output/ranked_cells.txt");
     
     //only use on small domains since netCDF cannot hold size_t values!
     //----------------------------------------------------------------------
@@ -427,9 +427,16 @@ void make_location_file(char file_path[]){
         for(y=global_domain.n_ny;y>0;y--){
             for(x=0;x<global_domain.n_nx;x++){
                 if(rout.gridded_cells[x][y-1]!=NULL){
-                    fprintf(file,"%zu;",rout.gridded_cells[x][y-1]->id);
+                    fprintf(file,"%zu",rout.gridded_cells[x][y-1]->id);
+                    if(rout.gridded_cells[x][y-1]->id < 10){
+                        fprintf(file,"  ;");
+                    }else if(rout.gridded_cells[x][y-1]->id < 100){
+                        fprintf(file," ;");
+                    }else{
+                        fprintf(file,";");
+                    }
                 }else{
-                    fprintf(file," ;");                    
+                    fprintf(file,"   ;");                    
                 }
             }
             fprintf(file,"\n");
@@ -475,9 +482,16 @@ void make_ranked_cells_file(char file_path[]){
         for(y=global_domain.n_ny;y>0;y--){
             for(x=0;x<global_domain.n_nx;x++){
                 if(rout.gridded_cells[x][y-1]!=NULL){
-                    fprintf(file,"%zu;",rout.gridded_cells[x][y-1]->rank);
+                    fprintf(file,"%zu",rout.gridded_cells[x][y-1]->rank);
+                    if(rout.gridded_cells[x][y-1]->rank < 10){
+                        fprintf(file,"  ;");
+                    }else if(rout.gridded_cells[x][y-1]->rank < 100){
+                        fprintf(file," ;");
+                    }else{
+                        fprintf(file,";");
+                    }
                 }else{
-                    fprintf(file," ;");                    
+                    fprintf(file,"   ;");                    
                 }
             }
             fprintf(file,"\n");
@@ -492,15 +506,19 @@ void make_uh_file(char file_path[]){
     extern global_param_struct global_param;
     
     FILE *file;
+    double sum=0.0;
     
     if((file = fopen(file_path, "w"))!=NULL){
         size_t i;
         size_t j;
         for(i=0;i<global_domain.ncells_active;i++){
+            fprintf(file,"Cell = %zu -> ",rout.cells[i].id);
             for(j=0;j<UH_MAX_DAYS * global_param.model_steps_per_day;j++){
                 fprintf(file,"%2f;",rout.cells[i].uh[j]);
+                sum+=rout.cells[i].uh[j];
             }
-            fprintf(file,"\n");
+            fprintf(file," sum = %2f\n",sum);
+            sum=0.0;
         }
         fclose(file);
     }

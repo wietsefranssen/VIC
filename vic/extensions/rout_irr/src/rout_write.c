@@ -4,4 +4,9 @@
  * and open the template in the editor.
  */
 
-void rout_write(void){}
+#include <vic_def.h>
+#include <rout.h>
+
+void rout_write(void){
+    log_info("In rout_write");
+}
