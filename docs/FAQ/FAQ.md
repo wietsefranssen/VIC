@@ -20,12 +20,14 @@ Here are some commonly-asked questions and their answers. Another source of info
     As described above, VIC is designed to run on any linux or unix system. VIC is capable of being run on a laptop or on large distributed super-computers.
 
     ***Parallelization:***
-    - The *Classic Driver* code is not explicitly written for parallel processing. Nevertheless, its design will allow you to implement a "poor man's parallelization". Because VIC simulates each grid cell independently of the others, you can break up your study domain into separate sub-domains (these could be sub-basins or simply any arbitrary grouping of grid cells) and simulate each of these sub-domains separately, in parallel (on different nodes of a cluster, for example). Dividing the domain into sub-domains and combining them again later should be fairly easy, since VIC's input forcings and output results are organized into one file per grid cell. All you need to do is create separate soil parameter files, one for each sub-domain (these can even be copies of the original whole-domain soil parameter file, with the appropriate grid cells given a "1" as the first value and all other grid cells given a "0"). You will also need to create separate global parameter files. These would all be identical save for the soil parameter file that they point to. Of course the routing model must access all grid cells in a single run, but it runs very quickly in comparison to the VIC run.
-    - The *Image* and *CESM Drivers* utilize a the MPI standard for parallelization. This allows VIC to be efficiently run on larger clusters and super-computers.
+
+    - The *[Classic Driver](../Documentation/Drivers/Classic/ClassicDriver.md)* code is not explicitly written for parallel processing. Nevertheless, its design will allow you to implement a "poor man's parallelization". Because VIC simulates each grid cell independently of the others, you can break up your study domain into separate sub-domains (these could be sub-basins or simply any arbitrary grouping of grid cells) and simulate each of these sub-domains separately, in parallel (on different nodes of a cluster, for example). Dividing the domain into sub-domains and combining them again later should be fairly easy, since VIC's input forcings and output results are organized into one file per grid cell. All you need to do is create separate soil parameter files, one for each sub-domain (these can even be copies of the original whole-domain soil parameter file, with the appropriate grid cells given a "1" as the first value and all other grid cells given a "0"). You will also need to create separate global parameter files. These would all be identical save for the soil parameter file that they point to. Of course the routing model must access all grid cells in a single run, but it runs very quickly in comparison to the VIC run.
+    - The *[Image](../Documentation/Drivers/Image/ImageDriver.md) and [CESM](../Documentation/Drivers/CESM/CESMDriver.md) Drivers* utilize a the MPI standard for parallelization. This allows VIC to be efficiently run on larger clusters and super-computers. For information on how to run the VIC Image Driver in parallel, see the ["how to run VIC page"](../Documentation/Drivers/Image/RunVIC.md).
 
     ***Memory Requirements***
-    - The *Classic Driver* is not very memory-intensive, since it only stores the state of a single grid cell in memory at a given time.
-    - The memory usage of the *Image* and *CESM drivers* scales with the number of grid cells on each processor.
+
+    - The *[Classic Driver](../Documentation/Drivers/Classic/ClassicDriver.md)* is not very memory-intensive, since it only stores the state of a single grid cell in memory at a given time.
+    - The memory usage of the *[Image](../Documentation/Drivers/Image/ImageDriver.md) and [CESM](../Documentation/Drivers/CESM/CESMDriver.md) Drivers* scales with the number of grid cells on each processor.
 
 4.  **Are there any Matlab tools written for analyzing and/or plotting VIC results?**
 
@@ -49,22 +51,6 @@ Here are some commonly-asked questions and their answers. Another source of info
 
     VIC's actual evapotranspiration is the sum of canopy evaporation, transpiration, soil evaporation, canopy snow sublimation, and ground snow sublimation, averaged over the grid cell.  VIC's `OUT_PET` (release 5.0 onwards; `OUT_PET_NATVEG` for releases 4.1-4.2) computes PET as the ET that the current landscape (with its current vegetation, architectural resistance, and LAI) would produce in the absence of limitations from soil moisture, vapor pressure deficit, temperature, or insolation.  But VIC's canopy evaporation and sublimation are computed using a canopy resistance of 0, which allows for much higher ET rates than when architectural resistance and LAI are taken into account.  Thus, when there is water stored in the canopy, actual ET can exceed `OUT_PET`.  This generally happens during a small fraction of the time of a simulation (immediately following rain events, for example).
 
-9.  **Why does VIC give different results when compiled with optimization flags or compiled 64-bit instead of 32-bit?**
-
-    We have heard various reports of VIC's results changing when users re-compile the code with different optimization flags or move from 32-bit to 64-bit platforms. At present we do not know the reasons for this. What we do know is:
-
-    *   These differences in results may result from memory issues. This is especially likely if VIC gives different results from one run to the next using the exact same inputs. But we are not 100% certain that memory issues are the reason.
-    *   These differences in results may be less pronounced when running VIC 4.1.1 or later. VIC 4.1.1 and later have been subjected to more comprehensive memory testing than earlier versions, and many bugs having to do with uninitialized variables, buffer overruns, incorrect freeing of allocated memory, etc. have been found and fixed. However even VIC 4.1.1 and later yield different results under different compiler options and on different platforms.
-    *   Some of the differences may result from using inappropriate compiler option combinations, such as "-g" (debugging symbols) and "-O3" simultaneously. You should never combine the "-g" option with any compiler optimization options. Admittedly, this can make it difficult to debug an optimized version of the code.
-    *   Some of the differences in results may in fact be introduced by the compiler when it attempts to optimize the code.
-    *   Simply turning off the "-g" option without adding an optimization option will make the code run faster - this may be sufficient for your purposes and may reduce any differences in results.
-    *   We have not yet performed rigorous testing of any VIC versions on 64-bit platforms. At this point, users must assume some risk when running VIC in a 64-bit environment. We hope to look into this further in the future.
-    *   VIC's numerical schemes may be partially responsible for differences. VIC uses simple first-order forward difference schemes for most of its computations, although VIC 4.1.1 and later have the option to use an implicit scheme to model soil temperatures.
-
-    In summary, probably the best thing you can do at this point is to upgrade to the latest version of VIC and see if turning off the "-g" option is sufficient to speed up your code without invoking any compiler optimization options. If running with `FROZEN_SOIL` or `FULL_ENERGY` set to `TRUE`, setting `IMPLICIT` to `TRUE` may make VIC's results more stable as well.
-
-    It is worth noting that users have reported similar problems with other hydrologic models. See Martyn Clark's "numerical daemons" paper.
-
-10.  **I want to output a variable, but I don't see it listed in the output variable list. What should I do?**
+9.  **I want to output a variable, but I don't see it listed in the output variable list. What should I do?**
 
     VIC allows users to select which output variables to write to their output files. Variables that can be selected are listed [here](../Documentation/OutputVarList.md) as well as in the VIC source code file `vic_driver_shared.h` (listed as `OUT_*`). However, not all variables that VIC simulates are available for output. And of course if you are changing VIC's physics, any new variables you add are also not available for output (yet). In either of these cases, please see the [instructions on how to add a new output variable to VIC](../Documentation/HowToAddNewOutputVars.md).

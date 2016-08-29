@@ -38,13 +38,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#ifndef __vic_nc_log_h__
-#define __vic_nc_log_h__
+#ifndef __vic_image_log_h__
+#define __vic_image_log_h__
 
 #include <vic_def.h>
+#include <vic_mpi.h>
 
 // Macros for logging
-#define clean_ncerrno(e) (e == 0 ? "None" : nc_strerror(e))
+#define clean_ncerrno(e) (e == NC_NOERR ? "None" : nc_strerror(e))
 
 // Error Level is always active
 #ifdef NO_LINENOS
@@ -66,5 +67,18 @@
                                                                  ## __VA_ARGS__); \
                                                        errno = 0; exit( \
                                                            EXIT_FAILURE); }
+
+#define log_mpi_err(e, M, ...) print_trace(); \
+    print_mpi_error_str(e); fprintf(LOG_DEST, \
+                                    "[ERROR] %s:%d: errno: %d: " M " \n", \
+                                    __FILE__, __LINE__, e, \
+                                    ## __VA_ARGS__); \
+    MPI_Abort(MPI_COMM_VIC, e);
+
+#define check_mpi_status(A, M, ...) if (A != MPI_SUCCESS) {log_mpi_err(A, M, \
+                                                                       ## __VA_ARGS__); \
+                                                           errno = 0; MPI_Abort( \
+                                                               MPI_COMM_VIC, A); \
+}
 
 #endif

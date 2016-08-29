@@ -71,9 +71,6 @@ get_parameters(FILE *paramfile)
             else if (strcasecmp("ALBEDO_BARE_SOIL", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &param.ALBEDO_BARE_SOIL);
             }
-            else if (strcasecmp("ALBEDO_H20_SURF", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &param.ALBEDO_H20_SURF);
-            }
             // Surface Emissivities
             else if (strcasecmp("EMISS_GRND", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &param.EMISS_GRND);
@@ -527,7 +524,7 @@ get_parameters(FILE *paramfile)
             }
             else {
                 log_warn("Unrecognized option in the parameter file:  %s "
-                         "- check your spelling\n", optstr);
+                         "- check your spelling", optstr);
             }
         }
         fgets(cmdstr, MAXSTRING, paramfile);
@@ -558,9 +555,6 @@ validate_parameters()
     // Surface Albedo Parameters
     if (!(param.ALBEDO_BARE_SOIL >= 0 && param.ALBEDO_BARE_SOIL <= 1)) {
         log_err("ALBEDO_BARE_SOIL must be defined on the interval [0,1] (-)")
-    }
-    if (!(param.ALBEDO_H20_SURF >= 0 && param.ALBEDO_H20_SURF <= 1)) {
-        log_err("ALBEDO_H20_SURF must be defined on the interval [0,1] (-)")
     }
     // Surface Emissivities
     if (!(param.EMISS_GRND >= 0 && param.EMISS_GRND <= 1)) {

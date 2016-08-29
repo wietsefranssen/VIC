@@ -41,51 +41,31 @@ VICPATH = ../../vic_run
 # VIC EXTENTIONS PATH
 EXTPATH = ../../extensions
 
-UNAME_S := $(shell uname -s)
-
-# NETCDF include .. change the path depending on travis or other location
-ifeq (true, ${TRAVIS})
-NETCDFPATH = ${TRAVIS_NETCDFPATH}
-else ifeq (hydro-c1, $(shell hostname))
-NETCDFPATH = /usr/local/netcdf-4.3.0+gcc-4.7.2
-else ifeq ($(UNAME_S), Linux)
-NETCDFPATH = /usr
-else
-NETCDFPATH = /opt/local
-endif
-
-# MPI include .. change the path depending on travis or other location
-ifeq (true, ${TRAVIS})
-MPIPATH = ${TRAVIS_MPIPATH}
-else ifeq (hydro-c1, $(shell hostname))
-MPIPATH = /usr/local/netcdf-4.3.0+gcc-4.7.2
-else ifeq ($(UNAME_S), Linux)
-MPIPATH = /usr
-else
-MPIPATH = /opt/local
-endif
-
-# Set SHELL = your shell here
-SHELL = /bin/bash
-
-# Set CC = your compiler here
-ifeq (true, ${TRAVIS})
-CC = ${MPIPATH}/bin/mpicc
-else ifeq ($(UNAME_S), Linux)
-CC = ${MPIPATH}/bin/mpicc
-else
-CC = mpicc
-endif
-
-GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
-HOSTNAME := $(shell uname -n)
-
 # set routing extension here (rout_stub means: no routing)
 #ROUT=rout_stub
 #ROUT=rout_rvic
 ROUT=rout_irr
 
 include ${EXTPATH}/${ROUT}/rout.mk
+
+ifndef NC_LIBS
+NC_LIBS = $(shell nc-config --libs)
+endif
+$(info $$NC_LIBS is [${NC_LIBS}])
+
+ifndef NC_CFLAGS
+NC_CFLAGS = $(shell nc-config --cflags)
+endif
+$(info $$NC_CFLAGS is [${NC_CFLAGS}])
+
+ifndef MPICC
+MPICC = mpicc
+endif
+$(info $$MPICC is [${MPICC}])
+
+GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
+UNAME_S := $(shell uname -s)
+HOSTNAME := $(shell uname -n)
 
 # Set the log level
 # To turn off warning statements, set LOG_LVL >= 30
@@ -95,24 +75,28 @@ include ${EXTPATH}/${ROUT}/rout.mk
 # | WARNING   | < 30             |
 # | INFO      | < 20             |
 # | DEBUG     | < 10             |
-LOG_LVL = 5
+LOG_LVL = 15
 
 # set includes
 INCLUDES = -I ${DRIVERPATH}/include \
 		   -I ${VICPATH}/include \
 		   -I ${SHAREDPATH}/include \
 		   -I ${SHAREDIMAGEPATH}/include \
-		   -I ${NETCDFPATH}/include \
-		   -I ${MPIPATH}/include \
-           -I ${EXTPATH}/${ROUT}/include
+		   -I ${EXTPATH}/${ROUT}/include
 
 # Uncomment to include debugging information
-CFLAGS  =  ${INCLUDES} -ggdb -O0 -Wall -Wextra -std=c99 \
+CFLAGS  =  ${INCLUDES} ${NC_CFLAGS}  -ggdb -O0 -Wall -Wextra -std=c99 \
 					 -DLOG_LVL=$(LOG_LVL) \
 					 -DGIT_VERSION=\"$(GIT_VERSION)\" \
 					 -DUSERNAME=\"$(USER)\" \
 					 -DHOSTNAME=\"$(HOSTNAME)\"
-LIBRARY = -lm -L${NETCDFPATH}/lib -lnetcdf
+
+ifeq (true, ${TRAVIS})
+# Add extra debugging for builds on travis
+CFLAGS += -rdynamic -Wl,-export-dynamic
+endif
+
+LIBRARY = -lm ${NC_LIBS}
 
 COMPEXE = vic_image
 EXT = .exe
@@ -156,7 +140,7 @@ clean::
 	\rm -rf ${COMPEXE}${EXT} ${COMPEXE}${EXT}.dSYM
 
 model: $(OBJS)
-	$(CC) -o ${COMPEXE}${EXT} $(OBJS) $(CFLAGS) $(LIBRARY)
+	$(MPICC) -o ${COMPEXE}${EXT} $(OBJS) $(CFLAGS) $(LIBRARY)
 
 # -------------------------------------------------------------
 # tags
@@ -174,7 +158,7 @@ clean::
 # -------------------------------------------------------------
 depend: .depend
 .depend: $(SRCS) $(HDRS)
-	$(CC) $(CFLAGS) -M $(SRCS) > $@
+	$(MPICC) $(CFLAGS) -M $(SRCS) > $@
 
 clean::
 	\rm -f .depend

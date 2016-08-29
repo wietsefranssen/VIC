@@ -304,7 +304,7 @@ qromb(double (*funcd)(),
         }
         h[j + 1] = 0.25 * h[j];
     }
-    log_err("Too many steps in routine qromb");
+    log_err("Too many steps");
 }
 
 /******************************************************************************
@@ -320,18 +320,16 @@ polint(double  xa[],
 {
     int     i, m, ns;
     double  den, dif, dift, ho, hp, w;
-    double *c, *d;
+    double *c = NULL;
+    double *d = NULL;
 
     ns = 1;
     dif = fabs(x - xa[1]);
     c = (double *)malloc((size_t) ((n + 1) * sizeof(double)));
-    if (!c) {
-        log_err("allocation failure in vector()");
-    }
+    check_alloc_status(c, "Memory allocation error.");
     d = (double *)malloc((size_t) ((n + 1) * sizeof(double)));
-    if (!d) {
-        log_err("allocation failure in vector()");
-    }
+    check_alloc_status(d, "Memory allocation error.");
+
 
     for (i = 1; i <= n; i++) {
         if ((dift = fabs(x - xa[i])) < dif) {
@@ -348,7 +346,7 @@ polint(double  xa[],
             hp = xa[i + m] - x;
             w = c[i + 1] - d[i];
             if ((den = ho - hp) == 0.0) {
-                log_err("Error in routine polint");
+                log_err("interpolation error");
             }
             den = w / den;
             d[i] = hp * den;
@@ -429,7 +427,7 @@ rtnewt(double x1,
     get_shear(x2, &fh, &df, Ur, Zr);
 
     if ((fl > 0.0 && fh > 0.0) || (fl < 0.0 && fh < 0.0)) {
-        log_err("Root must be bracketed in rtnewt.");
+        log_err("Root must be bracketed");
     }
 
     if (fl == 0.0) {
@@ -481,7 +479,7 @@ rtnewt(double x1,
             xh = rts;
         }
     }
-    log_err("Maximum number of iterations exceeded in rtnewt.");
+    log_err("Maximum number of iterations exceeded");
 }
 
 /******************************************************************************
@@ -680,7 +678,7 @@ shear_stress(double  U10,
     get_shear(umax, &fh, &df, U10, 10.);
 
     if (fl < 0.0 && fh < 0.0) {
-        log_err("Solution in rtnewt surpasses upper boundary."
+        log_err("Solution surpasses upper boundary."
                 "fl(%f)=%f, fh(%f)=%f", umin, fl, umax, fh);
     }
 
