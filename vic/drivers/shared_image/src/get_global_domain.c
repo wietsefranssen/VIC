@@ -36,16 +36,16 @@ get_global_domain(char          *nc_name,
 {
     extern nc_struct netcdf;
     int              status;
-    int             *run = NULL;
-    double          *var = NULL;
-    double          *var_lon = NULL;
-    double          *var_lat = NULL;
-    size_t           i;
-    size_t           j;
-    size_t           d2count[2];
-    size_t           d2start[2];
-    size_t           d1count[1];
-    size_t           d1start[1];
+    int    *run = NULL;
+    double *var = NULL;
+    double *var_lon = NULL;
+    double *var_lat = NULL;
+    size_t  i;
+    size_t  j;
+    size_t  d2count[2];
+    size_t  d2start[2];
+    size_t  d1count[1];
+    size_t  d1start[1];
 
     global_domain->n_nx = get_nc_dimension(nc_name, global_domain->info.x_dim);
     global_domain->n_ny = get_nc_dimension(nc_name, global_domain->info.y_dim);

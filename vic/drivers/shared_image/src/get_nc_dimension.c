@@ -33,9 +33,9 @@ size_t
 get_nc_dimension(char *nc_name,
                  char *dim_name)
 {
-    int              dim_id;
-    size_t           dim_size;
-    int              status;
+    int    dim_id;
+    size_t dim_size;
+    int    status;
 
     extern nc_struct netcdf;
 

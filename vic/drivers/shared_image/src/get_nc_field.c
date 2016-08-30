@@ -36,8 +36,8 @@ get_nc_field_double(char   *nc_name,
                     size_t *count,
                     double *var)
 {
-    int              status;
-    int              var_id;
+    int status;
+    int var_id;
 
     extern nc_struct netcdf;
 
@@ -85,8 +85,8 @@ get_nc_field_float(char   *nc_name,
                    size_t *count,
                    float  *var)
 {
-    int              status;
-    int              var_id;
+    int status;
+    int var_id;
 
     extern nc_struct netcdf;
 
@@ -136,8 +136,8 @@ get_nc_field_int(char   *nc_name,
                  size_t *count,
                  int    *var)
 {
-    int              status;
-    int              var_id;
+    int status;
+    int var_id;
 
     extern nc_struct netcdf;
 

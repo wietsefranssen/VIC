@@ -76,10 +76,10 @@ rout_run(void) {
 
         // Zero out current ring
         // in python: (from variables.py) self.ring[tracer][0, :] = 0.
-//        for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
-//            rout.ring[iOutlet] = 0.0;
-//        }
-        memset(rout.ring,0,rout.rout_param.nOutlets);
+        for (iOutlet = 0; iOutlet < rout.rout_param.nOutlets; iOutlet++) {
+            rout.ring[iOutlet] = 0.0;
+        }
+//        memset(rout.ring,0,rout.rout_param.nOutlets);
 
         // Equivalent to Fortran 90 cshift function, in python: (from variables.py) self.ring[tracer] = np.roll(self.ring[tracer], -1, axis=0)
         cshift(rout.ring, rout.rout_param.full_time_length,
