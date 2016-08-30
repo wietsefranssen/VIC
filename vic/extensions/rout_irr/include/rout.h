@@ -28,8 +28,11 @@
 #include <vic_driver_shared_image.h>
 
 typedef struct rout_cells {
-    //id (also for VIC)
+    //id used by VIC
     size_t id;
+    
+    //id for local domain
+    size_t local_id;
     
     //gridnumber on longitude axis
     size_t x;
@@ -65,6 +68,12 @@ typedef struct rout_structs {
     
     //2d array with cell pointers in a grid
     rout_cell ***gridded_cells;
+    
+    //char array storing the location of input files
+    char param_filename[MAXSTRING];
+    
+    //char array storing the location of debug files
+    char debug_path[MAXSTRING - 30];
 }rout_struct;
 
 //get data from parameter file
@@ -80,6 +89,8 @@ void rout_write(void);
 //cleaning up
 void rout_finalize(void); 
 
+//get location of input files from global paramater file
+void get_global_param_rout(FILE *gp);
 //set the x/y, lat/lon and (vic)id of a cell and put them in a grid
 void set_cell_location(void);
 //find and save upstream cells (needs direction map)
@@ -88,18 +99,20 @@ void set_upstream(char file_path[], char variable_name[]);
 void set_uh(char file_path[], char variable_name[]);
 //sort cells upstream to downstream
 void sort_cells(void);
+//set values for start of simulation
+void set_values(void);
 
 //debug file for id's and the grid
-void make_location_file(char file_path[]);
+void make_location_file(char file_path[], char file_name[]);
 //debug file for number of upstream cells
-void make_nr_upstream_file(char file_path[]);
+void make_nr_upstream_file(char file_path[], char file_name[]);
 //debug file for the sorted rank of cells
-void make_ranked_cells_file(char file_path[]);
+void make_ranked_cells_file(char file_path[], char file_name[]);
 //debug file for the unit-hydrograph of cells
-void make_uh_file(char file_path[]);
+void make_uh_file(char file_path[], char file_name[]);
 //debug file in netCDF with all data
-void make_debug_file(char file_path[]);
+void make_debug_file(char file_path[], char file_name[]);
 //debug file for the out_data struct
-void make_out_discharge_file(char file_path[]);
+void make_out_discharge_file(char file_path[], char file_name[]);
 #endif /* ROUT_H */
 

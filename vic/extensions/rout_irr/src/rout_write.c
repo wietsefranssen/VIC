@@ -8,5 +8,4 @@
 #include <rout.h>
 
 void rout_write(void){
-    log_info("In rout_write");
 }

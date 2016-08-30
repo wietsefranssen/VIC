@@ -10,25 +10,29 @@
 #include <netcdf.h>
 #include <rout.h>
 #include <math.h>
+#include <string.h>
 #define M_PI 3.14159265358979323846
 
 void rout_init(void){
+    extern rout_struct rout;
     
     set_cell_location();
-    make_location_file("./debug_output/location.txt");
+    make_location_file(rout.debug_path,"location.txt");
     
-    set_upstream("./input/VIC_Params/RVIC_input_NL.nc","flow_direction");
-    make_nr_upstream_file("./debug_output/nr_upstream.txt");
+    set_upstream(rout.param_filename,"flow_direction");
+    make_nr_upstream_file(rout.debug_path,"nr_upstream.txt");
     
-    set_uh("./input/VIC_Params/RVIC_input_NL.nc","flow_distance");
-    make_uh_file("./debug_output/uh.txt");
+    set_uh(rout.param_filename,"flow_distance");
+    make_uh_file(rout.debug_path,"uh.txt");
     
     sort_cells();
-    make_ranked_cells_file("./debug_output/ranked_cells.txt");
+    make_ranked_cells_file(rout.debug_path,"ranked_cells.txt");
+    
+    set_values();
     
     //only use on small domains since netCDF cannot hold size_t values!
     //----------------------------------------------------------------------
-    make_debug_file("./debug_output/debug.nc");
+    make_debug_file(rout.debug_path,"debug.nc");
 }
 
 //connects the cells to a location
@@ -36,23 +40,26 @@ void rout_init(void){
 void set_cell_location(){
     extern rout_struct rout;
     extern domain_struct global_domain;
-    extern domain_struct local_domain;
     extern global_param_struct global_param;
          
     size_t i;
+    size_t j=0;
     double min_lat=DBL_MAX;
     double min_lon=DBL_MAX;
-    for(i=0;i<global_domain.ncells_active;i++){
-            rout.cells[i].id=i;
-            rout.cells[i].location=&local_domain.locations[i];
-
-            if(rout.cells[i].location->latitude<min_lat){
-                min_lat=rout.cells[i].location->latitude;
-            }
-            if(rout.cells[i].location->longitude<min_lon){
-                min_lon=rout.cells[i].location->longitude;
-            }
-            //log_info("Cell %d location is (%f;%f)",i,rout.cells[i].location->longitude,rout.cells[i].location->latitude);
+    for(i=0;i<global_domain.ncells_total;i++){
+        if(global_domain.locations[i].run){
+            rout.cells[j].id=i;
+            rout.cells[j].local_id=j;
+            rout.cells[j].location=&global_domain.locations[i];
+            j++;
+        }
+        
+        if(global_domain.locations[i].latitude<min_lat){
+            min_lat=global_domain.locations[i].latitude;
+        }
+        if(global_domain.locations[i].longitude<min_lon){
+            min_lon=global_domain.locations[i].longitude;
+        }
     }
     
     for(i=0;i<global_domain.ncells_active;i++){
@@ -84,9 +91,13 @@ void set_upstream(char file_path[], char variable_name[]){
     for(i=0;i<global_domain.ncells_total;i++){
         size_t x=(size_t)i%global_domain.n_nx;
         size_t y=(size_t)i/global_domain.n_nx;
-        if(direction[i]!=-1){
+        
+        if(rout.gridded_cells[x][y]!=NULL){
             int j;
-            if(direction[i]==1){
+            
+            if(direction[i]==-1){
+                log_warn("direction of cell (id %zu local_id %zu) is missing, check direction file",rout.gridded_cells[x][y]->id,rout.gridded_cells[x][y]->local_id);
+            }else if(direction[i]==1){
                 if(y+1<global_domain.n_ny && rout.gridded_cells[x][y+1]!=NULL){
                     for(j=0;j<8;j++){
                         if(rout.gridded_cells[x][y+1]->upstream[j]==NULL){
@@ -200,7 +211,7 @@ void sort_cells(void){
             if(sorted_map[i]==0){
                 int count=0;
                 for(j=0;j<rout.cells[i].nr_upstream;j++){
-                    if(sorted_map[rout.cells[i].upstream[j]->id]==0){
+                    if(sorted_map[rout.cells[i].upstream[j]->local_id]==0){
                         count++;
                     }
                 }
@@ -214,7 +225,7 @@ void sort_cells(void){
         }
         
         for(i=0;i<rank;i++){
-            sorted_map[rout.sorted_cells[i]->id]=1;
+            sorted_map[rout.sorted_cells[i]->local_id]=1;
         }
         
         if(rank == global_domain.ncells_active){
@@ -251,6 +262,7 @@ void set_uh(char file_path[], char variable_name[]){
     }
     double uh_sum;
     
+    //FIXME: make the following values adjustable (and understandable)
     const double overland_flow_velocity=1;
     const double overland_flow_diffusivity=2000;
     
@@ -262,13 +274,17 @@ void set_uh(char file_path[], char variable_name[]){
     size_t i;
     size_t j=0;
     for(i=0;i<global_domain.ncells_total;i++){
-        if(distance_total[i]!=-1){
+        size_t x=(size_t)i%global_domain.n_nx;
+        size_t y=(size_t)i/global_domain.n_nx;
+        
+        if(rout.gridded_cells[x][y]!=NULL){
             distance[j]=distance_total[i];
+            if(distance[j]==-1){
+                log_warn("distance of cell id %zu local_id %zu is missing, check distance file",rout.gridded_cells[x][y]->id,rout.gridded_cells[x][y]->local_id);
+            }
             j++;
         }
     }
-    
-    free(distance_total);
     
     for (i=0;i<global_domain.ncells_active;i++){
         if(distance[i]!=-1){
@@ -307,12 +323,27 @@ void set_uh(char file_path[], char variable_name[]){
         }
     }
     
-    free(uh_precise);
-    free(uh_cumulative);
+    free(distance_total);
     free(distance);
+    free(uh_cumulative);
+    free(uh_precise);
 }
 
-void make_debug_file(char file_path[]){
+void set_values(){
+    extern domain_struct global_domain;
+    extern global_param_struct global_param;
+    extern rout_struct rout;
+    
+    size_t i;
+    size_t j;
+    for(i=0;i<global_domain.ncells_active;i++){
+        for(j=0;j<UH_MAX_DAYS * global_param.model_steps_per_day;j++){
+            rout.cells[i].outflow[j]=0.0;
+        }
+    }
+}
+
+void make_debug_file(char file_path[], char file_name[]){
     extern rout_struct rout;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
@@ -359,7 +390,18 @@ void make_debug_file(char file_path[]){
     int nc_status, nc_id, nc_nr_upstream_varid,nc_rank_varid,nc_vic_id_varid,nc_uh_varid,x_dimid,y_dimid,uh_dimid;
     int dimids[3];
     
-    if((nc_status = nc_create(file_path, NC_CLOBBER, &nc_id))){
+    size_t path_length = strlen(file_path);
+    size_t file_length = strlen(file_name);
+    if(path_length+file_length >= MAXSTRING-1){
+        log_info("Debug file path and name (%zu + %zu) is too large for buffer (%d)",path_length,file_length,MAXSTRING);
+        return;
+    }
+    
+    char full_path [MAXSTRING];
+    strcpy(full_path, file_path);
+    strcat(full_path, file_name);
+    
+    if((nc_status = nc_create(full_path, NC_CLOBBER, &nc_id))){
         log_err("Unable to create .nc file");
     }
     if((nc_status = nc_def_dim(nc_id, "x_axis", global_domain.n_nx, &x_dimid))){
@@ -415,13 +457,23 @@ void make_debug_file(char file_path[]){
 }
 
 //create ascii file with id's in a grid
-void make_location_file(char file_path[]){
+void make_location_file(char file_path[], char file_name[]){
     extern rout_struct rout;
     extern domain_struct global_domain;
     
-    FILE *file;
+    size_t path_length = strlen(file_path);
+    size_t file_length = strlen(file_name);
+    if(path_length+file_length >= MAXSTRING-1){
+        log_info("Debug file path and name (%zu + %zu) is too large for buffer (%d)",path_length,file_length,MAXSTRING);
+        return;
+    }
     
-    if((file = fopen(file_path, "w"))!=NULL){
+    FILE *file;
+    char full_path [MAXSTRING];
+    strcpy(full_path, file_path);
+    strcat(full_path, file_name);
+    
+    if((file = fopen(full_path, "w"))!=NULL){
         size_t x;
         size_t y;
         for(y=global_domain.n_ny;y>0;y--){
@@ -429,14 +481,16 @@ void make_location_file(char file_path[]){
                 if(rout.gridded_cells[x][y-1]!=NULL){
                     fprintf(file,"%zu",rout.gridded_cells[x][y-1]->id);
                     if(rout.gridded_cells[x][y-1]->id < 10){
-                        fprintf(file,"  ;");
+                        fprintf(file,"   ;");
                     }else if(rout.gridded_cells[x][y-1]->id < 100){
+                        fprintf(file,"  ;");
+                    }else if(rout.gridded_cells[x][y-1]->id < 1000){
                         fprintf(file," ;");
                     }else{
                         fprintf(file,";");
                     }
                 }else{
-                    fprintf(file,"   ;");                    
+                    fprintf(file,"    ;");                    
                 }
             }
             fprintf(file,"\n");
@@ -446,13 +500,23 @@ void make_location_file(char file_path[]){
 }
 
 //create ascii file with the number of upstream cells in a grid
-void make_nr_upstream_file(char file_path[]){
+void make_nr_upstream_file(char file_path[], char file_name[]){
     extern rout_struct rout;
     extern domain_struct global_domain;
     
-    FILE *file;
+    size_t path_length = strlen(file_path);
+    size_t file_length = strlen(file_name);
+    if(path_length+file_length >= MAXSTRING-1){
+        log_info("Debug file path and name (%zu + %zu) is too large for buffer (%d)",path_length,file_length,MAXSTRING);
+        return;
+    }
     
-    if((file = fopen(file_path, "w"))!=NULL){
+    FILE *file;
+    char full_path [MAXSTRING];
+    strcpy(full_path, file_path);
+    strcat(full_path, file_name);
+    
+    if((file = fopen(full_path, "w"))!=NULL){
         size_t x;
         size_t y;
         for(y=global_domain.n_ny;y>0;y--){
@@ -470,13 +534,23 @@ void make_nr_upstream_file(char file_path[]){
 }
 
 //create ascii file with the cell rankings in a grid
-void make_ranked_cells_file(char file_path[]){
+void make_ranked_cells_file(char file_path[], char file_name[]){
     extern rout_struct rout;
     extern domain_struct global_domain;
     
-    FILE *file;
+    size_t path_length = strlen(file_path);
+    size_t file_length = strlen(file_name);
+    if(path_length+file_length >= MAXSTRING-1){
+        log_info("Debug file path and name (%zu + %zu) is too large for buffer (%d)",path_length,file_length,MAXSTRING);
+        return;
+    }
     
-    if((file = fopen(file_path, "w"))!=NULL){
+    FILE *file;
+    char full_path [MAXSTRING];
+    strcpy(full_path, file_path);
+    strcat(full_path, file_name);
+    
+    if((file = fopen(full_path, "w"))!=NULL){
         size_t x;
         size_t y;
         for(y=global_domain.n_ny;y>0;y--){
@@ -500,15 +574,25 @@ void make_ranked_cells_file(char file_path[]){
     }
 }
 
-void make_uh_file(char file_path[]){
+void make_uh_file(char file_path[], char file_name[]){
     extern rout_struct rout;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
     
-    FILE *file;
-    double sum=0.0;
+    size_t path_length = strlen(file_path);
+    size_t file_length = strlen(file_name);
+    if(path_length+file_length >= MAXSTRING-1){
+        log_info("Debug file path and name (%zu + %zu) is too large for buffer (%d)",path_length,file_length,MAXSTRING);
+        return;
+    }
     
-    if((file = fopen(file_path, "w"))!=NULL){
+    double sum=0.0;
+    FILE *file;
+    char full_path [MAXSTRING];
+    strcpy(full_path, file_path);
+    strcat(full_path, file_name);
+    
+    if((file = fopen(full_path, "w"))!=NULL){
         size_t i;
         size_t j;
         for(i=0;i<global_domain.ncells_active;i++){

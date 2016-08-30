@@ -55,6 +55,7 @@ vic_init_output(dmy_struct *dmy_current)
     size_t                    streamnum;
     size_t                    nstream_vars[MAX_OUTPUT_STREAMS];
     bool                      default_outputs = false;
+    timer_struct              timer;
 
     // initialize the output data structures
     set_output_met_data_info();

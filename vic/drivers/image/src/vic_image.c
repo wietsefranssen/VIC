@@ -117,7 +117,7 @@ main(int    argc,
 
     // initialize model parameters from parameter files
     vic_image_init();
-
+    
     // allocate memory for routing
     rout_alloc();   // Routing routine (extension)
 
@@ -129,7 +129,7 @@ main(int    argc,
 
     // initialize output structures
     vic_init_output(&(dmy[0]));
-
+    
     // Initialization is complete, print settings
     log_info(
         "Initialization is complete, print global param and options structures");
