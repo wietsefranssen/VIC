@@ -129,8 +129,8 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DISCHARGE].long_name, "river_discharge");
     strcpy(out_metadata[OUT_DISCHARGE].standard_name, "river_discharge");
     strcpy(out_metadata[OUT_DISCHARGE].units, "m3 s-1");
-    strcpy(out_metadata[OUT_DISCHARGE].description,  "river discharge");
-    
+    strcpy(out_metadata[OUT_DISCHARGE].description, "river discharge");
+
     /* volumetric liquid water equivalent of snow on top of lake ice [m3] */
     strcpy(out_metadata[OUT_LAKE_SWE_V].varname, "OUT_LAKE_SWE_V");
     strcpy(out_metadata[OUT_LAKE_SWE_V].long_name, "lake_swe_v");
@@ -1466,6 +1466,23 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_SWE_BAND].description,
            out_metadata[OUT_SWE].description);
 
+    /* Wall time spent inside vic_run [seconds] */
+    strcpy(out_metadata[OUT_TIME_VICRUN_WALL].varname, "OUT_TIME_VICRUN_WALL");
+    strcpy(out_metadata[OUT_TIME_VICRUN_WALL].long_name, "time_vicrun_wall");
+    strcpy(out_metadata[OUT_TIME_VICRUN_WALL].standard_name,
+           "vic_run_wall_time");
+    strcpy(out_metadata[OUT_TIME_VICRUN_WALL].units, "seconds");
+    strcpy(out_metadata[OUT_TIME_VICRUN_WALL].description,
+           "Wall time spent inside vic_run");
+
+    /* CPU time spent inside vic_run [seconds] */
+    strcpy(out_metadata[OUT_TIME_VICRUN_CPU].varname, "OUT_TIME_VICRUN_CPU");
+    strcpy(out_metadata[OUT_TIME_VICRUN_CPU].long_name, "time_vicrun_cpu");
+    strcpy(out_metadata[OUT_TIME_VICRUN_CPU].standard_name, "vic_run_cpu_time");
+    strcpy(out_metadata[OUT_TIME_VICRUN_CPU].units, "seconds");
+    strcpy(out_metadata[OUT_TIME_VICRUN_CPU].description,
+           "CPU time spent inside vic_run");
+
     if (options.FROZEN_SOIL) {
         out_metadata[OUT_FDEPTH].nelem = MAX_FRONTS;
         out_metadata[OUT_TDEPTH].nelem = MAX_FRONTS;
@@ -1475,6 +1492,8 @@ set_output_met_data_info()
     out_metadata[OUT_SMFROZFRAC].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_ICE].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_LIQ].nelem = options.Nlayer;
+    out_metadata[OUT_SOIL_ICE_FRAC].nelem = options.Nlayer;
+    out_metadata[OUT_SOIL_LIQ_FRAC].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_MOIST].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_TEMP].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_TNODE].nelem = options.Nnode;
