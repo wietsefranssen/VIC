@@ -17,22 +17,22 @@ void rout_init(void){
     extern rout_struct rout;
     
     set_cell_location();
-    make_location_file(rout.debug_path,"location.txt");
+    //make_location_file(rout.debug_path,"location.txt");
     
     set_upstream(rout.param_filename,"flow_direction");
-    make_nr_upstream_file(rout.debug_path,"nr_upstream.txt");
+    //make_nr_upstream_file(rout.debug_path,"nr_upstream.txt");
     
     set_uh(rout.param_filename,"flow_distance");
-    make_uh_file(rout.debug_path,"uh.txt");
+    //make_uh_file(rout.debug_path,"uh.txt");
     
     sort_cells();
-    make_ranked_cells_file(rout.debug_path,"ranked_cells.txt");
+    //make_ranked_cells_file(rout.debug_path,"ranked_cells.txt");
     
     set_values();
     
     //only use on small domains since netCDF cannot hold size_t values!
     //----------------------------------------------------------------------
-    make_debug_file(rout.debug_path,"debug.nc");
+    //make_debug_file(rout.debug_path,"debug.nc");
 }
 
 //connects the cells to a location

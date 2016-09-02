@@ -13,7 +13,6 @@ void
 rout_start(void)
 {
     extern global_param_struct global_param;
-    extern rout_struct rout;
     
     global_param.resolution=VIC_RESOLUTION;
     

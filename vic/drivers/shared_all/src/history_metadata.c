@@ -130,6 +130,20 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DISCHARGE].standard_name, "river_discharge");
     strcpy(out_metadata[OUT_DISCHARGE].units, "m3 s-1");
     strcpy(out_metadata[OUT_DISCHARGE].description, "river discharge");
+    
+    /* irrigation [m3] */
+    strcpy(out_metadata[OUT_IRR].varname, "OUT_IRR");
+    strcpy(out_metadata[OUT_IRR].long_name, "irrigation_water");
+    strcpy(out_metadata[OUT_IRR].standard_name, "irrigation_water");
+    strcpy(out_metadata[OUT_IRR].units, "m3");
+    strcpy(out_metadata[OUT_IRR].description, "irrigation_water");
+    
+    /* irrigation demand [m3 s-1] */
+    strcpy(out_metadata[OUT_IRR_DEMAND].varname, "OUT_IRR_DEMAND");
+    strcpy(out_metadata[OUT_IRR_DEMAND].long_name, "irrigation_water_demand");
+    strcpy(out_metadata[OUT_IRR_DEMAND].standard_name, "irrigation_water_demand");
+    strcpy(out_metadata[OUT_IRR_DEMAND].units, "m3");
+    strcpy(out_metadata[OUT_IRR_DEMAND].description, "irrigation_water_demand");
 
     /* volumetric liquid water equivalent of snow on top of lake ice [m3] */
     strcpy(out_metadata[OUT_LAKE_SWE_V].varname, "OUT_LAKE_SWE_V");
