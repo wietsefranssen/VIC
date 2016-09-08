@@ -38,121 +38,103 @@ void rout_run(){
         *(current_cell->outflow + t) = 0.0;
         
         //determine runoff and inflow
-        runoff = (out_data[current_cell->local_id][OUT_RUNOFF][0]+out_data[current_cell->local_id][OUT_BASEFLOW][0]) 
-                * rout.cells[current_cell->local_id].location->area / (MM_PER_M * global_param.dt);
+        runoff = (out_data[current_cell->id][OUT_RUNOFF][0]+out_data[current_cell->id][OUT_BASEFLOW][0]) 
+                * current_cell->location->area / MM_PER_M / global_param.dt;
 
         inflow=0.0;        
-        int c;
+        size_t c;
         for(c=0;c<current_cell->nr_upstream;c++){
             inflow += current_cell->upstream[c]->outflow[0];
         }
         
-        //################local irrigation####################################
-        //FIXME: make this dynamic, probably should be in options       
-        size_t irrig_veg_class_size = 3;
+        
+        //################ irrigation section ####################################
+                
         size_t i;
-        int irrig_veg_class[3] = {1,2,3};
-        
-        double available_water = inflow * global_param.dt; //m^3
-        
-        double *irrigation_demand;
-        if((irrigation_demand = malloc(irrig_veg_class_size * sizeof(*irrigation_demand)))==NULL){
-            log_err("Memory allocation for irrigation_demand failed!");
-        }
-        
-        double irrigation_demand_sum = 0.0;
-        
-        double **moisture_content;
-        if((moisture_content = malloc(irrig_veg_class_size * sizeof(*moisture_content)))!=NULL){
-            for(i=0;i<irrig_veg_class_size;i++){
-                if((moisture_content[i] = malloc(options.SNOW_BAND * sizeof(*moisture_content[i])))==NULL){
-                    log_err("Memory allocation for moisture_content failed!");
-                }
-            }
-        }else{
-            log_err("Memory allocation for *moisture_content failed!");
-        }
-        
-        double *moisture_sum;
-        if((moisture_sum = malloc(irrig_veg_class_size * sizeof(*moisture_sum)))==NULL){
-            log_err("Memory allocation for moisture_sum failed!");
-        }
-        
-        double field_capacity;
-        double irrigation_point;
-        
-        out_data[current_cell->local_id][OUT_IRR][0] = 0.0;
-        out_data[current_cell->local_id][OUT_IRR_DEMAND][0]=0.0;
-        
+        size_t j;
         size_t iVeg;
-        for(i=0;i<irrig_veg_class_size;i++){
-            iVeg = irrig_veg_class[i];
-            
-            if(iVeg<veg_con[current_cell->local_id][0].vegetat_type_num){
-                double current_area = veg_con[current_cell->local_id][iVeg].Cv * current_cell->location->area;
-                
-                irrigation_point = soil_con[current_cell->local_id].Wcr[0] * current_area / MM_PER_M; //m^3
-                field_capacity = soil_con[current_cell->local_id].max_moist[0] * current_area / MM_PER_M; //m^3
-                
-                moisture_sum[i] = 0.0;
-                
-                size_t j;
-                for(j=0;j<options.SNOW_BAND;j++){
-                    moisture_content[i][j] = all_vars[current_cell->local_id].cell[iVeg][j].layer[0].moist * current_area / MM_PER_M; //m^3
-                    moisture_sum[i] += moisture_content[i][j];
-                }
-                
-                if(moisture_sum[i] < irrigation_point){
-                    irrigation_demand[i] = field_capacity - moisture_sum[i]; //m^3
-                    irrigation_demand_sum += irrigation_demand[i];
-                }else{
-                    irrigation_demand[i] = 0.0;
-                }
-                
-                out_data[current_cell->local_id][OUT_IRR_DEMAND][0] +=irrigation_demand[i];
-            }
-        }
         
-        for(i=0;i<irrig_veg_class_size;i++){
-            iVeg = irrig_veg_class[i];
+        out_data[current_cell->id][OUT_IRR][0]=0;
+        
+        for(i=0;i<=veg_con[current_cell->id][0].vegetat_type_num;i++){
+            iVeg = veg_con[current_cell->id][i].veg_class;
             
-            if(iVeg<veg_con[current_cell->local_id][0].vegetat_type_num){
-                double current_area = veg_con[current_cell->local_id][iVeg].Cv * current_cell->location->area;                
+            if(iVeg==VEG_IRR_CLASS){
                 
-                double added_water = 0.0;
-                //double orig_irrigation_demand = irrigation_demand[i];
-
-                if(irrigation_demand[i]>0){
-                    if(available_water * (irrigation_demand[i] / irrigation_demand_sum) > irrigation_demand[i]){
-                        //get irrigation water from local inflow
-
-                        added_water += irrigation_demand[i];
-                        irrigation_demand[i] = 0.0;
+                //allocate and instantiate variables
+                double moisture_ice_mm = 0.0;
+                double moisture_content;
+                
+                double irrigation_demand;
+                double available_river_water = inflow * global_param.dt / current_cell->location->area * MM_PER_M; //mm
+                double available_runoff_water = runoff * global_param.dt / current_cell->location->area * MM_PER_M; //mm
+        
+                double added_river_water = 0.0;
+                double added_runoff_water = 0.0;
+                               
+                //calculate the soil moisture content
+                for(j=0;j<options.SNOW_BAND;j++){
+                    moisture_content =  all_vars[current_cell->id].cell[i][j].layer[0].moist * soil_con[current_cell->id].AreaFract[j]; //mm
+                    
+                    size_t frost_area;
+                    for (frost_area = 0; frost_area < options.Nfrost; frost_area++) {
+                        moisture_ice_mm += all_vars[current_cell->id].cell[i][j].layer[0].ice[frost_area] * soil_con[current_cell->id].AreaFract[j] * soil_con[current_cell->id].frost_fract[frost_area];
+                    }
+                    moisture_content -= moisture_ice_mm;
+                }
+                
+                //calculate the irrigation demand
+                if(moisture_content < soil_con[current_cell->id].Wcr[0]){
+                    irrigation_demand = (soil_con[current_cell->id].Wcr[0] / 0.7) - moisture_content; //mm
+                }else{
+                    irrigation_demand = 0.0;
+                }
+                
+                out_data[current_cell->id][OUT_IRR_DEMAND][0] = irrigation_demand;
+                
+                //get the water demand from runoff
+                if(irrigation_demand>0.0){
+                    if(available_runoff_water > irrigation_demand * veg_con[current_cell->id][i].Cv){
+                        added_runoff_water = irrigation_demand;
+                        irrigation_demand = 0.0;
+                    }else{
+                        added_runoff_water = available_runoff_water / veg_con[current_cell->id][i].Cv;
+                        irrigation_demand -= added_runoff_water;
+                    }
+                }
+                
+                //get the water demand from local river-flow
+                if(irrigation_demand>0.0){
+                    if(available_river_water > irrigation_demand * veg_con[current_cell->id][i].Cv){
+                        added_river_water = irrigation_demand * veg_con[current_cell->id][i].Cv;
+                        irrigation_demand = 0.0;
 
                     }else{
-                        //reduce local inflow_m2
-
-                        added_water += available_water * (irrigation_demand[i] / irrigation_demand_sum);
-                        irrigation_demand[i] -= added_water;
+                        added_river_water = available_river_water / veg_con[current_cell->id][i].Cv;
+                        irrigation_demand -= added_river_water;
 
                     }
                 }
                 
-                out_data[current_cell->local_id][OUT_IRR][0] += added_water;
+                //FIXME: get the water demand from reservoirs
                 
-                double new_moisture_sum = 0.0;
-                size_t j;
+                //write away data and reduce inflow
                 for(j=0;j<options.SNOW_BAND;j++){
-                   all_vars[current_cell->local_id].cell[iVeg][j].layer[0].moist += ((moisture_content[i][j]/moisture_sum[i]) * added_water) / current_area * MM_PER_M; //mm
-                   new_moisture_sum +=  all_vars[current_cell->local_id].cell[iVeg][j].layer[0].moist;
+                   all_vars[current_cell->id].cell[i][j].layer[0].moist = moisture_content + added_river_water + added_runoff_water; //mm
                 }
                 
-                inflow-=added_water;
+                inflow -= (added_river_water * current_cell->location->area * veg_con[current_cell->id][i].Cv / global_param.dt / MM_PER_M);
+                runoff -= (added_runoff_water * current_cell->location->area * veg_con[current_cell->id][i].Cv / global_param.dt / MM_PER_M);
+                
+                out_data[current_cell->id][OUT_IRR][0] = added_river_water + added_runoff_water;
+                
+                break;
             }
         }
         
         //################################################################
-
+        
+        
         //convolute runoff and inflow to future
         current_cell->outflow[0] += runoff;
         if(inflow > 0){
@@ -165,6 +147,6 @@ void rout_run(){
     size_t i;
     for(i=0;i<global_domain.ncells_active;i++){
         //write data
-        out_data[rout.cells[i].local_id][OUT_DISCHARGE][0] += rout.cells[i].outflow[0];
+        out_data[rout.cells[i].id][OUT_DISCHARGE][0] += rout.cells[i].outflow[0];
     }
 }
