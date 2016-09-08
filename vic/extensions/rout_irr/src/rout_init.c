@@ -17,22 +17,22 @@ void rout_init(void){
     extern rout_struct rout;
     
     set_cell_location();
-    make_location_file(rout.debug_path,"location.txt");
+    //make_location_file(rout.debug_path,"location.txt");
     
     set_upstream(rout.param_filename,"flow_direction");
-    make_nr_upstream_file(rout.debug_path,"nr_upstream.txt");
+    //make_nr_upstream_file(rout.debug_path,"nr_upstream.txt");
     
     set_uh(rout.param_filename,"flow_distance");
-    make_uh_file(rout.debug_path,"uh.txt");
+    //make_uh_file(rout.debug_path,"uh.txt");
     
     sort_cells();
-    make_ranked_cells_file(rout.debug_path,"ranked_cells.txt");
+    //make_ranked_cells_file(rout.debug_path,"ranked_cells.txt");
     
     set_values();
     
     //only use on small domains since netCDF cannot hold size_t values!
     //----------------------------------------------------------------------
-    make_debug_file(rout.debug_path,"debug.nc");
+    //make_debug_file(rout.debug_path,"debug.nc");
 }
 
 //connects the cells to a location
@@ -48,8 +48,8 @@ void set_cell_location(){
     double min_lon=DBL_MAX;
     for(i=0;i<global_domain.ncells_total;i++){
         if(global_domain.locations[i].run){
-            rout.cells[j].id=i;
-            rout.cells[j].local_id=j;
+            rout.cells[j].global_domain_id=i;
+            rout.cells[j].id=j;
             rout.cells[j].location=&global_domain.locations[i];
             j++;
         }
@@ -96,7 +96,7 @@ void set_upstream(char file_path[], char variable_name[]){
             int j;
             
             if(direction[i]==-1){
-                log_warn("direction of cell (id %zu local_id %zu) is missing, check direction file",rout.gridded_cells[x][y]->id,rout.gridded_cells[x][y]->local_id);
+                log_warn("direction of cell (id %zu local_id %zu) is missing, check direction file",rout.gridded_cells[x][y]->global_domain_id,rout.gridded_cells[x][y]->id);
             }else if(direction[i]==1){
                 if(y+1<global_domain.n_ny && rout.gridded_cells[x][y+1]!=NULL){
                     for(j=0;j<8;j++){
@@ -205,13 +205,13 @@ void sort_cells(void){
     
     
     size_t rank=0;
-    int j;
+    size_t j;
     while(1){
         for(i=0;i<global_domain.ncells_active;i++){
             if(sorted_map[i]==0){
                 int count=0;
                 for(j=0;j<rout.cells[i].nr_upstream;j++){
-                    if(sorted_map[rout.cells[i].upstream[j]->local_id]==0){
+                    if(sorted_map[rout.cells[i].upstream[j]->id]==0){
                         count++;
                     }
                 }
@@ -225,7 +225,7 @@ void sort_cells(void){
         }
         
         for(i=0;i<rank;i++){
-            sorted_map[rout.sorted_cells[i]->local_id]=1;
+            sorted_map[rout.sorted_cells[i]->id]=1;
         }
         
         if(rank == global_domain.ncells_active){
@@ -280,7 +280,7 @@ void set_uh(char file_path[], char variable_name[]){
         if(rout.gridded_cells[x][y]!=NULL){
             distance[j]=distance_total[i];
             if(distance[j]==-1){
-                log_warn("distance of cell id %zu local_id %zu is missing, check distance file",rout.gridded_cells[x][y]->id,rout.gridded_cells[x][y]->local_id);
+                log_warn("distance of cell id %zu local_id %zu is missing, check distance file",rout.gridded_cells[x][y]->global_domain_id,rout.gridded_cells[x][y]->id);
             }
             j++;
         }
@@ -522,7 +522,7 @@ void make_nr_upstream_file(char file_path[], char file_name[]){
         for(y=global_domain.n_ny;y>0;y--){
             for(x=0;x<global_domain.n_nx;x++){
                 if(rout.gridded_cells[x][y-1]!=NULL){
-                    fprintf(file,"%d;",rout.gridded_cells[x][y-1]->nr_upstream);
+                    fprintf(file,"%zu;",rout.gridded_cells[x][y-1]->nr_upstream);
                 }else{
                     fprintf(file," ;");                    
                 }

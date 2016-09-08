@@ -19,61 +19,78 @@
 #define VIC_RESOLUTION 0.5;
 
 //accuracy of the final unit hydrograph is determined by the
-//number of interpolation steps, increases simulation time linearly
+//number of interpolation steps, increases simulation time 
+//of unit hydrographs linearly
 #define UH_STEPS_PER_TIMESTEP 20
 
 //maximum number of days the unit hydrograph is allowed to discharge
 #define UH_MAX_DAYS 2
 
+//vegetation class that can be irrigated, currently only 1 class
+//can be irrigated which is the "cropland" class
+#define VEG_IRR_CLASS 11
+
 #include <vic_driver_shared_image.h>
 
 typedef struct rout_cells {
+    //id for the global_domain
+    size_t global_domain_id;
     //id used by VIC
     size_t id;
-    
-    //id for local domain
-    size_t local_id;
-    
     //gridnumber on longitude axis
     size_t x;
-    
     //gridnumber on latitude axis
     size_t y;
-    
     //rank in sorting of cell
     size_t rank;
-    
-    //pointer to struct holding location information (lat/lon)
+    //pointer to struct holding location information
     location_struct *location;
-    
+    //pointer to struct holding reservoir information
+    //reservoir_unit * reservoir;
+    //1d array of pointers to reservoirs servicing this cell
+    //reservoir_unit ** servicing_reservoir;
     //number of upstream cells
-    int nr_upstream;
-    
+    size_t nr_upstream;
+    //1d array with pointers to upstream cells
+    struct rout_cells **upstream; 
     //1d array with uh-values
-    double *uh;
-    
+    double *uh;    
     //1d array with outflow values
     double *outflow;
-    
-    //1d array with pointers to upstream cells
-    struct rout_cells **upstream;    
 }rout_cell;
+
+typedef struct reservoir_units{
+    //pointer to struct holding cell information
+    rout_cell *cell;
+    //volume of the reservoir
+    double storage_capacity;
+    //current volume of the reservoir;
+    double current_storage_capacity;
+    //number of serviced cells
+    size_t nr_serviced_cells;
+    //1d array with cell pointers of serviced cells
+    rout_cell **serviced_cells;
+    //year of dam activation
+    size_t activation_year;        
+}reservoir_unit;
 
 typedef struct rout_structs {
     //1d array with active cells
     rout_cell *cells;
-    
+    //number of reservoirs
+    size_t nr_reservoirs;
+    //1d array with active reservoirs
+    reservoir_unit *reservoirs;
     //1d array with cell pointers sorted upstream to downstream
     rout_cell **sorted_cells;
-    
     //2d array with cell pointers in a grid
     rout_cell ***gridded_cells;
-    
     //char array storing the location of input files
     char param_filename[MAXSTRING];
-    
     //char array storing the location of debug files
     char debug_path[MAXSTRING - 30];
+    //char array storing the location of reservoir input files
+    char reservoir_filename[MAXSTRING];
 }rout_struct;
 
 //get data from parameter file
