@@ -19,7 +19,7 @@ rout_start(void)
     extern filenames_struct filenames;
     extern filep_struct     filep;
     extern int              mpi_rank;
-
+        
     if (mpi_rank == VIC_MPI_ROOT) {
         // read global settings
         filep.globalparam = open_file(filenames.global, "r");
@@ -54,6 +54,9 @@ get_global_param_rout(FILE *gp)
             if (strcasecmp("ROUT_PARAM", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", rout.param_filename);
             } 
+            if (strcasecmp("ROUT_RESERVOIR", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", rout.reservoir_filename);
+            }
             if (strcasecmp("ROUT_DEBUG_PARAM", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", rout.debug_path);
                 break;

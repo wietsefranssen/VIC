@@ -19,7 +19,7 @@ void rout_alloc(void){
     if((rout.cells = malloc(global_domain.ncells_active * sizeof(*rout.cells)))==NULL){
         log_err("Memory allocation for rout.cells failed!");
     }
-        
+    
     if((rout.sorted_cells = malloc(global_domain.ncells_active * sizeof(*rout.sorted_cells)))!=NULL){
         size_t i;
         for(i=0;i<global_domain.ncells_active;i++){
@@ -49,22 +49,15 @@ void rout_alloc(void){
     for(i=0;i<global_domain.ncells_active;i++){
         
         rout.cells[i].location=NULL;
-        
+        rout.cells[i].reservoir=NULL;
+        rout.cells[i].downstream=NULL;
+                
         if((rout.cells[i].outflow = malloc(UH_MAX_DAYS * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow)))==NULL){
             log_err("Memory allocation for rout.cells[i].outflow failed!");
         }
 
         if((rout.cells[i].uh = malloc(UH_MAX_DAYS * global_param.model_steps_per_day * sizeof(*rout.cells[i].uh)))==NULL){
             log_err("Memory allocation for rout.cells[i].uh failed!");
-        }
-        
-        if((rout.cells[i].upstream = malloc(8 * sizeof(*rout.cells[i].upstream)))!=NULL){
-            int j;
-            for(j=0;j< 8 ;j++){
-                rout.cells[i].upstream[j]=NULL;
-            }
-        }else{
-            log_err("Memory allocation for rout.cells[i].upstream failed!");
         }
     }
 }
