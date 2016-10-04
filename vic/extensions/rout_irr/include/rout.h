@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /* 
  * File:   rout.h
  * Author: bram
@@ -14,84 +8,114 @@
 #ifndef ROUT_H
 #define ROUT_H
 
-//currently the resolution of vic is somehow not stored in
-//global_params, therefore a constant
-#define VIC_RESOLUTION 0.5;
+#define VIC_RESOLUTION 0.5;                 /**< scalar - VIC resolution (currently not saved) */
 
-//accuracy of the final unit hydrograph is determined by the
-//number of interpolation steps, increases simulation time 
-//of unit hydrographs linearly
-#define UH_STEPS_PER_TIMESTEP 20
+#define MAX_DAYS_UH 2                       /**< scalar - default maximum number of days an UH is allowed to discharge */
+#define FLOW_VELOCITY_UH 1.5                /**< scalar - default flow velocity for UH calculation */
+#define FLOW_DIFFUSIVITY_UH 800.0             /**< scalar - default flow diffusivity for UH calculation */
+#define MAX_DISTANCE_IRR 5.0                  /**< scalar - default maximum distance from the reservoir cells can recieve service */
 
-//maximum number of days the unit hydrograph is allowed to discharge
-#define UH_MAX_DAYS 2
+#define UH_STEPS_PER_TIMESTEP 20            /**< scalar - number of steps taken per timestep for precise UH calculation */
 
-//vegetation class that can be irrigated, currently only 1 class
-//can be irrigated which is the "cropland" class
-#define VEG_IRR_CLASS 11
+#define VEG_IRR_CLASS 10                    /**< scalar - vegetation class defined as irrigatable */
+
+#define MAX_NR_RESERVOIRS 50                /**< scalar - maximum number of reservoirs included in simulation */
+#define CELL_MAX_SERVICE 5                  /**< scalar - maximum reservoirs that can service a cell */
+#define RES_MAX_SERVICE 100                 /**< scalar - maximum cells that can get service from a reservoir */
+
+#define RES_IRR_FUNCTION 1                  /**< scalar - value for the irrigation function of a reservoir */
+#define RES_HYD_FUNCTION 2                  /**< scalar - value for the hydropower function of a reservoir */
+#define RES_CON_FUNCTION 3                  /**< scalar - value for the flow control function of a reservoir */
+
+#define PERC_ENV_INFLOW 0.1                 /**< scalar - percentage of mean inflow that will be environmental flow (Biemans et al., 2012) */
+#define RES_PREF_STORAGE 0.85               /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2008) */
+#define RES_CALC_YEARS_MEAN 5               /**< scalar - number of years that reservoirs will use to calculate mean inflow and demand values */
 
 #include <vic_driver_shared_image.h>
 
-typedef struct rout_cells {
-    //id for the global_domain
-    size_t global_domain_id;
-    //id used by VIC
-    size_t id;
-    //gridnumber on longitude axis
-    size_t x;
-    //gridnumber on latitude axis
-    size_t y;
-    //rank in sorting of cell
-    size_t rank;
-    //pointer to struct holding location information
-    location_struct *location;
-    //pointer to struct holding reservoir information
-    //reservoir_unit * reservoir;
-    //1d array of pointers to reservoirs servicing this cell
-    //reservoir_unit ** servicing_reservoir;
-    //number of upstream cells
-    size_t nr_upstream;
-    //1d array with pointers to upstream cells
-    struct rout_cells **upstream; 
-    //1d array with uh-values
-    double *uh;    
-    //1d array with outflow values
-    double *outflow;
-}rout_cell;
+typedef struct reservoir_units reservoir_unit;
+typedef struct rout_cells rout_cell;
+typedef struct rout_structs rout_struct;
+typedef struct rout_options rout_options_struct;
 
-typedef struct reservoir_units{
-    //pointer to struct holding cell information
-    rout_cell *cell;
-    //volume of the reservoir
-    double storage_capacity;
-    //current volume of the reservoir;
-    double current_storage_capacity;
-    //number of serviced cells
-    size_t nr_serviced_cells;
-    //1d array with cell pointers of serviced cells
-    rout_cell **serviced_cells;
-    //year of dam activation
-    size_t activation_year;        
-}reservoir_unit;
+struct rout_cells {
+    size_t global_domain_id;            /**< scalar - VIC id for this cell in the global domain (including inactive cells) */
+    size_t id;                          /**< scalar - VIC id for this cell in the local domain (excluding inactive cells) */
+    size_t x;                           /**< scalar - x position of this cell in rout.gridded_cells */
+    size_t y;                           /**< scalar - y position of this cell in rout.gridded_cells */
+    
+    size_t nr_upstream;                 /**< scalar - number of upstream cells */
+    rout_cell **upstream;               /**< 1d array [nr_upstream] - pointers to upstream routing cells */
+    rout_cell *downstream;              /**< pointer - pointer to downstream routing cell */
+    
+    bool irrigate;                      /**< bool - TRUE = irrigate FALSE = do not irrigate */
+    size_t irr_veg_id;                  /**< scalar - id of irrigated vegetation in veg_con */
+    
+    reservoir_unit *reservoir;          /**< pointer - pointer to reservoir unit located in this cell */
+    
+    size_t nr_servicing_reservoirs;     /**< scalar - number of reservoirs servicing this cell */
+    reservoir_unit **servicing_reservoirs; /**< 1d array [nr_servicing_reservoirs] - pointer to reservoirs servicing this cell */
+    
+    double *uh;                         /**< 1d array [MAX_DAYS_UH * model_steps_per_day] - value of UH at each timestep */
+    double *outflow;                    /**< 1d array [MAX_DAYS_UH * model_steps_per_day] - value of the outflow at each timestep [m3/s] */
+};
 
-typedef struct rout_structs {
-    //1d array with active cells
-    rout_cell *cells;
-    //number of reservoirs
-    size_t nr_reservoirs;
-    //1d array with active reservoirs
-    reservoir_unit *reservoirs;
-    //1d array with cell pointers sorted upstream to downstream
-    rout_cell **sorted_cells;
-    //2d array with cell pointers in a grid
-    rout_cell ***gridded_cells;
-    //char array storing the location of input files
-    char param_filename[MAXSTRING];
-    //char array storing the location of debug files
-    char debug_path[MAXSTRING - 30];
-    //char array storing the location of reservoir input files
-    char reservoir_filename[MAXSTRING];
-}rout_struct;
+struct reservoir_units{
+    bool run;                           /**< bool - TRUE = run FALSE = do not run (false when reservoir unit is not build yet) */
+    size_t id;                          /**< scalar - rout id of this reservoir */
+    size_t global_id;                   /**< scalar - global id of this reservoir (from input file) */
+    
+    rout_cell *cell;                    /**< pointer - pointer to cell reservoir is located in */
+    
+    size_t nr_serviced_cells;           /**< scalar - number of serviced cells */
+    rout_cell **serviced_cells;         /**< 1d array [nr_serviced_cells] - pointer to serviced cells */
+    double *cell_demand;                /**< 1d array [nr_serviced_cells] - demand of serviced cells [mm] */
+    
+    double added_water;                 /**< scalar - water added to serviced cells [m3] */
+    
+    int activation_year;                /**< scalar - activation year of the reservoir */
+    char name[MAXSTRING];               /**< string - name of the reservoir */
+    size_t function;                    /**< scalar - function of the reservoir (RES_IRR_FUNCTION = irrigation RES_HYD_FUNCTION = hydropower RES_CON_FUNCTION = flow control) */
+    double storage_capacity;            /**< scalar - storage capacity of reservoir [m3] */
+    double current_storage;             /**< scalar - current storage of reservoir [m3] */
+    
+    dmy_struct start_operation;         /**< dmy_struct - start of the operation year of this reservoir */
+    double storage_start_operation;     /**< scalar - storage at the start of the operation year of this reservoir [m3] */
+    
+    double current_inflow;              /**< scalar - monthly averaged daily inflow [m3] */
+    double** inflow;                    /**< 2d array [RES_CALC_YEARS_MEAN][MONTHS_PER_YEAR] - monthly averaged daily inflow per year/month [m3] */
+    double current_demand;              /**< scalar - monthly averaged daily demand [m3] */
+    double** demand;                    /**< 2d array [RES_CALC_YEARS_MEAN][MONTHS_PER_YEAR] - monthly averaged daily demand per year/month [m3] */
+    
+};
+
+struct rout_structs {
+    double min_lon;                         /**< scalar - minimum longitude in domain [degree] */
+    double min_lat;                         /**< scalar - minimum latitude in domain [degree] */
+    
+    char param_filename[MAXSTRING];         /**< string - file path and name of routing paramaters */
+    char debug_path[MAXSTRING - 30];        /**< string - file path of debug files */
+    char reservoir_filename[MAXSTRING];     /**< string - file path and name of reservoir information */
+    
+    rout_cell *cells;                       /**< 1d array [nr_active_cells] - active routing cells */
+    rout_cell **sorted_cells;               /**< 1d array [nr_active_cells] - pointers to sorted routing cells */
+    rout_cell ***gridded_cells;             /**< 2d array [n_nx][n_ny] - pointer to gridded routing cells */
+    
+    size_t nr_reservoirs;                   /**< scalar - number of reservoir units */
+    reservoir_unit *reservoirs;             /**< 1d array [nr_reservoirs] - reservoir units */
+};
+
+
+struct rout_options {
+    bool routing;                           /**< bool - TRUE = do routing FALSE = do not do routing */
+    bool irrigation;                        /**< bool - TRUE = do irrigation FALSE = do not do irrigation */
+    bool reservoirs;                        /**< bool - TRUE = use reservoirs during routing FALSE = do not use reservoirs */
+    bool debug_mode;                        /**< bool - TRUE = use debugging during routing FALSE = do not use debugging */
+    size_t max_days_uh;                     /**< scalar - maximum number of days a unit hydrograph is allowed to discharge */
+    double flow_velocity_uh;                /**< scalar - flow velocity of the unit hydrograph */
+    double flow_diffusivity_uh;             /**< scalar - flow diffusivity of the unit hydrograph */
+    double max_distance_irr;                /**< scalar - maximum cell distance a cell can be irrigated from a reservoir */
+};
 
 //get data from parameter file
 void rout_start(void);
@@ -100,7 +124,7 @@ void rout_alloc(void);
 //initialize values
 void rout_init(void);
 //run routing scheme per timestep
-void rout_run(void);
+void rout_run(dmy_struct* current_dmy);
 //write away data
 void rout_write(void);
 //cleaning up
@@ -108,16 +132,26 @@ void rout_finalize(void);
 
 //get location of input files from global paramater file
 void get_global_param_rout(FILE *gp);
+
+void check_routing_options(void);
+void display_routing_options(void);
 //set the x/y, lat/lon and (vic)id of a cell and put them in a grid
-void set_cell_location(void);
+void set_cells(void);
 //find and save upstream cells (needs direction map)
-void set_upstream(char file_path[], char variable_name[]);
+void set_upstream_downstream(char file_path[], char variable_name[]);
 //make unit-hydrograph (needs flow distance map)
 void set_uh(char file_path[], char variable_name[]);
+//instantiate the reservoirs
+void set_reservoirs(void);
+//determine the river comming from the reservoir
+void set_reservoir_river(void);
+//determine which cells are serviced by which reservoir
+void set_reservoir_service(void);
 //sort cells upstream to downstream
 void sort_cells(void);
-//set values for start of simulation
-void set_values(void);
+
+//function for calculating the distance between cells
+double distance(rout_cell* from, rout_cell* to);
 
 //debug file for id's and the grid
 void make_location_file(char file_path[], char file_name[]);
@@ -127,9 +161,29 @@ void make_nr_upstream_file(char file_path[], char file_name[]);
 void make_ranked_cells_file(char file_path[], char file_name[]);
 //debug file for the unit-hydrograph of cells
 void make_uh_file(char file_path[], char file_name[]);
-//debug file in netCDF with all data
-void make_debug_file(char file_path[], char file_name[]);
-//debug file for the out_data struct
-void make_out_discharge_file(char file_path[], char file_name[]);
+//debug file for reservoirs of cells
+void make_reservoir_file(char file_path[], char file_name[]);
+//debug file for reservoir service of cells
+void make_reservoir_service_file(char file_path[], char file_name[]);
+//debug file for nr of reservoir service of cells
+void make_nr_reservoir_service_file(char file_path[], char file_name[]);
+
+void calculate_reservoir_values(reservoir_unit* current_reservoir, dmy_struct* current_dmy);
+void reset_reservoir_run(reservoir_unit* current_reservoir, dmy_struct* current_dmy);
+void reset_reservoir_demand(reservoir_unit* current_reservoir);
+
+void shift_outflow_array(rout_cell* current_cell);
+
+double get_moisture_content(rout_cell* current_cell);
+void distribute_demand_among_reservoirs(rout_cell* current_cell, double irrigation_demand);
+
+double get_reservoir_demand(reservoir_unit * current_reservoir);
+double do_reservoir_operation(reservoir_unit* current_reservoir, dmy_struct* current_dmy);
+double do_reservoir_irrigation(double target_release, double total_demand, double demand);
+double do_overflow(reservoir_unit* current_reservoir,double total_added_reservoir_water);
+
+int is_leap_year(int year);
+int nr_days_per_month(int month, int year);
+void get_all_mean_reservoir_values(reservoir_unit* current_reservoir, dmy_struct* current_dmy, double mean_monthly_inflow[MONTHS_PER_YEAR], double mean_monthly_demand[MONTHS_PER_YEAR], double* mean_annual_inflow, double* mean_annual_demand);
 #endif /* ROUT_H */
 

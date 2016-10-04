@@ -9,17 +9,21 @@
 #include <vic_run.h>
 #include <vic_driver_image.h>
 
-//define routing variables
 void rout_alloc(void){
+    extern rout_options_struct rout_options;
+    if(!rout_options.routing){
+        return;
+    }
+    
     extern rout_struct rout;
     extern global_param_struct global_param;
     extern domain_struct global_domain;
     
-    //allocate memory based on data    
+    //Allocate memory for rout and rout.cells based on number of active cells    
     if((rout.cells = malloc(global_domain.ncells_active * sizeof(*rout.cells)))==NULL){
         log_err("Memory allocation for rout.cells failed!");
     }
-        
+    
     if((rout.sorted_cells = malloc(global_domain.ncells_active * sizeof(*rout.sorted_cells)))!=NULL){
         size_t i;
         for(i=0;i<global_domain.ncells_active;i++){
@@ -48,23 +52,15 @@ void rout_alloc(void){
     size_t i;
     for(i=0;i<global_domain.ncells_active;i++){
         
-        rout.cells[i].location=NULL;
-        
-        if((rout.cells[i].outflow = malloc(UH_MAX_DAYS * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow)))==NULL){
+        rout.cells[i].reservoir=NULL;
+        rout.cells[i].downstream=NULL;
+                
+        if((rout.cells[i].outflow = malloc(rout_options.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow)))==NULL){
             log_err("Memory allocation for rout.cells[i].outflow failed!");
         }
 
-        if((rout.cells[i].uh = malloc(UH_MAX_DAYS * global_param.model_steps_per_day * sizeof(*rout.cells[i].uh)))==NULL){
+        if((rout.cells[i].uh = malloc(rout_options.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].uh)))==NULL){
             log_err("Memory allocation for rout.cells[i].uh failed!");
-        }
-        
-        if((rout.cells[i].upstream = malloc(8 * sizeof(*rout.cells[i].upstream)))!=NULL){
-            int j;
-            for(j=0;j< 8 ;j++){
-                rout.cells[i].upstream[j]=NULL;
-            }
-        }else{
-            log_err("Memory allocation for rout.cells[i].upstream failed!");
         }
     }
 }
