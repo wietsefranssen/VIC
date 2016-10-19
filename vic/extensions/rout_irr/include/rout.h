@@ -139,7 +139,8 @@ struct rout_structs {
     reservoir_unit *reservoirs;             /**< 1d array [nr_reservoirs] - reservoir units */
 };
 
-void change_crop_fraction(rout_cell* cur_cell, dmy_struct* current_dmy,size_t vidx, size_t iVeg);
+void change_crop_fraction(rout_cell* cur_cell, dmy_struct* current_dmy);
+void reset_reservoirs(dmy_struct* current_dmy);
 void add_moisture_content(rout_cell* cur_cell, size_t vidx, double new_content);
 void make_nr_crops_file(char file_path[], char file_name[]);
 void make_sensitivity_files(void);

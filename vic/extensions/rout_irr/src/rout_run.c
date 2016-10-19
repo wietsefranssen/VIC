@@ -13,10 +13,8 @@ void rout_run(dmy_struct* current_dmy){
     extern domain_struct local_domain;
     extern global_param_struct global_param;
     extern double ***out_data;       
-    extern all_vars_struct *all_vars;
     extern veg_con_struct **veg_con;
     extern soil_con_struct *soil_con;
-    extern option_struct options;
     extern veg_con_map_struct *veg_con_map;
     
     //routing variables
@@ -40,6 +38,8 @@ void rout_run(dmy_struct* current_dmy){
     double total_added_reservoir_water=0.0; //m3
     double overflow = 0.0;                  //m3
     
+    double new_moisture_content =0.0;       //mm
+    
     size_t vidx = 0;
     
     rout_cell* cur_cell;
@@ -48,7 +48,6 @@ void rout_run(dmy_struct* current_dmy){
     size_t iRes;
     size_t iCell;
     size_t iRank;
-    size_t iBand;
     size_t iVeg;
     size_t iCrop;
     size_t t;
@@ -57,26 +56,7 @@ void rout_run(dmy_struct* current_dmy){
      * For all reservoirs, calculate and reset values      
      */
     if(rout.reservoirs){
-        for(iRes=0;iRes<rout.nr_reservoirs;iRes++){
-            
-            //Reservoir is only run after it is build
-            rout.reservoirs[iRes].run=false;
-            if(current_dmy->year>=rout.reservoirs[iRes].activation_year){
-                rout.reservoirs[iRes].run=true;
-            }
-            
-            //Set reservoir cell demand to 0
-            for(iCell=0;iCell<rout.reservoirs[iRes].nr_serviced_cells;iCell++){
-                for(iCrop=0;iCrop<rout.reservoirs[iRes].serviced_cells[iCell]->nr_crop_class;iCrop++){
-                    rout.reservoirs[iRes].cell_demand[iCell][iCrop]=0.0;
-                }
-
-            }
-            
-            //Do history calculations
-            calculate_reservoir_values(&rout.reservoirs[iRes],current_dmy);
-            
-        }
+        reset_reservoirs(current_dmy);
     }
     
     /*
@@ -98,6 +78,13 @@ void rout_run(dmy_struct* current_dmy){
         }
         
 
+        change_crop_fraction(cur_cell,current_dmy);
+        
+        out_data[cur_cell->id][OUT_CROP_FRAC][0]=
+                 veg_con[cur_cell->id][vidx].Cv;
+        out_data[cur_cell->id][OUT_BARE_FRAC][0]=
+                 veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv;
+
         //If the cell is able to irrigate, do local irrigation  (if irrigation is true)
         if(rout.firrigation && cur_cell->irrigate){
             
@@ -109,7 +96,6 @@ void rout_run(dmy_struct* current_dmy){
                 local_domain.locations[cur_cell->id].area * MM_PER_M;
             
             irrigation_demand_cell = 0.0;
-            
             iCrop=0;
             
             for(iVeg=0;iVeg < rout.nr_crop_classes;iVeg++){
@@ -118,21 +104,9 @@ void rout_run(dmy_struct* current_dmy){
                 if(vidx==(size_t)NODATA_VEG){
                     continue;
                 }
-                
-                out_data[cur_cell->id][OUT_CROP_FRAC][0]=
-                         veg_con[cur_cell->id][vidx].Cv;
-                out_data[cur_cell->id][OUT_BARE_FRAC][0]=
-                         veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv;
-                
-                change_crop_fraction(cur_cell,current_dmy,vidx,iVeg);
                   
                 //Get moisture content of our cell
                 moisture_content[iCrop] = get_moisture_content(*cur_cell,vidx);
-                double bare_moisture_content = get_moisture_content(*cur_cell,veg_con[cur_cell->id][0].vegetat_type_num);
-                
-                
-                out_data[cur_cell->id][OUT_CROP_MOIST][0]=moisture_content[iCrop];
-                out_data[cur_cell->id][OUT_BARE_MOIST][0]=bare_moisture_content;
                 
                 //Get irrigation demand
                 //(Wcr / 0.7) is the field capacity of a cell!
@@ -188,13 +162,11 @@ void rout_run(dmy_struct* current_dmy){
                 if(irrigation_demand[iCrop]>0){
                     distribute_demand_among_reservoirs(cur_cell,irrigation_demand[iCrop],iCrop);
                 }
-
-                //Add water to soil moisture
-                for(iBand=0;iBand<options.SNOW_BAND;iBand++){
-                   all_vars[cur_cell->id].cell[vidx][iBand].layer[0].moist = 
-                           moisture_content[iCrop] + ((added_river_water + added_runoff_water) / 
-                           veg_con[cur_cell->id][vidx].Cv);
-                }
+                
+                //Add water to moisture content in soil
+                new_moisture_content = moisture_content[iCrop] + ((added_river_water + added_runoff_water) / 
+                           veg_con[cur_cell->id][vidx].Cv);;
+                add_moisture_content(cur_cell,vidx,new_moisture_content);
                 
                 out_data[cur_cell->id][OUT_LOCAL_IRR][0] += 
                         added_river_water + added_runoff_water;
@@ -324,9 +296,9 @@ void rout_run(dmy_struct* current_dmy){
                                 (veg_con[cur_cell->id][vidx].Cv * 
                                 local_domain.locations[cur_cell->id].area / MM_PER_M);
                         }
-
+                        
+                        //Calculate irrigation water
                         if(total_current_demand>0){
-                            //Calculate irrigation water
                             if(total_current_demand < target_irrigation){
                                 added_reservoir_water =  rout.reservoirs[iRes].cell_demand[iCell][iCrop];
                             }else{
@@ -334,18 +306,21 @@ void rout_run(dmy_struct* current_dmy){
                                         (rout.reservoirs[iRes].cell_demand[iCell][iCrop] / total_current_demand);
                             }
                         }
-
-                        //Add water to soil moisture
-                        for(iBand=0;iBand<options.SNOW_BAND;iBand++){
-                           all_vars[cur_cell->id].cell[vidx][iBand].layer[0].moist = 
-                                   moisture_content[iCrop] + (added_reservoir_water /
+                        
+                        if(added_reservoir_water<0){
+                            log_warn("Added reservoir water of reservoir %zu is smaller than 0, ignoring",rout.reservoirs[iRes].id);
+                            continue;
+                        }
+                        
+                        //Add water to moisture content in soil
+                        new_moisture_content = moisture_content[iCrop] + (added_reservoir_water /
                                    local_domain.locations[cur_cell->id].area * MM_PER_M /
                                    veg_con[cur_cell->id][vidx].Cv);
-                        }                        
+                        add_moisture_content(cur_cell,vidx,new_moisture_content);                      
 
                         //Save total added water
                         total_added_reservoir_water += added_reservoir_water;
-
+                        
                         //Write output data
                         out_data[cur_cell->id][OUT_RES_IRR][0] += added_reservoir_water / local_domain.locations[cur_cell->id].area * MM_PER_M;
 
@@ -375,7 +350,36 @@ void rout_run(dmy_struct* current_dmy){
     }
 }
 
-void change_crop_fraction(rout_cell* cur_cell, dmy_struct* current_dmy,size_t vidx, size_t iVeg){
+void reset_reservoirs(dmy_struct* current_dmy){
+    extern rout_struct rout;
+    
+    size_t iRes;
+    size_t iCell;
+    size_t iCrop;
+    
+    for(iRes=0;iRes<rout.nr_reservoirs;iRes++){
+            
+        //Reservoir is only run after it is build
+        rout.reservoirs[iRes].run=false;
+        if(current_dmy->year>=rout.reservoirs[iRes].activation_year){
+            rout.reservoirs[iRes].run=true;
+        }
+
+        //Set reservoir cell demand to 0
+        for(iCell=0;iCell<rout.reservoirs[iRes].nr_serviced_cells;iCell++){
+            for(iCrop=0;iCrop<rout.reservoirs[iRes].serviced_cells[iCell]->nr_crop_class;iCrop++){
+                rout.reservoirs[iRes].cell_demand[iCell][iCrop]=0.0;
+            }
+
+        }
+
+        //Do history calculations
+        calculate_reservoir_values(&rout.reservoirs[iRes],current_dmy);
+
+    }
+}
+
+void change_crop_fraction(rout_cell* cur_cell, dmy_struct* current_dmy){
     extern rout_struct rout;
     extern veg_con_struct **veg_con;
     extern veg_con_map_struct *veg_con_map;
@@ -386,72 +390,61 @@ void change_crop_fraction(rout_cell* cur_cell, dmy_struct* current_dmy,size_t vi
     double moisture_content_bare = 0.0;
     double new_moisture_content = 0.0;
     
-    //Calculate the new crop fraction
-    if(current_dmy->day_in_year >= rout.crop_end){
-        
-    }else if(current_dmy->day_in_year >= rout.crop_late){
-        factor = 1-(((double)current_dmy->day_in_year - (double)rout.crop_late) /
-                ((double)rout.crop_end - (double)rout.crop_late));
-    }else if(current_dmy->day_in_year >= rout.crop_developed){
-        factor=1;
-    }else if(current_dmy->day_in_year >= rout.crop_start){
-        factor = (((double)current_dmy->day_in_year - (double)rout.crop_start) /
-                ((double)rout.crop_developed - (double)rout.crop_start));
-    }
-
-    if(factor<0.001){
-        factor=0.001;
-    }
-
-    difference = veg_con[cur_cell->id][vidx].Cv - 
-            veg_con_map[cur_cell->id].Cv[rout.crop_class[iVeg]] * 
-            factor;
-
-    //Get moisture content of our crop and bare soil
-    moisture_content_crop = get_moisture_content(*cur_cell,vidx);
-    moisture_content_bare = get_moisture_content(*cur_cell,veg_con[cur_cell->id][0].vegetat_type_num);
-
-    //Add water to soil moisture based on fraction change
-    if(difference<0){
-        new_moisture_content = 
-                moisture_content_crop * (veg_con[cur_cell->id][vidx].Cv / (veg_con[cur_cell->id][vidx].Cv-difference)) +
-                moisture_content_bare * ((-difference) / (veg_con[cur_cell->id][vidx].Cv-difference));
-        add_moisture_content(cur_cell,vidx,new_moisture_content);
-    }else if(difference>0){
-        new_moisture_content = 
-                moisture_content_crop * (difference / (veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv+difference)) +
-                moisture_content_bare * (veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv / (veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv+difference));
-        add_moisture_content(cur_cell,veg_con[cur_cell->id][0].vegetat_type_num,new_moisture_content);
+    size_t iVeg;
+    size_t vidx;
+    
+    if(current_dmy->dayseconds>1){
+        return;
     }
     
-    //double old_frac_c = veg_con[cur_cell->id][vidx].Cv;
-    //double old_frac_b = veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv;
-    
-    //Change crop fractions
-    veg_con[cur_cell->id][vidx].Cv -= difference;                
-    veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv += difference;
-    /*
-    if(difference<0 && cur_cell->id==200){
-        double new_mc_c = get_moisture_content(*cur_cell,vidx);
-        double new_mc_b = get_moisture_content(*cur_cell,veg_con[cur_cell->id][0].vegetat_type_num);
-        
-        log_info("Crop is growing");
-        log_info("o_frac %.3f n_frac %.3f",old_frac_c,veg_con[cur_cell->id][vidx].Cv);
-        log_info("o_frac %.3f n_frac %.3f",old_frac_b,veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv);
-        log_info("o_mc_c %.1f n_mc_c %.1f",moisture_content_crop,new_mc_c);
-        log_info("o_mc_b %.1f n_mc_b %.1f",moisture_content_bare,new_mc_b);
-        log_info(" ");
-    }else if(difference>0 && cur_cell->id==200){
-        double new_mc_c = get_moisture_content(*cur_cell,vidx);
-        double new_mc_b = get_moisture_content(*cur_cell,veg_con[cur_cell->id][0].vegetat_type_num);
-        
-        log_info("Crop is declining");
-        log_info("o_frac %.3f n_frac %.3f",old_frac_c,veg_con[cur_cell->id][vidx].Cv);
-        log_info("o_frac %.3f n_frac %.3f",old_frac_b,veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv);
-        log_info("o_mc_c %.1f n_mc_c %.1f",moisture_content_crop,new_mc_c);
-        log_info("o_mc_b %.1f n_mc_b %.1f",moisture_content_bare,new_mc_b);
-        log_info(" ");
-    }*/
+    for(iVeg=0;iVeg < rout.nr_crop_classes;iVeg++){
+
+        vidx=veg_con_map[cur_cell->id].vidx[rout.crop_class[iVeg]];
+        if(vidx==(size_t)NODATA_VEG){
+            continue;
+        }
+        //Calculate the new crop fraction
+        if(current_dmy->day_in_year >= rout.crop_end){
+
+        }else if(current_dmy->day_in_year >= rout.crop_late){
+            factor = 1-(((double)current_dmy->day_in_year - (double)rout.crop_late) /
+                    ((double)rout.crop_end - (double)rout.crop_late));
+        }else if(current_dmy->day_in_year >= rout.crop_developed){
+            factor=1;
+        }else if(current_dmy->day_in_year >= rout.crop_start){
+            factor = (((double)current_dmy->day_in_year - (double)rout.crop_start) /
+                    ((double)rout.crop_developed - (double)rout.crop_start));
+        }
+
+        if(factor<0.001){
+            factor=0.001;
+        }
+
+        difference = veg_con[cur_cell->id][vidx].Cv - 
+                veg_con_map[cur_cell->id].Cv[rout.crop_class[iVeg]] * 
+                factor;
+
+        //Get moisture content of our crop and bare soil
+        moisture_content_crop = get_moisture_content(*cur_cell,vidx);
+        moisture_content_bare = get_moisture_content(*cur_cell,veg_con[cur_cell->id][0].vegetat_type_num);
+
+        //Change soil moisture based on fraction change
+        if(difference<0){
+            new_moisture_content = 
+                    moisture_content_crop * (veg_con[cur_cell->id][vidx].Cv / (veg_con[cur_cell->id][vidx].Cv-difference)) +
+                    moisture_content_bare * ((-difference) / (veg_con[cur_cell->id][vidx].Cv-difference));
+            add_moisture_content(cur_cell,vidx,new_moisture_content);
+        }else if(difference>0){
+            new_moisture_content = 
+                    moisture_content_crop * (difference / (veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv+difference)) +
+                    moisture_content_bare * (veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv / (veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv+difference));
+            add_moisture_content(cur_cell,veg_con[cur_cell->id][0].vegetat_type_num,new_moisture_content);
+        }
+
+        //Change crop fractions
+        veg_con[cur_cell->id][vidx].Cv -= difference;                
+        veg_con[cur_cell->id][veg_con[cur_cell->id][0].vegetat_type_num].Cv += difference;
+    }
 }
 
 void add_moisture_content(rout_cell* cur_cell, size_t vidx, double new_content){
