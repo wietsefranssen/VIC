@@ -289,7 +289,7 @@ void rout_run(dmy_struct* current_dmy){
                         
                         //Get moisture content
                         moisture_content[iCrop] = get_moisture_content(*cur_cell,vidx);
-
+                        
                         if(rout.reservoirs[iRes].prev_soil_moisture[iCell][iCrop] - moisture_content[iCrop] > 0 &&
                                 moisture_content[iCrop] < (soil_con[cur_cell->id].Wcr[0])){
                             rout.reservoirs[iRes].current_demand += (rout.reservoirs[iRes].prev_soil_moisture[iCell][iCrop] - moisture_content[iCrop]) * 
@@ -309,7 +309,7 @@ void rout_run(dmy_struct* current_dmy){
                         
                         if(added_reservoir_water<0){
                             log_warn("Added reservoir water of reservoir %zu is smaller than 0, ignoring",rout.reservoirs[iRes].id);
-                            continue;
+                            added_reservoir_water=0.0;
                         }
                         
                         //Add water to moisture content in soil
@@ -323,7 +323,6 @@ void rout_run(dmy_struct* current_dmy){
                         
                         //Write output data
                         out_data[cur_cell->id][OUT_RES_IRR][0] += added_reservoir_water / local_domain.locations[cur_cell->id].area * MM_PER_M;
-
                         rout.reservoirs[iRes].prev_soil_moisture[iCell][iCrop]=moisture_content[iCrop];
                         
                         iCrop++;
@@ -777,6 +776,11 @@ double do_reservoir_operation(reservoir_unit current_reservoir){
     //Do not release more than is available
     if(target_release > current_reservoir.current_storage){
         target_release = current_reservoir.current_storage;
+    }
+    
+    //Do not release negative target release
+    if(target_release < 0){
+        target_release=0;
     }
     
     return target_release;
