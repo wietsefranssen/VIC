@@ -14,15 +14,13 @@
 #define M_PI 3.14159265358979323846
 
 void rout_init(void){
-    extern rout_options_struct rout_options;
-    if(!rout_options.routing){
-        return;
-    }
-    
     extern rout_struct rout;
     
     //Set cell values based on location and vegetation
     set_cells();
+    
+    //Set cell crop struct based on irrigated vegetation
+    set_cell_irrigate();
     
     //Set cell upstream and downstream cells based on flow direction
     set_upstream_downstream(rout.param_filename,"flow_direction");
@@ -36,10 +34,12 @@ void rout_init(void){
     //Set reservoir information
     set_reservoirs();
     
+    set_naturalized_routing();
+    
     //Set reservoir irrigation services
     set_reservoir_service();
 
-    if(rout_options.debug_mode){
+    if(rout.fdebug_mode){
         //Make routing debug files
         
         log_info("Making routing debug files...");
@@ -52,25 +52,30 @@ void rout_init(void){
         make_ranked_cells_file(rout.debug_path,"ranked_cells");
         log_info("Finished cell rank file");
         
-        if(rout_options.reservoirs){
+        if(rout.reservoirs){
             make_reservoir_file(rout.debug_path,"reservoir");
             log_info("Finished reservoir file");
             make_reservoir_service_file(rout.debug_path,"reservoir_service");
             log_info("Finished reservoir service file");
             make_nr_reservoir_service_file(rout.debug_path,"nr_reservoir_service");
             log_info("Finished number of reservoir service file");
+            make_nr_crops_file(rout.debug_path,"nr_crops");
+            log_info("Finished number of crops file");
         }
     }
     
 }
 
 void set_cells(){
+    /*The function instantiates the cells in rout.cells
+     *      
+     * It does so by gathering the information from VIC,
+     * and instantiates all the variables of a cell.
+     */
     extern rout_struct rout;
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern global_param_struct global_param;
-    extern veg_con_struct **veg_con;
-    extern rout_options_struct rout_options;
     
     rout.nr_reservoirs=0;
     rout.min_lat=DBL_MAX;
@@ -78,6 +83,9 @@ void set_cells(){
     
     size_t i;
     size_t j=0;
+    size_t x;
+    size_t y;
+    
     for(i=0;i<global_domain.ncells_total;i++){
         if(global_domain.locations[i].run){
             rout.cells[j].global_domain_id=i;
@@ -94,66 +102,90 @@ void set_cells(){
     }
     
     for(i=0;i<global_domain.ncells_active;i++){
-        size_t x = (size_t)((local_domain.locations[i].longitude - rout.min_lon)/global_param.resolution);
-        size_t y = (size_t)((local_domain.locations[i].latitude - rout.min_lat)/global_param.resolution);
+        x = (size_t)((local_domain.locations[i].longitude - rout.min_lon)/global_param.resolution);
+        y = (size_t)((local_domain.locations[i].latitude - rout.min_lat)/global_param.resolution);
         rout.gridded_cells[x][y]=&rout.cells[i];
         rout.cells[i].x=x;
         rout.cells[i].y=y;
         
-        for(j=0;j<rout_options.max_days_uh * global_param.model_steps_per_day;j++){
+        for(j=0;j<rout.max_days_uh * global_param.model_steps_per_day;j++){
             rout.cells[i].uh[j]=0.0;
             rout.cells[i].outflow[j]=0.0;
+            rout.cells[i].outflow_natural[j]=0.0;
         }
         
         rout.cells[i].nr_servicing_reservoirs=0;
         rout.cells[i].nr_upstream=0;
+        rout.cells[i].servicing_reservoirs=malloc(0);
+    }
+}
+
+void set_cell_irrigate(){
+    extern domain_struct global_domain;
+    extern veg_con_map_struct *veg_con_map;
+    extern rout_struct rout;
+    
+    size_t i;
+    size_t j;
+    
+    for(i=0;i<global_domain.ncells_active;i++){
         rout.cells[i].irrigate=false;
-        rout.cells[i].irr_veg_id=0;
+        rout.cells[i].nr_crop_class=0;
         
-        for(j=0;j<=veg_con[rout.cells[i].id][0].vegetat_type_num;j++){
-            if(veg_con[rout.cells[i].id][j].veg_class==VEG_IRR_CLASS){
+        for(j=0;j<rout.nr_crop_classes;j++){
+            if(veg_con_map[i].vidx[rout.crop_class[j]]!=NODATA_VEG){
                 rout.cells[i].irrigate=true;
-                rout.cells[i].irr_veg_id=j;
-                break;
+                rout.cells[i].nr_crop_class++;
             }
         }
     }
 }
 
 void set_upstream_downstream(char file_path[], char variable_name[]){
+    /* The function sets the upstream and downstream pointers of each cell.
+     * 
+     * It does so by using the flow direction specified in the NETcdf file.
+     * If the direction points to an active cell, the downstream pointer is
+     * set to that cell. Afterwards the upstream cells are computed from 
+     * these downstream cells.
+     */
     extern rout_struct rout;
     extern domain_struct global_domain;
     
-    //Allocate temporary files used for information transfer
     int *direction;
     rout_cell** upstream_temp;
     
-    if((direction = malloc(global_domain.ncells_total * sizeof(*direction)))==NULL){
-        log_err("Memory allocation error!");
-    }
-    if((upstream_temp = malloc(8 * sizeof(*upstream_temp)))==NULL){
+    size_t i;
+    size_t j;
+    size_t x;
+    size_t y;
+    
+    if((direction = malloc(global_domain.ncells_active * sizeof(*direction)))==NULL){
         log_err("Memory allocation error!");
     }
     
+    //Get data from NETcdf file
     size_t start[]={0, 0};
     size_t count[]={global_domain.n_ny, global_domain.n_nx};
-    get_nc_field_int(file_path,variable_name,start,count,direction);
-        
-    size_t i;    
-    for(i=0;i<global_domain.ncells_total;i++){
-        size_t x=(size_t)i%global_domain.n_nx;
-        size_t y=(size_t)i/global_domain.n_nx;
-        
-        if(rout.gridded_cells[x][y]==NULL){
-            continue;
-        }
+    get_scatter_nc_field_int(file_path,variable_name,start,count,direction);
+          
+    for(i=0;i<global_domain.ncells_active;i++){        
+        x=rout.cells[i].x;
+        y=rout.cells[i].y;
             
         if(direction[i]==-1){
             log_warn("direction of cell (global_id %zu local_id %zu) is missing, check direction file",rout.gridded_cells[x][y]->global_domain_id,rout.gridded_cells[x][y]->id);
             continue;
         }
         
-        //Set downstream cell
+        /* Set downstream cell based on direction 
+         * If direction is pointing to an active cell
+         * 1=North
+         *  2=North-east
+         *  3=East
+         *  etc.
+         */
+        
         if(direction[i]==1){
             if(y+1<global_domain.n_ny && rout.gridded_cells[x][y+1]!=NULL){
                 rout.gridded_cells[x][y]->downstream=rout.gridded_cells[x][y+1];
@@ -189,10 +221,22 @@ void set_upstream_downstream(char file_path[], char variable_name[]){
         }
     }
     
-    //Set upstream cells
+    free(direction);
+    
+    if((upstream_temp = malloc(8 * sizeof(*upstream_temp)))==NULL){
+        log_err("Memory allocation error!");
+    }
+    
+    /*
+     *Set upstream cells based on downstream cells
+     *Go through each neighbor of the current cell
+     *If the neighbors' downstream cell is the current cell
+     *Set the neighbor as upstream from the current cell.
+     */
+    
     for(i=0;i<global_domain.ncells_active;i++){
-        size_t x=rout.cells[i].x;
-        size_t y=rout.cells[i].y;
+        x=rout.cells[i].x;
+        y=rout.cells[i].y;
         
         if(y+1<global_domain.n_ny && rout.gridded_cells[x][y+1]!=NULL){
             if(rout.gridded_cells[x][y+1]->downstream == rout.gridded_cells[x][y]){
@@ -248,34 +292,42 @@ void set_upstream_downstream(char file_path[], char variable_name[]){
             log_err("Memory allocation for rout.cells[i].upstream failed!");
         }
         
-        size_t j;
         for(j=0;j<rout.cells[i].nr_upstream;j++){
             rout.cells[i].upstream[j]=upstream_temp[j];
         }
     }
     
-    free(direction);
     free(upstream_temp);
 }
 
 void sort_cells(void){
+    /* The function sorts cells from upstream to downstream.
+     * 
+     * It does so by finding the number of upstream cells per cell,
+     * and if the number of upstream cells is 0 it will rank the cell.
+     * After a cell is ranked it is excluded in the following search
+     * for upstream cells. The ranked cells are stored in order in 
+     * rout.sorted_cells for use in rout_run().
+     */
+    
     extern rout_struct rout;
     extern domain_struct global_domain;
     
     bool *done_map;
+    
+    size_t i;
+    size_t rank=0;
+    size_t j;
+    
     if((done_map = malloc(global_domain.ncells_active * sizeof(*done_map)))==NULL){
         log_err("Memory allocation error!");
     }
     
-    size_t i;
     for(i=0;i<global_domain.ncells_active;i++){
         done_map[i]=false;
     }
     
-    
-    size_t rank=0;
-    size_t j;
-    while(1){
+    while(true){
         for(i=0;i<global_domain.ncells_active;i++){
             if(!done_map[i]){
                 //If current cell has not been done
@@ -303,6 +355,7 @@ void sort_cells(void){
         }
         
         if(rank == global_domain.ncells_active){
+            //all cells have been ranked so break out of the while loop
             break;
         }else if(rank > global_domain.ncells_active){
             log_warn("rank_cells made %zu loops and escaped because this is more than %zu, the number of active cells",(rank+1),global_domain.ncells_active);
@@ -314,65 +367,78 @@ void sort_cells(void){
 }
 
 void set_uh(char file_path[], char variable_name[]){
+    /* The function calculates the unit hydrograph per timestep per cell
+     * 
+     * It does so by using the specified velocity, diffusivity and flow
+     * distance per cell in the equations of Lohmann et al. (1998).
+     * First a precise unit hydrograph is calculated (more timesteps),
+     * then it is normalized and summed over the actual model timestep.
+     * This ends up in a unit hydrograph with information about which fraction
+     * of runoff to release per timestep.
+     */
     extern rout_struct rout;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
-    extern rout_options_struct rout_options;
+    extern rout_struct rout;
     
-    //Allocate temporary files used for information transfer
-    double *distance_total;
+    float *velocity;
+    float *diffusivity;
     double *distance;
     double *uh_precise;
     double *uh_cumulative;
     double uh_sum;
     
-    if((distance_total = malloc(global_domain.ncells_total * sizeof(*distance_total)))==NULL){
-        log_err("Memory allocation for <set_uh> distance_total failed!");
-    }
+    size_t i;
+    size_t j=0;
+    
     if((distance = malloc(global_domain.ncells_active * sizeof(*distance)))==NULL){
         log_err("Memory allocation for <set_uh> distance failed!");
     }
-    if((uh_precise = malloc((rout_options.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_precise)))==NULL){
-        log_err("Memory allocation for <set_uh> uh_precise failed!");
+    if((velocity = malloc(global_domain.ncells_active * sizeof(*velocity)))==NULL){
+        log_err("Memory allocation error!");
     }
-    if((uh_cumulative = malloc((rout_options.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative)))==NULL){
-        log_err("Memory allocation for <set_uh> uh_cumulative failed!");
+    if((diffusivity = malloc(global_domain.ncells_active * sizeof(*diffusivity)))==NULL){
+        log_err("Memory allocation error!");
     }
     
+    //Get data from NETcdf files (or input)
     size_t start[]={0, 0};
     size_t count[]={global_domain.n_ny, global_domain.n_nx};
-    get_nc_field_double(file_path,variable_name,start,count,distance_total);
+    get_scatter_nc_field_double(file_path,variable_name,start,count,distance);
     
-    size_t i;
-    size_t j=0;
-    for(i=0;i<global_domain.ncells_total;i++){
-        size_t x=(size_t)i%global_domain.n_nx;
-        size_t y=(size_t)i/global_domain.n_nx;
-        
-        if(rout.gridded_cells[x][y]!=NULL){
-            distance[j]=distance_total[i];
-            if(distance[j]==-1){
-                log_warn("distance of cell (global_id %zu local_id %zu) is missing, check distance file",rout.gridded_cells[x][y]->global_domain_id,rout.gridded_cells[x][y]->id);
-            }
-            j++;
+    if(rout.fuh_file){
+        get_scatter_nc_field_float(file_path,"flow_velocity",start,count,velocity);
+        get_scatter_nc_field_float(file_path,"flow_diffusivity",start,count,diffusivity);
+    }else{
+        for(i=0;i<global_domain.ncells_active;i++){
+            velocity[i] = rout.flow_velocity_uh;
+            diffusivity[i] = rout.flow_diffusivity_uh;
         }
     }
     
+    if((uh_precise = malloc((rout.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_precise)))==NULL){
+        log_err("Memory allocation for <set_uh> uh_precise failed!");
+    }
+    if((uh_cumulative = malloc((rout.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative)))==NULL){
+        log_err("Memory allocation for <set_uh> uh_cumulative failed!");
+    }
+    
+    //Calculate unit hydrograph
     for (i=0;i<global_domain.ncells_active;i++){
         if(distance[i]!=-1){
             size_t time=0;
             uh_sum=0.0;
 
             //Calculate precise unit hydrograph based on timestep
-            for(j=0;j< rout_options.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+            for(j=0;j< rout.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
                 time += (3600 * 24) / (global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP);
-                uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * rout_options.flow_diffusivity_uh)))
-                        * exp(-(pow(rout_options.flow_velocity_uh * time - distance[i],2)) / (4 * rout_options.flow_diffusivity_uh * time));
+                uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * rout.flow_diffusivity_uh)))
+                        * exp(-(pow(rout.flow_velocity_uh * time - distance[i],2)) / (4 * rout.flow_diffusivity_uh * time));
                 uh_sum += uh_precise[j];
             }
 
             //Normalize unit hydrograph so sum is 1 and make cumulative unit hydrograph
-            for(j=0;j< rout_options.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+            for(j=0;j< rout.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
                 uh_precise[j] = uh_precise[j] / uh_sum;
                 if(j>0){
                     uh_cumulative[j] = uh_cumulative [j-1] + uh_precise[j];
@@ -385,8 +451,8 @@ void set_uh(char file_path[], char variable_name[]){
             }
             
             //Make final time-step unit hydrograph based on cumulative unity hydrograph
-            for(j=0;j< rout_options.max_days_uh * global_param.model_steps_per_day;j++){
-                if(j<(rout_options.max_days_uh * global_param.model_steps_per_day)- 1){
+            for(j=0;j< rout.max_days_uh * global_param.model_steps_per_day;j++){
+                if(j<(rout.max_days_uh * global_param.model_steps_per_day)- 1){
                     rout.cells[i].uh[j]=uh_cumulative[(j+1) * UH_STEPS_PER_TIMESTEP] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
                 }else{
                     rout.cells[i].uh[j]=uh_cumulative[((j+1) * UH_STEPS_PER_TIMESTEP)-1] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
@@ -395,35 +461,62 @@ void set_uh(char file_path[], char variable_name[]){
         }
     }
     
-    free(distance_total);
     free(distance);
+    free(velocity);
+    free(diffusivity);
     free(uh_cumulative);
     free(uh_precise);
 }
 
 void set_reservoirs(){
+    /* The function instantiates the reservoirs in rout.reservoirs.
+     * 
+     * It does so by collecting the information in the reservoir file,
+     * checking whether the reservoir is within our domain- and time of
+     * interest, and finally adding the reservoir to the structure.
+     * All reservoir values will also be initialized
+     */
     extern rout_struct rout;
-    extern rout_options_struct rout_options;
+    extern rout_struct rout;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
     
-    //Allocate temporary files used for information transfer
     reservoir_unit* reservoir_temp;
-    if((reservoir_temp = malloc(MAX_NR_RESERVOIRS * sizeof(*reservoir_temp)))==NULL){
-        log_err("Memory allocation error!");
-    }
+    reservoir_unit* res;
     
     FILE *rf;
     char cmdstr[MAXSTRING];
     char optstr[MAXSTRING];
     
+    char purpose[MAXSTRING];
+    float lat;
+    float lon;
+    
+    size_t i=0;
+    size_t j;
+    size_t k;
+    size_t m;
+    size_t x;
+    size_t y;
+    
+    if(!rout.freservoirs){
+        rout.reservoirs=malloc(0);
+        check_alloc_status(rout.reservoirs,"Memory allocation error.");
+        return;
+    }
+    
+    if((reservoir_temp = malloc(MAX_NR_RESERVOIRS * sizeof(*reservoir_temp)))==NULL){
+        log_err("Memory allocation error!");
+    }
+    
+    //Read from reservoir file
     rf=open_file(rout.reservoir_filename,"r");
     fgets(cmdstr, MAXSTRING, rf);
-    while (!feof(rf)) {
+    
+    while (!feof(rf)) {        
         if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0') {
             sscanf(cmdstr, "%s", optstr);
-
-            /* Handle case of comment line in which '#' is indented */
+            
             if (optstr[0] == '#') {
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
@@ -433,13 +526,15 @@ void set_reservoirs(){
                 log_info("there are more reservoirs in the area than is allowed, skipping other reservoirs");
             }
                         
-            char purpose[MAXSTRING];
-            float lat;
-            float lon;
-            reservoir_unit* res = &reservoir_temp[rout.nr_reservoirs];
-            sscanf(cmdstr, "%zu %s %d %lf %s %f %f",&res->global_id, res->name,&res->activation_year,&res->storage_capacity,purpose,&lon,&lat);
-                        
-            if(lat<rout.min_lat - (global_param.resolution/2) || 
+            res = &reservoir_temp[rout.nr_reservoirs];
+            sscanf(cmdstr, "%zu %200[^\t] %d %lf %s %f %f",&res->global_id, res->name,&res->activation_year,&res->storage_capacity,purpose,&lon,&lat);
+            
+            if(lon ==RES_NO_DATA || lat==RES_NO_DATA){
+                
+                //reservoir location data not present
+                fgets(cmdstr, MAXSTRING, rf);
+                continue;
+            }else if(lat<rout.min_lat - (global_param.resolution/2) || 
                     lon < rout.min_lon - (global_param.resolution/2) || 
                     lat>(rout.min_lat + ((global_domain.n_ny-1) * global_param.resolution) + (global_param.resolution/2)) || 
                     lon>(rout.min_lon + ((global_domain.n_nx-1) * global_param.resolution) + (global_param.resolution/2))){
@@ -447,19 +542,30 @@ void set_reservoirs(){
                 //reservoir outside location of interest
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
-            }else if(res->activation_year > global_param.endyear){
+            }else if(res->storage_capacity==RES_NO_DATA){
+                
+                log_info("Capacity data of reservoir %s (file_id %zu) not present",res->name,res->global_id);
+                //reservoir data not present
+                fgets(cmdstr, MAXSTRING, rf);
+                continue;
+            }else if(res->activation_year==RES_NO_DATA || res->activation_year > global_param.endyear){
                 
                 //reservoir outside time of interest
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
             }else{
-                size_t x = (size_t)((lon - rout.min_lon)/global_param.resolution);
-                size_t y = (size_t)((lat - rout.min_lat)/global_param.resolution);
+                x = (size_t)((lon - rout.min_lon)/global_param.resolution);
+                y = (size_t)((lat - rout.min_lat)/global_param.resolution);
                 if(rout.gridded_cells[x][y]==NULL){
                     
                     //reservoir inside location and time of interest but cell not run by VIC
                     fgets(cmdstr, MAXSTRING, rf);
                     continue;
+                }
+            
+                res->storage_capacity *= 1000000;
+                if(res->activation_year==RES_NO_DATA){
+                    res->activation_year=global_param.startyear-1;
                 }
                 
                 res->cell = rout.gridded_cells[x][y]; 
@@ -471,7 +577,7 @@ void set_reservoirs(){
                 }else if(purpose[0]=='C'){
                     res->function=RES_CON_FUNCTION;
                 }else{
-                    log_warn("the function of reservoir %s is not definend; defeault to irrigation",res->name);
+                    log_info("Purpose of reservoir %s (file_id %zu) not properly defined; default to irrigation",res->name,res->global_id);
                     res->function=RES_IRR_FUNCTION;                    
                 }
                 
@@ -487,14 +593,12 @@ void set_reservoirs(){
         log_err("Memory allocation error!");
     }
     
-    size_t i=0;
-    size_t j;
-    size_t k;
     for(k=0;k<rout.nr_reservoirs;k++){
         
-        //handle reservoirs in the same cell, they will be combined. 
-        //problem is if the construction years or function are different
-        //currently function will defeault to irrigation and earliest year will be chosen.
+        //Handle reservoirs in the same cell, they will be combined. 
+        //Problem is if the construction years or function are different.
+        //Currently function will default to irrigation 
+        //and earliest year will be chosen.
         if(reservoir_temp[k].cell->reservoir!=NULL){
             reservoir_temp[k].cell->reservoir->storage_capacity += reservoir_temp[k].storage_capacity;
             
@@ -521,6 +625,7 @@ void set_reservoirs(){
         rout.reservoirs[i].run=false;
         rout.reservoirs[i].cell->reservoir=&rout.reservoirs[i];
         
+        //Allocate all reservoir values
         if((rout.reservoirs[i].demand = malloc(RES_CALC_YEARS_MEAN * sizeof(*rout.reservoirs[i].demand)))!=NULL){
             for(j=0;j<RES_CALC_YEARS_MEAN;j++){
                 if((rout.reservoirs[i].demand[j] = malloc(MONTHS_PER_YEAR * sizeof(*rout.reservoirs[i].demand[j])))==NULL){
@@ -540,12 +645,36 @@ void set_reservoirs(){
             log_err("Memory allocation error!");     
         }
         
-        size_t y;
-        size_t m;
+        if(rout.naturalized_flow){
+            if((rout.reservoirs[i].inflow_natural = malloc(RES_CALC_YEARS_MEAN * sizeof(*rout.reservoirs[i].inflow_natural)))!=NULL){
+                for(j=0;j<RES_CALC_YEARS_MEAN;j++){
+                    if((rout.reservoirs[i].inflow_natural[j] = malloc(MONTHS_PER_YEAR * sizeof(*rout.reservoirs[i].inflow_natural[j])))==NULL){
+                        log_err("Memory allocation error!");                       
+                    }
+                }
+            }else{
+                log_err("Memory allocation error!");     
+            }
+        }else{
+            if((rout.reservoirs[i].inflow_natural = malloc(RES_CALC_YEARS_MEAN * sizeof(*rout.reservoirs[i].inflow_natural)))!=NULL){
+                for(j=0;j<RES_CALC_YEARS_MEAN;j++){
+                    if((rout.reservoirs[i].inflow_natural[j] = malloc(0))==NULL){
+                        log_err("Memory allocation error!");                       
+                    }
+                }
+            }else{
+                log_err("Memory allocation error!");     
+            }
+        }
+        
+        //Initialize all reservoir values
         for(y=0;y<RES_CALC_YEARS_MEAN;y++){
             for(m=0;m<MONTHS_PER_YEAR;m++){
                 rout.reservoirs[i].inflow[y][m] = 0.0;
                 rout.reservoirs[i].demand[y][m] = 0.0;
+                if(rout.naturalized_flow){
+                    rout.reservoirs[i].inflow_natural[y][m]=0.0;
+                }
                 
             }
         }
@@ -553,8 +682,16 @@ void set_reservoirs(){
         rout.reservoirs[i].nr_serviced_cells = 0;
         rout.reservoirs[i].current_demand = 0.0;
         rout.reservoirs[i].current_inflow = 0.0;
+        rout.reservoirs[i].current_inflow_natural = 0.0;
         
-        rout.reservoirs[i].added_water=0.0;
+        rout.reservoirs[i].target_release = 0.0;
+        
+        rout.reservoirs[i].monthly_demand=0.0;
+        rout.reservoirs[i].monthly_inflow=0.0;
+        rout.reservoirs[i].monthly_inflow_natural=0.0;
+        rout.reservoirs[i].annual_demand=0.0;
+        rout.reservoirs[i].annual_inflow=0.0;
+        rout.reservoirs[i].annual_inflow_natural=0.0;
         
         rout.reservoirs[i].current_storage= rout.reservoirs[i].storage_capacity * RES_PREF_STORAGE; //preferred storage level for the start of the operational year (Hanasaki et al., 2006)
         rout.reservoirs[i].storage_start_operation = rout.reservoirs[i].current_storage;
@@ -569,8 +706,8 @@ void set_reservoirs(){
     
     rout.nr_reservoirs=i;
     
-    log_info("%zu reservoirs found INSIDE area and time of interest",rout.nr_reservoirs);
-    if(rout_options.debug_mode){        
+    log_info("%zu reservoirs found inside area and time of interest",rout.nr_reservoirs);
+    if(rout.fdebug_mode){        
         fprintf(LOG_DEST, "Current Routing Reservoirs\n");
         for(i=0;i<rout.nr_reservoirs;i++){
             fprintf(LOG_DEST, "RESERVOIR %zu\t%s\t(file-id %zu):\tyear %d\tcapacity %.1f\tpurpose %zu\n",
@@ -584,25 +721,91 @@ void set_reservoirs(){
     
     free(reservoir_temp);
 }
+
+void set_naturalized_routing(){
+    /* This function determines whether natural routing is done
+     * 
+     * It does so by checking if reservoirs are found in serie,
+     * meaning one reservoir discharges into another reservoir.
+     * If so the inflow of a reservoir is influenced by the outflow
+     * of other reservoirs, which hinders the environmental flow
+     * calculations (percentage of natural flow). Therefore the 
+     * routing options are set to calculate naturalized flows
+     * as well.    
+     */
+    extern rout_struct rout;
+    extern rout_struct rout;
     
-void set_reservoir_service(){ 
+    size_t i;
+    rout_cell* current_cell;    
+    
+    if(!rout.freservoirs){
+        return;
+    }
+    
+    for(i=0;i<rout.nr_reservoirs;i++){
+        current_cell = rout.reservoirs[i].cell;
+        
+        while(current_cell->downstream!=NULL && current_cell->downstream!=current_cell){
+            //Follow the reservoir downstream 
+            
+            current_cell = current_cell->downstream;
+            if(current_cell->reservoir!=NULL){
+                log_info("Reservoirs are found in serie and therefore routing is done twice. "
+                        "Second routing calculates natural streamflow "
+                        "which is needed for environmental flow calculation");
+                if(rout.fdebug_mode){
+                    fprintf(LOG_DEST, "Reservoir %s is in serie with reservoir %s\n",
+                            rout.reservoirs[i].name,current_cell->reservoir->name);
+                }
+                rout.naturalized_flow=true;
+                return;
+            }
+        }
+    }
+}
+    
+void set_reservoir_service(){
+    /* The function determines the cells each reservoir supplies with water
+     * 
+     * It does so by finding each irrigated cell within the irrigation
+     * distance and below the reservoir elevation.
+     * Cells also get a pointer to their servicing reservoir
+     * which is calculated later.     
+     */
     extern rout_struct rout;
     extern soil_con_struct *soil_con;
     extern domain_struct global_domain;
-    extern rout_options_struct rout_options;
-    
-    //Allocate temporary files used for information transfer    
-    rout_cell **irrigated_cells_temp;
-    reservoir_unit*** service_res_temp;
-    rout_cell*** service_cell_temp;
+    extern rout_struct rout;
+      
     size_t nr_irrigated_cells=0;
-    
-    if((irrigated_cells_temp = malloc(global_domain.ncells_active * sizeof(*irrigated_cells_temp)))==NULL){
-        log_err("Memory allocation error!");
-    }
-    
+    rout_cell **irrigated_cells_temp;
+    rout_cell*** service_cell_temp;
+        
     size_t i;
     size_t j;
+    size_t k;
+    
+    if(!rout.freservoirs){
+        return;
+    }
+    
+    if(!rout.firrigation){
+        for(i=0;i<rout.nr_reservoirs;i++){
+            rout.reservoirs[i].serviced_cells=malloc(0);
+            check_alloc_status(rout.reservoirs[i].serviced_cells,"Memory allocation error.");
+            rout.reservoirs[i].cell_demand=malloc(0);
+            check_alloc_status(rout.reservoirs[i].cell_demand,"Memory allocation error.");
+            rout.reservoirs[i].prev_soil_moisture=malloc(0);
+            check_alloc_status(rout.reservoirs[i].prev_soil_moisture,"Memory allocation error.");
+            
+        }
+    }
+    
+    irrigated_cells_temp = malloc(global_domain.ncells_active * sizeof(*irrigated_cells_temp));
+    check_alloc_status(irrigated_cells_temp,"Memory allocation error");
+    
+    //Find irrigated cells
     for(i=0;i<global_domain.ncells_active;i++){
         if(rout.cells[i].irrigate){
             irrigated_cells_temp[nr_irrigated_cells]=&rout.cells[i];
@@ -610,32 +813,15 @@ void set_reservoir_service(){
         }
     }
     
-    if((service_res_temp = malloc(nr_irrigated_cells * sizeof(*service_res_temp)))!=NULL){
-        for(i=0;i<nr_irrigated_cells;i++){
-            if((service_res_temp[i] = malloc(CELL_MAX_SERVICE * sizeof(*service_res_temp[i])))==NULL){
-                log_err("Memory allocation error!");
-            }
-        }
-    }else{
-        log_err("Memory allocation error!");
-    }
-    if((service_cell_temp = malloc(rout.nr_reservoirs * sizeof(*service_cell_temp)))!=NULL){
-        for(i=0;i<rout.nr_reservoirs;i++){
-            if((service_cell_temp[i] = malloc(RES_MAX_SERVICE * sizeof(*service_cell_temp[i])))==NULL){
-                log_err("Memory allocation error!");
-            }
-        }
-    }else{
-        log_err("Memory allocation error!");
-    }
-   
+    service_cell_temp = malloc(rout.nr_reservoirs * sizeof(*service_cell_temp));
+    check_alloc_status(service_cell_temp,"Memory allocation error.");
+    
     for(i=0;i<rout.nr_reservoirs;i++){
-        //For each reservoir, if their function is irrigation and
-        //their service does not exceed their maximum service
-        //find all cells that need irrigation, are below reservoir elevation,
-        //do not already have the maximum number of servicing reservoirs
-        //and are within irrigation distance
-        
+        service_cell_temp[i] = malloc(RES_MAX_SERVICE * sizeof(*service_cell_temp[i]));
+        check_alloc_status(service_cell_temp[i],"Memory allocation error.");
+    }
+
+    for(i=0;i<rout.nr_reservoirs;i++){        
         if(rout.reservoirs[i].function!=RES_IRR_FUNCTION){
             continue;
         }
@@ -644,7 +830,7 @@ void set_reservoir_service(){
             log_warn("a cell is not added to reservoir %zu because of maximum service capacity in reservoir",rout.reservoirs[i].id);
             continue;
         }
-
+        
         for(j=0;j<nr_irrigated_cells;j++){
              
              if(irrigated_cells_temp[j]->nr_servicing_reservoirs >= CELL_MAX_SERVICE){
@@ -656,64 +842,77 @@ void set_reservoir_service(){
                 continue;
             }
 
-            if(distance(irrigated_cells_temp[j],rout.reservoirs[i].cell)>rout_options.max_distance_irr){
+            if(distance(irrigated_cells_temp[j],rout.reservoirs[i].cell)>rout.max_distance_irr){
                 continue;
             }
              
-            service_res_temp[j][irrigated_cells_temp[j]->nr_servicing_reservoirs]=&rout.reservoirs[i];
             service_cell_temp[i][rout.reservoirs[i].nr_serviced_cells]=irrigated_cells_temp[j];
-
-            irrigated_cells_temp[j]->nr_servicing_reservoirs++;          
+            
             rout.reservoirs[i].nr_serviced_cells++;
+            irrigated_cells_temp[j]->nr_servicing_reservoirs++;
         }
     }
     
+    for(i=0;i<global_domain.ncells_active;i++){
+        //Allocate cell values based on number of servicing reservoirs
+        
+        if((rout.cells[i].servicing_reservoirs = malloc(rout.cells[i].nr_servicing_reservoirs * sizeof(*rout.cells[i].servicing_reservoirs)))==NULL){
+            log_err("Memory allocation error!");            
+        }
+        
+        for(j=0;j<rout.cells[i].nr_servicing_reservoirs;j++){
+            rout.cells[i].servicing_reservoirs[j]=NULL;
+        }
+    }
     
     for(i=0;i<rout.nr_reservoirs;i++){
         //Allocate reservoir values based on number of serviced cells
         
-        if((rout.reservoirs[i].serviced_cells = malloc(rout.reservoirs[i].nr_serviced_cells * sizeof(*rout.reservoirs[i].serviced_cells)))==NULL){
-            log_err("Memory allocation error!");            
+        rout.reservoirs[i].serviced_cells = malloc(rout.reservoirs[i].nr_serviced_cells * sizeof(*rout.reservoirs[i].serviced_cells));
+        check_alloc_status(rout.reservoirs[i].serviced_cells,"Memory allocation error.");
+        
+        rout.reservoirs[i].cell_demand = malloc(rout.reservoirs[i].nr_serviced_cells * sizeof(*rout.reservoirs[i].cell_demand));
+        check_alloc_status(rout.reservoirs[i].cell_demand,"Memory allocation error.");
+        
+        for(j=0;j<rout.reservoirs[i].nr_serviced_cells;j++){
+            rout.reservoirs[i].cell_demand[j] = malloc(service_cell_temp[i][j]->nr_crop_class * sizeof(*rout.reservoirs[i].cell_demand[j]));
+            check_alloc_status(rout.reservoirs[i].cell_demand[j],"Memory allocation error.");
         }
-        if((rout.reservoirs[i].cell_demand = malloc(rout.reservoirs[i].nr_serviced_cells * sizeof(*rout.reservoirs[i].cell_demand)))==NULL){
-            log_err("Memory allocation error!");            
+        
+        rout.reservoirs[i].prev_soil_moisture = malloc(rout.reservoirs[i].nr_serviced_cells * sizeof(*rout.reservoirs[i].prev_soil_moisture));
+        check_alloc_status(rout.reservoirs[i].prev_soil_moisture,"Memory allocation error.");
+        
+        for(j=0;j<rout.reservoirs[i].nr_serviced_cells;j++){
+            rout.reservoirs[i].prev_soil_moisture[j] = malloc(service_cell_temp[i][j]->nr_crop_class * sizeof(*rout.reservoirs[i].prev_soil_moisture[j]));
+            check_alloc_status(rout.reservoirs[i].prev_soil_moisture[j],"Memory allocation error.");
         }
         
         for(j=0;j<rout.reservoirs[i].nr_serviced_cells;j++){
             rout.reservoirs[i].serviced_cells[j]=service_cell_temp[i][j];
-            rout.reservoirs[i].cell_demand[j]=0.0;
-        }
-    }
-    
-    size_t c;
-    i=0;
-    for(c=0;c<global_domain.ncells_active;c++){
-        if(rout.cells[c].irrigate){
-            //Allocate cell values based on number of servicing reservoirs
             
-            if((irrigated_cells_temp[i]->servicing_reservoirs = malloc(irrigated_cells_temp[i]->nr_servicing_reservoirs * sizeof(*irrigated_cells_temp[i]->servicing_reservoirs)))==NULL){
-                log_err("Memory allocation error!");
+            for(k=0;k<rout.reservoirs[i].serviced_cells[j]->nr_crop_class;k++){
+                rout.reservoirs[i].cell_demand[j][k]=0.0;
             }
-
-            for(j=0;j<irrigated_cells_temp[i]->nr_servicing_reservoirs;j++){
-                irrigated_cells_temp[i]->servicing_reservoirs[j]=service_res_temp[i][j];
+            
+            for(k=0;k<service_cell_temp[i][j]->nr_crop_class;k++){
+                rout.reservoirs[i].prev_soil_moisture[j][k]=0.0;
             }
-            i++;
-        }else{
-            if((rout.cells[c].servicing_reservoirs=malloc(0))==NULL){
-                log_err("Memory allocation error!");
+            
+            for(k=0;k<rout.reservoirs[i].serviced_cells[j]->nr_servicing_reservoirs;k++){
+                if(rout.reservoirs[i].serviced_cells[j]->servicing_reservoirs[k]==NULL){
+                    //Add reservoirs to cells
+                    
+                    rout.reservoirs[i].serviced_cells[j]->servicing_reservoirs[k] = &rout.reservoirs[i];
+                    break;
+                }
             }
         }
     }
-    
-    for(i=0;i<nr_irrigated_cells;i++){
-        free(service_res_temp[i]);
-    }
+            
     for(i=0;i<rout.nr_reservoirs;i++){
        free(service_cell_temp[i]);
     }
     free(service_cell_temp);
-    free(service_res_temp);
     free(irrigated_cells_temp);
 }
 
@@ -874,7 +1073,7 @@ void make_uh_file(char file_path[], char file_name[]){
     extern rout_struct rout;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
-    extern rout_options_struct rout_options;
+    extern rout_struct rout;
     
     size_t path_length = strlen(file_path);
     size_t file_length = strlen(file_name);
@@ -895,7 +1094,7 @@ void make_uh_file(char file_path[], char file_name[]){
         size_t j;
         for(i=0;i<global_domain.ncells_active;i++){
             fprintf(file,"Cell = %zu -> ",rout.cells[i].id);
-            for(j=0;j<rout_options.max_days_uh * global_param.model_steps_per_day;j++){
+            for(j=0;j<rout.max_days_uh * global_param.model_steps_per_day;j++){
                 fprintf(file,"%2f;",rout.cells[i].uh[j]);
                 sum+=rout.cells[i].uh[j];
             }
@@ -1085,6 +1284,54 @@ void make_nr_reservoir_service_file(char file_path[], char file_name[]){
                         if(rout.gridded_cells[x][y-1]->nr_servicing_reservoirs < 10){
                             fprintf(file,"  ;");
                         }else if(rout.gridded_cells[x][y-1]->nr_servicing_reservoirs < 100){
+                            fprintf(file," ;");
+                        }else{
+                            fprintf(file,";");
+                        }
+                    }else{
+                    fprintf(file," XX;");
+                    }
+                }else{
+                    fprintf(file,"   ;");            
+                }
+            }
+            fprintf(file,"\n");
+        }
+        fclose(file);
+    }
+}
+
+void make_nr_crops_file(char file_path[], char file_name[]){
+    //makes a file with the number of servicing reservoirs of every cell in a grid
+    //cells without irrigated vegetation are shown as XX
+    
+    extern rout_struct rout;
+    extern domain_struct global_domain;
+    
+    size_t path_length = strlen(file_path);
+    size_t file_length = strlen(file_name);
+    if(path_length+file_length >= MAXSTRING-1){
+        log_info("Debug file path and name (%zu + %zu) is too large for buffer (%d)",path_length,file_length,MAXSTRING);
+        return;
+    }
+    
+    FILE *file;
+    char full_path [MAXSTRING];
+    strcpy(full_path, file_path);
+    strcat(full_path, file_name);
+    strcat(full_path, ".txt");
+    
+    if((file = fopen(full_path, "w"))!=NULL){
+        size_t x;
+        size_t y;
+        for(y=global_domain.n_ny;y>0;y--){
+            for(x=0;x<global_domain.n_nx;x++){
+                if(rout.gridded_cells[x][y-1]!=NULL){
+                    if(rout.gridded_cells[x][y-1]->irrigate){
+                        fprintf(file,"%zu",rout.gridded_cells[x][y-1]->nr_crop_class);
+                        if(rout.gridded_cells[x][y-1]->nr_crop_class < 10){
+                            fprintf(file,"  ;");
+                        }else if(rout.gridded_cells[x][y-1]->nr_crop_class < 100){
                             fprintf(file," ;");
                         }else{
                             fprintf(file,";");

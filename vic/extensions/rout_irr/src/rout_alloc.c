@@ -9,12 +9,7 @@
 #include <vic_run.h>
 #include <vic_driver_image.h>
 
-void rout_alloc(void){
-    extern rout_options_struct rout_options;
-    if(!rout_options.routing){
-        return;
-    }
-    
+void rout_alloc(void){    
     extern rout_struct rout;
     extern global_param_struct global_param;
     extern domain_struct global_domain;
@@ -55,11 +50,15 @@ void rout_alloc(void){
         rout.cells[i].reservoir=NULL;
         rout.cells[i].downstream=NULL;
                 
-        if((rout.cells[i].outflow = malloc(rout_options.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow)))==NULL){
+        if((rout.cells[i].outflow = malloc(rout.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow)))==NULL){
             log_err("Memory allocation for rout.cells[i].outflow failed!");
         }
-
-        if((rout.cells[i].uh = malloc(rout_options.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].uh)))==NULL){
+        
+        if((rout.cells[i].outflow_natural = malloc(rout.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow_natural)))==NULL){
+            log_err("Memory allocation for rout.cells[i].outflow failed!");
+        }
+        
+        if((rout.cells[i].uh = malloc(rout.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].uh)))==NULL){
             log_err("Memory allocation for rout.cells[i].uh failed!");
         }
     }

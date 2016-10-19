@@ -146,6 +146,11 @@ enum
     OUT_RES_IRR,
     OUT_IRR_DEMAND,
     OUT_RES_STORE,
+    OUT_NATURAL_DISCHARGE,
+    OUT_CROP_FRAC,
+    OUT_BARE_FRAC,
+    OUT_CROP_MOIST,
+    OUT_BARE_MOIST,
     OUT_BASEFLOW,         /**< baseflow out of the bottom layer  [mm] */
     OUT_DELINTERCEPT,     /**< change in canopy interception storage  [mm] */
     OUT_DELSOILMOIST,     /**< change in soil water content  [mm] */

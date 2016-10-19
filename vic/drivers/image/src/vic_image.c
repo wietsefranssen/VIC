@@ -66,7 +66,6 @@ double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 rout_struct         rout; // Routing routine (extension)
-rout_options_struct rout_options; // Routing routine (extension)
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model
@@ -167,11 +166,12 @@ main(int    argc,
     timer_stop(&(global_timers[TIMER_VIC_RUN]));
     // start vic final timer
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
+    
+    // clean up routing
+    rout_finalize();    // Routing routine (extension)
     // clean up
     vic_image_finalize();
 
-    // clean up routing
-    rout_finalize();    // Routing routine (extension)
 
     // finalize MPI
     status = MPI_Finalize();

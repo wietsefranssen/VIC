@@ -318,6 +318,15 @@ get_default_outvar_aggtype(unsigned int varid)
     case OUT_TFOL_FBFLAG:
         agg_type = AGG_TYPE_SUM;
         break;
+    case OUT_LOCAL_IRR:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_RES_IRR:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_IRR:
+        agg_type = AGG_TYPE_SUM;
+        break;
     default:
         agg_type = AGG_TYPE_AVG;
     }
