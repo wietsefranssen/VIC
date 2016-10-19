@@ -131,6 +131,13 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DISCHARGE].units, "m3 s-1");
     strcpy(out_metadata[OUT_DISCHARGE].description, "river discharge");
     
+    /* river natural discharge [m3 s-1] */
+    strcpy(out_metadata[OUT_NATURAL_DISCHARGE].varname, "OUT_NATURAL_DISCHARGE");
+    strcpy(out_metadata[OUT_NATURAL_DISCHARGE].long_name, "river_natural_discharge");
+    strcpy(out_metadata[OUT_NATURAL_DISCHARGE].standard_name, "river_natural_discharge");
+    strcpy(out_metadata[OUT_NATURAL_DISCHARGE].units, "m3 s-1");
+    strcpy(out_metadata[OUT_NATURAL_DISCHARGE].description, "river natural discharge");
+    
      /* irrigation [mm] */
     strcpy(out_metadata[OUT_LOCAL_IRR].varname, "OUT_LOCAL_IRR");
     strcpy(out_metadata[OUT_LOCAL_IRR].long_name, "local_irrigation_water");
@@ -165,7 +172,35 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_RES_STORE].standard_name, "current_reservoir_storage");
     strcpy(out_metadata[OUT_RES_STORE].units, "-");
     strcpy(out_metadata[OUT_RES_STORE].description, "fraction of reservoir storage after water is applied");
+    
+    /* reservoir current storage [m3] */
+    strcpy(out_metadata[OUT_CROP_FRAC].varname, "OUT_CROP_FRAC");
+    strcpy(out_metadata[OUT_CROP_FRAC].long_name, "total_crop_fraction");
+    strcpy(out_metadata[OUT_CROP_FRAC].standard_name, "total_crop_fraction");
+    strcpy(out_metadata[OUT_CROP_FRAC].units, "-");
+    strcpy(out_metadata[OUT_CROP_FRAC].description, "fraction of the cell covered in crops (changes with seasons)");
 
+    /* reservoir current storage [m3] */
+    strcpy(out_metadata[OUT_BARE_FRAC].varname, "OUT_BARE_FRAC");
+    strcpy(out_metadata[OUT_BARE_FRAC].long_name, "total_bare_soil_fraction");
+    strcpy(out_metadata[OUT_BARE_FRAC].standard_name, "total_bare_soil_fraction");
+    strcpy(out_metadata[OUT_BARE_FRAC].units, "-");
+    strcpy(out_metadata[OUT_BARE_FRAC].description, "fraction of the cell covered in bare soil (changes with seasons)");
+
+    /* reservoir current storage [m3] */
+    strcpy(out_metadata[OUT_CROP_MOIST].varname, "OUT_CROP_MOIST");
+    strcpy(out_metadata[OUT_CROP_MOIST].long_name, "total_crop_soil_moisture");
+    strcpy(out_metadata[OUT_CROP_MOIST].standard_name, "total_crop_soil_moisture");
+    strcpy(out_metadata[OUT_CROP_MOIST].units, "-");
+    strcpy(out_metadata[OUT_CROP_MOIST].description, "fraction of the cell covered in bare soil (changes with seasons)");
+
+    /* reservoir current storage [m3] */
+    strcpy(out_metadata[OUT_BARE_MOIST].varname, "OUT_BARE_MOIST");
+    strcpy(out_metadata[OUT_BARE_MOIST].long_name, "total_bare_soil_moisture");
+    strcpy(out_metadata[OUT_BARE_MOIST].standard_name, "total_bare_soil_moisture");
+    strcpy(out_metadata[OUT_BARE_MOIST].units, "-");
+    strcpy(out_metadata[OUT_BARE_MOIST].description, "fraction of the cell covered in bare soil (changes with seasons)");
+    
     /* volumetric liquid water equivalent of snow on top of lake ice [m3] */
     strcpy(out_metadata[OUT_LAKE_SWE_V].varname, "OUT_LAKE_SWE_V");
     strcpy(out_metadata[OUT_LAKE_SWE_V].long_name, "lake_swe_v");

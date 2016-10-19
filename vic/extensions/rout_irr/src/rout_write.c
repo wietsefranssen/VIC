@@ -8,9 +8,4 @@
 #include <rout.h>
 
 void rout_write(void){
-    extern rout_options_struct rout_options;
-    
-    if(!rout_options.routing){
-        return;
-    }
 }

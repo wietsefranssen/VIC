@@ -130,7 +130,7 @@ vic_alloc(void)
             veg_con_map[i].nv_active += 1;
         }
 
-        veg_con[i] = malloc((veg_con_map[i].nv_active) * sizeof(*(veg_con[i])));
+        veg_con[i] = malloc((veg_con_map[i].nv_active + 1) * sizeof(*(veg_con[i])));
         check_alloc_status(veg_con[i], "Memory allocation error.");
 
         for (j = 0; j < veg_con_map[i].nv_active; j++) {

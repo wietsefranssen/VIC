@@ -12,26 +12,11 @@
 void
 rout_start(void)
 {
-    extern global_param_struct global_param;
-    extern rout_struct rout;
-    extern rout_options_struct rout_options;
+    extern option_struct options;
+        
+    size_t temp_crop_class[options.NVEGTYPES];
     
-    //Initialize resolution, currently not done by VIC
-    //FIXME: should be user-adjustable or integrated in VIC
-    global_param.resolution=VIC_RESOLUTION;
-    
-    //Initialize routing parameters
-    rout_options.routing = false;
-    rout_options.reservoirs = false;
-    rout_options.debug_mode = false;
-    rout_options.irrigation = false;
-    rout.param_filename[0]=0;
-    rout.debug_path[0]=0;
-    rout.reservoir_filename[0]=0;
-    rout_options.max_days_uh=MAX_DAYS_UH;
-    rout_options.flow_velocity_uh=FLOW_VELOCITY_UH;
-    rout_options.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
-    rout_options.max_distance_irr=MAX_DISTANCE_IRR;
+    initialize_routing_options();
     
     //Get routing parameters from global parameter file
     extern filenames_struct filenames;
@@ -39,24 +24,65 @@ rout_start(void)
     extern int              mpi_rank;
     if (mpi_rank == VIC_MPI_ROOT) {
         filep.globalparam = open_file(filenames.global, "r");
-        get_global_param_rout(filep.globalparam);
+        get_global_param_rout(filep.globalparam,temp_crop_class);
     }
     
     //Check for unrealistic routing options
-    check_routing_options();
+    check_routing_options(temp_crop_class);
     
     //Display routing options
     display_routing_options();
 }
 
 void
-get_global_param_rout(FILE *gp)
+initialize_routing_options(void){
+    extern global_param_struct global_param;
+    extern rout_struct rout;
+    
+    //Initialize resolution, currently not done by VIC
+    //FIXME: should be user-adjustable or integrated in VIC
+    global_param.resolution=VIC_RESOLUTION;
+    
+    //Initialize routing parameters
+    rout.firrigation = false;
+    rout.freservoirs = false;
+    rout.fdebug_mode = false;
+    
+    rout.param_filename[0]=0;
+    rout.debug_path[0]=0;
+    rout.reservoir_filename[0]=0;
+    
+    rout.fuh_file=false;
+    
+    rout.max_days_uh=MAX_DAYS_UH;
+    rout.flow_velocity_uh=FLOW_VELOCITY_UH;
+    rout.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+    rout.max_distance_irr=MAX_DISTANCE_IRR;
+    rout.naturalized_flow=true;
+    
+    rout.crop_developed=CROP_DATE_DEFAULT;
+    rout.crop_end=CROP_DATE_DEFAULT;
+    rout.crop_late=CROP_DATE_DEFAULT;
+    rout.crop_start=CROP_DATE_DEFAULT;
+    
+    rout.nr_crop_classes=0;
+}
+
+void
+get_global_param_rout(FILE *gp, size_t temp_crop_class[])
 {
     extern rout_struct rout;
-    extern rout_options_struct rout_options;
+    extern option_struct options;
+    
     char               cmdstr[MAXSTRING];
     char               optstr[MAXSTRING];
     char               flgstr[MAXSTRING];
+    
+    size_t class;
+    bool duplicate;
+    char source[MAXSTRING];
+    
+    size_t i;
 
     rewind(gp);
     fgets(cmdstr, MAXSTRING, gp);
@@ -72,21 +98,17 @@ get_global_param_rout(FILE *gp)
             }
 
             //Get routing parameters
-            if (strcasecmp("ROUTING", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", flgstr);
-                rout_options.routing=str_to_bool(flgstr);
-            }
             if (strcasecmp("IRRIGATION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout_options.irrigation=str_to_bool(flgstr);
+                rout.firrigation=str_to_bool(flgstr);
             }
             if (strcasecmp("RESERVOIRS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout_options.reservoirs=str_to_bool(flgstr);
+                rout.freservoirs=str_to_bool(flgstr);
             }
             if (strcasecmp("ROUTING_DEBUG_MODE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout_options.debug_mode=str_to_bool(flgstr);
+                rout.fdebug_mode=str_to_bool(flgstr);
             }
             if (strcasecmp("ROUT_PARAM", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", rout.param_filename);
@@ -98,99 +120,165 @@ get_global_param_rout(FILE *gp)
                 sscanf(cmdstr, "%*s %s", rout.debug_path);
             }
             if (strcasecmp("ROUT_UH_MAX_DAYS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %zu", &rout_options.max_days_uh);
+                sscanf(cmdstr, "%*s %zu", &rout.max_days_uh);
             }
             if (strcasecmp("ROUT_UH_FLOW_VELOCITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &rout_options.flow_velocity_uh);
+                sscanf(cmdstr, "%*s %lf", &rout.flow_velocity_uh);
             }
             if (strcasecmp("ROUT_UH_FLOW_DIFFUSIVITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &rout_options.flow_diffusivity_uh);
+                sscanf(cmdstr, "%*s %lf", &rout.flow_diffusivity_uh);
             }
             if (strcasecmp("ROUT_IRR_MAX_DISTANCE", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &rout_options.max_distance_irr);
+                sscanf(cmdstr, "%*s %lf", &rout.max_distance_irr);
+            }
+            if (strcasecmp("ROUT_UH_PARAM", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", source);
+                if(strcmp(source,"FROM_PARAM_FILE")==0){
+                    rout.fuh_file=true;
+                }
+            }
+            if (strcasecmp("CROP_START", optstr) == 0) {
+                sscanf(cmdstr, "%*s %d", &rout.crop_start);
+            }
+            if (strcasecmp("CROP_DEVELOPED", optstr) == 0) {
+                sscanf(cmdstr, "%*s %d", &rout.crop_developed);
+            }
+            if (strcasecmp("CROP_LATE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %d", &rout.crop_late);
+            }
+            if (strcasecmp("CROP_END", optstr) == 0) {
+                sscanf(cmdstr, "%*s %d", &rout.crop_end);
+            }
+            if (strcasecmp("CROP_CLASS", optstr) == 0) {
+                class=0;
+                sscanf(cmdstr, "%*s %zu", &class);
+                
+                if(rout.nr_crop_classes>=options.NVEGTYPES){
+                    log_warn("More crop classes given than available vegetation classes, skipping class %zu",class);
+                }else if(class>options.NVEGTYPES){
+                    log_warn("Crop class %zu is not an available vegetation class, skipping class %zu",class,class);
+                }else{
+                    duplicate=false;
+                    for(i=0;i<rout.nr_crop_classes;i++){
+                        if(temp_crop_class[i]==class-1){
+                            duplicate=true;
+                        }
+                    }
+                    
+                    if(duplicate){
+                        log_warn("Crop class %zu has already been assigned as a crop, removing duplicate",class);
+                    }else{
+                        temp_crop_class[rout.nr_crop_classes]=class-1;
+                        rout.nr_crop_classes++;
+                    }
+                }
             }
         }
         fgets(cmdstr, MAXSTRING, gp);
     }
 }
 
-void check_routing_options(){
-    extern rout_options_struct rout_options;
+void check_routing_options(size_t temp_crop_class[]){
+    extern rout_struct rout;
     extern rout_struct rout;
     
-    if(rout_options.routing){
-        if(rout.param_filename[0]==0){
-            log_warn("No routing input files, but routing is selected. Setting ROUTING to FALSE..."); 
-            rout_options.routing=false;
-        }
-    }else{
-        if(rout_options.irrigation){
-            log_warn("Irrigation is selected, but routing is not selected. Setting IRRIGATION to FALSE...");
-            rout_options.irrigation=false; 
-        }
-        if(rout_options.reservoirs){
-            log_warn("Reservoirs is selected, but routing is not selected. Setting RESERVOIRS to FALSE..."); 
-            rout_options.reservoirs=false;
-        }
-    } 
+    size_t i;
     
-    if(rout_options.reservoirs){
+    if(rout.param_filename[0]==0){
+        log_err("No routing input files, exiting simulation...");
+    } 
+    if(rout.firrigation){
+        if(rout.nr_crop_classes==0){
+            log_warn("No crop classes given, but irrigation is selected. Setting IRRIGATION to FALSE...");
+            rout.firrigation=false;
+        }
+    }
+    if(rout.freservoirs){
         if(rout.reservoir_filename[0]==0){
             log_warn("No reservoir input files, but reservoirs is selected. Setting RESERVOIRS to FALSE..."); 
-            rout_options.reservoirs=false;
+            rout.freservoirs=false;
         }
     }
-    if(rout_options.debug_mode){
+    if(rout.fdebug_mode){
         if(rout.debug_path[0]==0){
             log_warn("No debug output path, but debug is selected. Setting ROUTING_DEBUG_MODE to FALSE..."); 
-            rout_options.debug_mode=false;
+            rout.fdebug_mode=false;
         }
     }
-    if(rout_options.max_days_uh<1){
+    
+    if(rout.max_days_uh<1){
         log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting ROUT_UH_MAX_DAYS to %d",MAX_DAYS_UH); 
-            rout_options.max_days_uh=MAX_DAYS_UH;
+            rout.max_days_uh=MAX_DAYS_UH;
     }
-    if(rout_options.flow_velocity_uh<=0){
+    if(rout.flow_velocity_uh<=0){
         log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting ROUT_UH_FLOW_VELOCITY to %.2f",FLOW_VELOCITY_UH); 
-            rout_options.flow_velocity_uh=FLOW_VELOCITY_UH;
+            rout.flow_velocity_uh=FLOW_VELOCITY_UH;
     }
-    if(rout_options.flow_diffusivity_uh<=0){
+    if(rout.flow_diffusivity_uh<=0){
         log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting ROUT_UH_FLOW_DIFFUSIVITY to %.2f",FLOW_DIFFUSIVITY_UH); 
-            rout_options.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+            rout.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
     }
-    if(rout_options.max_distance_irr<=0){
+    if(rout.max_distance_irr<=0){
         log_warn("IRR_MAX_DISTANCE was smaller than or equal to 0. Setting IRR_MAX_DISTANCE to %.1f",MAX_DISTANCE_IRR); 
-            rout_options.max_distance_irr=MAX_DISTANCE_IRR;
+            rout.max_distance_irr=MAX_DISTANCE_IRR;
+    }
+    if(rout.crop_developed<=0 || rout.crop_developed>365 ||
+            rout.crop_late<=0 || rout.crop_late>365 ||
+            rout.crop_end<=0 || rout.crop_developed>365 ||
+            rout.crop_start<=0 || rout.crop_start>365){
+        log_warn("Crop growing days were outside of a realistic range. Setting all CROP dates to %d",CROP_DATE_DEFAULT); 
+            
+        rout.crop_developed=CROP_DATE_DEFAULT;
+        rout.crop_end=CROP_DATE_DEFAULT;
+        rout.crop_late=CROP_DATE_DEFAULT;
+        rout.crop_start=CROP_DATE_DEFAULT;
+    }
+    
+    rout.crop_class=malloc(rout.nr_crop_classes * sizeof(rout.crop_class));
+    check_alloc_status(rout.crop_class,"Memory allocation error.");
+    
+    for(i=0;i<rout.nr_crop_classes;i++){
+        rout.crop_class[i]=temp_crop_class[i];
     }
 }
 
 void display_routing_options(){
-    extern rout_options_struct rout_options;
-
+    extern rout_struct rout;
+    
+    size_t i;
+    
     fprintf(LOG_DEST, "Current Routing Settings\n");
-    if(rout_options.routing){
-        fprintf(LOG_DEST, "ROUTING\t\t\t\tTRUE\n");
-    }else{
-        fprintf(LOG_DEST, "ROUTING\t\t\t\tFALSE\n");
-    }
-    if(rout_options.irrigation){
+    if(rout.firrigation){
         fprintf(LOG_DEST, "IRRIGATION\t\t\tTRUE\n");
     }else{
         fprintf(LOG_DEST, "IRRIGATION\t\t\tFALSE\n");
     }
-    if(rout_options.reservoirs){
+    if(rout.freservoirs){
         fprintf(LOG_DEST, "RESERVOIRS\t\t\tTRUE\n");
     }else{
         fprintf(LOG_DEST, "RESERVOIRS\t\t\tFALSE\n");
     }
-    if(rout_options.debug_mode){
+    if(rout.fdebug_mode){
         fprintf(LOG_DEST, "ROUTING_DEBUG_MODE\t\tTRUE\n");
     }else{
         fprintf(LOG_DEST, "ROUTING_DEBUG_MODE\t\tFALSE\n");
     }
-    fprintf(LOG_DEST, "ROUT_UH_MAX_DAYS\t\t%zu\n",rout_options.max_days_uh);
-    fprintf(LOG_DEST, "ROUT_UH_FLOW_VELOCITY\t\t%.2f\n",rout_options.flow_velocity_uh);
-    fprintf(LOG_DEST, "ROUT_UH_FLOW_DIFFUSIVITY\t%.1f\n",rout_options.flow_diffusivity_uh);
-    fprintf(LOG_DEST, "ROUT_IRR_MAX_DISTANCE\t\t%.1f\n",rout_options.max_distance_irr);
+    if(rout.fuh_file){
+        fprintf(LOG_DEST, "ROUT_UH_PARAM\t\t\tFROM_PARAM_FILE\n");
+    }else{
+        fprintf(LOG_DEST, "ROUT_UH_PARAM\t\t\tFROM_DEFAULT\n");
+        fprintf(LOG_DEST, "ROUT_UH_MAX_DAYS\t\t%zu\n",rout.max_days_uh);
+        fprintf(LOG_DEST, "ROUT_UH_FLOW_VELOCITY\t\t%.2f\n",rout.flow_velocity_uh);
+        fprintf(LOG_DEST, "ROUT_UH_FLOW_DIFFUSIVITY\t%.1f\n",rout.flow_diffusivity_uh);
+        fprintf(LOG_DEST, "ROUT_IRR_MAX_DISTANCE\t\t%.1f\n",rout.max_distance_irr);
+    }
+    fprintf(LOG_DEST, "CROP_START\t\t\t%d\n",rout.crop_start);
+    fprintf(LOG_DEST, "CROP_DEVELOPED\t\t\t%d\n",rout.crop_developed);
+    fprintf(LOG_DEST, "CROP_LATE\t\t\t%d\n",rout.crop_late);
+    fprintf(LOG_DEST, "CROP_END\t\t\t%d\n",rout.crop_end);
+    fprintf(LOG_DEST, "NR_CROP_CLASSES\t\t\t%zu\n",rout.nr_crop_classes);
+    for(i=0;i<rout.nr_crop_classes;i++){
+        fprintf(LOG_DEST, "CROP_CLASS\t\t\t%zu\n",rout.crop_class[i]);
+    }
     fprintf(LOG_DEST, "\n");
 }

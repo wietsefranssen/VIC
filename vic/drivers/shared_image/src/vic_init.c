@@ -1096,7 +1096,7 @@ vic_init(void)
     for (i = 0; i < local_domain.ncells_active; i++) {
         k = 0;
         for (j = 0; j < options.NVEGTYPES; j++) {
-            if (veg_con_map[i].Cv[j] > 0) {
+            if (veg_con_map[i].Cv[j] > 0 || j==options.NVEGTYPES-1) {
                 veg_con_map[i].vidx[j] = k;
                 veg_con[i][k].Cv = veg_con_map[i].Cv[j];
                 veg_con[i][k].veg_class = j;
