@@ -159,12 +159,47 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_IRR].units, "mm");
     strcpy(out_metadata[OUT_IRR].description, "irrigation water total");
     
+     /* irrigation [mm] */
+    strcpy(out_metadata[OUT_LOCAL_IRR_M3].varname, "OUT_LOCAL_IRR_M3");
+    strcpy(out_metadata[OUT_LOCAL_IRR_M3].long_name, "local_irrigation_water_m3");
+    strcpy(out_metadata[OUT_LOCAL_IRR_M3].standard_name, "local_irrigation_water_m3");
+    strcpy(out_metadata[OUT_LOCAL_IRR_M3].units, "m3");
+    strcpy(out_metadata[OUT_LOCAL_IRR_M3].description, "irrigation water from local runoff or river");
+   
+     /* irrigation [mm] */
+    strcpy(out_metadata[OUT_RES_IRR_M3].varname, "OUT_RES_IRR_M3");
+    strcpy(out_metadata[OUT_RES_IRR_M3].long_name, "reservoir_irrigation_water_m3");
+    strcpy(out_metadata[OUT_RES_IRR_M3].standard_name, "reservoir_irrigation_water_m3");
+    strcpy(out_metadata[OUT_RES_IRR_M3].units, "m3");
+    strcpy(out_metadata[OUT_RES_IRR_M3].description, "irrigation water from reservoir");
+       
+    /* irrigation [mm] */
+    strcpy(out_metadata[OUT_IRR_M3].varname, "OUT_IRR_M3");
+    strcpy(out_metadata[OUT_IRR_M3].long_name, "irrigation_water_m3");
+    strcpy(out_metadata[OUT_IRR_M3].standard_name, "irrigation_water_m3");
+    strcpy(out_metadata[OUT_IRR_M3].units, "m3");
+    strcpy(out_metadata[OUT_IRR_M3].description, "irrigation water total");
+    
     /* irrigation demand [mm] */
-    strcpy(out_metadata[OUT_IRR_DEMAND].varname, "OUT_IRR_DEMAND");
-    strcpy(out_metadata[OUT_IRR_DEMAND].long_name, "irrigation_water_demand");
-    strcpy(out_metadata[OUT_IRR_DEMAND].standard_name, "irrigation_water_demand");
-    strcpy(out_metadata[OUT_IRR_DEMAND].units, "mm");
-    strcpy(out_metadata[OUT_IRR_DEMAND].description, "irrigation water demand before water is applied");
+    strcpy(out_metadata[OUT_DEMAND_START].varname, "OUT_DEMAND_START");
+    strcpy(out_metadata[OUT_DEMAND_START].long_name, "irrigation_water_demand_start");
+    strcpy(out_metadata[OUT_DEMAND_START].standard_name, "irrigation_water_demand_start");
+    strcpy(out_metadata[OUT_DEMAND_START].units, "mm");
+    strcpy(out_metadata[OUT_DEMAND_START].description, "irrigation water demand before water is applied");
+    
+    /* irrigation demand [mm] */
+    strcpy(out_metadata[OUT_DEMAND_RES].varname, "OUT_DEMAND_RES");
+    strcpy(out_metadata[OUT_DEMAND_RES].long_name, "irrigation_water_demand_reservoir");
+    strcpy(out_metadata[OUT_DEMAND_RES].standard_name, "irrigation_water_demand_reservoir");
+    strcpy(out_metadata[OUT_DEMAND_RES].units, "mm");
+    strcpy(out_metadata[OUT_DEMAND_RES].description, "irrigation water demand after local water is applied");
+    
+    /* irrigation demand [mm] */
+    strcpy(out_metadata[OUT_DEMAND_END].varname, "OUT_DEMAND_END");
+    strcpy(out_metadata[OUT_DEMAND_END].long_name, "irrigation_water_demand_end");
+    strcpy(out_metadata[OUT_DEMAND_END].standard_name, "irrigation_water_demand_end");
+    strcpy(out_metadata[OUT_DEMAND_END].units, "mm");
+    strcpy(out_metadata[OUT_DEMAND_END].description, "irrigation water demand after water is applied");
     
     /* reservoir current storage [m3] */
     strcpy(out_metadata[OUT_RES_STORE].varname, "OUT_RES_STORE");

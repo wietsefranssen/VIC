@@ -327,6 +327,24 @@ get_default_outvar_aggtype(unsigned int varid)
     case OUT_IRR:
         agg_type = AGG_TYPE_SUM;
         break;
+    case OUT_LOCAL_IRR_M3:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_RES_IRR_M3:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_IRR_M3:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_DEMAND_START:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_DEMAND_RES:
+        agg_type = AGG_TYPE_SUM;
+        break;
+    case OUT_DEMAND_END:
+        agg_type = AGG_TYPE_SUM;
+        break;
     default:
         agg_type = AGG_TYPE_AVG;
     }
