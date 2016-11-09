@@ -13,6 +13,13 @@ void
 rout_start(void)
 {
     extern option_struct options;
+    extern rout_sa_struct rout_sa;
+    extern domain_struct global_domain;
+    
+    rout_sa.n_active=global_domain.ncells_active;
+    rout_sa.n_total=global_domain.ncells_total;
+    rout_sa.nx=global_domain.n_nx;
+    rout_sa.ny=global_domain.n_ny;
         
     size_t temp_crop_class[options.NVEGTYPES];
     
@@ -58,7 +65,7 @@ initialize_routing_options(void){
     rout.flow_velocity_uh=FLOW_VELOCITY_UH;
     rout.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
     rout.max_distance_irr=MAX_DISTANCE_IRR;
-    rout.naturalized_flow=true;
+    rout.fnaturalized_flow=false;
     
     rout.crop_developed=CROP_DATE_DEFAULT;
     rout.crop_end=CROP_DATE_DEFAULT;
@@ -109,6 +116,10 @@ get_global_param_rout(FILE *gp, size_t temp_crop_class[])
             if (strcasecmp("ROUTING_DEBUG_MODE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 rout.fdebug_mode=str_to_bool(flgstr);
+            }
+            if (strcasecmp("POTENTIAL_IRRIGATION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                rout.fpot_irrigation=str_to_bool(flgstr);
             }
             if (strcasecmp("ROUT_PARAM", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", rout.param_filename);
@@ -187,6 +198,16 @@ void check_routing_options(size_t temp_crop_class[]){
     if(rout.param_filename[0]==0){
         log_err("No routing input files, exiting simulation...");
     } 
+    if(rout.fpot_irrigation){
+        if(!rout.firrigation){
+            log_warn("No irrigation, but potential irrigation is selected. Setting POTENTIAL_IRRIGATION to FALSE...");
+            rout.fpot_irrigation=false;
+        }
+        if(rout.freservoirs){
+            log_warn("Reservoir irrigation, but potential irrigation is selected. Setting RESERVOIRS to FALSE...");
+            rout.freservoirs=false;
+        }
+    }
     if(rout.firrigation){
         if(rout.nr_crop_classes==0){
             log_warn("No crop classes given, but irrigation is selected. Setting IRRIGATION to FALSE...");
@@ -222,10 +243,10 @@ void check_routing_options(size_t temp_crop_class[]){
         log_warn("IRR_MAX_DISTANCE was smaller than or equal to 0. Setting IRR_MAX_DISTANCE to %.1f",MAX_DISTANCE_IRR); 
             rout.max_distance_irr=MAX_DISTANCE_IRR;
     }
-    if(rout.crop_developed<=0 || rout.crop_developed>365 ||
-            rout.crop_late<=0 || rout.crop_late>365 ||
-            rout.crop_end<=0 || rout.crop_developed>365 ||
-            rout.crop_start<=0 || rout.crop_start>365){
+    if(rout.crop_developed<=0 || rout.crop_developed>DAYS_PER_YEAR ||
+            rout.crop_late<=0 || rout.crop_late>DAYS_PER_YEAR ||
+            rout.crop_end<=0 || rout.crop_developed>DAYS_PER_YEAR ||
+            rout.crop_start<=0 || rout.crop_start>DAYS_PER_YEAR){
         log_warn("Crop growing days were outside of a realistic range. Setting all CROP dates to %d",CROP_DATE_DEFAULT); 
             
         rout.crop_developed=CROP_DATE_DEFAULT;
@@ -252,6 +273,11 @@ void display_routing_options(){
         fprintf(LOG_DEST, "IRRIGATION\t\t\tTRUE\n");
     }else{
         fprintf(LOG_DEST, "IRRIGATION\t\t\tFALSE\n");
+    }
+    if(rout.fpot_irrigation){
+        fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tTRUE\n");
+    }else{
+        fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tFALSE\n");
     }
     if(rout.freservoirs){
         fprintf(LOG_DEST, "RESERVOIRS\t\t\tTRUE\n");

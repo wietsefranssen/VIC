@@ -167,11 +167,11 @@ main(int    argc,
     // start vic final timer
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
     
-    // clean up routing
-    rout_finalize();    // Routing routine (extension)
     // clean up
     vic_image_finalize();
 
+    // clean up routing
+    rout_finalize();    // Routing routine (extension)
 
     // finalize MPI
     status = MPI_Finalize();
@@ -180,7 +180,7 @@ main(int    argc,
     }
 
     log_info("Completed running VIC %s", VIC_DRIVER);
-
+    
     // stop vic final timer
     timer_stop(&(global_timers[TIMER_VIC_FINAL]));
     // stop vic all timer
