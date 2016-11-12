@@ -76,7 +76,7 @@ vic_image_run(dmy_struct *dmy_current)
 
     // run routing over the domain
     rout_run(dmy_current);     // Routing routine (extension)
-    //rout_run();     // Routing routine (extension)
+    //rout_run();     // RVIC Routing routine
 
     for (i = 0; i < options.Noutstreams; i++) {
         agg_stream_data(&(output_streams[i]), dmy_current, out_data);

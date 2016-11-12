@@ -131,6 +131,13 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DISCHARGE].units, "m3 s-1");
     strcpy(out_metadata[OUT_DISCHARGE].description, "river discharge");
     
+    /* river discharge [m3 s-1] */
+    strcpy(out_metadata[OUT_RUNOFF_M3].varname, "OUT_RUNOFF_M3");
+    strcpy(out_metadata[OUT_RUNOFF_M3].long_name, "runoff");
+    strcpy(out_metadata[OUT_RUNOFF_M3].standard_name, "runoff");
+    strcpy(out_metadata[OUT_RUNOFF_M3].units, "m3");
+    strcpy(out_metadata[OUT_RUNOFF_M3].description, "runoff in m3");
+    
     /* river natural discharge [m3 s-1] */
     strcpy(out_metadata[OUT_NATURAL_DISCHARGE].varname, "OUT_NATURAL_DISCHARGE");
     strcpy(out_metadata[OUT_NATURAL_DISCHARGE].long_name, "river_natural_discharge");
@@ -142,63 +149,49 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_LOCAL_IRR].varname, "OUT_LOCAL_IRR");
     strcpy(out_metadata[OUT_LOCAL_IRR].long_name, "local_irrigation_water");
     strcpy(out_metadata[OUT_LOCAL_IRR].standard_name, "local_irrigation_water");
-    strcpy(out_metadata[OUT_LOCAL_IRR].units, "mm");
-    strcpy(out_metadata[OUT_LOCAL_IRR].description, "irrigation water from local runoff or river");
+    strcpy(out_metadata[OUT_LOCAL_IRR].units, "hm3");
+    strcpy(out_metadata[OUT_LOCAL_IRR].description, "irrigation water from local runoff or inflow");
    
      /* irrigation [mm] */
     strcpy(out_metadata[OUT_RES_IRR].varname, "OUT_RES_IRR");
     strcpy(out_metadata[OUT_RES_IRR].long_name, "reservoir_irrigation_water");
     strcpy(out_metadata[OUT_RES_IRR].standard_name, "reservoir_irrigation_water");
-    strcpy(out_metadata[OUT_RES_IRR].units, "mm");
+    strcpy(out_metadata[OUT_RES_IRR].units, "hm3");
     strcpy(out_metadata[OUT_RES_IRR].description, "irrigation water from reservoir");
        
     /* irrigation [mm] */
     strcpy(out_metadata[OUT_IRR].varname, "OUT_IRR");
     strcpy(out_metadata[OUT_IRR].long_name, "irrigation_water");
     strcpy(out_metadata[OUT_IRR].standard_name, "irrigation_water");
-    strcpy(out_metadata[OUT_IRR].units, "mm");
-    strcpy(out_metadata[OUT_IRR].description, "irrigation water total");
+    strcpy(out_metadata[OUT_IRR].units, "hm3");
+    strcpy(out_metadata[OUT_IRR].description, "total irrigation water supplied");
     
-     /* irrigation [mm] */
-    strcpy(out_metadata[OUT_LOCAL_IRR_M3].varname, "OUT_LOCAL_IRR_M3");
-    strcpy(out_metadata[OUT_LOCAL_IRR_M3].long_name, "local_irrigation_water_m3");
-    strcpy(out_metadata[OUT_LOCAL_IRR_M3].standard_name, "local_irrigation_water_m3");
-    strcpy(out_metadata[OUT_LOCAL_IRR_M3].units, "m3");
-    strcpy(out_metadata[OUT_LOCAL_IRR_M3].description, "irrigation water from local runoff or river");
-   
-     /* irrigation [mm] */
-    strcpy(out_metadata[OUT_RES_IRR_M3].varname, "OUT_RES_IRR_M3");
-    strcpy(out_metadata[OUT_RES_IRR_M3].long_name, "reservoir_irrigation_water_m3");
-    strcpy(out_metadata[OUT_RES_IRR_M3].standard_name, "reservoir_irrigation_water_m3");
-    strcpy(out_metadata[OUT_RES_IRR_M3].units, "m3");
-    strcpy(out_metadata[OUT_RES_IRR_M3].description, "irrigation water from reservoir");
-       
     /* irrigation [mm] */
-    strcpy(out_metadata[OUT_IRR_M3].varname, "OUT_IRR_M3");
-    strcpy(out_metadata[OUT_IRR_M3].long_name, "irrigation_water_m3");
-    strcpy(out_metadata[OUT_IRR_M3].standard_name, "irrigation_water_m3");
-    strcpy(out_metadata[OUT_IRR_M3].units, "m3");
-    strcpy(out_metadata[OUT_IRR_M3].description, "irrigation water total");
+    strcpy(out_metadata[OUT_MOISTURE_CONTENT].varname, "OUT_MOISTURE_CONTENT");
+    strcpy(out_metadata[OUT_MOISTURE_CONTENT].long_name, "moisture_content");
+    strcpy(out_metadata[OUT_MOISTURE_CONTENT].standard_name, "moisture_content");
+    strcpy(out_metadata[OUT_MOISTURE_CONTENT].units, "mm");
+    strcpy(out_metadata[OUT_MOISTURE_CONTENT].description, "moisture content in the first soil layer");
     
     /* irrigation demand [mm] */
     strcpy(out_metadata[OUT_DEMAND_START].varname, "OUT_DEMAND_START");
     strcpy(out_metadata[OUT_DEMAND_START].long_name, "irrigation_water_demand_start");
     strcpy(out_metadata[OUT_DEMAND_START].standard_name, "irrigation_water_demand_start");
-    strcpy(out_metadata[OUT_DEMAND_START].units, "mm");
+    strcpy(out_metadata[OUT_DEMAND_START].units, "hm3");
     strcpy(out_metadata[OUT_DEMAND_START].description, "irrigation water demand before water is applied");
     
     /* irrigation demand [mm] */
     strcpy(out_metadata[OUT_DEMAND_RES].varname, "OUT_DEMAND_RES");
     strcpy(out_metadata[OUT_DEMAND_RES].long_name, "irrigation_water_demand_reservoir");
     strcpy(out_metadata[OUT_DEMAND_RES].standard_name, "irrigation_water_demand_reservoir");
-    strcpy(out_metadata[OUT_DEMAND_RES].units, "mm");
+    strcpy(out_metadata[OUT_DEMAND_RES].units, "hm3");
     strcpy(out_metadata[OUT_DEMAND_RES].description, "irrigation water demand after local water is applied");
     
     /* irrigation demand [mm] */
     strcpy(out_metadata[OUT_DEMAND_END].varname, "OUT_DEMAND_END");
     strcpy(out_metadata[OUT_DEMAND_END].long_name, "irrigation_water_demand_end");
     strcpy(out_metadata[OUT_DEMAND_END].standard_name, "irrigation_water_demand_end");
-    strcpy(out_metadata[OUT_DEMAND_END].units, "mm");
+    strcpy(out_metadata[OUT_DEMAND_END].units, "hm3");
     strcpy(out_metadata[OUT_DEMAND_END].description, "irrigation water demand after water is applied");
     
     /* reservoir current storage [m3] */
@@ -221,20 +214,20 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_BARE_FRAC].standard_name, "total_bare_soil_fraction");
     strcpy(out_metadata[OUT_BARE_FRAC].units, "-");
     strcpy(out_metadata[OUT_BARE_FRAC].description, "fraction of the cell covered in bare soil (changes with seasons)");
-
     /* reservoir current storage [m3] */
+    
     strcpy(out_metadata[OUT_CROP_MOIST].varname, "OUT_CROP_MOIST");
     strcpy(out_metadata[OUT_CROP_MOIST].long_name, "total_crop_soil_moisture");
     strcpy(out_metadata[OUT_CROP_MOIST].standard_name, "total_crop_soil_moisture");
-    strcpy(out_metadata[OUT_CROP_MOIST].units, "-");
-    strcpy(out_metadata[OUT_CROP_MOIST].description, "fraction of the cell covered in bare soil (changes with seasons)");
+    strcpy(out_metadata[OUT_CROP_MOIST].units, "mm");
+    strcpy(out_metadata[OUT_CROP_MOIST].description, "soil moisture of crop");
 
     /* reservoir current storage [m3] */
     strcpy(out_metadata[OUT_BARE_MOIST].varname, "OUT_BARE_MOIST");
     strcpy(out_metadata[OUT_BARE_MOIST].long_name, "total_bare_soil_moisture");
     strcpy(out_metadata[OUT_BARE_MOIST].standard_name, "total_bare_soil_moisture");
-    strcpy(out_metadata[OUT_BARE_MOIST].units, "-");
-    strcpy(out_metadata[OUT_BARE_MOIST].description, "fraction of the cell covered in bare soil (changes with seasons)");
+    strcpy(out_metadata[OUT_BARE_MOIST].units, "mm");
+    strcpy(out_metadata[OUT_BARE_MOIST].description, "soil moisture of bare soil");
     
     /* volumetric liquid water equivalent of snow on top of lake ice [m3] */
     strcpy(out_metadata[OUT_LAKE_SWE_V].varname, "OUT_LAKE_SWE_V");

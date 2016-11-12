@@ -198,7 +198,7 @@ runoff(cell_data_struct  *cell,
                     resid_moist[lindex]) {
                     tmp_liq = resid_moist[lindex];
                 }
-
+                
                 if (liq[lindex] > resid_moist[lindex]) {
                     Q12[lindex] = Ksat[lindex] *
                                   pow(((tmp_liq -

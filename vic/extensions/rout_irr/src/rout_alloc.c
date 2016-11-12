@@ -9,8 +9,10 @@
 #include <vic_run.h>
 #include <vic_driver_image.h>
 
-void rout_alloc(void){    
-    extern rout_struct rout;
+void rout_alloc(void){
+    //Allocate memory for rout, rout.cells, rout.sorted_cells, rout.gridded_cells and rout.rout_cells
+    //All of these depend on the number of active cells, which is known
+    extern module_struct rout;
     extern global_param_struct global_param;
     extern domain_struct global_domain;
     
@@ -18,7 +20,6 @@ void rout_alloc(void){
     size_t x;
     size_t y;
     
-    //Allocate memory for rout and rout.cells based on number of active cells    
     rout.cells = malloc(global_domain.ncells_active * sizeof(*rout.cells));
     check_alloc_status(rout.cells,"Memory allocation error.");
     
@@ -41,18 +42,27 @@ void rout_alloc(void){
         }                
     }
     
+    rout.rout_cells = malloc(global_domain.ncells_active * sizeof(*rout.rout_cells));
+    check_alloc_status(rout.rout_cells,"Memory allocation error.");
+    
     for(i=0;i<global_domain.ncells_active;i++){
+        //Each rout_cell is connected to a module_cell since all cells have routing
+        rout.cells[i].rout=&rout.rout_cells[i];
+        rout.rout_cells[i].cell=&rout.cells[i];
         
-        rout.cells[i].reservoir=NULL;
-        rout.cells[i].downstream=NULL;
-                
-        rout.cells[i].outflow = malloc(rout.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow));
-        check_alloc_status(rout.cells[i].outflow,"Memory allocation error.");
+        //Allocate memory for the outflow, natural outflow and unit hydrograph
+        rout.cells[i].rout->outflow=malloc(rout.param.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].rout->outflow));
+        check_alloc_status(rout.cells[i].rout->outflow,"Memory allocation error.");
+        rout.cells[i].rout->outflow_natural=malloc(rout.param.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].rout->outflow_natural));
+        check_alloc_status(rout.cells[i].rout->outflow_natural,"Memory allocation error.");
+        rout.cells[i].rout->uh=malloc(rout.param.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].rout->uh));
+        check_alloc_status(rout.cells[i].rout->uh,"Memory allocation error.");
         
-        rout.cells[i].outflow_natural = malloc(rout.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].outflow_natural));
-        check_alloc_status(rout.cells[i].outflow_natural,"Memory allocation error.");
-        
-        rout.cells[i].uh = malloc(rout.max_days_uh * global_param.model_steps_per_day * sizeof(*rout.cells[i].uh));
-        check_alloc_status(rout.cells[i].uh,"Memory allocation error.");
+        rout.cells[i].dam=NULL;
+        rout.cells[i].irr=NULL;
     }
+    
+    rout.nr_irr_cells=0;
+    rout.nr_dams=0;
+    
 }
