@@ -13,72 +13,62 @@ void
 rout_start(void)
 {
     extern option_struct options;
-    extern rout_sa_struct rout_sa;
-    extern domain_struct global_domain;
-    
-    rout_sa.n_active=global_domain.ncells_active;
-    rout_sa.n_total=global_domain.ncells_total;
-    rout_sa.nx=global_domain.n_nx;
-    rout_sa.ny=global_domain.n_ny;
         
     size_t temp_crop_class[options.NVEGTYPES];
+    unsigned short int temp_crop_season[options.NVEGTYPES][4];
     
+    //Initialize parameters to default values
     initialize_routing_options();
     
-    //Get routing parameters from global parameter file
+    //Get parameters from global parameter file
     extern filenames_struct filenames;
     extern filep_struct     filep;
     extern int              mpi_rank;
     if (mpi_rank == VIC_MPI_ROOT) {
         filep.globalparam = open_file(filenames.global, "r");
-        get_global_param_rout(filep.globalparam,temp_crop_class);
+        get_global_param_rout(filep.globalparam,temp_crop_class,temp_crop_season);
     }
     
-    //Check for unrealistic routing options
-    check_routing_options(temp_crop_class);
+    //Check for unrealistic parameters
+    check_routing_options(temp_crop_class,temp_crop_season);
     
-    //Display routing options
+    //Display parameters
     display_routing_options();
 }
 
 void
 initialize_routing_options(void){
     extern global_param_struct global_param;
-    extern rout_struct rout;
+    extern module_struct rout;
     
     //Initialize resolution, currently not done by VIC
     //FIXME: should be user-adjustable or integrated in VIC
     global_param.resolution=VIC_RESOLUTION;
     
-    //Initialize routing parameters
-    rout.firrigation = false;
-    rout.freservoirs = false;
-    rout.fdebug_mode = false;
+    //Initialize parameters
+    rout.param.firrigation = false;
+    rout.param.fdams = false;
+    rout.param.fdebug_mode = false;
     
-    rout.param_filename[0]=0;
-    rout.debug_path[0]=0;
-    rout.reservoir_filename[0]=0;
+    rout.param.param_filename[0]=0;
+    rout.param.debug_path[0]=0;
+    rout.param.dam_filename[0]=0;
     
-    rout.fuh_file=false;
+    rout.param.max_days_uh=MAX_DAYS_UH;
+    rout.param.flow_velocity_uh=FLOW_VELOCITY_UH;
+    rout.param.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
     
-    rout.max_days_uh=MAX_DAYS_UH;
-    rout.flow_velocity_uh=FLOW_VELOCITY_UH;
-    rout.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
-    rout.max_distance_irr=MAX_DISTANCE_IRR;
-    rout.fnaturalized_flow=false;
+    rout.param.nr_crop_classes=0;
     
-    rout.crop_developed=CROP_DATE_DEFAULT;
-    rout.crop_end=CROP_DATE_DEFAULT;
-    rout.crop_late=CROP_DATE_DEFAULT;
-    rout.crop_start=CROP_DATE_DEFAULT;
+    rout.param.max_distance_irr=MAX_DISTANCE_IRR;
+    rout.param.fnaturalized_flow=false;
     
-    rout.nr_crop_classes=0;
 }
 
 void
-get_global_param_rout(FILE *gp, size_t temp_crop_class[])
+get_global_param_rout(FILE *gp, size_t temp_crop_class[], unsigned short int temp_crop_season[][4])
 {
-    extern rout_struct rout;
+    extern module_struct rout;
     extern option_struct options;
     
     char               cmdstr[MAXSTRING];
@@ -86,8 +76,11 @@ get_global_param_rout(FILE *gp, size_t temp_crop_class[])
     char               flgstr[MAXSTRING];
     
     size_t class;
+    unsigned short int crop_sow;
+    unsigned short int crop_developed;
+    unsigned short int crop_matured;
+    unsigned short int crop_harvest;
     bool duplicate;
-    char source[MAXSTRING];
     
     size_t i;
 
@@ -104,73 +97,62 @@ get_global_param_rout(FILE *gp, size_t temp_crop_class[])
                 continue;
             }
 
-            //Get routing parameters
+            //Get parameters
             if (strcasecmp("IRRIGATION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout.firrigation=str_to_bool(flgstr);
+                rout.param.firrigation=str_to_bool(flgstr);
             }
-            if (strcasecmp("RESERVOIRS", optstr) == 0) {
+            if (strcasecmp("DAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout.freservoirs=str_to_bool(flgstr);
+                rout.param.fdams=str_to_bool(flgstr);
             }
             if (strcasecmp("ROUTING_DEBUG_MODE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout.fdebug_mode=str_to_bool(flgstr);
+                rout.param.fdebug_mode=str_to_bool(flgstr);
             }
             if (strcasecmp("POTENTIAL_IRRIGATION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
-                rout.fpot_irrigation=str_to_bool(flgstr);
+                rout.param.fpot_irrigation=str_to_bool(flgstr);
             }
             if (strcasecmp("ROUT_PARAM", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", rout.param_filename);
+                sscanf(cmdstr, "%*s %s", rout.param.param_filename);
             } 
-            if (strcasecmp("ROUT_RESERVOIR", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", rout.reservoir_filename);
+            if (strcasecmp("DAM_PARAM", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", rout.param.dam_filename);
             }
-            if (strcasecmp("ROUT_DEBUG_PARAM", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", rout.debug_path);
+            if (strcasecmp("DEBUG_OUTPUT", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", rout.param.debug_path);
             }
-            if (strcasecmp("ROUT_UH_MAX_DAYS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %zu", &rout.max_days_uh);
+            if (strcasecmp("UH_MAX_DAYS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %zu", &rout.param.max_days_uh);
             }
-            if (strcasecmp("ROUT_UH_FLOW_VELOCITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &rout.flow_velocity_uh);
+            if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &rout.param.flow_velocity_uh);
             }
-            if (strcasecmp("ROUT_UH_FLOW_DIFFUSIVITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &rout.flow_diffusivity_uh);
+            if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &rout.param.flow_diffusivity_uh);
             }
-            if (strcasecmp("ROUT_IRR_MAX_DISTANCE", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &rout.max_distance_irr);
-            }
-            if (strcasecmp("ROUT_UH_PARAM", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", source);
-                if(strcmp(source,"FROM_PARAM_FILE")==0){
-                    rout.fuh_file=true;
-                }
-            }
-            if (strcasecmp("CROP_START", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &rout.crop_start);
-            }
-            if (strcasecmp("CROP_DEVELOPED", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &rout.crop_developed);
-            }
-            if (strcasecmp("CROP_LATE", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &rout.crop_late);
-            }
-            if (strcasecmp("CROP_END", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &rout.crop_end);
+            if (strcasecmp("DAM_IRR_DISTANCE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &rout.param.max_distance_irr);
             }
             if (strcasecmp("CROP_CLASS", optstr) == 0) {
                 class=0;
-                sscanf(cmdstr, "%*s %zu", &class);
+                crop_sow=0;
+                crop_developed=0;
+                crop_matured=0;
+                crop_harvest=0;
+                sscanf(cmdstr, "%*s %zu %hu %hu %hu %hu", &class, &crop_sow, &crop_developed, &crop_matured, &crop_harvest);
                 
-                if(rout.nr_crop_classes>=options.NVEGTYPES){
+                if(rout.param.nr_crop_classes>=options.NVEGTYPES){
+                    //Check if the number of crop classes exceeds the number of vegetation classes
                     log_warn("More crop classes given than available vegetation classes, skipping class %zu",class);
                 }else if(class>options.NVEGTYPES){
+                    //Check if the crop class is within the range of vegetation classes
                     log_warn("Crop class %zu is not an available vegetation class, skipping class %zu",class,class);
                 }else{
+                    //Check if the crop class has already been defined
                     duplicate=false;
-                    for(i=0;i<rout.nr_crop_classes;i++){
+                    for(i=0;i<rout.param.nr_crop_classes;i++){
                         if(temp_crop_class[i]==class-1){
                             duplicate=true;
                         }
@@ -179,8 +161,12 @@ get_global_param_rout(FILE *gp, size_t temp_crop_class[])
                     if(duplicate){
                         log_warn("Crop class %zu has already been assigned as a crop, removing duplicate",class);
                     }else{
-                        temp_crop_class[rout.nr_crop_classes]=class-1;
-                        rout.nr_crop_classes++;
+                        temp_crop_class[rout.param.nr_crop_classes]=class-1;
+                        temp_crop_season[rout.param.nr_crop_classes][0]=crop_sow;
+                        temp_crop_season[rout.param.nr_crop_classes][1]=crop_developed;
+                        temp_crop_season[rout.param.nr_crop_classes][2]=crop_matured;
+                        temp_crop_season[rout.param.nr_crop_classes][3]=crop_harvest;
+                        rout.param.nr_crop_classes++;
                     }
                 }
             }
@@ -189,122 +175,115 @@ get_global_param_rout(FILE *gp, size_t temp_crop_class[])
     }
 }
 
-void check_routing_options(size_t temp_crop_class[]){
-    extern rout_struct rout;
-    extern rout_struct rout;
+void check_routing_options(size_t temp_crop_class[], unsigned short int temp_crop_season[][4]){
+    extern module_struct rout;
+    extern module_struct rout;
     
     size_t i;
     
-    if(rout.param_filename[0]==0){
+    //Display all parameters
+    if(rout.param.param_filename[0]==0){
         log_err("No routing input files, exiting simulation...");
     } 
-    if(rout.fpot_irrigation){
-        if(!rout.firrigation){
+    if(rout.param.fpot_irrigation){
+        if(!rout.param.firrigation){
             log_warn("No irrigation, but potential irrigation is selected. Setting POTENTIAL_IRRIGATION to FALSE...");
-            rout.fpot_irrigation=false;
-        }
-        if(rout.freservoirs){
-            log_warn("Reservoir irrigation, but potential irrigation is selected. Setting RESERVOIRS to FALSE...");
-            rout.freservoirs=false;
+            rout.param.fpot_irrigation=false;
         }
     }
-    if(rout.firrigation){
-        if(rout.nr_crop_classes==0){
+    if(rout.param.firrigation){
+        if(rout.param.nr_crop_classes==0){
             log_warn("No crop classes given, but irrigation is selected. Setting IRRIGATION to FALSE...");
-            rout.firrigation=false;
+            rout.param.firrigation=false;
         }
     }
-    if(rout.freservoirs){
-        if(rout.reservoir_filename[0]==0){
-            log_warn("No reservoir input files, but reservoirs is selected. Setting RESERVOIRS to FALSE..."); 
-            rout.freservoirs=false;
+    if(rout.param.fdams){
+        if(rout.param.dam_filename[0]==0){
+            log_warn("No reservoir input files, but reservoirs is selected. Setting DAMS to FALSE..."); 
+            rout.param.fdams=false;
         }
     }
-    if(rout.fdebug_mode){
-        if(rout.debug_path[0]==0){
+    if(rout.param.fdebug_mode){
+        if(rout.param.debug_path[0]==0){
             log_warn("No debug output path, but debug is selected. Setting ROUTING_DEBUG_MODE to FALSE..."); 
-            rout.fdebug_mode=false;
+            rout.param.fdebug_mode=false;
         }
     }
     
-    if(rout.max_days_uh<1){
-        log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting ROUT_UH_MAX_DAYS to %d",MAX_DAYS_UH); 
-            rout.max_days_uh=MAX_DAYS_UH;
+    if(rout.param.max_days_uh<1){
+        log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting UH_MAX_DAYS to %d",MAX_DAYS_UH); 
+            rout.param.max_days_uh=MAX_DAYS_UH;
     }
-    if(rout.flow_velocity_uh<=0){
-        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting ROUT_UH_FLOW_VELOCITY to %.2f",FLOW_VELOCITY_UH); 
-            rout.flow_velocity_uh=FLOW_VELOCITY_UH;
+    if(rout.param.flow_velocity_uh<=0){
+        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",FLOW_VELOCITY_UH); 
+            rout.param.flow_velocity_uh=FLOW_VELOCITY_UH;
     }
-    if(rout.flow_diffusivity_uh<=0){
-        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting ROUT_UH_FLOW_DIFFUSIVITY to %.2f",FLOW_DIFFUSIVITY_UH); 
-            rout.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+    if(rout.param.flow_diffusivity_uh<=0){
+        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",FLOW_DIFFUSIVITY_UH); 
+            rout.param.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
     }
-    if(rout.max_distance_irr<=0){
-        log_warn("IRR_MAX_DISTANCE was smaller than or equal to 0. Setting IRR_MAX_DISTANCE to %.1f",MAX_DISTANCE_IRR); 
-            rout.max_distance_irr=MAX_DISTANCE_IRR;
-    }
-    if(rout.crop_developed<=0 || rout.crop_developed>DAYS_PER_YEAR ||
-            rout.crop_late<=0 || rout.crop_late>DAYS_PER_YEAR ||
-            rout.crop_end<=0 || rout.crop_developed>DAYS_PER_YEAR ||
-            rout.crop_start<=0 || rout.crop_start>DAYS_PER_YEAR){
-        log_warn("Crop growing days were outside of a realistic range. Setting all CROP dates to %d",CROP_DATE_DEFAULT); 
-            
-        rout.crop_developed=CROP_DATE_DEFAULT;
-        rout.crop_end=CROP_DATE_DEFAULT;
-        rout.crop_late=CROP_DATE_DEFAULT;
-        rout.crop_start=CROP_DATE_DEFAULT;
+    if(rout.param.max_distance_irr<=0){
+        log_warn("IRR_MAX_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",MAX_DISTANCE_IRR); 
+            rout.param.max_distance_irr=MAX_DISTANCE_IRR;
     }
     
-    rout.crop_class=malloc(rout.nr_crop_classes * sizeof(rout.crop_class));
-    check_alloc_status(rout.crop_class,"Memory allocation error.");
+    rout.param.crop_class=malloc(rout.param.nr_crop_classes * sizeof(*rout.param.crop_class));
+    check_alloc_status(rout.param.crop_class,"Memory allocation error.");
+    rout.param.crop_sow=malloc(rout.param.nr_crop_classes * sizeof(*rout.param.crop_sow));
+    check_alloc_status(rout.param.crop_sow,"Memory allocation error.");
+    rout.param.crop_developed=malloc(rout.param.nr_crop_classes * sizeof(*rout.param.crop_developed));
+    check_alloc_status(rout.param.crop_developed,"Memory allocation error.");
+    rout.param.crop_matured=malloc(rout.param.nr_crop_classes * sizeof(*rout.param.crop_matured));
+    check_alloc_status(rout.param.crop_matured,"Memory allocation error.");
+    rout.param.crop_harvest=malloc(rout.param.nr_crop_classes * sizeof(*rout.param.crop_harvest));
+    check_alloc_status(rout.param.crop_harvest,"Memory allocation error.");
     
-    for(i=0;i<rout.nr_crop_classes;i++){
-        rout.crop_class[i]=temp_crop_class[i];
+    for(i=0;i<rout.param.nr_crop_classes;i++){
+        rout.param.crop_class[i]=temp_crop_class[i];
+        rout.param.crop_sow[i]=temp_crop_season[i][0];
+        rout.param.crop_developed[i]=temp_crop_season[i][1];
+        rout.param.crop_matured[i]=temp_crop_season[i][2];
+        rout.param.crop_harvest[i]=temp_crop_season[i][3];
     }
 }
 
 void display_routing_options(){
-    extern rout_struct rout;
+    extern module_struct rout;
     
     size_t i;
     
     fprintf(LOG_DEST, "Current Routing Settings\n");
-    if(rout.firrigation){
-        fprintf(LOG_DEST, "IRRIGATION\t\t\tTRUE\n");
-    }else{
-        fprintf(LOG_DEST, "IRRIGATION\t\t\tFALSE\n");
-    }
-    if(rout.fpot_irrigation){
-        fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tTRUE\n");
-    }else{
-        fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tFALSE\n");
-    }
-    if(rout.freservoirs){
-        fprintf(LOG_DEST, "RESERVOIRS\t\t\tTRUE\n");
-    }else{
-        fprintf(LOG_DEST, "RESERVOIRS\t\t\tFALSE\n");
-    }
-    if(rout.fdebug_mode){
+
+    fprintf(LOG_DEST, "UH_MAX_DAYS\t\t\t%zu\n",rout.param.max_days_uh);
+    fprintf(LOG_DEST, "UH_FLOW_VELOCITY\t\t%.2f\n",rout.param.flow_velocity_uh);
+    fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",rout.param.flow_diffusivity_uh);
+    
+    if(rout.param.fdebug_mode){
         fprintf(LOG_DEST, "ROUTING_DEBUG_MODE\t\tTRUE\n");
+    }
+    
+    if(rout.param.firrigation){
+        fprintf(LOG_DEST, "\nCurrent Irrigation Settings\n");
+        fprintf(LOG_DEST, "IRRIGATION\t\t\tTRUE\n");
+        
+        if(rout.param.fpot_irrigation){
+            fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tTRUE\n");
+        }else{
+            fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tFALSE\n");
+        }
+        fprintf(LOG_DEST, "CROP_CLASS\tCROP_SOW\tCROP_DEVELOPED\tCROP_MATURED\tCROP_HARVEST\n");
+        for(i=0;i<rout.param.nr_crop_classes;i++){
+            fprintf(LOG_DEST, "%zu\t\t%hu\t\t%hu\t\t%hu\t\t%hu\n",
+                    rout.param.crop_class[i]+1,rout.param.crop_sow[i],rout.param.crop_developed[i],rout.param.crop_matured[i],rout.param.crop_harvest[i]);
+        }
     }else{
-        fprintf(LOG_DEST, "ROUTING_DEBUG_MODE\t\tFALSE\n");
+        fprintf(LOG_DEST, "\nIRRIGATION\t\t\tFALSE\n");
     }
-    if(rout.fuh_file){
-        fprintf(LOG_DEST, "ROUT_UH_PARAM\t\t\tFROM_PARAM_FILE\n");
+    if(rout.param.fdams){
+        fprintf(LOG_DEST, "\nCurrent Dam Settings\n");
+        fprintf(LOG_DEST, "DAMS\t\t\t\tTRUE\n");
+        fprintf(LOG_DEST, "DAM_IRR_DISTANCE\t\t%.1f\n",rout.param.max_distance_irr);
     }else{
-        fprintf(LOG_DEST, "ROUT_UH_PARAM\t\t\tFROM_DEFAULT\n");
-        fprintf(LOG_DEST, "ROUT_UH_MAX_DAYS\t\t%zu\n",rout.max_days_uh);
-        fprintf(LOG_DEST, "ROUT_UH_FLOW_VELOCITY\t\t%.2f\n",rout.flow_velocity_uh);
-        fprintf(LOG_DEST, "ROUT_UH_FLOW_DIFFUSIVITY\t%.1f\n",rout.flow_diffusivity_uh);
-        fprintf(LOG_DEST, "ROUT_IRR_MAX_DISTANCE\t\t%.1f\n",rout.max_distance_irr);
+        fprintf(LOG_DEST, "\nDAMS\t\t\t\tFALSE\n");
     }
-    fprintf(LOG_DEST, "CROP_START\t\t\t%d\n",rout.crop_start);
-    fprintf(LOG_DEST, "CROP_DEVELOPED\t\t\t%d\n",rout.crop_developed);
-    fprintf(LOG_DEST, "CROP_LATE\t\t\t%d\n",rout.crop_late);
-    fprintf(LOG_DEST, "CROP_END\t\t\t%d\n",rout.crop_end);
-    fprintf(LOG_DEST, "NR_CROP_CLASSES\t\t\t%zu\n",rout.nr_crop_classes);
-    for(i=0;i<rout.nr_crop_classes;i++){
-        fprintf(LOG_DEST, "CROP_CLASS\t\t\t%zu\n",rout.crop_class[i]);
-    }
-    fprintf(LOG_DEST, "\n");
 }

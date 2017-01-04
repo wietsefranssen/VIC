@@ -282,6 +282,8 @@ get_default_outvar_aggtype(unsigned int varid)
     case OUT_DELSWE:
     case OUT_DELSURFSTOR:
     case OUT_EVAP:
+        agg_type = AGG_TYPE_END;
+        break;
     case OUT_EVAP_BARE:
     case OUT_EVAP_CANOP:
     case OUT_INFLOW:
@@ -335,13 +337,7 @@ get_default_outvar_aggtype(unsigned int varid)
     case OUT_IRR:
         agg_type = AGG_TYPE_SUM;
         break;
-    case OUT_LOCAL_IRR_M3:
-        agg_type = AGG_TYPE_SUM;
-        break;
-    case OUT_RES_IRR_M3:
-        agg_type = AGG_TYPE_SUM;
-        break;
-    case OUT_IRR_M3:
+    case OUT_RUNOFF_M3:
         agg_type = AGG_TYPE_SUM;
         break;
     case OUT_DEMAND_START:
