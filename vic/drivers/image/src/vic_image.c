@@ -65,7 +65,7 @@ save_data_struct   *save_data;  // [ncells]
 double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
-module_struct         rout; // Routing routine (extension)
+RID_struct         RID; // Routing routine (extension)
 //rout_struct         rout; // RVIC Routing routine
 
 /******************************************************************************
@@ -111,7 +111,7 @@ main(int    argc,
     vic_image_start();
 
     // read global parameters for routing
-    rout_start();   // Routing routine (extension)
+    RID_start();   // Routing routine (extension)
 
     // allocate memory
     vic_alloc();
@@ -120,10 +120,10 @@ main(int    argc,
     vic_image_init();
     
     // allocate memory for routing
-    rout_alloc();   // Routing routine (extension)
+    RID_alloc();   // Routing routine (extension)
 
     // initialize routing parameters from parameter files
-    rout_init();    // Routing routine (extension)
+    RID_init();    // Routing routine (extension)
 
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state();
@@ -154,7 +154,7 @@ main(int    argc,
         vic_write_output(&(dmy[current]));
   
         // if output (routing)
-        rout_write(); // Routing routine (extension)
+        RID_write(); // Routing routine (extension)
 
         // Write state file
         if (check_save_state_flag(current)) {
@@ -172,7 +172,7 @@ main(int    argc,
     vic_image_finalize();
 
     // clean up routing
-    rout_finalize();    // Routing routine (extension)
+    RID_finalize();    // Routing routine (extension)
 
     // finalize MPI
     status = MPI_Finalize();

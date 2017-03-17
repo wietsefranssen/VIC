@@ -31,7 +31,8 @@
 #define DAYS_PER_360DAY_YEAR 360  /**< days in 360day year */
 #define DAYS_PER_YEAR 365  /**< days in nonleap year */
 #define DAYS_PER_LYEAR 366  /**< days in leap year */
-#define DAYS_PER_JYEAR 365.25  /** days in Julian year */
+#define DAYS_PER_JYEAR 365.25  /**< days in Julian year */
+#define DAYS_PER_WEEK   7   /**< days in week */
 #define HOURS_PER_DAY 24  /**< hours per day */
 #define MONTHS_PER_YEAR 12  /**< months per year */
 #define MIN_PER_HOUR 60  /**< minutes per hour */

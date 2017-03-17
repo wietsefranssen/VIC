@@ -28,6 +28,6 @@
 #include <rout.h>
 
 void
-rout_write()
+RID_write()
 {
 }

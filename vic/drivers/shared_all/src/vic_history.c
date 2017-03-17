@@ -323,23 +323,23 @@ get_default_outvar_aggtype(unsigned int varid)
     case OUT_LOCAL_IRR:
         agg_type = AGG_TYPE_SUM;
         break;
-    case OUT_RES_IRR:
+    case OUT_DAM_IRR:
         agg_type = AGG_TYPE_SUM;
         break;
     case OUT_IRR:
         agg_type = AGG_TYPE_SUM;
         break;
-    case OUT_RUNOFF_M3:
-        agg_type = AGG_TYPE_SUM;
-        break;
     case OUT_DEMAND_START:
-        agg_type = AGG_TYPE_SUM;
+        agg_type = AGG_TYPE_MAX;
         break;
-    case OUT_DEMAND_RES:
-        agg_type = AGG_TYPE_SUM;
+    case OUT_DEMAND_DAM:
+        agg_type = AGG_TYPE_MAX;
+        break;
+    case OUT_DEMAND_DAM2:
+        agg_type = AGG_TYPE_MAX;
         break;
     case OUT_DEMAND_END:
-        agg_type = AGG_TYPE_SUM;
+        agg_type = AGG_TYPE_MAX;
         break;
     default:
         agg_type = AGG_TYPE_AVG;

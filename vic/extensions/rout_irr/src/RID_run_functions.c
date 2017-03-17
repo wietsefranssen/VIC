@@ -1,4 +1,4 @@
-#include <rout.h>
+/*#include <rout.h>
 
 double get_moisture_content(size_t id, size_t veg_index){
     //Get the moisture content for each snow band,
@@ -47,6 +47,7 @@ double get_irrigation_demand(size_t id, double moisture_content, size_t veg_inde
     return irrigation_demand;
 }
 
+  
 double do_source_irrigation(double available, double irrigation_demand, double irrigation_demand_total){
     //Do irrigation from a source, takes into account that the source might
     //not be able to irrigate everything, 
@@ -268,12 +269,12 @@ void add_moisture_content(module_cell* cur_cell, size_t veg_index, double new_co
     }
 }
 
-void calculate_dam_values(dam_unit* cur_dam, dmy_struct* current_dmy){
+void update_dam_history(dam_unit* cur_dam, dmy_struct* current_dmy){
     //Do dam history calculations with inflow, demand and natural inflow
     //Recalculate the operational year at the end of an operational year
     //Set target release every month
     extern global_param_struct global_param;
-    extern module_struct rout;
+    extern module_struct RID;
             
     double mean_monthly_inflow[MONTHS_PER_YEAR];
     double mean_monthly_demand[MONTHS_PER_YEAR];
@@ -378,7 +379,6 @@ void calculate_dam_values(dam_unit* cur_dam, dmy_struct* current_dmy){
 }
 
 void shift_outflow_array(module_cell* current_cell){
-    //Shift the outflow array
     extern global_param_struct global_param;
     extern module_struct rout;
     
@@ -564,4 +564,4 @@ void set_dam_demand(dam_unit* cur_dam, module_cell* cur_cell,size_t iCell, size_
             local_domain.locations[cur_cell->id].area / MM_PER_M;
         }
     }
-}
+}*/
