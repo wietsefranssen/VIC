@@ -33,7 +33,7 @@
  * @brief
  *****************************************************************************/
 void
-rout_start(void)
+RID_start(void)
 {
     extern filenames_struct filenames;
     extern filep_struct     filep;

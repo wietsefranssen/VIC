@@ -27,7 +27,7 @@
 #include <rout.h>
 
 void
-rout_finalize(void)
+RID_finalize(void)
 {
     extern rout_struct rout;
 

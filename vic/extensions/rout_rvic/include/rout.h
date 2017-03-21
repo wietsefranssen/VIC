@@ -65,12 +65,12 @@ typedef struct {
 /******************************************************************************
  * @brief   Function prototypes for the rout_rvic extension
  *****************************************************************************/
-void rout_start(void);      // read global parameters for routing
-void rout_alloc(void);      // allocate memory
-void rout_init(void);       // initialize model parameters from parameter files
+void RID_start(void);      // read global parameters for routing
+void RID_alloc(void);      // allocate memory
+void RID_init(void);       // initialize model parameters from parameter files
 void rout_run(void);        // run routing over the domain
-void rout_write(void);      // write routine for routing
-void rout_finalize(void);   // clean up routine for routing
+void RID_write(void);      // write routine for routing
+void RID_finalize(void);   // clean up routine for routing
 
 /******************************************************************************
  * @brief   MPI Function prototypes for the rout_rvic extension

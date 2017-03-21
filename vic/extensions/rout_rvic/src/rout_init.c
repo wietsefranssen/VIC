@@ -34,7 +34,7 @@
  * @brief    Initialize routing model parameters
  *****************************************************************************/
 void
-rout_init(void)
+RID_init(void)
 {
     extern int mpi_rank;
     if (mpi_rank == VIC_MPI_ROOT) {

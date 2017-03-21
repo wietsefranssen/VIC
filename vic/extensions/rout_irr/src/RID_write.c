@@ -4,8 +4,7 @@
  * and open the template in the editor.
  */
 
-#include <vic_def.h>
 #include <rout.h>
 
-void rout_write(void){
+void RID_write(void){
 }

@@ -26,19 +26,19 @@
 
 // read global parameters for routing
 void
-rout_start(void)
+RID_start(void)
 {
 }
 
 // allocate memory
 void
-rout_alloc(void)
+RID_alloc(void)
 {
 }
 
 // initialize model parameters from parameter files
 void
-rout_init(void)
+RID_init(void)
 {
 }
 
@@ -50,12 +50,12 @@ rout_run(void)
 
 // write routine for routing
 void
-rout_write(void)
+RID_write(void)
 {
 }
 
 // clean up routine for routing
 void
-rout_finalize(void)
+RID_finalize(void)
 {
 }

@@ -140,27 +140,27 @@ enum
     OUT_WDEW,             /**< total moisture interception storage in canopy [mm] */
     OUT_ZWT,              /**< water table position [cm] (zwt within lowest unsaturated layer) */
     OUT_ZWT_LUMPED,       /**< lumped water table position [cm] (zwt of total moisture across all layers, lumped together) */
-    // Water Balance Terms - fluxes
+    
+    // Routing, irrigation and dam terms
     OUT_IRR,
     OUT_LOCAL_IRR,
-    OUT_RES_IRR,
+    OUT_DAM_IRR,
     OUT_DEMAND_START,
-    OUT_DEMAND_RES,
+    OUT_DEMAND_DAM,
+    OUT_DEMAND_DAM2,
     OUT_DEMAND_END,
-    OUT_RES_STORE,
+    OUT_DAM_STORE,
     OUT_NATURAL_DISCHARGE,
-    OUT_CROP_FRAC,
-    OUT_BARE_FRAC,
-    OUT_CROP_MOIST,
-    OUT_BARE_MOIST,
-    OUT_MOISTURE_CONTENT,
-    OUT_RUNOFF_M3,
+    OUT_RUNOFF_ROUT,      /**< runoff entering the routing module [m3 s-1]) */
+    OUT_INFLOW_ROUT,      /**< inflow entering the routing module [m3 s-1]) */
+    OUT_DISCHARGE,        /**< river discharge [m3 s-1]) */
+    
+    // Water Balance Terms - fluxes
     OUT_BASEFLOW,         /**< baseflow out of the bottom layer  [mm] */
     OUT_DELINTERCEPT,     /**< change in canopy interception storage  [mm] */
     OUT_DELSOILMOIST,     /**< change in soil water content  [mm] */
     OUT_DELSURFSTOR,      /**< change in surface liquid water storage  [mm] */
     OUT_DELSWE,           /**< change in snow water equivalent  [mm] */
-    OUT_DISCHARGE,        /**< river discharge [m3 s-1]) */
     OUT_EVAP,             /**< total net evaporation [mm] */
     OUT_EVAP_BARE,        /**< net evaporation from bare soil [mm] */
     OUT_EVAP_CANOP,       /**< net evaporation from canopy interception [mm] */
