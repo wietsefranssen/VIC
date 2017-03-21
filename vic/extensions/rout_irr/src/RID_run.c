@@ -19,12 +19,14 @@
 void RID_run(dmy_struct* cur_dmy){
     extern domain_struct global_domain;
     extern RID_struct RID;
+    extern double ***out_data;
     
     RID_cell *cur_cell;
     size_t i;
         
     for(i=0;i<global_domain.ncells_active;i++){
         cur_cell = RID.sorted_cells[i];
+        
         do_routing_module(cur_cell);
         
         if(cur_cell->irr!=NULL){
@@ -33,7 +35,10 @@ void RID_run(dmy_struct* cur_dmy){
         
         if(cur_cell->dam!=NULL){
             do_dam_flow(cur_cell->dam);
-        }        
+        }
+        
+        out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
+        out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0];        
     }
     
     for(i=0;i<RID.nr_dams;i++){
@@ -67,7 +72,8 @@ void do_routing_module(RID_cell *cur_cell){
  * @section brief
  *  
  * The main function running the irrigation module. Check whether irrigation
- * is needed, gather water from local sources.
+ * is needed, gather water from local sources. Distribute leftover demands
+ * to servicing dams.
  ******************************************************************************/
 
 void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
@@ -80,6 +86,7 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
     
     demand_cell=0;
     for(i=0;i<cur_cell->irr->nr_crops;i++){
+        moisture_content[i]=0;
         demand_crop[i]=0;
     }
     
@@ -94,13 +101,14 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
     }
     
     if(demand_cell<=0){
+        update_servicing_dam_values(cur_cell,demand_crop,moisture_content);
         return;
     }
     
     out_data[cur_cell->id][OUT_DEMAND_START][0]=demand_cell / M3_PER_HM3;        
     do_irrigation(cur_cell,demand_crop,&demand_cell,moisture_content);    
     out_data[cur_cell->id][OUT_DEMAND_END][0]=demand_cell / M3_PER_HM3;
-       
+    
     update_servicing_dam_values(cur_cell,demand_crop,moisture_content);
 }
 
@@ -114,16 +122,19 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
 void do_dam_flow(dam_unit *cur_dam){
     extern RID_struct RID;
     extern global_param_struct global_param;
-    
-    cur_dam->current_storage += cur_dam->cell->rout->outflow[0] * global_param.dt;
+    extern double ***out_data;
     
     cur_dam->total_inflow += cur_dam->cell->rout->outflow[0] * global_param.dt;
     if(RID.param.fnaturalized_flow){
         cur_dam->total_inflow_natural+=cur_dam->cell->rout->outflow_natural[0] * global_param.dt;
     }
     
-    cur_dam->cell->rout->outflow[0] = cur_dam->previous_release / global_param.dt;
-    cur_dam->previous_release=0;
+    if(cur_dam->run){
+        cur_dam->current_storage += cur_dam->cell->rout->outflow[0] * global_param.dt;        
+        cur_dam->cell->rout->outflow[0] = cur_dam->previous_release / global_param.dt;
+        out_data[cur_dam->cell->id][OUT_DISCHARGE][0]=cur_dam->previous_release / global_param.dt; 
+        cur_dam->previous_release=0;
+    }
 }
 
 /******************************************************************************

@@ -232,13 +232,17 @@ void set_dam_information(){
             RID.dams[i].run=false;
         }
         
-        RID.dams[i].target_release = 0.0;   
+        RID.dams[i].release = 0.0;   
+        RID.dams[i].previous_release = 0.0;
+        
         RID.dams[i].ext_influence_factor=DAM_VARIABLE_INFL;
         RID.dams[i].extreme_stor=0;
+        RID.dams[i].irrigated_area=0;
         
         //preferred storage level for the start of the operational year (Hanasaki et al., 2006)
         RID.dams[i].current_storage= RID.dams[i].capacity * RES_PREF_STORAGE; 
-        RID.dams[i].storage_start_operation = RID.dams[i].current_storage;        
+        RID.dams[i].storage_start_operation = RID.dams[i].current_storage;
+        
         RID.dams[i].start_operation.day=global_param.startday;
         RID.dams[i].start_operation.month=global_param.startmonth;
         RID.dams[i].start_operation.year=global_param.startyear; 
@@ -264,7 +268,7 @@ void set_dam_information(){
         RID.dams[i].nr_serviced_cells = 0;           
     }
         
-    log_info("%zu reservoirs found inside area and time of interest",RID.nr_dams);
+    log_info("%zu dams found inside area and time of interest",RID.nr_dams);
     
     free(dams);
     free(dams2);
@@ -291,7 +295,7 @@ void set_dam_natural_routing(){
         while(current_cell->rout->downstream!=NULL && current_cell->rout->downstream->cell!=current_cell){
             current_cell = current_cell->rout->downstream->cell;
             if(current_cell->dam!=NULL){
-                log_info("Reservoirs are found in series and therefore routing is done twice. "
+                log_info("Dams are found in series and therefore routing is done twice. "
                         "Second routing calculates natural stream flow "
                         "which is needed for environmental flow calculation");
                 RID.param.fnaturalized_flow=true;

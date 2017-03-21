@@ -201,7 +201,7 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DEMAND_END].units, "hm3");
     strcpy(out_metadata[OUT_DEMAND_END].description, "irrigation water demand after dam water is applied");
     
-    /* reservoir current storage [-] */
+    /* dam current storage [-] */
     strcpy(out_metadata[OUT_DAM_STORE].varname, "OUT_DAM_STORE");
     strcpy(out_metadata[OUT_DAM_STORE].long_name, "current_dam_storage");
     strcpy(out_metadata[OUT_DAM_STORE].standard_name, "current_dam_storage");

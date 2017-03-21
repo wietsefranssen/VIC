@@ -8,10 +8,10 @@
 #define MAX_DAYS_UH 2                       /**< scalar - default maximum number of days an UH is allowed to discharge */
 #define FLOW_VELOCITY_UH 1.5                /**< scalar - default flow velocity for UH calculation */
 #define FLOW_DIFFUSIVITY_UH 800.0           /**< scalar - default flow diffusivity for UH calculation */
-#define DAM_IRR_DISTANCE 5.0                /**< scalar - default maximum distance from the reservoir cells can recieve service */
+#define DAM_IRR_DISTANCE 5.0                /**< scalar - default maximum distance from the dam cells can recieve service */
 
 #define CROP_DATE_DEFAULT 1                 /**< scalar - default value for the crop growing julian date */
-#define DAM_NO_DATA -99                     /**< scalar - nodata value for the reservoir file */
+#define DAM_NO_DATA -99                     /**< scalar - nodata value for the dam file */
 
 #define DAM_IRR_FUNCTION 1                  /**< scalar - value for the irrigation purpose of a dam */
 #define DAM_HYD_FUNCTION 2                  /**< scalar - value for the hydropower purpose of a dam */
@@ -20,7 +20,7 @@
 #define DAM_ENV_FLOW_PERC 0.1               /**< scalar - percentage of mean monthly inflow that is environmental flow (Biemans et al., 2012) */
 #define DAM_VARIABLE_INFL 0.5               /**< scalar - flow variability factor for external influences (demand or monthly inflow) */
 #define DAM_INFL_CHANGE 0.1                 /**< scalar - max change of flow variability factor */
-#define RES_PREF_STORAGE 0.85               /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2008) */
+#define RES_PREF_STORAGE 0.85               /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2006) */
 #define DAM_HIST_YEARS 20                   /**< scalar - number of years that dams will use to calculate mean inflow and demand values */
 
 #include <vic_driver_shared_image.h>
@@ -32,6 +32,54 @@ typedef struct serviced_cells serviced_cell;
 typedef struct RID_cells RID_cell;
 typedef struct RID_structs RID_struct;
 typedef struct RID_params RID_param;
+
+struct RID_params{
+    bool firrigation;                   /**< bool - TRUE = do irrigation FALSE = do not do irrigation */
+    bool fpot_irrigation;               /**< bool - TRUE = use potential irrigation FALSE = do not use potential irrigation */
+    bool fdams;                         /**< bool - TRUE = use dams during routing FALSE = do not use dmas */
+    bool fdebug_mode;                   /**< bool - TRUE = use debugging during routing FALSE = do not use debugging */
+    
+    char param_filename[MAXSTRING];     /**< string - file path and name of routing paramaters */
+    char dam_filename[MAXSTRING];       /**< string - file path and name of dam information */
+    char debug_path[MAXSTRING];         /**< string - file path of debug files */
+    
+    //routing
+    size_t max_days_uh;                 /**< scalar - maximum number of days a unit hydrograph is allowed to produce discharge */
+    double flow_velocity_uh;            /**< scalar - flow velocity of the unit hydrograph */
+    double flow_diffusivity_uh;         /**< scalar - flow diffusivity of the unit hydrograph */
+    
+    //irrigation
+    size_t nr_crops;                    /**< scalar - number of vegetation classes that are irrigated crops */
+    size_t *crop_class;                 /**< 1d array [nr_crop_classes] - vegetation classes which are irrigated crops */
+    unsigned short int *start_irr;      /**< 1d array [nr_crop_classes] - day of year when crop growth starts */
+    unsigned short int *end_irr;        /**< 1d array [nr_crop_classes] - day of year when crop growth ends */
+    
+    //dams
+    bool fnaturalized_flow;             /**< bool - TRUE = do both normal and naturalized routing FALSE = do not do double routing */
+    double dam_irr_distance;            /**< scalar - maximum cell distance a cell can be irrigated from a dam */
+};
+
+struct RID_structs {
+    RID_param param;                    /**< module parameters */
+    
+    double min_lon;                     /**< scalar - minimum longitude in domain [degree] */
+    double min_lat;                     /**< scalar - minimum latitude in domain [degree] */
+    
+    RID_cell *cells;                    /**< 1d array [nr_active_cells] - module cells */  
+    RID_cell **sorted_cells;            /**< 1d array [nr_active_cells] - pointers to sorted module cells */
+    RID_cell ***gridded_cells;          /**< 2d array [n_nx][n_ny] - pointer to gridded module cells */
+    
+    //routing
+    rout_cell *rout_cells;              /**< 1d array [nr_active_cells] - routed cells */     
+    
+    //irrigation
+    size_t nr_irr_cells;                /**<scalar - number of irrigated cells */
+    irr_cell *irr_cells;                /**< 1d array [nr_irr_cells] - irrigated cells */ 
+    
+    //dams
+    size_t nr_dams;                     /**< scalar - number of dam units */
+    dam_unit *dams;                     /**< 1d array [nr_dams] - dam units */  
+};
 
 struct RID_cells{
     size_t global_domain_id;            /**< scalar - VIC id for this cell in the global domain (including inactive cells) */
@@ -45,7 +93,7 @@ struct RID_cells{
 };
 
 struct rout_cells {
-    RID_cell *cell;                  /**< pointer - pointer to cell infromation */
+    RID_cell *cell;                     /**< pointer - pointer to cell infromation */
     
     size_t rank;                        /**< scalar - upstream rank of the cell in routing */
     
@@ -53,13 +101,13 @@ struct rout_cells {
     rout_cell **upstream;               /**< 1d array [nr_upstream] - pointers to upstream routing cells */
     rout_cell *downstream;              /**< pointer - pointer to downstream routing cell */
     
-    double *uh;                         /**< 1d array [MAX_DAYS_UH * model_steps_per_day] - value of UH at each timestep */
-    double *outflow;                    /**< 1d array [MAX_DAYS_UH * model_steps_per_day] - value of the outflow at each timestep [m3/s] */
-    double *outflow_natural;            /**< 1d array [MAX_DAYS_UH * model_steps_per_day] - value of the outflow at each timestep [m3/s] */
+    double *uh;                         /**< 1d array [max_days_uh * model_steps_per_day] - value of UH at each timestep */
+    double *outflow;                    /**< 1d array [max_days_uh * model_steps_per_day] - value of the outflow at each timestep [m3/s] */
+    double *outflow_natural;            /**< 1d array [max_days_uh * model_steps_per_day] - value of the natural outflow at each timestep [m3/s] */
 };
 
 struct irr_cells {
-    RID_cell *cell;                  /**< pointer - pointer to cell infromation */
+    RID_cell *cell;                     /**< pointer - pointer to cell infromation */
     
     size_t nr_crops;                    /**< scalar - number of crops */
     size_t *veg_class;                  /**< 1d array [nr_crops] - vegetation class of crops */
@@ -72,95 +120,51 @@ struct irr_cells {
 
 struct dam_units{
     RID_cell *cell;                     /**< pointer - pointer to cell infromation */
-    
-    bool run;                           /**< bool - TRUE = run FALSE = do not run (false when reservoir unit is not build yet) */
-    
-    double ext_influence_factor;        /**< scalar - flow variability factor for external influences (demand or monthly inflow) */
-    size_t extreme_stor;                /**< scalar - days this year dam storage was extreme (full or empty) */
-    
-    double target_release;              /**< scalar - this months target release */
-    double previous_release;            /**< scalar - outflow to be released next timestep */
-    dmy_struct start_operation;         /**< dmy_struct - start of the operation year of this reservoir */
-    double storage_start_operation;     /**< scalar - storage at the start of the operation year of this reservoir [m3] */
-    double current_storage;             /**< scalar - current storage of reservoir [m3] */    
+    bool run;                           /**< bool - TRUE = run FALSE = do not run (false when dam is not build yet) */
     
     size_t global_id;                   /**< scalar - global id of dam (from input file) */
-    int activation_year;                /**< scalar - activation year of the reservoir */
-    char name[MAXSTRING];               /**< string - name of the reservoir */
-    size_t function;                    /**< scalar - function of the reservoir (DAM_IRR_FUNCTION = irrigation DAM_HYD_FUNCTION = hydropower DAM_CON_FUNCTION = flood control) */
-    double capacity;                    /**< scalar - storage capacity of reservoir [m3] */    
+    int activation_year;                /**< scalar - activation year of dam */
+    char name[MAXSTRING];               /**< string - name of dam */
+    size_t function;                    /**< scalar - function of dam (DAM_IRR_FUNCTION = irrigation DAM_HYD_FUNCTION = hydropower DAM_CON_FUNCTION = flood control) */
+    double capacity;                    /**< scalar - storage capacity of dam [m3] */
+    double irrigated_area;              /**< scalar - irrigated area of dam [m2] */    
     
-    double total_inflow;               /**< scalar - current total inflow [m3] */
-    double total_inflow_natural;       /**< scalar - current total natural inflow [m3] */
-    double total_demand;               /**< scalar - current total demand [m3] */
+    double total_inflow;                /**< scalar - current total inflow [m3] */
+    double total_inflow_natural;        /**< scalar - current total natural inflow [m3] */
+    double total_demand;                /**< scalar - current total demand [m3] */
     
-    double *inflow;                    /**< 2d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged daily inflow for a month [m3] */
-    double *inflow_natural;            /**< 2d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged daily inflow for a month [m3] */
-    double *demand;                    /**< 2d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged daily demand for a month [m3] */
+    double *inflow;                     /**< 1d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged time-step inflow for a month [m3/ts] */
+    double *inflow_natural;             /**< 1d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged time-step inflow for a month [m3/ts] */
+    double *demand;                     /**< 1d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged time-step demand for a month [m3/ts] */
     
-    double monthly_inflow;              /**< scalar - multi-year averaged daily inflow [m3] for current month */
-    double monthly_inflow_natural;      /**< scalar - multi-year averaged daily inflow [m3] for current month */
-    double monthly_demand;              /**< scalar - multi-year averaged daily demand [m3] for current month */
+    double ext_influence_factor;        /**< scalar - factor for external influences [m3/m3] */
+    size_t extreme_stor;                /**< scalar - days this year dam storage was extreme (full or empty) [#] */
     
-    double annual_inflow;               /**< scalar - multi-year averaged daily demand [m3] for current year */
-    double annual_inflow_natural;       /**< scalar - multi-year averaged daily demand [m3] for current year */
-    double annual_demand;               /**< scalar - multi-year averaged daily demand [m3] for current year */
+    double monthly_inflow;              /**< scalar - multi-year averaged time-step inflow [m3/ts] for current month */
+    double monthly_inflow_natural;      /**< scalar - multi-year averaged time-step inflow [m3/ts] for current month */
+    double monthly_demand;              /**< scalar - multi-year averaged time-step demand [m3/ts] for current month */
+    
+    double annual_inflow;               /**< scalar - multi-year averaged time-step demand [m3/ts] for current year */
+    double annual_inflow_natural;       /**< scalar - multi-year averaged time-step demand [m3/ts] for current year */
+    double annual_demand;               /**< scalar - multi-year averaged time-step demand [m3/ts] for current year */
+    
+    double release;                     /**< scalar - this months release [m3/ts] */
+    double previous_release;            /**< scalar - outflow to be released next timestep [m3] */
     
     size_t nr_serviced_cells;           /**< scalar - number of serviced cells */
     serviced_cell *serviced_cells;      /**< 1d array [nr_serviced_cells] - serviced cells */
+    
+    dmy_struct start_operation;         /**< dmy_struct - start of the operation year of dam */
+    double storage_start_operation;     /**< scalar - storage at the start of the operation year of dam [m3] */
+    double current_storage;             /**< scalar - current storage of dam [m3] */ 
 };
 
 struct serviced_cells{
-    RID_cell *cell;                    /**< pointer - pointer to cell information */
-    double *moisture_content;          /**< 1d array [nr_crops] - moisture content of serviced cell's crops [mm] */ 
-    double *demand_crop;               /**< 1d array [nr_crops] - demand of serviced cell's crops [m3] */ 
-    double *deficit;                    /**< 1d array [nr_crops] - previous demand of serviced cell's crops [m3] */ 
-    
+    RID_cell *cell;                     /**< pointer - pointer to cell information */
+    double *moisture_content;           /**< 1d array [nr_crops] - moisture content of serviced cell's crops [mm] */ 
+    double *demand_crop;                /**< 1d array [nr_crops] - demand of serviced cell's crops [m3] */ 
+    double *deficit;                    /**< 1d array [nr_crops] - previous demand of serviced cell's crops [m3] */     
 };
-
-struct RID_params{
-    bool firrigation;                   /**< bool - TRUE = do irrigation FALSE = do not do irrigation */
-    bool fpot_irrigation;               /**< bool - TRUE = use potential irrigation FALSE = do not use potential irrigation */
-    bool fdams;                         /**< bool - TRUE = use reservoirs during routing FALSE = do not use reservoirs */
-    bool fdebug_mode;                   /**< bool - TRUE = use debugging during routing FALSE = do not use debugging */
-    
-    char param_filename[MAXSTRING];     /**< string - file path and name of routing paramaters */
-    char dam_filename[MAXSTRING];       /**< string - file path and name of reservoir information */
-    char debug_path[MAXSTRING - 30];    /**< string - file path of debug files */
-    
-    //routing
-    size_t max_days_uh;                 /**< scalar - maximum number of days a unit hydrograph is allowed to produce discharge */
-    double flow_velocity_uh;            /**< scalar - flow velocity of the unit hydrograph */
-    double flow_diffusivity_uh;         /**< scalar - flow diffusivity of the unit hydrograph */
-    
-    //irrigation
-    size_t nr_crops;                    /**< scalar - number of vegetation classes that are irrigated crops */
-    size_t *crop_class;                 /**< 1d array [nr_crop_classes] - vegetation classes which are irrigated crops */
-    unsigned short int *crop_sow;       /**< 1d array [nr_crop_classes] - day of year when crop growth starts */
-    unsigned short int *crop_harvest;   /**< 1d array [nr_crop_classes] - day of year when crop growth ends */
-    
-    //dams
-    bool fnaturalized_flow;             /**< bool - TRUE = do both normal and naturalized routing FALSE = do not do double routing */
-    double dam_irr_distance;            /**< scalar - maximum cell distance a cell can be irrigated from a reservoir */
-};
-
-struct RID_structs {
-    RID_param param;                        /**< module parameters */
-    
-    double min_lon;                         /**< scalar - minimum longitude in domain [degree] */
-    double min_lat;                         /**< scalar - minimum latitude in domain [degree] */
-    
-    RID_cell *cells;                        /**< 1d array [nr_active_cells] - module cells */  
-    RID_cell **sorted_cells;                /**< 1d array [nr_active_cells] - pointers to sorted module cells */
-    RID_cell ***gridded_cells;              /**< 2d array [n_nx][n_ny] - pointer to gridded module cells */
-    
-    rout_cell *rout_cells;                  /**< 1d array [nr_active_cells] - routed cells */    
-    size_t nr_dams;                         /**< scalar - number of dam units */
-    dam_unit *dams;                         /**< 1d array [nr_reservoirs] - dam units */    
-    size_t nr_irr_cells;                    /**<scalar - number of irrigated cells */
-    irr_cell *irr_cells;                    /**< 1d array [nr_irr_cells] - irrigated cells */
-};
-
 
 /*******************************
  rout_start

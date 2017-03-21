@@ -80,8 +80,7 @@ void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy){
     for(i=0;i<years_passed;i++){
         cur_dam->monthly_demand += cur_dam->demand[i * MONTHS_PER_YEAR + month_nr]/years_passed;
         cur_dam->monthly_inflow += cur_dam->inflow[i * MONTHS_PER_YEAR + month_nr]/years_passed;
-        cur_dam->monthly_inflow_natural += cur_dam->inflow_natural[i * MONTHS_PER_YEAR + month_nr]/years_passed;
-        
+        cur_dam->monthly_inflow_natural += cur_dam->inflow_natural[i * MONTHS_PER_YEAR + month_nr]/years_passed;  
     }
 
     if(!RID.param.fnaturalized_flow){
@@ -96,36 +95,33 @@ void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy){
  * irrigation and flood control dams
  ******************************************************************************/
 void calculate_target_release(dam_unit* cur_dam){
-    double c;
     double release_coefficient;
-    double target_release=0;
+    double target_release;
     
     if(cur_dam->annual_inflow==0){
+        cur_dam->release=0;
         return;
     }
     
-    release_coefficient = (double)cur_dam->storage_start_operation / (RES_PREF_STORAGE * (double)cur_dam->capacity); 
-    c = cur_dam->capacity / cur_dam->annual_inflow;
+    release_coefficient = (double)cur_dam->storage_start_operation / (RES_PREF_STORAGE * (double)cur_dam->capacity);
     
     switch(cur_dam->function){
         case DAM_IRR_FUNCTION:
-            if(cur_dam->annual_demand >= 0.5 * cur_dam->annual_inflow){
-                if(cur_dam->annual_demand>0 && cur_dam->annual_inflow>(cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)){
-                    target_release = 
-                            (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC) + 
-                            (cur_dam->annual_inflow - (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)) *
-                            cur_dam->ext_influence_factor *
-                            (cur_dam->monthly_demand / cur_dam->annual_demand) +
-                            (cur_dam->annual_inflow - (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)) *
-                            (1-cur_dam->ext_influence_factor) *
-                            (cur_dam->monthly_inflow/cur_dam->annual_inflow) *
-                            (cur_dam->monthly_demand / cur_dam->annual_demand);
-                }else{
-                     target_release = (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC);
-                }
+            if(cur_dam->annual_demand>0 && cur_dam->annual_inflow>(cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)){
+                target_release = 
+                        (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC) + 
+                        (cur_dam->annual_inflow - (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)) *
+                        cur_dam->ext_influence_factor *
+                        (cur_dam->monthly_demand / cur_dam->annual_demand) +
+                        (cur_dam->annual_inflow - (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)) *
+                        (1-cur_dam->ext_influence_factor) *
+                        (cur_dam->monthly_inflow/cur_dam->annual_inflow) *
+                        (cur_dam->monthly_demand / cur_dam->annual_demand);
             }else{
-                target_release = cur_dam->annual_inflow + cur_dam->monthly_demand - cur_dam->annual_demand;
-            }            
+                target_release = cur_dam->annual_inflow * cur_dam->ext_influence_factor + 
+                        cur_dam->annual_inflow * (1-cur_dam->ext_influence_factor) * 
+                        (cur_dam->monthly_inflow/cur_dam->annual_inflow);  
+            }      
             break;
             
         case DAM_CON_FUNCTION:
@@ -145,31 +141,26 @@ void calculate_target_release(dam_unit* cur_dam){
             break;
     }
           
-    if(c >= 0.5){
-        cur_dam->target_release = target_release * release_coefficient;
-    }
-    else{
-        cur_dam->target_release = pow((c/0.5),2) * release_coefficient * target_release + (1-pow((c/0.5),2)) * cur_dam->monthly_inflow;
-    }
+    cur_dam->release = target_release * release_coefficient;
     
-    if(cur_dam->target_release<0){
+    if(cur_dam->release<0){
         log_err("target release is negative?");
     }
     
-    log_warn("\ntarget_release %.1f;\n"
+    log_warn("\n\ntarget_release %.1f;\n"
             "inflow %.1f; annual_inflow %.1f;\n"
             "inflow_natural %.1f; annual_inflow_natural %.1f;\n"
             "demand %.1f; annual_demand %.1f;\n"
             "function %zu\n"
             "extreme_stor %zu; influence %.2f\n"
-            "c %.1f; release_coefficient %.1f",
-            cur_dam->target_release/10000,
+            "release_coefficient %.1f",
+            cur_dam->release/10000,
             cur_dam->monthly_inflow/10000, cur_dam->annual_inflow/10000, 
             cur_dam->monthly_inflow_natural/10000, cur_dam->annual_inflow_natural/10000, 
             cur_dam->monthly_demand/10000, cur_dam->annual_demand/10000, 
             cur_dam->function,
             cur_dam->extreme_stor, cur_dam->ext_influence_factor,
-            c,release_coefficient);
+            release_coefficient);
     
     
 }
@@ -295,7 +286,7 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){
  * Limit target release based on current dam storage
  ******************************************************************************/
 void calculate_actual_release(dam_unit* cur_dam, double *actual_release){
-    double target_release = cur_dam->target_release;
+    double target_release = cur_dam->release;
     
     if(target_release<cur_dam->current_storage){
         *actual_release=target_release;
@@ -338,7 +329,11 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
     for(i=0;i<cur_dam->nr_serviced_cells;i++){
         irr_cell *irr_cell = cur_dam->serviced_cells[i].cell->irr;
         
-        for(j=0;j<irr_cell->nr_crops;j++){            
+        for(j=0;j<irr_cell->nr_crops;j++){  
+            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
+                continue;
+            }
+            
             demand_cells += cur_dam->serviced_cells[i].demand_crop[j];
         }
     }
@@ -364,7 +359,11 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
             irrigation_crop[i][j]=0;            
         }
         
-        for(j=0;j<irr_cell->nr_crops;j++){            
+        for(j=0;j<irr_cell->nr_crops;j++){
+            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
+                continue;
+            }
+            
             if(demand_cells<available_water){
                 irrigation_crop[i][j] = cur_dam->serviced_cells[i].demand_crop[j];
             }else{
@@ -373,6 +372,10 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
         }
         
         for(j=0;j<irr_cell->nr_crops;j++){
+            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
+                continue;
+            }
+            
             available_water -= irrigation_crop[i][j];
             cur_dam->serviced_cells[i].demand_crop[j]-=irrigation_crop[i][j];
             irrigation_cell[i] += irrigation_crop[i][j];
@@ -386,6 +389,10 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
         }
         
         for(j=0;j<irr_cell->nr_crops;j++){
+            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
+                continue;
+            }
+            
             cur_dam->serviced_cells[i].moisture_content[j] += irrigation_crop[i][j]/ 
                     (local_domain.locations[irr_cell->cell->id].area * 
                     veg_con[irr_cell->cell->id][irr_cell->veg_index[j]].Cv) * MM_PER_M;
@@ -438,7 +445,6 @@ void calculate_defict(dam_unit* cur_dam){
  * irrigation from the dam storage.
  ******************************************************************************/
 void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_release){
-    extern global_param_struct global_param;
     extern double ***out_data;
     
     double overflow=0;
@@ -449,7 +455,7 @@ void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_
     }
     cur_dam->current_storage-= overflow;
     
-    cur_dam->previous_release = (actual_release+overflow) / global_param.dt;
+    cur_dam->previous_release = actual_release+overflow;
     
     if((cur_dam->current_storage/cur_dam->capacity)>0.9 || (cur_dam->current_storage/cur_dam->capacity)<0.1){
         cur_dam->extreme_stor++;

@@ -9,27 +9,20 @@
 /******************************************************************************
  * @section brief
  *  
- * Check whether a crop is in its growing season or 2 weeks before the
- * growing season.
+ * Return whether a crop is in its irrigation season.
  ******************************************************************************/
 
 bool in_irrigation_season(size_t crop_index, size_t current_julian_day){
     extern RID_struct RID;
     
-    short int start;
-    start=RID.param.crop_sow[crop_index] - (2 * DAYS_PER_WEEK);
-    if(start<1){
-        start+=DAYS_PER_YEAR;
-    }
-    
-    if(start < RID.param.crop_harvest[crop_index]){
-        if(current_julian_day>=(size_t)start && current_julian_day < RID.param.crop_harvest[crop_index]){
+    if(RID.param.start_irr[crop_index] < RID.param.end_irr[crop_index]){
+        if(current_julian_day>=RID.param.start_irr[crop_index] && current_julian_day < RID.param.end_irr[crop_index]){
             return true;
         }else{
             return false;
         }
     }else{
-        if(current_julian_day>=(size_t)start && current_julian_day < RID.param.crop_harvest[crop_index]){
+        if(current_julian_day>=RID.param.start_irr[crop_index] && current_julian_day < RID.param.end_irr[crop_index]){
             return false;
         }else{
             return true;
@@ -87,7 +80,7 @@ void get_irrigation_demand(size_t cell_id, size_t veg_index, double moisture_con
                 veg_con[cell_id][veg_index].Cv);
     }else{
         *demand_crop=0;
-    }
+    }    
 }
 
 /******************************************************************************
@@ -112,6 +105,11 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     double added_water_cell;
     double added_water_crop[cur_cell->irr->nr_crops];
     
+    added_water_cell=0;
+    for(i=0;i<cur_cell->irr->nr_crops;i++){
+        added_water_crop[i]=0;
+    }
+    
     double available_water = cur_cell->rout->outflow[0] * global_param.dt;
     
     if(available_water<=0){
@@ -119,6 +117,10 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     }    
     
     for(i=0;i<cur_cell->irr->nr_crops;i++){
+        if(demand_crop[i]<=0){
+            continue;
+        }
+        
         if(*demand_cell<available_water){        
             added_water_crop[i] = demand_crop[i];
         }else{
@@ -130,17 +132,17 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     added_water_cell=0;
     for(i=0;i<cur_cell->irr->nr_crops;i++){        
         available_water -= added_water_crop[i];
-        demand_crop[i] -= added_water_crop[i];
         added_water_cell += added_water_crop[i];
+        demand_crop[i] -= added_water_crop[i];
         *demand_cell += demand_crop[i];
         
         if(RID.param.fpot_irrigation){
             added_water_crop[i]+=demand_crop[i];
-            demand_crop[i]=0;
             added_water_cell += added_water_crop[i];
+            demand_crop[i]=0;
             *demand_cell=0;
         }
-    }        
+    }
     
     out_data[cur_cell->id][OUT_LOCAL_IRR][0] = added_water_cell / M3_PER_HM3;
     
@@ -148,7 +150,11 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
         log_err("Adding a negative amount of water?");
     }
     
-    for(i=0;i<cur_cell->irr->nr_crops;i++){        
+    for(i=0;i<cur_cell->irr->nr_crops;i++){
+        if(added_water_crop[i]<=0){
+            continue;
+        }
+        
         moisture_content[i] += added_water_crop[i] 
                     / (local_domain.locations[cur_cell->id].area * 
                     veg_con[cur_cell->id][cur_cell->irr->veg_index[i]].Cv) * MM_PER_M;
@@ -159,6 +165,7 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     }
     
     cur_cell->rout->outflow[0]= available_water / global_param.dt;
+    
     out_data[cur_cell->id][OUT_DISCHARGE][0] = cur_cell->rout->outflow[0];
 }
 

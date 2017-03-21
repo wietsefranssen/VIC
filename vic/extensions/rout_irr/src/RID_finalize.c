@@ -75,8 +75,8 @@ void RID_finalize(void){
      Parameters
     *******************************/
     free(RID.param.crop_class);
-    free(RID.param.crop_sow);
-    free(RID.param.crop_harvest);
+    free(RID.param.start_irr);
+    free(RID.param.end_irr);
     
     /*******************************
      RID module

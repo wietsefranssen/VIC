@@ -18,19 +18,19 @@ void gather_runoff_inflow(RID_cell *cur_cell, double *runoff, double *inflow, bo
     extern global_param_struct global_param;
     extern double ***out_data;
     
-    size_t iCell;
+    size_t i;
     
     *runoff = (out_data[cur_cell->id][OUT_RUNOFF][0]+out_data[cur_cell->id][OUT_BASEFLOW][0]) 
             * local_domain.locations[cur_cell->id].area / MM_PER_M / global_param.dt;
 
     *inflow=0.0;
     if(naturalized){
-        for(iCell=0;iCell<cur_cell->rout->nr_upstream;iCell++){
-            *inflow += cur_cell->rout->upstream[iCell]->outflow_natural[0];
+        for(i=0;i<cur_cell->rout->nr_upstream;i++){
+            *inflow += cur_cell->rout->upstream[i]->outflow_natural[0];
         }
     }else{
-        for(iCell=0;iCell<cur_cell->rout->nr_upstream;iCell++){
-            *inflow += cur_cell->rout->upstream[iCell]->outflow[0];
+        for(i=0;i<cur_cell->rout->nr_upstream;i++){
+            *inflow += cur_cell->rout->upstream[i]->outflow[0];
         }
     }
     
@@ -69,7 +69,6 @@ void shift_outflow_array(RID_cell* current_cell){
 void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturalized){
     extern RID_struct RID;
     extern global_param_struct global_param;
-    extern double ***out_data;
     
     size_t t;
     
@@ -78,12 +77,10 @@ void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturaliz
         for(t=0;t<RID.param.max_days_uh * global_param.model_steps_per_day;t++){
             cur_cell->rout->outflow[t] += cur_cell->rout->uh[t] * inflow;
         }       
-        out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
     }else{
         cur_cell->rout->outflow_natural[0] += runoff;
         for(t=0;t<RID.param.max_days_uh * global_param.model_steps_per_day;t++){
             cur_cell->rout->outflow_natural[t] += cur_cell->rout->uh[t] * inflow;
         }
-        out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0];
     }
 }

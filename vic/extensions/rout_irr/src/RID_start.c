@@ -261,10 +261,10 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
     
     RID.param.crop_class=malloc(RID.param.nr_crops * sizeof(*RID.param.crop_class));
     check_alloc_status(RID.param.crop_class,"Memory allocation error.");
-    RID.param.crop_sow=malloc(RID.param.nr_crops * sizeof(*RID.param.crop_sow));
-    check_alloc_status(RID.param.crop_sow,"Memory allocation error.");
-    RID.param.crop_harvest=malloc(RID.param.nr_crops * sizeof(*RID.param.crop_harvest));
-    check_alloc_status(RID.param.crop_harvest,"Memory allocation error.");
+    RID.param.start_irr=malloc(RID.param.nr_crops * sizeof(*RID.param.start_irr));
+    check_alloc_status(RID.param.start_irr,"Memory allocation error.");
+    RID.param.end_irr=malloc(RID.param.nr_crops * sizeof(*RID.param.end_irr));
+    check_alloc_status(RID.param.end_irr,"Memory allocation error.");
     
     for(i=0;i<nr_crops;i++){
         
@@ -307,8 +307,8 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
         }
         
         RID.param.crop_class[i]=crop_info[i][0]-1;
-        RID.param.crop_sow[i]=crop_info[i][1];
-        RID.param.crop_harvest[i]=crop_info[i][2];
+        RID.param.start_irr[i]=crop_info[i][1];
+        RID.param.end_irr[i]=crop_info[i][2];
     }
     
     for(i=0;i<nr_crops;i++){
@@ -399,7 +399,7 @@ void display_module_options(){
         fprintf(LOG_DEST, "CROP_CLASS\tCROP_SOW\tCROP_DEVELOPED\tCROP_MATURED\tCROP_HARVEST\n");
         for(i=0;i<RID.param.nr_crops;i++){
             fprintf(LOG_DEST, "%zu\t\t%hu\t\t%hu\n",
-                    RID.param.crop_class[i]+1,RID.param.crop_sow[i],RID.param.crop_harvest[i]);
+                    RID.param.crop_class[i]+1,RID.param.start_irr[i],RID.param.end_irr[i]);
         }
     }else{
         fprintf(LOG_DEST, "\nIRRIGATION\t\t\tFALSE\n");

@@ -218,7 +218,7 @@ void make_dam_file(char file_path[], char file_name[]){
     
     if((file = fopen(full_path, "w"))!=NULL){
         size_t i;
-        fprintf(file,"Reservoirs found in location and time of interest:\n");
+        fprintf(file,"Dams found in location and time of interest:\n");
         for(i=0;i<RID.nr_dams;i++){
             char purpose[MAXSTRING];
             if(RID.dams[i].function==DAM_IRR_FUNCTION){
@@ -230,7 +230,7 @@ void make_dam_file(char file_path[], char file_name[]){
             }else{
                 strncpy(purpose, "unknown", 100);
             }
-            fprintf(file,"Reservoir %zu %s activation year %d  storage capacity %.2f puropse %s",
+            fprintf(file,"Dam %zu %s \tactivation year %d \tstorage capacity %.2f \tpuropse %s",
                     RID.dams[i].global_id,RID.dams[i].name,RID.dams[i].activation_year,
                     RID.dams[i].capacity,purpose);
             fprintf(file,"\n");
