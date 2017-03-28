@@ -16,7 +16,6 @@
 void set_cell_location(){
     extern RID_struct RID;
     extern domain_struct global_domain;
-    extern domain_struct local_domain;
     extern global_param_struct global_param;
     
     RID.min_lat=DBL_MAX;
@@ -45,8 +44,8 @@ void set_cell_location(){
     }
     
     for(i=0;i<global_domain.ncells_active;i++){
-        x = (size_t)((local_domain.locations[i].longitude - RID.min_lon)/global_param.resolution);
-        y = (size_t)((local_domain.locations[i].latitude - RID.min_lat)/global_param.resolution);
+        x = (size_t)((global_domain.locations[RID.cells[i].global_domain_id].longitude - RID.min_lon)/global_param.resolution);
+        y = (size_t)((global_domain.locations[RID.cells[i].global_domain_id].latitude - RID.min_lat)/global_param.resolution);
         RID.gridded_cells[x][y]=&RID.cells[i];
         RID.cells[i].x=x;
         RID.cells[i].y=y;

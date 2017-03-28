@@ -14,14 +14,14 @@
  ******************************************************************************/
 
 void gather_runoff_inflow(RID_cell *cur_cell, double *runoff, double *inflow, bool naturalized){
-    extern domain_struct local_domain;
+    extern domain_struct global_domain;
     extern global_param_struct global_param;
     extern double ***out_data;
     
     size_t i;
     
     *runoff = (out_data[cur_cell->id][OUT_RUNOFF][0]+out_data[cur_cell->id][OUT_BASEFLOW][0]) 
-            * local_domain.locations[cur_cell->id].area / MM_PER_M / global_param.dt;
+            * global_domain.locations[cur_cell->global_domain_id].area / MM_PER_M / global_param.dt;
 
     *inflow=0.0;
     if(naturalized){

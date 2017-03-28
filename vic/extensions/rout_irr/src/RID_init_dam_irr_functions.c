@@ -16,7 +16,7 @@
 void set_dam_irr_service(){
     extern RID_struct RID;
     extern soil_con_struct *soil_con;
-    extern domain_struct local_domain;
+    extern domain_struct global_domain;
     extern veg_con_struct **veg_con;
         
     dam_unit *assigned_dams[RID.nr_irr_cells];
@@ -54,7 +54,7 @@ void set_dam_irr_service(){
             assigned_dams[j]=&RID.dams[i];
             
             for(k=0;k<RID.irr_cells[j].nr_crops;k++){
-                RID.dams[i].irrigated_area += local_domain.locations[RID.irr_cells[j].cell->id].area * 
+                RID.dams[i].irrigated_area += global_domain.locations[RID.irr_cells[j].cell->global_domain_id].area * 
                         veg_con[RID.irr_cells[j].cell->id][RID.irr_cells[j].veg_index[k]].Cv;
             }
         }
@@ -89,9 +89,9 @@ void set_dam_irr_service(){
             }
             
             for(k=0;k<RID.irr_cells[j].nr_crops;k++){
-                assigned_dams[j]->irrigated_area -= local_domain.locations[RID.irr_cells[j].cell->id].area * 
+                assigned_dams[j]->irrigated_area -= global_domain.locations[RID.irr_cells[j].cell->global_domain_id].area * 
                         veg_con[RID.irr_cells[j].cell->id][RID.irr_cells[j].veg_index[k]].Cv;
-                RID.dams[i].irrigated_area += local_domain.locations[RID.irr_cells[j].cell->id].area * 
+                RID.dams[i].irrigated_area += global_domain.locations[RID.irr_cells[j].cell->global_domain_id].area * 
                         veg_con[RID.irr_cells[j].cell->id][RID.irr_cells[j].veg_index[k]].Cv;
             }
             
