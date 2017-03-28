@@ -514,6 +514,9 @@ get_global_param(FILE *gp)
             else if (strcasecmp("AGGFREQ", optstr) == 0) {
                 ; // do nothing
             }
+            else if (strcasecmp("HISTFREQ", optstr) == 0) {
+                ; // do nothing
+            }
             else if (strcasecmp("COMPRESS", optstr) == 0) {
                 ; // do nothing
             }
@@ -724,7 +727,7 @@ get_global_param(FILE *gp)
     }
 
     // Validate simulation end date and/or number of timesteps
-    make_lastday(global_param.endyear, global_param.calendar, lastday);
+    make_lastday(global_param.calendar, global_param.endyear, lastday);
 
     if (global_param.nrecs == 0 && global_param.endyear == 0 &&
         global_param.endmonth == 0 && global_param.endday == 0) {
@@ -892,7 +895,7 @@ get_global_param(FILE *gp)
                     global_param.statesec);
         }
         // Check for month, day in range
-        make_lastday(global_param.stateyear, global_param.calendar,
+        make_lastday(global_param.calendar, global_param.stateyear,
                      lastday);
         if (global_param.stateday > lastday[global_param.statemonth - 1] ||
             global_param.statemonth < 1 ||
