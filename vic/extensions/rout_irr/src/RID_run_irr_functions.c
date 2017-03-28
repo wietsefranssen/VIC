@@ -100,17 +100,22 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     extern option_struct options;
     extern RID_struct RID;
     
+    double added_water_cell;
+    double *added_water_crop;
+    double available_water;
+    
     size_t i;
     size_t j;
-    double added_water_cell;
-    double added_water_crop[cur_cell->irr->nr_crops];
+    
+    added_water_crop = malloc(cur_cell->irr->nr_crops * sizeof(*added_water_crop));
+    check_alloc_status(added_water_crop,"Memory allocation error");
     
     added_water_cell=0;
     for(i=0;i<cur_cell->irr->nr_crops;i++){
         added_water_crop[i]=0;
     }
     
-    double available_water = cur_cell->rout->outflow[0] * global_param.dt;
+    available_water = cur_cell->rout->outflow[0] * global_param.dt;
     
     if(available_water<=0){
         return;
@@ -128,30 +133,37 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
         }
     }
     
-    *demand_cell = 0;
-    added_water_cell=0;
-    for(i=0;i<cur_cell->irr->nr_crops;i++){        
+    double old_demand = *demand_cell;
+    
+    for(i=0;i<cur_cell->irr->nr_crops;i++){   
+        if(demand_crop[i]<=0){
+            continue;
+        }
+        
         available_water -= added_water_crop[i];
         added_water_cell += added_water_crop[i];
         demand_crop[i] -= added_water_crop[i];
-        *demand_cell += demand_crop[i];
+        *demand_cell -= added_water_crop[i];
         
         if(RID.param.fpot_irrigation){
             added_water_crop[i]+=demand_crop[i];
             added_water_cell += added_water_crop[i];
-            demand_crop[i]=0;
-            *demand_cell=0;
+            demand_crop[i] = 0;
+            *demand_cell = 0;
         }
     }
     
-    out_data[cur_cell->id][OUT_LOCAL_IRR][0] = added_water_cell / M3_PER_HM3;
+    double difference = old_demand - *demand_cell;
+    if(difference != added_water_cell){
+        //log_info(" ");
+    }
     
     if(added_water_cell<0){
         log_err("Adding a negative amount of water?");
     }
     
     for(i=0;i<cur_cell->irr->nr_crops;i++){
-        if(added_water_crop[i]<=0){
+        if(demand_crop[i]<=0){
             continue;
         }
         
@@ -166,7 +178,10 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     
     cur_cell->rout->outflow[0]= available_water / global_param.dt;
     
-    out_data[cur_cell->id][OUT_DISCHARGE][0] = cur_cell->rout->outflow[0];
+    out_data[cur_cell->id][OUT_LOCAL_IRR][0] = added_water_cell / M3_PER_HM3;
+    out_data[cur_cell->id][OUT_IRR][0] += out_data[cur_cell->id][OUT_LOCAL_IRR][0];
+    
+    free(added_water_crop);
 }
 
 /******************************************************************************
@@ -175,18 +190,15 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
  * Distribute demand and moisture content values over the servicing dam
  ******************************************************************************/
 
-void update_servicing_dam_values(RID_cell *cur_cell, double demand_crop[], double moisture_content[]){    
-    extern double ***out_data;
+void update_servicing_dam_values(RID_cell *cur_cell, double moisture_content[], double demand_crop[]){    
     size_t i;
     
-    if(cur_cell->irr->servicing_dam==NULL){
+    if(cur_cell->irr->serviced_cell==NULL){
         return;
     }
     
     for(i=0;i<cur_cell->irr->nr_crops;i++){
-        cur_cell->irr->servicing_dam->serviced_cells[cur_cell->irr->servicing_dam_cell_index].demand_crop[i]=demand_crop[i];
-        cur_cell->irr->servicing_dam->serviced_cells[cur_cell->irr->servicing_dam_cell_index].moisture_content[i]=moisture_content[i];
-        
-        out_data[cur_cell->id][OUT_DEMAND_DAM][0] += cur_cell->irr->servicing_dam->serviced_cells[cur_cell->irr->servicing_dam_cell_index].demand_crop[i] / M3_PER_HM3;
+        cur_cell->irr->serviced_cell->demand_crop[i]=demand_crop[i];
+        cur_cell->irr->serviced_cell->moisture_content[i]=moisture_content[i];
     }
 }

@@ -124,7 +124,8 @@ void set_dam_irr_service(){
                 continue;
             }
             
-            RID.dams[i].serviced_cells[k].cell=RID.irr_cells[j].cell;
+            RID.dams[i].serviced_cells[k].cell=&RID.irr_cells[j];
+            RID.dams[i].serviced_cells[k].dam=&RID.dams[i];
             
             RID.dams[i].serviced_cells[k].demand_crop=malloc(RID.irr_cells[j].nr_crops * sizeof(*RID.dams[i].serviced_cells[k].demand_crop));
             check_alloc_status(RID.dams[i].serviced_cells[k].demand_crop,"Memory allocation error.");
@@ -133,13 +134,12 @@ void set_dam_irr_service(){
             RID.dams[i].serviced_cells[k].deficit=malloc(RID.irr_cells[j].nr_crops * sizeof(*RID.dams[i].serviced_cells[k].deficit));
             check_alloc_status(RID.dams[i].serviced_cells[k].deficit,"Memory allocation error.");
             
-            RID.irr_cells[j].servicing_dam=&RID.dams[i];
-            RID.irr_cells[j].servicing_dam_cell_index=k;
+            RID.irr_cells[j].serviced_cell=&RID.dams[i].serviced_cells[k];
             k++;
         }
         
         for(j=0;j<RID.dams[i].nr_serviced_cells;j++){
-            for(k=0;k<RID.dams[i].serviced_cells[j].cell->irr->nr_crops;k++){
+            for(k=0;k<RID.dams[i].serviced_cells[j].cell->nr_crops;k++){
                 RID.dams[i].serviced_cells[j].deficit[k]=0;
                 RID.dams[i].serviced_cells[j].moisture_content[k]=0;
                 RID.dams[i].serviced_cells[j].demand_crop[k]=0;

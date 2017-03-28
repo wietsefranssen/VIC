@@ -313,9 +313,9 @@ void make_dam_service_file(char file_path[], char file_name[]){
                         continue;
                     }
                     
-                    if(RID.gridded_cells[x][y-1]->irr->servicing_dam!=NULL){
+                    if(RID.gridded_cells[x][y-1]->irr->serviced_cell!=NULL){
 
-                        if(RID.gridded_cells[x][y-1]->irr->servicing_dam->global_id==RID.dams[r].global_id){
+                        if(RID.gridded_cells[x][y-1]->irr->serviced_cell->dam->global_id==RID.dams[r].global_id){
                             fprintf(file," ~~;");
                         }else{
                             fprintf(file," XX;");

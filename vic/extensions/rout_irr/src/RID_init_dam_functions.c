@@ -235,12 +235,12 @@ void set_dam_information(){
         RID.dams[i].release = 0.0;   
         RID.dams[i].previous_release = 0.0;
         
-        RID.dams[i].ext_influence_factor=DAM_VARIABLE_INFL;
+        RID.dams[i].ext_influence_factor=DAM_EXT_INF_DEFAULT;
         RID.dams[i].extreme_stor=0;
         RID.dams[i].irrigated_area=0;
         
         //preferred storage level for the start of the operational year (Hanasaki et al., 2006)
-        RID.dams[i].current_storage= RID.dams[i].capacity * RES_PREF_STORAGE; 
+        RID.dams[i].current_storage= RID.dams[i].capacity * DAM_PREF_STORE; 
         RID.dams[i].storage_start_operation = RID.dams[i].current_storage;
         
         RID.dams[i].start_operation.day=global_param.startday;

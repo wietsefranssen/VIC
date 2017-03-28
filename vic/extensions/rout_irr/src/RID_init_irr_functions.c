@@ -99,6 +99,6 @@ void set_irr_crops(){
             }
         }
         
-        RID.irr_cells[i].servicing_dam=NULL;
+        RID.irr_cells[i].serviced_cell=NULL;
     }
 }

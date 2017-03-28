@@ -19,7 +19,7 @@ void update_dam_history_day(dam_unit* cur_dam, dmy_struct *cur_dmy){
         
     if(cur_dam->function == DAM_IRR_FUNCTION){
         for(i=0;i<cur_dam->nr_serviced_cells;i++){
-            irr_cell *irr_cell = cur_dam->serviced_cells[i].cell->irr;
+            irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
             
             for(j=0;j<irr_cell->nr_crops;j++){
                 if(!in_irrigation_season(irr_cell->crop_index[j],cur_dmy->day_in_year)){
@@ -85,6 +85,7 @@ void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy){
 
     if(!RID.param.fnaturalized_flow){
         cur_dam->monthly_inflow_natural=cur_dam->monthly_inflow;
+        cur_dam->annual_inflow_natural=cur_dam->annual_inflow;
     }    
 }
 
@@ -97,43 +98,57 @@ void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy){
 void calculate_target_release(dam_unit* cur_dam){
     double release_coefficient;
     double target_release;
+    double environmental_release;
+    double main_release;
+    double external_release;
     
     if(cur_dam->annual_inflow==0){
         cur_dam->release=0;
         return;
     }
     
-    release_coefficient = (double)cur_dam->storage_start_operation / (RES_PREF_STORAGE * (double)cur_dam->capacity);
+    release_coefficient = (double)cur_dam->storage_start_operation / (DAM_PREF_STORE * (double)cur_dam->capacity);
+    
+    if(cur_dam->monthly_inflow_natural > cur_dam->annual_inflow_natural){
+        environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_LOW;
+    }else{
+        environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH;
+    }
+    
+    main_release = (cur_dam->annual_inflow - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH) * 
+            (1-cur_dam->ext_influence_factor);
+    
+    if(cur_dam->annual_inflow>0){
+        external_release = (cur_dam->annual_inflow - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH) * 
+                cur_dam->ext_influence_factor * (cur_dam->monthly_inflow/cur_dam->annual_inflow);
+    }else{
+        external_release = (cur_dam->annual_inflow - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH) * 
+                cur_dam->ext_influence_factor;
+    }
+    
+    if(main_release<0){
+        main_release=0;
+    }
+    if(external_release<0){
+        external_release=0;
+    }
     
     switch(cur_dam->function){
         case DAM_IRR_FUNCTION:
-            if(cur_dam->annual_demand>0 && cur_dam->annual_inflow>(cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)){
-                target_release = 
-                        (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC) + 
-                        (cur_dam->annual_inflow - (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)) *
-                        cur_dam->ext_influence_factor *
-                        (cur_dam->monthly_demand / cur_dam->annual_demand) +
-                        (cur_dam->annual_inflow - (cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC)) *
-                        (1-cur_dam->ext_influence_factor) *
-                        (cur_dam->monthly_inflow/cur_dam->annual_inflow) *
-                        (cur_dam->monthly_demand / cur_dam->annual_demand);
+            if(cur_dam->annual_demand>0){
+                target_release = environmental_release + (main_release + external_release) * 
+                        (cur_dam->monthly_demand/cur_dam->annual_demand);
             }else{
-                target_release = cur_dam->annual_inflow * cur_dam->ext_influence_factor + 
-                        cur_dam->annual_inflow * (1-cur_dam->ext_influence_factor) * 
-                        (cur_dam->monthly_inflow/cur_dam->annual_inflow);  
+                target_release = environmental_release + main_release + external_release;
             }      
             break;
             
         case DAM_CON_FUNCTION:
-            target_release = cur_dam->annual_inflow * cur_dam->ext_influence_factor + 
-                    cur_dam->annual_inflow * (1-cur_dam->ext_influence_factor) * 
-                    (cur_dam->monthly_inflow/cur_dam->annual_inflow);                       
+            target_release = environmental_release + main_release + external_release;                     
             break;
             
         case DAM_HYD_FUNCTION:
-            target_release = cur_dam->annual_inflow * cur_dam->ext_influence_factor + 
-                    cur_dam->annual_inflow * (1-cur_dam->ext_influence_factor) * 
-                    (cur_dam->monthly_inflow/cur_dam->annual_inflow);             
+            target_release = environmental_release + main_release + external_release;            
             break;        
         
         default:
@@ -147,7 +162,7 @@ void calculate_target_release(dam_unit* cur_dam){
         log_err("target release is negative?");
     }
     
-    log_warn("\n\ntarget_release %.1f;\n"
+    log_info("\n\ntarget_release %.1f;\n"
             "inflow %.1f; annual_inflow %.1f;\n"
             "inflow_natural %.1f; annual_inflow_natural %.1f;\n"
             "demand %.1f; annual_demand %.1f;\n"
@@ -160,9 +175,7 @@ void calculate_target_release(dam_unit* cur_dam){
             cur_dam->monthly_demand/10000, cur_dam->annual_demand/10000, 
             cur_dam->function,
             cur_dam->extreme_stor, cur_dam->ext_influence_factor,
-            release_coefficient);
-    
-    
+            release_coefficient); 
 }
 
 
@@ -201,15 +214,15 @@ void update_dam_history_year(dam_unit* cur_dam, dmy_struct* cur_dmy){
     }
     
     if(cur_dam->extreme_stor>0){
-        cur_dam->ext_influence_factor -= DAM_INFL_CHANGE;
+        cur_dam->ext_influence_factor += DAM_EXT_INF_CHANGE;
     }else{
-        cur_dam->ext_influence_factor += DAM_INFL_CHANGE;
+        cur_dam->ext_influence_factor -= DAM_EXT_INF_CHANGE;
     }
     
-    if(cur_dam->ext_influence_factor<0.1){
-        cur_dam->ext_influence_factor=0.1;
-    }else if(cur_dam->ext_influence_factor>0.9){
-        cur_dam->ext_influence_factor=0.9;
+    if(cur_dam->ext_influence_factor<DAM_MIN_EXT_INF){
+        cur_dam->ext_influence_factor=DAM_MIN_EXT_INF;
+    }else if(cur_dam->ext_influence_factor>DAM_MAX_EXT_INF){
+        cur_dam->ext_influence_factor=DAM_MAX_EXT_INF;
     }
     cur_dam->extreme_stor=0;
 }
@@ -227,7 +240,9 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){
     size_t j;
     size_t years_passed;
     int count;
+    double count_inflow;
     int longest;
+    double longest_inflow;
     int month;
     
     double average_monthly_inflow[MONTHS_PER_YEAR];
@@ -248,21 +263,30 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){
     }
     
     count=0;
+    count_inflow=0;
     longest=0;
+    longest_inflow=0;
     month=0;
     for(j=0;j<(2 * MONTHS_PER_YEAR);j++){
         size_t i = j % MONTHS_PER_YEAR;
 
         if(average_monthly_inflow[i]>cur_dam->annual_inflow){
             count++;
+            count_inflow += average_monthly_inflow[i];
 
             if(count>longest){
                 longest=count;
+                longest_inflow=count_inflow;
                 month=i;
 
+            }else if (count==longest && count_inflow>longest_inflow){
+                longest=count;
+                longest_inflow=count_inflow;
+                month=i;
             }
         }else{
             count=0;
+            count_inflow=0;
         }
     }
     
@@ -319,7 +343,7 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
     size_t j;
     size_t k;
     
-    available_water = *actual_release - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_PERC;     
+    available_water = *actual_release - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH;     
     
     if(available_water <= 0){
         *irrigation_release=0;
@@ -327,7 +351,7 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
     }    
     
     for(i=0;i<cur_dam->nr_serviced_cells;i++){
-        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell->irr;
+        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
         
         for(j=0;j<irr_cell->nr_crops;j++){  
             if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
@@ -349,7 +373,7 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
     check_alloc_status(irrigation_crop,"Memory allocation error");
         
     for(i=0;i<cur_dam->nr_serviced_cells;i++){
-        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell->irr;
+        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
                 
         irrigation_crop[i] = malloc(irr_cell->nr_crops * sizeof(*irrigation_crop[i]));
         check_alloc_status(irrigation_crop[i],"Memory allocation error");
@@ -371,6 +395,8 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
             }
         }
         
+        //double demand_cell=0;
+        
         for(j=0;j<irr_cell->nr_crops;j++){
             if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
                 continue;
@@ -379,10 +405,10 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
             available_water -= irrigation_crop[i][j];
             cur_dam->serviced_cells[i].demand_crop[j]-=irrigation_crop[i][j];
             irrigation_cell[i] += irrigation_crop[i][j];
-            irrigation_cells += irrigation_crop[i][j];
+            irrigation_cells += irrigation_crop[i][j];            
+            //demand_cell+=cur_dam->serviced_cells[i].demand_crop[j];
         }
-        
-        out_data[irr_cell->cell->id][OUT_DAM_IRR][0] = irrigation_cell[i] / M3_PER_HM3;
+        //out_data[irr_cell->cell->id][OUT_DEMAND_END][0] = cur_dam->serviced_cells[i].deficit[j];
         
         if(irrigation_cell[i]<0){
             log_err("Adding negative amount of irrigation water");
@@ -402,7 +428,9 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
                         cur_dam->serviced_cells[i].moisture_content[j];
             }
         }
-        
+                
+        out_data[irr_cell->cell->id][OUT_DAM_IRR][0] = irrigation_cell[i] / M3_PER_HM3;
+        out_data[irr_cell->cell->id][OUT_IRR][0] += out_data[irr_cell->cell->id][OUT_DAM_IRR][0];
         free(irrigation_crop[i]);
     }
     
@@ -425,16 +453,18 @@ void calculate_defict(dam_unit* cur_dam){
     size_t i;
     size_t j;
     
+    double demand_cell;
+    
     for(i=0;i<cur_dam->nr_serviced_cells;i++){
-        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell->irr;
-        out_data[irr_cell->cell->id][OUT_DEMAND_END][0] = 0;
+        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
         
         for(j=0;j<irr_cell->nr_crops;j++){
             cur_dam->serviced_cells[i].deficit[j] = cur_dam->serviced_cells[i].demand_crop[j];             
+            demand_cell += cur_dam->serviced_cells[i].demand_crop[j];
             cur_dam->serviced_cells[i].demand_crop[j]=0;
-            
-            out_data[irr_cell->cell->id][OUT_DEMAND_END][0] += cur_dam->serviced_cells[i].deficit[j];
         }
+        
+        out_data[irr_cell->cell->id][OUT_DEMAND_END][0] += demand_cell / M3_PER_HM3;
     }
 }
 
@@ -457,7 +487,7 @@ void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_
     
     cur_dam->previous_release = actual_release+overflow;
     
-    if((cur_dam->current_storage/cur_dam->capacity)>0.9 || (cur_dam->current_storage/cur_dam->capacity)<0.1){
+    if((cur_dam->current_storage/cur_dam->capacity)>DAM_MAX_PREF_STORE || (cur_dam->current_storage/cur_dam->capacity)<DAM_MIN_PREF_STORE){
         cur_dam->extreme_stor++;
     }       
     out_data[cur_dam->cell->id][OUT_DAM_STORE][0]+= cur_dam->current_storage/cur_dam->capacity;
