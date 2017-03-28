@@ -20,29 +20,38 @@ void RID_run(dmy_struct* cur_dmy){
     extern domain_struct global_domain;
     extern RID_struct RID;
     extern double ***out_data;
+    extern int mpi_rank;
     
     RID_cell *cur_cell;
     size_t i;
-        
-    for(i=0;i<global_domain.ncells_active;i++){
-        cur_cell = RID.sorted_cells[i];
-        
-        do_routing_module(cur_cell);
-        
-        if(cur_cell->irr!=NULL){
-            do_irrigation_module(cur_cell,cur_dmy);
-        }
-        
-        if(cur_cell->dam!=NULL){
-            do_dam_flow(cur_cell->dam);
-        }
-        
-        out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
-        out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0];        
-    }
     
-    for(i=0;i<RID.nr_dams;i++){
-        do_dam_module(&RID.dams[i], cur_dmy);
+    
+    if (mpi_rank == VIC_MPI_ROOT) {
+        
+        //GATHER VARIABLES OF BASEFLOW AND RUNOFF//
+        
+        for(i=0;i<global_domain.ncells_active;i++){
+            cur_cell = RID.sorted_cells[i];
+
+            do_routing_module(cur_cell);
+
+            if(cur_cell->irr!=NULL){
+                do_irrigation_module(cur_cell,cur_dmy);
+            }
+
+            if(cur_cell->dam!=NULL){
+                do_dam_flow(cur_cell->dam);
+            }
+
+            out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
+            out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0];        
+        }
+
+        for(i=0;i<RID.nr_dams;i++){
+            do_dam_module(&RID.dams[i], cur_dmy);
+        }
+        
+        //SCATTER MOISTURE CONTENT//
     }
 }
 
@@ -95,8 +104,8 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
             continue;
         }
         
-        get_moisture_content(cur_cell->id,cur_cell->irr->veg_index[i],&moisture_content[i]);
-        get_irrigation_demand(cur_cell->id,cur_cell->irr->veg_index[i],moisture_content[i],&demand_crop[i]);
+        get_moisture_content(cur_cell,cur_cell->irr->veg_index[i],&moisture_content[i]);
+        get_irrigation_demand(cur_cell,cur_cell->irr->veg_index[i],moisture_content[i],&demand_crop[i]);
         demand_cell += demand_crop[i];
     }
     
