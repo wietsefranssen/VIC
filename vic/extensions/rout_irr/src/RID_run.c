@@ -100,16 +100,18 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
         demand_cell += demand_crop[i];
     }
     
-    if(demand_cell<=0){
+    out_data[cur_cell->id][OUT_DEMAND_START][0]=demand_cell / M3_PER_HM3;
+    
+    if(demand_cell<=0){ 
         update_servicing_dam_values(cur_cell,demand_crop,moisture_content);
         return;
     }
-    
-    out_data[cur_cell->id][OUT_DEMAND_START][0]=demand_cell / M3_PER_HM3;        
+           
     do_irrigation(cur_cell,demand_crop,&demand_cell,moisture_content);    
+    out_data[cur_cell->id][OUT_DEMAND_DAM][0]=demand_cell / M3_PER_HM3;  
     out_data[cur_cell->id][OUT_DEMAND_END][0]=demand_cell / M3_PER_HM3;
     
-    update_servicing_dam_values(cur_cell,demand_crop,moisture_content);
+    update_servicing_dam_values(cur_cell,moisture_content,demand_crop);
 }
 
 /******************************************************************************
@@ -122,7 +124,6 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
 void do_dam_flow(dam_unit *cur_dam){
     extern RID_struct RID;
     extern global_param_struct global_param;
-    extern double ***out_data;
     
     cur_dam->total_inflow += cur_dam->cell->rout->outflow[0] * global_param.dt;
     if(RID.param.fnaturalized_flow){
@@ -132,7 +133,6 @@ void do_dam_flow(dam_unit *cur_dam){
     if(cur_dam->run){
         cur_dam->current_storage += cur_dam->cell->rout->outflow[0] * global_param.dt;        
         cur_dam->cell->rout->outflow[0] = cur_dam->previous_release / global_param.dt;
-        out_data[cur_dam->cell->id][OUT_DISCHARGE][0]=cur_dam->previous_release / global_param.dt; 
         cur_dam->previous_release=0;
     }
 }

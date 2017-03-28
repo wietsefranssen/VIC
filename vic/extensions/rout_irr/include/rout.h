@@ -17,11 +17,16 @@
 #define DAM_HYD_FUNCTION 2                  /**< scalar - value for the hydropower purpose of a dam */
 #define DAM_CON_FUNCTION 3                  /**< scalar - value for the flood control purpose of a dam */
 
-#define DAM_ENV_FLOW_PERC 0.1               /**< scalar - percentage of mean monthly inflow that is environmental flow (Biemans et al., 2012) */
-#define DAM_VARIABLE_INFL 0.5               /**< scalar - flow variability factor for external influences (demand or monthly inflow) */
-#define DAM_INFL_CHANGE 0.1                 /**< scalar - max change of flow variability factor */
-#define RES_PREF_STORAGE 0.85               /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2006) */
+#define DAM_ENV_FLOW_HIGH 0.4               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_LOW 0.3                /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
+#define DAM_EXT_INF_DEFAULT 0.5             /**< scalar - flow variability factor for external influences (demand or monthly inflow) */
+#define DAM_EXT_INF_CHANGE 0.1              /**< scalar - change of external influence on flow variability factor */
+#define DAM_MIN_EXT_INF 0.1                 /**< scalar - minimum of external influence on flow variability factor */
+#define DAM_MAX_EXT_INF 0.9                 /**< scalar - maximum of external influence on flow variability factor */
+#define DAM_PREF_STORE 0.85                 /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2006) */
 #define DAM_HIST_YEARS 20                   /**< scalar - number of years that dams will use to calculate mean inflow and demand values */
+#define DAM_MIN_PREF_STORE 0.05             /**< scalar - prefered minimum storage of a dam */
+#define DAM_MAX_PREF_STORE 0.95             /**< scalar - prefered maximum storage of a dam */
 
 #include <vic_driver_shared_image.h>
 
@@ -114,8 +119,7 @@ struct irr_cells {
     size_t *veg_index;                  /**< 1d array [nr_crops] - vegetation index of crops */
     size_t *crop_index;                 /**< 1d array [nr_crops] - crop index of crops */    
     
-    dam_unit *servicing_dam;            /*< pointer - pointer to servicing dam for this cell */
-    size_t servicing_dam_cell_index;    /*< scalar - index of this cell in the servicing dam */
+    serviced_cell *serviced_cell;       /*< pointer - pointer to serviced cell for this cell */
 };
 
 struct dam_units{
@@ -160,7 +164,8 @@ struct dam_units{
 };
 
 struct serviced_cells{
-    RID_cell *cell;                     /**< pointer - pointer to cell information */
+    irr_cell *cell;                     /**< pointer - pointer to irrigatoin cell information */
+    dam_unit *dam;                      /**< pointer - pointer to irrigatoin dam information */
     double *moisture_content;           /**< 1d array [nr_crops] - moisture content of serviced cell's crops [mm] */ 
     double *demand_crop;                /**< 1d array [nr_crops] - demand of serviced cell's crops [m3] */ 
     double *deficit;                    /**< 1d array [nr_crops] - previous demand of serviced cell's crops [m3] */     
@@ -227,7 +232,7 @@ bool in_irrigation_season(size_t crop_index, size_t current_julian_day);
 void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content);
 void get_irrigation_demand(size_t cell_id, size_t veg_index, double moisture_content, double *demand_crop);
 void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell, double moisture_content[]);
-void update_servicing_dam_values(RID_cell *cur_cell, double demand_crop[], double moisture_content[]);
+void update_servicing_dam_values(RID_cell *cur_cell, double moisture_content[], double demand_crop[]);
 
 //Dam module
 void do_dam_flow(dam_unit *cur_dam);

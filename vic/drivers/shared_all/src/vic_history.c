@@ -330,17 +330,8 @@ get_default_outvar_aggtype(unsigned int varid)
         agg_type = AGG_TYPE_SUM;
         break;
     case OUT_DEMAND_START:
-        agg_type = AGG_TYPE_MAX;
-        break;
     case OUT_DEMAND_DAM:
-        agg_type = AGG_TYPE_MAX;
-        break;
-    case OUT_DEMAND_DAM2:
-        agg_type = AGG_TYPE_MAX;
-        break;
     case OUT_DEMAND_END:
-        agg_type = AGG_TYPE_MAX;
-        break;
     default:
         agg_type = AGG_TYPE_AVG;
     }

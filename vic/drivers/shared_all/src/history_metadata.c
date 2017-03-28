@@ -187,13 +187,6 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DEMAND_DAM].units, "hm3");
     strcpy(out_metadata[OUT_DEMAND_DAM].description, "irrigation water demand after local water is applied");
     
-    /* irrigation demand after local irrigation [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_DAM2].varname, "OUT_DEMAND_DAM2");
-    strcpy(out_metadata[OUT_DEMAND_DAM2].long_name, "irrigation_water_demand_dam2");
-    strcpy(out_metadata[OUT_DEMAND_DAM2].standard_name, "irrigation_water_demand_dam2");
-    strcpy(out_metadata[OUT_DEMAND_DAM2].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_DAM2].description, "irrigation water demand after local water is applied");
-    
     /* irrigation demand after dam irrigation [hm3] */
     strcpy(out_metadata[OUT_DEMAND_END].varname, "OUT_DEMAND_END");
     strcpy(out_metadata[OUT_DEMAND_END].long_name, "irrigation_water_demand_end");

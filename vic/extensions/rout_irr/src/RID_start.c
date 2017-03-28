@@ -157,7 +157,7 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
                 sscanf(cmdstr, "%*s %s", flgstr);
                 RID.param.fdams=str_to_bool(flgstr);
             }
-            if (strcasecmp("ROUTING_DEBUG_MODE", optstr) == 0) {
+            if (strcasecmp("DEBUG_MODE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 RID.param.fdebug_mode=str_to_bool(flgstr);
             }
@@ -342,7 +342,7 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
     }
     if(RID.param.fdebug_mode){
         if(RID.param.debug_path[0]==0){
-            log_warn("No debug output path, but debug is selected. Setting ROUTING_DEBUG_MODE to FALSE..."); 
+            log_warn("No debug output path, but debug is selected. Setting DEBUG_MODE to FALSE..."); 
             RID.param.fdebug_mode=false;
         }
     }
@@ -384,7 +384,7 @@ void display_module_options(){
     fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",RID.param.flow_diffusivity_uh);
     
     if(RID.param.fdebug_mode){
-        fprintf(LOG_DEST, "ROUTING_DEBUG_MODE\t\tTRUE\n");
+        fprintf(LOG_DEST, "DEBUG_MODE\t\tTRUE\n");
     }
     
     if(RID.param.firrigation){

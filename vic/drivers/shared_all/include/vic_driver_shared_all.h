@@ -142,18 +142,17 @@ enum
     OUT_ZWT_LUMPED,       /**< lumped water table position [cm] (zwt of total moisture across all layers, lumped together) */
     
     // Routing, irrigation and dam terms
-    OUT_IRR,
-    OUT_LOCAL_IRR,
-    OUT_DAM_IRR,
-    OUT_DEMAND_START,
-    OUT_DEMAND_DAM,
-    OUT_DEMAND_DAM2,
-    OUT_DEMAND_END,
-    OUT_DAM_STORE,
-    OUT_NATURAL_DISCHARGE,
-    OUT_RUNOFF_ROUT,      /**< runoff entering the routing module [m3 s-1]) */
-    OUT_INFLOW_ROUT,      /**< inflow entering the routing module [m3 s-1]) */
-    OUT_DISCHARGE,        /**< river discharge [m3 s-1]) */
+    OUT_IRR,              /**< total irrigation applied [hm3] */
+    OUT_LOCAL_IRR,        /**< local irrigation applied [hm3] */
+    OUT_DAM_IRR,          /**< dam irrigation applied [hm3] */
+    OUT_DEMAND_START,     /**< irrigation demand at start of timestep [hm3] */
+    OUT_DEMAND_DAM,       /**< irrigation demand after local irrigation [hm3] */
+    OUT_DEMAND_END,       /**< irrigation demand after dam irrigation [hm3] */
+    OUT_DAM_STORE,        /**< relative dam storage [-] */
+    OUT_NATURAL_DISCHARGE,/**< natural river discharge [m3 s-1] */
+    OUT_RUNOFF_ROUT,      /**< runoff entering the routing module [m3 s-1] */
+    OUT_INFLOW_ROUT,      /**< inflow entering the routing module [m3 s-1] */
+    OUT_DISCHARGE,        /**< river discharge [m3 s-1] */
     
     // Water Balance Terms - fluxes
     OUT_BASEFLOW,         /**< baseflow out of the bottom layer  [mm] */
