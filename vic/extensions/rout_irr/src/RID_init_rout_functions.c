@@ -64,13 +64,11 @@ void set_cell_uh(char variable_name[]){
     extern domain_struct global_domain;
     extern global_param_struct global_param;
     extern RID_struct RID;
-    extern size_t       *filter_active_cells;
     
     double *distance;
     double *uh_precise;
     double *uh_cumulative;
     double uh_sum;
-    double *dvar;
     
     size_t i;
     size_t j=0;
@@ -84,16 +82,10 @@ void set_cell_uh(char variable_name[]){
     uh_cumulative = malloc((RID.param.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative));
     check_alloc_status(uh_cumulative,"Memory allocation error.");
     
-    dvar = malloc(global_domain.ncells_total * sizeof(*dvar));
-    check_alloc_status(dvar, "Memory allocation error.");
-    
     size_t start[]={0, 0};
     size_t count[]={global_domain.n_ny, global_domain.n_nx};
-    //get_scatter_nc_field_double(RID.param.param_filename,variable_name,start,count,distance);    
+    get_scatter_nc_field_double(RID.param.param_filename,variable_name,start,count,distance);    
     
-    
-    get_nc_field_double(RID.param.param_filename,variable_name,start,count, dvar);
-    map(sizeof(double), global_domain.ncells_active, filter_active_cells, NULL, dvar, distance);
     
     for (i=0;i<global_domain.ncells_active;i++){
         size_t time=0;
@@ -153,10 +145,8 @@ void set_cell_uh(char variable_name[]){
 void set_cell_downstream(char variable_name[]){
     extern RID_struct RID;
     extern domain_struct global_domain;
-    extern size_t       *filter_active_cells;
     
     int *direction;
-    int *ivar;
     
     size_t i;
     size_t x;
@@ -165,16 +155,10 @@ void set_cell_downstream(char variable_name[]){
     direction = malloc(global_domain.ncells_active * sizeof(*direction));
     check_alloc_status(direction,"Memory allocation error.");
     
-    ivar = malloc(global_domain.ncells_total * sizeof(*ivar));
-    check_alloc_status(ivar, "Memory allocation error.");
-    
     size_t start[]={0, 0};
     size_t count[]={global_domain.n_ny, global_domain.n_nx};
-    //get_scatter_nc_field_int(RID.param.param_filename,variable_name,start,count,direction);
+    get_scatter_nc_field_int(RID.param.param_filename,variable_name,start,count,direction);
           
-    get_nc_field_int(RID.param.param_filename,variable_name,start,count, ivar);
-    map(sizeof(int), global_domain.ncells_active, filter_active_cells, NULL, ivar, direction);
-        
     for(i=0;i<global_domain.ncells_active;i++){        
         x=RID.cells[i].x;
         y=RID.cells[i].y;
