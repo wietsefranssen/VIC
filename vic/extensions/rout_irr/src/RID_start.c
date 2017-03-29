@@ -16,23 +16,23 @@
  ******************************************************************************/
 
 void RID_start(void){
+        
     size_t nr_crops;
     size_t **crop_info;
+    
+    default_module_options();
     
     extern filenames_struct filenames;
     extern filep_struct     filep;
     extern int              mpi_rank;
-    
     if (mpi_rank == VIC_MPI_ROOT) {
-        default_module_options();
-        
         filep.globalparam = open_file(filenames.global, "r");
         get_module_options(filep.globalparam,&nr_crops,&crop_info);
-    
-        check_module_options(nr_crops,crop_info);
-
-        display_module_options();
     }
+    
+    check_module_options(nr_crops,crop_info);
+    
+    display_module_options();
 }
 
 /******************************************************************************

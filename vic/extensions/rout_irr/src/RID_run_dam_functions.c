@@ -328,7 +328,7 @@ void calculate_actual_release(dam_unit* cur_dam, double *actual_release){
 void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irrigation_release){
     extern all_vars_struct *all_vars;
     extern veg_con_struct **veg_con;
-    extern domain_struct global_domain;
+    extern domain_struct local_domain;
     extern option_struct options;
     extern double ***out_data;
         
@@ -420,7 +420,7 @@ void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irriga
             }
             
             cur_dam->serviced_cells[i].moisture_content[j] += irrigation_crop[i][j]/ 
-                    (global_domain.locations[irr_cell->cell->global_domain_id].area * 
+                    (local_domain.locations[irr_cell->cell->id].area * 
                     veg_con[irr_cell->cell->id][irr_cell->veg_index[j]].Cv) * MM_PER_M;
             
             for(k=0;k<options.SNOW_BAND;k++){ 

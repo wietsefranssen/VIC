@@ -36,7 +36,7 @@ bool in_irrigation_season(size_t crop_index, size_t current_julian_day){
  * Get the moisture content over all snow and frost bands. Ice is not included
  ******************************************************************************/
 
-void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture_content){
+void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content){
     extern option_struct options;
     extern all_vars_struct *all_vars;
     extern soil_con_struct *soil_con;
@@ -48,12 +48,12 @@ void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture
     size_t j;
     
     for(i=0;i<options.SNOW_BAND;i++){
-        liquid_content +=  all_vars[cur_cell->id].cell[veg_index][i].layer[0].moist 
-                * soil_con[cur_cell->id].AreaFract[i];
+        liquid_content +=  all_vars[cell_id].cell[veg_index][i].layer[0].moist 
+                * soil_con[cell_id].AreaFract[i];
         
         for (j = 0; j < options.Nfrost; j++) {
-            ice_content += all_vars[cur_cell->id].cell[veg_index][i].layer[0].ice[j] 
-                    * soil_con[cur_cell->id].AreaFract[i] * soil_con[cur_cell->id].frost_fract[j];
+            ice_content += all_vars[cell_id].cell[veg_index][i].layer[0].ice[j] 
+                    * soil_con[cell_id].AreaFract[i] * soil_con[cell_id].frost_fract[j];
         }
     }
             
@@ -69,15 +69,15 @@ void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture
  * moisture is below the critical point (Wcr).
  ******************************************************************************/
 
-void get_irrigation_demand(RID_cell *cur_cell, size_t veg_index, double moisture_content, double *demand_crop){
+void get_irrigation_demand(size_t cell_id, size_t veg_index, double moisture_content, double *demand_crop){
     extern soil_con_struct *soil_con;
     extern veg_con_struct **veg_con;
-    extern domain_struct global_domain;
+    extern domain_struct local_domain;
     
-    if(moisture_content <= soil_con[cur_cell->id].Wcr[0]){                  
-        *demand_crop = ((soil_con[cur_cell->id].Wcr[0] / 0.7) - moisture_content)
-                / MM_PER_M * (global_domain.locations[cur_cell->global_domain_id].area * 
-                veg_con[cur_cell->id][veg_index].Cv);
+    if(moisture_content <= soil_con[cell_id].Wcr[0]){                  
+        *demand_crop = ((soil_con[cell_id].Wcr[0] / 0.7) - moisture_content)
+                / MM_PER_M * (local_domain.locations[cell_id].area * 
+                veg_con[cell_id][veg_index].Cv);
     }else{
         *demand_crop=0;
     }    
@@ -95,7 +95,7 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
     extern double ***out_data;
     extern global_param_struct global_param;
     extern all_vars_struct *all_vars;
-    extern domain_struct global_domain;
+    extern domain_struct local_domain;
     extern veg_con_struct **veg_con;
     extern option_struct options;
     extern RID_struct RID;
@@ -168,7 +168,7 @@ void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell
         }
         
         moisture_content[i] += added_water_crop[i] 
-                    / (global_domain.locations[cur_cell->global_domain_id].area * 
+                    / (local_domain.locations[cur_cell->id].area * 
                     veg_con[cur_cell->id][cur_cell->irr->veg_index[i]].Cv) * MM_PER_M;
         
         for(j=0;j<options.SNOW_BAND;j++){ 

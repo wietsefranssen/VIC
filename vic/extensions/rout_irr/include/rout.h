@@ -229,8 +229,8 @@ void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturaliz
 //Irrigation module
 void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy);
 bool in_irrigation_season(size_t crop_index, size_t current_julian_day);
-void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture_content);
-void get_irrigation_demand(RID_cell *cur_cell, size_t veg_index, double moisture_content, double *demand_crop);
+void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content);
+void get_irrigation_demand(size_t cell_id, size_t veg_index, double moisture_content, double *demand_crop);
 void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell, double moisture_content[]);
 void update_servicing_dam_values(RID_cell *cur_cell, double moisture_content[], double demand_crop[]);
 
