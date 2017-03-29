@@ -40,6 +40,8 @@ void RID_init(void){
             init_dam_irr();
         }
     }
+        
+    init_global_domain_vars();
 }
 
 /******************************************************************************
@@ -135,4 +137,88 @@ void init_dam_irr(void){
         //Debug functions
         make_dam_service_file(RID.param.debug_path,"dam_service");
     }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Allocate and initialize several variables from local domains for use on the
+ * main node.
+ ******************************************************************************/
+void init_global_domain_vars(void){
+    extern RID_struct RID;
+    extern domain_struct global_domain;
+    extern soil_con_struct *soil_con;
+    extern veg_con_struct *veg_con;
+    extern int mpi_rank;
+    extern option_struct options;
+    
+    size_t i;
+    size_t j;
+    size_t k;    
+    
+    if (mpi_rank == VIC_MPI_ROOT) {
+        RID.global_vars.Wcr = malloc(global_domain.ncells_active * sizeof(*RID.global_vars.Wcr));
+        check_alloc_status(RID.global_vars.Wcr,"Memory allocation error");
+        RID.global_vars.cv = malloc(global_domain.ncells_active * sizeof(*RID.global_vars.cv));
+        check_alloc_status(RID.global_vars.cv,"Memory allocation error");
+        RID.global_vars.frost_frac = malloc(global_domain.ncells_active * sizeof(*RID.global_vars.frost_frac));
+        check_alloc_status(RID.global_vars.frost_frac,"Memory allocation error");
+        RID.global_vars.snow_frac = malloc(global_domain.ncells_active * sizeof(*RID.global_vars.snow_frac));
+        check_alloc_status(RID.global_vars.snow_frac,"Memory allocation error");
+        RID.global_vars.ice = malloc(global_domain.ncells_active * sizeof(*RID.global_vars.ice));
+        check_alloc_status(RID.global_vars.ice,"Memory allocation error");
+        RID.global_vars.moisture = malloc(global_domain.ncells_active * sizeof(*RID.global_vars.moisture));
+        check_alloc_status(RID.global_vars.moisture,"Memory allocation error");
+
+        for(i=0;i<global_domain.ncells_active;i++){
+            
+            RID.global_vars.Wcr[i]=0;
+            
+            if(RID.cells[i].irr!=NULL){
+                RID.global_vars.cv[i] = malloc(RID.cells[i].irr->nr_crops * sizeof(*RID.global_vars.cv[i]));
+                check_alloc_status(RID.global_vars.cv[i],"Memory allocation error");
+                RID.global_vars.ice[i] = malloc(RID.cells[i].irr->nr_crops * sizeof(*RID.global_vars.ice[i]));
+                check_alloc_status(RID.global_vars.ice[i],"Memory allocation error");
+                RID.global_vars.moisture[i] = malloc(RID.cells[i].irr->nr_crops * sizeof(*RID.global_vars.moisture[i]));
+                check_alloc_status(RID.global_vars.moisture[i],"Memory allocation error");
+                
+                for(j=0;j<RID.cells[i].irr->nr_crops;j++){
+                    
+                     RID.global_vars.cv[i][j]=0;
+                    
+                    RID.global_vars.ice[i][j] = malloc(options.SNOW_BAND * sizeof(*RID.global_vars.ice[i][j]));
+                    check_alloc_status(RID.global_vars.ice[i][j],"Memory allocation error");
+                    RID.global_vars.moisture[i][j] = malloc(options.SNOW_BAND * sizeof(*RID.global_vars.moisture[i][j]));
+                    check_alloc_status(RID.global_vars.moisture[i][j],"Memory allocation error");
+                    
+                    for(k=0;k<options.SNOW_BAND;k++){
+                        RID.global_vars.ice[i][j][k]=0;
+                        RID.global_vars.moisture[i][j][k]=0;
+                    }
+                }
+            }
+            
+            RID.global_vars.snow_frac[i] = malloc(options.SNOW_BAND * sizeof(*RID.global_vars.snow_frac[i]));
+            check_alloc_status(RID.global_vars.snow_frac[i],"Memory allocation error");
+            RID.global_vars.frost_frac[i] = malloc(options.Nfrost * sizeof(*RID.global_vars.frost_frac[i]));
+            check_alloc_status(RID.global_vars.frost_frac[i],"Memory allocation error");
+            
+            for(j=0;j<options.SNOW_BAND;j++){
+                RID.global_vars.snow_frac[i][j]=0;
+            }
+            
+            for(j=0;j<options.Nfrost;j++){
+                RID.global_vars.frost_frac[i][j]=0;
+            }
+        }        
+    }
+    
+    //gather variables for snow_frac, frost_frac,cv and Wcr
+    gather_var_double(RID.global_vars.Wcr,&soil_con->Wcr[0]);
+    
+    for(j=0;j<RID.cells[i].irr->nr_crops;j++){
+        gather_var_double(RID.global_vars.Wcr,veg_con);
+    }
+    
 }

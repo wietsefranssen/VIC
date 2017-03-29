@@ -37,6 +37,16 @@ typedef struct serviced_cells serviced_cell;
 typedef struct RID_cells RID_cell;
 typedef struct RID_structs RID_struct;
 typedef struct RID_params RID_param;
+typedef struct RID_var_saves RID_var_save;
+
+struct RID_var_saves{
+    double ***moisture;                 /**< 3d array [nr_active_cells][nr_crop_classes][nr_snow_bands] - moisture content of the upper soil layer */
+    double ***ice;                      /**< 3d array [nr_active_cells][nr_crop_classes][nr_snow_bands] - ice content of the upper soil layer */
+    double **cv;                        /**< 2d array [nr_active_cells][nr_crop_classes] - area fraction of crop */
+    double **snow_frac;                 /**< 2d array [nr_active_cells][nr_snow_bands] - area fraction of snow */
+    double **frost_frac;                /**< 2d array [nr_active_cells][nr_frost_bands] - area fraction of frost */
+    double *Wcr;                        /**< 1d array [nr_active_cells] - stress point of soil moisture */
+};
 
 struct RID_params{
     bool firrigation;                   /**< bool - TRUE = do irrigation FALSE = do not do irrigation */
@@ -66,6 +76,7 @@ struct RID_params{
 
 struct RID_structs {
     RID_param param;                    /**< module parameters */
+    RID_var_save global_vars;           /**< variables saved in global domain */
     
     double min_lon;                     /**< scalar - minimum longitude in domain [degree] */
     double min_lat;                     /**< scalar - minimum latitude in domain [degree] */
@@ -117,7 +128,7 @@ struct irr_cells {
     size_t nr_crops;                    /**< scalar - number of crops */
     size_t *veg_class;                  /**< 1d array [nr_crops] - vegetation class of crops */
     size_t *veg_index;                  /**< 1d array [nr_crops] - vegetation index of crops */
-    size_t *crop_index;                 /**< 1d array [nr_crops] - crop index of crops */    
+    size_t *crop_index;                 /**< 1d array [nr_crops] - crop index of crops */
     
     serviced_cell *serviced_cell;       /*< pointer - pointer to serviced cell for this cell */
 };
@@ -195,6 +206,7 @@ void init_routing(void);
 void init_irr(void);
 void init_dams(void);
 void init_dam_irr(void);
+void init_global_domain_vars(void);
 
 //Routing module
 void set_cell_location(void);
@@ -271,6 +283,12 @@ void make_nr_crops_file(char file_path[], char file_name[]);
 int is_leap_year(int year);
 int nr_days_in_month(int month, int year);
 double distance(size_t from_x, size_t from_y, size_t to_x, size_t to_y);
+
+/*******************************
+ MPI functions
+*******************************/
+void gather_var_double(double *dvar,double *local_var);
+void scatter_var_double(double *dvar,double *local_var);
 
 #endif /* ROUT_H */
 
