@@ -18,7 +18,11 @@
 #define DAM_CON_FUNCTION 3                  /**< scalar - value for the flood control purpose of a dam */
 
 #define DAM_ENV_FLOW_HIGH 0.4               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_INT 0.3                /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
 #define DAM_ENV_FLOW_LOW 0.3                /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
+#define ENV_HIGH_FLOW_PERC 0.8              /**< scalar - percentage of mean annual inflow that is considered high (Pastor et al., 2014) */
+#define ENV_LOW_FLOW_PERC 0.4               /**< scalar - percentage of mean monthly inflow that is considered low (Pastor et al., 2014) */
+
 #define DAM_EXT_INF_DEFAULT 0.5             /**< scalar - flow variability factor for external influences (demand or monthly inflow) */
 #define DAM_EXT_INF_CHANGE 0.1              /**< scalar - change of external influence on flow variability factor */
 #define DAM_MIN_EXT_INF 0.1                 /**< scalar - minimum of external influence on flow variability factor */
@@ -131,6 +135,7 @@ struct dam_units{
     char name[MAXSTRING];               /**< string - name of dam */
     size_t function;                    /**< scalar - function of dam (DAM_IRR_FUNCTION = irrigation DAM_HYD_FUNCTION = hydropower DAM_CON_FUNCTION = flood control) */
     double capacity;                    /**< scalar - storage capacity of dam [m3] */
+    double area;                        /**< scalar - area of dam [m2] */
     double irrigated_area;              /**< scalar - irrigated area of dam [m2] */    
     
     double total_inflow;                /**< scalar - current total inflow [m3] */
@@ -153,6 +158,7 @@ struct dam_units{
     double annual_demand;               /**< scalar - multi-year averaged time-step demand [m3/ts] for current year */
     
     double release;                     /**< scalar - this months release [m3/ts] */
+    double environmental_release;       /**< scalar - this months environmental release [m3/ts] */
     double previous_release;            /**< scalar - outflow to be released next timestep [m3] */
     
     size_t nr_serviced_cells;           /**< scalar - number of serviced cells */
@@ -231,21 +237,30 @@ void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy);
 bool in_irrigation_season(size_t crop_index, size_t current_julian_day);
 void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content);
 void get_irrigation_demand(size_t cell_id, size_t veg_index, double moisture_content, double *demand_crop);
-void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell, double moisture_content[]);
-void update_servicing_dam_values(RID_cell *cur_cell, double moisture_content[], double demand_crop[]);
+void get_irrigation(double *irrigation_crop, double demand_cell, double demand_crop, double available_water);
+void update_demand_and_irrigation(double *irrigation_cell, double *irrigation_crop, double *demand_cell, double *demand_crop, double *available_water);
+void do_irrigation(size_t cell_id, size_t veg_index, double *moisture_content, double irrigation_crop);
+void update_servicing_dam_values(serviced_cell *ser_cell, size_t crop_index, double moisture_content, double demand_crop);
 
 //Dam module
 void do_dam_flow(dam_unit *cur_dam);
-void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy);
+void do_dam_history_module(dam_unit *cur_dam, dmy_struct *cur_dmy);
 void update_dam_history_day(dam_unit* cur_dam, dmy_struct *cur_dmy);
 void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy);
 void calculate_target_release(dam_unit* cur_dam);
 void update_dam_history_year(dam_unit* cur_dam, dmy_struct* cur_dmy);
 void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy);
-void calculate_actual_release(dam_unit* cur_dam, double *actual_release);
-void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irrigation_release);
-void calculate_defict(dam_unit* cur_dam);
-void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_release);
+
+void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy);
+void get_actual_release(dam_unit* cur_dam, double *actual_release);
+void get_demand_cells(serviced_cell *ser_cell, double *demand_cells, double *demand_cell);
+void get_dam_irrigation(double demand_cells, double demand_crop, double *irrigation_crop, double available_water);
+void update_dam_demand_and_irrigation(double *demand_cells, double *demand_cell, double *demand_crop, double *irrigation_cells, double *irrigation_cell, double irrigation_crop, double *available_water);
+void do_dam_irrigation(size_t cell_id, size_t veg_index, double *moisture_content, double irrigation_crop);
+void set_deficit(double *deficit, double *demand);
+void get_dam_evaporation(dam_unit* cur_dam, double *evaporation);
+void get_dam_overflow(dam_unit *cur_dam, double *overflow, double actual_release, double irrigation_cells, double evaporation);
+void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_release, double overflow, double evaporation);
 
 /*******************************
  rout_write and rout_finalize

@@ -201,6 +201,13 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DAM_STORE].units, "-");
     strcpy(out_metadata[OUT_DAM_STORE].description, "fraction of dam storage after water is applied");
     
+    /* dam evaporation [m3] */
+    strcpy(out_metadata[OUT_DAM_EVAP].varname, "OUT_DAM_EVAP");
+    strcpy(out_metadata[OUT_DAM_EVAP].long_name, "dam_evaporation");
+    strcpy(out_metadata[OUT_DAM_EVAP].standard_name, "dam_evaporation");
+    strcpy(out_metadata[OUT_DAM_EVAP].units, "m3");
+    strcpy(out_metadata[OUT_DAM_EVAP].description, "evaporation from dam reservoir");
+    
     /* volumetric liquid water equivalent of snow on top of lake ice [m3] */
     strcpy(out_metadata[OUT_LAKE_SWE_V].varname, "OUT_LAKE_SWE_V");
     strcpy(out_metadata[OUT_LAKE_SWE_V].long_name, "lake_swe_v");

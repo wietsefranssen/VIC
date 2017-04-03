@@ -24,6 +24,7 @@ void set_dam_information(){
     char name_tmp[MAXSTRING];
     int purp_tmp;
     double cap_tmp;
+    double area_tmp;
     int year_tmp;
     float lat_tmp;
     float lon_tmp;
@@ -59,7 +60,7 @@ void set_dam_information(){
                 continue;
             }
             
-            sscanf(cmdstr, "%*u %*200[^\t] %d %lf %*u %f %f",&year_tmp,&cap_tmp,&lon_tmp,&lat_tmp);
+            sscanf(cmdstr, "%*u %*200[^\t] %d %lf %*f %*u %f %f",&year_tmp,&cap_tmp,&lon_tmp,&lat_tmp);
             
             if(lat_tmp<RID.min_lat - (global_param.resolution/2) || 
                     lon_tmp < RID.min_lon - (global_param.resolution/2) || 
@@ -120,7 +121,7 @@ void set_dam_information(){
                 continue;
             }
             
-            sscanf(cmdstr, "%zu %200[^\t] %d %lf %d %f %f",&id_tmp,name_tmp,&year_tmp,&cap_tmp,&purp_tmp,&lon_tmp,&lat_tmp);
+            sscanf(cmdstr, "%zu %200[^\t] %d %lf %lf %d %f %f",&id_tmp,name_tmp,&year_tmp,&cap_tmp, &area_tmp ,&purp_tmp,&lon_tmp,&lat_tmp);
             
             if(lat_tmp<RID.min_lat - (global_param.resolution/2) || 
                     lon_tmp < RID.min_lon - (global_param.resolution/2) || 
@@ -144,18 +145,27 @@ void set_dam_information(){
             }
             
             if(cap_tmp<=0 || cap_tmp==DAM_NO_DATA){
+                debug("Dam capacity is missing");
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
             }
             
             if((purp_tmp!=DAM_HYD_FUNCTION && purp_tmp!=DAM_IRR_FUNCTION &&
                     purp_tmp!=DAM_CON_FUNCTION) || purp_tmp==DAM_NO_DATA){
+                debug("Defaulting dam to hydropower function");
                 purp_tmp = DAM_HYD_FUNCTION;
+            }
+            
+            if(area_tmp==DAM_NO_DATA){
+                //Takeuchi (1997) formula for estimating reservoir area
+                debug("Approximating dam area due to missing data");
+                area_tmp = pow((cap_tmp / 9.208),(1/1.114));
             }
             
             dams[i].global_id=id_tmp;            
             strncpy(dams[i].name,name_tmp,MAXSTRING);
             dams[i].capacity=cap_tmp * 1000000;
+            dams[i].area=area_tmp * 1000000;
             dams[i].activation_year=year_tmp;
             dams[i].function=(size_t)purp_tmp;
             dams[i].cell = RID.gridded_cells[x][y];
@@ -177,12 +187,13 @@ void set_dam_information(){
         combine=false;
         for(j=0;j<RID.nr_dams;j++){
             if(dams[i].cell==dams2[j].cell){
-                log_warn("dam %s and %s have been combined into dam %s because they are in the same cell"
-                    " and capacities have been added. If any dam had an irrigation purpose this is used."
-                    " If the dams have different activation years the earliest activation year is used.",
+                log_warn("\ndam %s and %s have been combined into dam %s because they are in the same cell.\n"
+                    "Capacities and areas have been added. If any dam had an irrigation purpose this is used.\n"
+                    "If the dams have different activation years the earliest activation year is used.\n",
                     dams[i].name,dams2[j].name,dams2[j].name);
 
                 dams2[j].capacity += dams[i].capacity;
+                dams2[j].area += dams[i].area;
 
                 if(dams2[j].function!=DAM_IRR_FUNCTION || dams[i].function==DAM_IRR_FUNCTION){
                     dams2[j].function=DAM_IRR_FUNCTION;

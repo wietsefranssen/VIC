@@ -109,8 +109,10 @@ void calculate_target_release(dam_unit* cur_dam){
     
     release_coefficient = (double)cur_dam->storage_start_operation / (DAM_PREF_STORE * (double)cur_dam->capacity);
     
-    if(cur_dam->monthly_inflow_natural > cur_dam->annual_inflow_natural){
+    if(cur_dam->monthly_inflow_natural > ENV_HIGH_FLOW_PERC * cur_dam->annual_inflow_natural){
         environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_LOW;
+    }else if(cur_dam->monthly_inflow_natural > ENV_LOW_FLOW_PERC * cur_dam->annual_inflow_natural){
+        environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_INT;
     }else{
         environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH;
     }
@@ -157,9 +159,14 @@ void calculate_target_release(dam_unit* cur_dam){
     }
           
     cur_dam->release = target_release * release_coefficient;
+    cur_dam->environmental_release = environmental_release * release_coefficient;
     
     if(cur_dam->release<0){
         log_err("target release is negative?");
+    }
+    
+    if(cur_dam->environmental_release<0){
+        log_err("environmental target release is negative?");
     }
     
     log_info("\n\ntarget_release %.1f;\n"
@@ -309,13 +316,27 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){
  *  
  * Limit target release based on current dam storage
  ******************************************************************************/
-void calculate_actual_release(dam_unit* cur_dam, double *actual_release){
-    double target_release = cur_dam->release;
+void get_actual_release(dam_unit* cur_dam, double *actual_release){
     
-    if(target_release<cur_dam->current_storage){
-        *actual_release=target_release;
+    if(cur_dam->release<cur_dam->current_storage){
+        *actual_release=cur_dam->release;
     }else{
         *actual_release=cur_dam->current_storage;
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Get the demand for the dam
+ ******************************************************************************/
+void get_demand_cells(serviced_cell *ser_cell, double *demand_cells, double *demand_cell){
+    
+    size_t j;
+    
+    for(j=0;j<ser_cell->cell->nr_crops;j++){
+        *demand_cell += ser_cell->demand_crop[j];
+        *demand_cells += ser_cell->demand_crop[j];
     }
 }
 
@@ -325,171 +346,119 @@ void calculate_actual_release(dam_unit* cur_dam, double *actual_release){
  * Irrigate cells with an irrigation demand equally with available irrigation 
  * water.
  ******************************************************************************/
-void do_dam_irrigation(dam_unit* cur_dam, double *actual_release, double *irrigation_release){
+void get_dam_irrigation(double demand_cells, double demand_crop, double *irrigation_crop, double available_water){
+    
+    if(demand_cells<available_water){
+        *irrigation_crop = demand_crop;
+    }else{
+        *irrigation_crop = demand_crop * (available_water/demand_cells);
+    }
+    
+    if(*irrigation_crop<0){
+        log_err("Negative crop irrigation?");
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Update values used in irrigation, mostly for output.
+ ******************************************************************************/
+void update_dam_demand_and_irrigation(double *demand_cells, double *demand_cell, double *demand_crop, double *irrigation_cells, double *irrigation_cell, double irrigation_crop, double *available_water){
+
+    *demand_crop -= irrigation_crop;
+    *demand_cell -= irrigation_crop;
+    *demand_cells -= irrigation_crop;
+    *irrigation_cell += irrigation_crop;
+    *irrigation_cells += irrigation_crop;            
+    *available_water -= irrigation_crop;
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Increase soil moisture for irrigated cells
+ ******************************************************************************/
+void do_dam_irrigation(size_t cell_id, size_t veg_index, double *moisture_content, double irrigation_crop){
     extern all_vars_struct *all_vars;
-    extern veg_con_struct **veg_con;
     extern domain_struct local_domain;
+    extern veg_con_struct **veg_con;
     extern option_struct options;
-    extern double ***out_data;
         
-    double **irrigation_crop=0;         //m3 (per crop)
-    double *irrigation_cell=0;          //m3 (per cell)
-    double irrigation_cells=0;          //m3
-    
-    double available_water=0;           //m3
-    double demand_cells=0;              //m3
-    
     size_t i;
-    size_t j;
-    size_t k;
     
-    available_water = *actual_release - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH;     
-    
-    if(available_water <= 0){
-        *irrigation_release=0;
-        return;
-    }    
-    
-    for(i=0;i<cur_dam->nr_serviced_cells;i++){
-        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
-        
-        for(j=0;j<irr_cell->nr_crops;j++){  
-            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
-                continue;
-            }
-            
-            demand_cells += cur_dam->serviced_cells[i].demand_crop[j];
-        }
+    if(irrigation_crop<0){
+        log_err("Adding a negative amount of water?");
+    }   
+    if(*moisture_content<0){
+        log_err("Negative moisture content?");
     }
-        
-    if(demand_cells<=0){
-        *irrigation_release=0;
-        return;
-    }
+      
+    *moisture_content += irrigation_crop 
+                / (local_domain.locations[cell_id].area * 
+                veg_con[cell_id][veg_index].Cv) * MM_PER_M;
 
-    irrigation_cell = malloc(cur_dam->nr_serviced_cells * sizeof(*irrigation_cell));
-    check_alloc_status(irrigation_cell,"Memory allocation error");
-    irrigation_crop = malloc(cur_dam->nr_serviced_cells * sizeof(*irrigation_crop));
-    check_alloc_status(irrigation_crop,"Memory allocation error");
-        
-    for(i=0;i<cur_dam->nr_serviced_cells;i++){
-        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
-                
-        irrigation_crop[i] = malloc(irr_cell->nr_crops * sizeof(*irrigation_crop[i]));
-        check_alloc_status(irrigation_crop[i],"Memory allocation error");
-        
-        irrigation_cell[i]=0;
-        for(j=0;j<irr_cell->nr_crops;j++){
-            irrigation_crop[i][j]=0;            
-        }
-        
-        for(j=0;j<irr_cell->nr_crops;j++){
-            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
-                continue;
-            }
-            
-            if(demand_cells<available_water){
-                irrigation_crop[i][j] = cur_dam->serviced_cells[i].demand_crop[j];
-            }else{
-                irrigation_crop[i][j] = cur_dam->serviced_cells[i].demand_crop[j] * (available_water/demand_cells);
-            }
-        }
-        
-        //double demand_cell=0;
-        
-        for(j=0;j<irr_cell->nr_crops;j++){
-            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
-                continue;
-            }
-            
-            available_water -= irrigation_crop[i][j];
-            cur_dam->serviced_cells[i].demand_crop[j]-=irrigation_crop[i][j];
-            irrigation_cell[i] += irrigation_crop[i][j];
-            irrigation_cells += irrigation_crop[i][j];            
-            //demand_cell+=cur_dam->serviced_cells[i].demand_crop[j];
-        }
-        //out_data[irr_cell->cell->id][OUT_DEMAND_END][0] = cur_dam->serviced_cells[i].deficit[j];
-        
-        if(irrigation_cell[i]<0){
-            log_err("Adding negative amount of irrigation water");
-        }
-        
-        for(j=0;j<irr_cell->nr_crops;j++){
-            if(cur_dam->serviced_cells[i].demand_crop[j]<=0){
-                continue;
-            }
-            
-            cur_dam->serviced_cells[i].moisture_content[j] += irrigation_crop[i][j]/ 
-                    (local_domain.locations[irr_cell->cell->id].area * 
-                    veg_con[irr_cell->cell->id][irr_cell->veg_index[j]].Cv) * MM_PER_M;
-            
-            for(k=0;k<options.SNOW_BAND;k++){ 
-                all_vars[irr_cell->cell->id].cell[irr_cell->veg_index[j]][k].layer[0].moist =
-                        cur_dam->serviced_cells[i].moisture_content[j];
-            }
-        }
-                
-        out_data[irr_cell->cell->id][OUT_DAM_IRR][0] = irrigation_cell[i] / M3_PER_HM3;
-        out_data[irr_cell->cell->id][OUT_IRR][0] += out_data[irr_cell->cell->id][OUT_DAM_IRR][0];
-        free(irrigation_crop[i]);
-    }
-    
-    *irrigation_release = irrigation_cells;
-    *actual_release -= *irrigation_release;
-
-    free(irrigation_crop);
-    free(irrigation_cell);
-}
-
-/******************************************************************************
- * @section brief
- *  
- * Calculate the water deficit for all serviced cells
- ******************************************************************************/
-
-void calculate_defict(dam_unit* cur_dam){
-    extern double ***out_data;
-    
-    size_t i;
-    size_t j;
-    
-    double demand_cell;
-    
-    for(i=0;i<cur_dam->nr_serviced_cells;i++){
-        irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
-        
-        for(j=0;j<irr_cell->nr_crops;j++){
-            cur_dam->serviced_cells[i].deficit[j] = cur_dam->serviced_cells[i].demand_crop[j];             
-            demand_cell += cur_dam->serviced_cells[i].demand_crop[j];
-            cur_dam->serviced_cells[i].demand_crop[j]=0;
-        }
-        
-        out_data[irr_cell->cell->id][OUT_DEMAND_END][0] += demand_cell / M3_PER_HM3;
+    for(i=0;i<options.SNOW_BAND;i++){ 
+        all_vars[cell_id].cell[veg_index][i].layer[0].moist = *moisture_content;
     }
 }
 
 /******************************************************************************
  * @section brief
  *  
- * Release water and overflow to outflow and remove release, overflow and
- * irrigation from the dam storage.
+ * Set the water deficit for all serviced cells
  ******************************************************************************/
-void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_release){
-    extern double ***out_data;
+void set_deficit(double *deficit, double *demand){
     
-    double overflow=0;
+    *deficit = *demand;
+    *demand=0;
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Calculate evaporation based on 0.7 * potential evaporation
+ ******************************************************************************/
+void get_dam_evaporation(dam_unit* cur_dam, double *evaporation){
+    extern all_vars_struct *all_vars;
+    extern option_struct options;
     
-    cur_dam->current_storage-= actual_release + irrigation_release;
-    if(cur_dam->current_storage > cur_dam->capacity){
-        overflow = cur_dam->current_storage - cur_dam->capacity;
+    size_t i;
+    
+    for(i=0;i<options.SNOW_BAND;i++){
+        *evaporation+=all_vars[cur_dam->cell->id].cell[0][i].pot_evap / MM_PER_M * 0.7;
     }
-    cur_dam->current_storage-= overflow;
+    *evaporation *= cur_dam->area;
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Calculate overflow
+ ******************************************************************************/
+void get_dam_overflow(dam_unit *cur_dam, double *overflow, double actual_release, double irrigation_cells, double evaporation){
+    
+    double subtraction = actual_release + irrigation_cells + evaporation;
+    
+    if(cur_dam->current_storage-subtraction > cur_dam->capacity){
+        *overflow = (cur_dam->current_storage-subtraction) - cur_dam->capacity;
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Release water and overflow to outflow and remove release, overflow, evaporation
+ * and irrigation from the dam storage.
+ ******************************************************************************/
+void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_release, double overflow, double evaporation){
+    
+    cur_dam->current_storage-= actual_release + irrigation_release + overflow + evaporation;
     
     cur_dam->previous_release = actual_release+overflow;
     
     if((cur_dam->current_storage/cur_dam->capacity)>DAM_MAX_PREF_STORE || (cur_dam->current_storage/cur_dam->capacity)<DAM_MIN_PREF_STORE){
         cur_dam->extreme_stor++;
     }       
-    out_data[cur_dam->cell->id][OUT_DAM_STORE][0]+= cur_dam->current_storage/cur_dam->capacity;
 }
 
