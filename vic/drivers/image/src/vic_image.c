@@ -66,6 +66,7 @@ double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 RID_struct         RID; // Routing routine (extension)
+//rout_struct         rout;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model

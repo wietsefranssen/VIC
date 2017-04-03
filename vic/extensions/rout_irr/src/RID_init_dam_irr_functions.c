@@ -111,9 +111,9 @@ void set_dam_irr_service(){
             
             RID.dams[i].nr_serviced_cells++;
         }
-        
+            
         RID.dams[i].serviced_cells=malloc(RID.dams[i].nr_serviced_cells * sizeof(*RID.dams[i].serviced_cells));
-        check_alloc_status(RID.dams[i].serviced_cells,"Memory allocation error.");
+        check_alloc_status(RID.dams[i].serviced_cells,"Memory allocation error");
         
         /*******************************
          Assign serviced cells
@@ -124,26 +124,9 @@ void set_dam_irr_service(){
                 continue;
             }
             
-            RID.dams[i].serviced_cells[k].cell=&RID.irr_cells[j];
-            RID.dams[i].serviced_cells[k].dam=&RID.dams[i];
-            
-            RID.dams[i].serviced_cells[k].demand_crop=malloc(RID.irr_cells[j].nr_crops * sizeof(*RID.dams[i].serviced_cells[k].demand_crop));
-            check_alloc_status(RID.dams[i].serviced_cells[k].demand_crop,"Memory allocation error.");
-            RID.dams[i].serviced_cells[k].moisture_content=malloc(RID.irr_cells[j].nr_crops * sizeof(*RID.dams[i].serviced_cells[k].moisture_content));
-            check_alloc_status(RID.dams[i].serviced_cells[k].moisture_content,"Memory allocation error.");
-            RID.dams[i].serviced_cells[k].deficit=malloc(RID.irr_cells[j].nr_crops * sizeof(*RID.dams[i].serviced_cells[k].deficit));
-            check_alloc_status(RID.dams[i].serviced_cells[k].deficit,"Memory allocation error.");
-            
-            RID.irr_cells[j].serviced_cell=&RID.dams[i].serviced_cells[k];
+            RID.dams[i].serviced_cells[k]=&RID.irr_cells[j];
+            RID.irr_cells[j].servicing_dam=&RID.dams[i];
             k++;
-        }
-        
-        for(j=0;j<RID.dams[i].nr_serviced_cells;j++){
-            for(k=0;k<RID.dams[i].serviced_cells[j].cell->nr_crops;k++){
-                RID.dams[i].serviced_cells[j].deficit[k]=0;
-                RID.dams[i].serviced_cells[j].moisture_content[k]=0;
-                RID.dams[i].serviced_cells[j].demand_crop[k]=0;
-            }
         }
     }
 }

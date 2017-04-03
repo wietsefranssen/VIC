@@ -85,6 +85,12 @@ void set_irr_crops(){
         check_alloc_status(RID.irr_cells[i].veg_class,"Memory allocation error.");
         RID.irr_cells[i].veg_index=malloc(RID.irr_cells[i].nr_crops * sizeof(*RID.irr_cells[i].veg_index));
         check_alloc_status(RID.irr_cells[i].veg_index,"Memory allocation error.");
+        RID.irr_cells[i].demand=malloc(RID.irr_cells[i].nr_crops * sizeof(*RID.irr_cells[i].demand));
+        check_alloc_status(RID.irr_cells[i].demand,"Memory allocation error.");
+        RID.irr_cells[i].moisture=malloc(RID.irr_cells[i].nr_crops * sizeof(*RID.irr_cells[i].moisture));
+        check_alloc_status(RID.irr_cells[i].moisture,"Memory allocation error.");
+        RID.irr_cells[i].deficit=malloc(RID.irr_cells[i].nr_crops * sizeof(*RID.irr_cells[i].deficit));
+        check_alloc_status(RID.irr_cells[i].deficit,"Memory allocation error.");
         
         /*******************************
          Assign crop information
@@ -99,6 +105,12 @@ void set_irr_crops(){
             }
         }
         
-        RID.irr_cells[i].serviced_cell=NULL;
+        for(j=0;j<RID.irr_cells[i].nr_crops;j++){
+            RID.irr_cells[i].demand[j]=0;
+            RID.irr_cells[i].moisture[j]=0;
+            RID.irr_cells[i].deficit[j]=0;
+        }
+        
+        RID.irr_cells[i].servicing_dam=NULL;
     }
 }

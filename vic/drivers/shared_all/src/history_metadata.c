@@ -174,25 +174,32 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_IRR].description, "total irrigation water supplied");
     
     /* irrigation demand at the start [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_START].varname, "OUT_DEMAND_START");
-    strcpy(out_metadata[OUT_DEMAND_START].long_name, "irrigation_water_demand_start");
-    strcpy(out_metadata[OUT_DEMAND_START].standard_name, "irrigation_water_demand_start");
-    strcpy(out_metadata[OUT_DEMAND_START].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_START].description, "irrigation water demand before water is applied");
-    
-    /* irrigation demand after local irrigation [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_DAM].varname, "OUT_DEMAND_DAM");
-    strcpy(out_metadata[OUT_DEMAND_DAM].long_name, "irrigation_water_demand_dam");
-    strcpy(out_metadata[OUT_DEMAND_DAM].standard_name, "irrigation_water_demand_dam");
-    strcpy(out_metadata[OUT_DEMAND_DAM].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_DAM].description, "irrigation water demand after local water is applied");
-    
-    /* irrigation demand after dam irrigation [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_END].varname, "OUT_DEMAND_END");
-    strcpy(out_metadata[OUT_DEMAND_END].long_name, "irrigation_water_demand_end");
-    strcpy(out_metadata[OUT_DEMAND_END].standard_name, "irrigation_water_demand_end");
-    strcpy(out_metadata[OUT_DEMAND_END].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_END].description, "irrigation water demand after dam water is applied");
+    strcpy(out_metadata[OUT_DEMAND].varname, "OUT_DEMAND");
+    strcpy(out_metadata[OUT_DEMAND].long_name, "irrigation_water_demand_start");
+    strcpy(out_metadata[OUT_DEMAND].standard_name, "irrigation_water_demand_start");
+    strcpy(out_metadata[OUT_DEMAND].units, "hm3");
+    strcpy(out_metadata[OUT_DEMAND].description, "irrigation water demand before water is applied");
+        
+    /* irrigation demand increase [hm3] */
+    strcpy(out_metadata[OUT_DEMAND_INCR].varname, "OUT_DEMAND_INCR");
+    strcpy(out_metadata[OUT_DEMAND_INCR].long_name, "irrigation_water_demand_increase");
+    strcpy(out_metadata[OUT_DEMAND_INCR].standard_name, "irrigation_water_demand_increase");
+    strcpy(out_metadata[OUT_DEMAND_INCR].units, "hm3");
+    strcpy(out_metadata[OUT_DEMAND_INCR].description, "irrigation water demand increase");
+        
+    /* irrigation demand at the start [hm3] */
+    strcpy(out_metadata[OUT_MC_CROP].varname, "OUT_MC_CROP");
+    strcpy(out_metadata[OUT_MC_CROP].long_name, "irrigation_water_demand_increase");
+    strcpy(out_metadata[OUT_MC_CROP].standard_name, "irrigation_water_demand_increase");
+    strcpy(out_metadata[OUT_MC_CROP].units, "mm");
+    strcpy(out_metadata[OUT_MC_CROP].description, "irrigation water demand increase");
+        
+    /* irrigation demand at the start [hm3] */
+    strcpy(out_metadata[OUT_AV_WATER].varname, "OUT_AV_WATER");
+    strcpy(out_metadata[OUT_AV_WATER].long_name, "irrigation_water_demand_increase");
+    strcpy(out_metadata[OUT_AV_WATER].standard_name, "irrigation_water_demand_increase");
+    strcpy(out_metadata[OUT_AV_WATER].units, "m3");
+    strcpy(out_metadata[OUT_AV_WATER].description, "irrigation water demand increase");
     
     /* dam current storage [-] */
     strcpy(out_metadata[OUT_DAM_STORE].varname, "OUT_DAM_STORE");

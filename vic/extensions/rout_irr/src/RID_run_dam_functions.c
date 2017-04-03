@@ -11,28 +11,15 @@
  *  
  * Update the inflow history of a dam.
  ******************************************************************************/
-void update_dam_history_day(dam_unit* cur_dam, dmy_struct *cur_dmy){    
+void update_dam_history_day(dam_unit* cur_dam){    
     size_t i;
     size_t j;
-    
-    double demand_increase=0;
         
     if(cur_dam->function == DAM_IRR_FUNCTION){
         for(i=0;i<cur_dam->nr_serviced_cells;i++){
-            irr_cell *irr_cell = cur_dam->serviced_cells[i].cell;
             
-            for(j=0;j<irr_cell->nr_crops;j++){
-                if(!in_irrigation_season(irr_cell->crop_index[j],cur_dmy->day_in_year)){
-                    continue;
-                }
-                
-                if(cur_dam->serviced_cells[i].demand_crop[j] > 0){
-                    demand_increase = cur_dam->serviced_cells[i].demand_crop[j] -
-                         cur_dam->serviced_cells[i].deficit[j];
-                    if(demand_increase>0){
-                        cur_dam->total_demand += demand_increase;
-                    }
-                }                
+            for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){
+                cur_dam->total_demand += cur_dam->serviced_cells[i]->deficit[j];               
             }
         }
     }
@@ -330,14 +317,10 @@ void get_actual_release(dam_unit* cur_dam, double *actual_release){
  *  
  * Get the demand for the dam
  ******************************************************************************/
-void get_demand_cells(serviced_cell *ser_cell, double *demand_cells, double *demand_cell){
+void get_demand_cells(double *demand_cells, double *demand_cell, double demand_crop){
     
-    size_t j;
-    
-    for(j=0;j<ser_cell->cell->nr_crops;j++){
-        *demand_cell += ser_cell->demand_crop[j];
-        *demand_cells += ser_cell->demand_crop[j];
-    }
+    *demand_cell += demand_crop;
+    *demand_cells += demand_crop;
 }
 
 /******************************************************************************
@@ -411,7 +394,7 @@ void do_dam_irrigation(size_t cell_id, size_t veg_index, double *moisture_conten
 void set_deficit(double *deficit, double *demand){
     
     *deficit = *demand;
-    *demand=0;
+    //*demand=0;
 }
 
 /******************************************************************************

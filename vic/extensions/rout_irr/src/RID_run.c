@@ -29,7 +29,7 @@ void RID_run(dmy_struct* cur_dmy){
         do_routing_module(cur_cell);
         
         if(cur_cell->irr!=NULL){
-            do_irrigation_module(cur_cell,cur_dmy);
+            do_irrigation_module(cur_cell->irr,cur_dmy);
         }
         
         if(cur_cell->dam!=NULL){
@@ -37,7 +37,8 @@ void RID_run(dmy_struct* cur_dmy){
         }
         
         out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
-        out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0];        
+        out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0]; 
+        out_data[cur_cell->id][OUT_IRR][0]=out_data[cur_cell->id][OUT_DAM_IRR][0]+out_data[cur_cell->id][OUT_LOCAL_IRR][0]; 
     }
     
     for(i=0;i<RID.nr_dams;i++){
@@ -63,6 +64,7 @@ void do_routing_module(RID_cell *cur_cell){
     do_routing(cur_cell, runoff, inflow, false);
 
     if(RID.param.fnaturalized_flow){
+        gather_runoff_inflow(cur_cell, &runoff, &inflow, true);
         do_routing(cur_cell,runoff, inflow, true);
     }
 }
@@ -74,76 +76,81 @@ void do_routing_module(RID_cell *cur_cell){
  * is needed, gather water from local sources. Distribute leftover demands
  * to servicing dams.
  ******************************************************************************/
-void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy){
+void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     extern global_param_struct global_param;
     extern double ***out_data;
     
-    double moisture_content[cur_cell->irr->nr_crops];         //mm (per crop)
-    double demand_crop[cur_cell->irr->nr_crops];              //m3 (per crop)
     double demand_cell;                                       //m3
-    double irrigation_crop[cur_cell->irr->nr_crops];          //m3 (per crop)
+    double demand_increase_cell;                              //m3
+    double irrigation_crop[cur_irr->nr_crops];                //m3 (per crop)
     double irrigation_cell;                                   //m3
     double available_water;                                   //m3
     size_t i;
     
     demand_cell=0;
-    irrigation_cell=0;    
-    for(i=0;i<cur_cell->irr->nr_crops;i++){
-        moisture_content[i]=0;
-        demand_crop[i]=0;
+    irrigation_cell=0;  
+    demand_increase_cell=0;
+    for(i=0;i<cur_irr->nr_crops;i++){
         irrigation_crop[i]=0;
     }
     
-    for(i=0;i<cur_cell->irr->nr_crops;i++){
-        if(!in_irrigation_season(cur_cell->irr->crop_index[i],cur_dmy->day_in_year)){
+    for(i=0;i<cur_irr->nr_crops;i++){
+        if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
             continue;
         }
         
-        get_moisture_content(cur_cell->id,cur_cell->irr->veg_index[i],&moisture_content[i]);
-        get_irrigation_demand(cur_cell->id,cur_cell->irr->veg_index[i],moisture_content[i],&demand_crop[i]);
-        demand_cell += demand_crop[i];
+        get_moisture_content(cur_irr,cur_irr->veg_index[i],&cur_irr->moisture[i]);
+        get_demand(cur_irr,cur_irr->veg_index[i],&cur_irr->demand[i],cur_irr->moisture[i]);
+        demand_cell += cur_irr->demand[i];
+        
+        demand_increase_cell += cur_irr->demand[i] - cur_irr->deficit[i];
+        if(demand_increase_cell <0){
+            demand_increase_cell=0;
+        }
+            
+        out_data[cur_irr->cell->id][OUT_MC_CROP][0]+=cur_irr->moisture[i];
     }
     
-    out_data[cur_cell->id][OUT_DEMAND_START][0] = demand_cell / M3_PER_HM3;
-    available_water = cur_cell->rout->outflow[0] * global_param.dt;
+    out_data[cur_irr->cell->id][OUT_DEMAND_INCR][0] = demand_increase_cell / M3_PER_HM3;
+    out_data[cur_irr->cell->id][OUT_DEMAND][0] = demand_cell / M3_PER_HM3;
+    
+    available_water = cur_irr->cell->rout->outflow[0] * global_param.dt;
+    
+    out_data[cur_irr->cell->id][OUT_AV_WATER][0] = available_water / M3_PER_HM3;
     
     if(available_water>1 && demand_cell>1){
-        for(i=0;i<cur_cell->irr->nr_crops;i++){
-            if(!in_irrigation_season(cur_cell->irr->crop_index[i],cur_dmy->day_in_year)){
+        for(i=0;i<cur_irr->nr_crops;i++){
+            if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
                 continue;
             }
 
-            get_irrigation(&irrigation_crop[i],demand_cell,demand_crop[i],available_water);
+            get_irrigation(&irrigation_crop[i],demand_cell,cur_irr->demand[i],available_water);       
+            do_irrigation(cur_irr,cur_irr->veg_index[i], &cur_irr->moisture[i], irrigation_crop[i]);
+            irrigation_cell += irrigation_crop[i];
         }
         
-        for(i=0;i<cur_cell->irr->nr_crops;i++){
-            if(!in_irrigation_season(cur_cell->irr->crop_index[i],cur_dmy->day_in_year)){
+        for(i=0;i<cur_irr->nr_crops;i++){
+            if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
                 continue;
             }
             
-            update_demand_and_irrigation(&irrigation_cell, &irrigation_crop[i], &demand_cell, &demand_crop[i], &available_water);
+            cur_irr->demand[i] -= irrigation_crop[i];
+            available_water -= irrigation_crop[i];
+        }
+    }
+    
+    
+    for(i=0;i<cur_irr->nr_crops;i++){
+        if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
+            continue;
         }
         
-        for(i=0;i<cur_cell->irr->nr_crops;i++){
-            if(!in_irrigation_season(cur_cell->irr->crop_index[i],cur_dmy->day_in_year)){
-                continue;
-            }
-            
-            do_irrigation(cur_cell->id,cur_cell->irr->veg_index[i], &moisture_content[i],irrigation_crop[i]);
-        }
+        set_deficit(&cur_irr->deficit[i],&cur_irr->demand[i]);
     }
     
-    cur_cell->rout->outflow[0]= available_water / global_param.dt;
+    cur_irr->cell->rout->outflow[0]= available_water / global_param.dt;
     
-    if(cur_cell->irr->serviced_cell!=NULL){
-        for(i=0;i<cur_cell->irr->nr_crops;i++){
-            update_servicing_dam_values(cur_cell->irr->serviced_cell,i,moisture_content[i],demand_crop[i]);
-        }        
-    }
-    
-    out_data[cur_cell->id][OUT_LOCAL_IRR][0]=irrigation_cell / M3_PER_HM3;
-    out_data[cur_cell->id][OUT_IRR][0]=out_data[cur_cell->id][OUT_LOCAL_IRR][0];
-    out_data[cur_cell->id][OUT_DEMAND_END][0]=out_data[cur_cell->id][OUT_DEMAND_DAM][0];
+    out_data[cur_irr->cell->id][OUT_LOCAL_IRR][0]=irrigation_cell / M3_PER_HM3;
     
 }
 
@@ -182,7 +189,7 @@ void do_dam_history_module(dam_unit *cur_dam, dmy_struct *cur_dmy){
     /*******************************
      Operational day has passed
     *******************************/
-    update_dam_history_day(cur_dam,cur_dmy);
+    update_dam_history_day(cur_dam);
     
     if(cur_dmy->dayseconds==0 && cur_dmy->day==cur_dam->start_operation.day){  
         /*******************************
@@ -255,7 +262,7 @@ void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy){
             for(i=0;i<cur_dam->nr_serviced_cells;i++){
                 irrigation_cell[i]=0;
                 demand_cell[i]=0;
-                for(j=0;j<cur_dam->serviced_cells[i].cell->nr_crops;j++){
+                for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){
                     irrigation_crop[i][j]=0;
                 }
             }
@@ -266,41 +273,39 @@ void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy){
             }
             
             for(i=0;i<cur_dam->nr_serviced_cells;i++){
-                get_demand_cells(&cur_dam->serviced_cells[i],&demand_cells,&demand_cell[i]);
-                
-                out_data[cur_dam->serviced_cells[i].cell->cell->id][OUT_DEMAND_DAM][0]=demand_cell[i]/M3_PER_HM3;
+                for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){   
+                    //cur_dam->serviced_cells[i]->demand[j]=cur_dam->serviced_cells[i]->deficit[j];
+                    get_demand_cells(&demand_cells,&demand_cell[i],cur_dam->serviced_cells[i]->demand[j]);
+                }
             }
             
             if(demand_cells>0 && available_water>0){
                 for(i=0;i<cur_dam->nr_serviced_cells;i++){
-                    for(j=0;j<cur_dam->serviced_cells[i].cell->nr_crops;j++){                    
-                        get_dam_irrigation(demand_cells,cur_dam->serviced_cells[i].demand_crop[j], &irrigation_crop[i][j],available_water);
+                    for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){                    
+                        get_dam_irrigation(demand_cells,cur_dam->serviced_cells[i]->demand[j], &irrigation_crop[i][j],available_water);
                     }
                 }
                 
                 for(i=0;i<cur_dam->nr_serviced_cells;i++){
-                    for(j=0;j<cur_dam->serviced_cells[i].cell->nr_crops;j++){                    
-                        update_dam_demand_and_irrigation(&demand_cells,&demand_cell[i],&cur_dam->serviced_cells[i].demand_crop[j],
+                    for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){                    
+                        update_dam_demand_and_irrigation(&demand_cells,&demand_cell[i],&cur_dam->serviced_cells[i]->demand[j],
                                 &irrigation_cells,&irrigation_cell[i],irrigation_crop[i][j],&available_water);
                     }
                 }
                 
                 for(i=0;i<cur_dam->nr_serviced_cells;i++){
-                    for(j=0;j<cur_dam->serviced_cells[i].cell->nr_crops;j++){                    
-                        do_dam_irrigation(cur_dam->serviced_cells[i].cell->cell->id,cur_dam->serviced_cells[i].cell->veg_index[j],
-                                &cur_dam->serviced_cells[i].moisture_content[j],irrigation_crop[i][j]);
+                    for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){                    
+                        do_dam_irrigation(cur_dam->serviced_cells[i]->cell->id,cur_dam->serviced_cells[i]->veg_index[j],
+                                &cur_dam->serviced_cells[i]->moisture[j],irrigation_crop[i][j]);
                     }
                 }                
             }
             
             for(i=0;i<cur_dam->nr_serviced_cells;i++){
+                out_data[cur_dam->serviced_cells[i]->cell->id][OUT_DAM_IRR][0]=irrigation_cell[i]/M3_PER_HM3;
                 
-                out_data[cur_dam->serviced_cells[i].cell->cell->id][OUT_DEMAND_END][0]=demand_cell[i]/M3_PER_HM3;
-                out_data[cur_dam->serviced_cells[i].cell->cell->id][OUT_DAM_IRR][0]=irrigation_cell[i]/M3_PER_HM3;
-                out_data[cur_dam->serviced_cells[i].cell->cell->id][OUT_IRR][0]+=out_data[cur_dam->serviced_cells[i].cell->cell->id][OUT_DAM_IRR][0];
-                
-                for(j=0;j<cur_dam->serviced_cells[i].cell->nr_crops;j++){                    
-                    set_deficit(&cur_dam->serviced_cells[i].deficit[j],&cur_dam->serviced_cells[i].demand_crop[j]);
+                for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){                    
+                    set_deficit(&cur_dam->serviced_cells[i]->deficit[j],&cur_dam->serviced_cells[i]->demand[j]);
                 }
             }
             

@@ -17,7 +17,6 @@ void RID_finalize(void){
     extern RID_struct RID;
     extern domain_struct global_domain;
     size_t i;
-    size_t j;
     
     /*******************************
      Dam module
@@ -48,12 +47,6 @@ void RID_finalize(void){
         for(i=0;i<RID.nr_dams;i++){    
             if(RID.dams[i].function!=DAM_IRR_FUNCTION){
                 continue;
-            }
-
-            for(j=0;j<RID.dams[i].nr_serviced_cells;j++){
-                free(RID.dams[i].serviced_cells[j].deficit);
-                free(RID.dams[i].serviced_cells[j].moisture_content);
-                free(RID.dams[i].serviced_cells[j].demand_crop);
             }
             
             free(RID.dams[i].serviced_cells);        

@@ -34,8 +34,8 @@ void gather_runoff_inflow(RID_cell *cur_cell, double *runoff, double *inflow, bo
         }
     }
     
-    out_data[cur_cell->id][OUT_RUNOFF_ROUT][0]=*runoff;
-    out_data[cur_cell->id][OUT_INFLOW_ROUT][0]=*inflow;
+    out_data[cur_cell->id][OUT_RUNOFF_ROUT][0] = *runoff;
+    out_data[cur_cell->id][OUT_INFLOW_ROUT][0] = *inflow;
 }
 
 /******************************************************************************
@@ -73,14 +73,12 @@ void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturaliz
     size_t t;
     
     if(!naturalized){
-        cur_cell->rout->outflow[0] += runoff;
         for(t=0;t<RID.param.max_days_uh * global_param.model_steps_per_day;t++){
-            cur_cell->rout->outflow[t] += cur_cell->rout->uh[t] * inflow;
+            cur_cell->rout->outflow[t] += cur_cell->rout->uh[t] * (inflow+runoff);
         }       
     }else{
-        cur_cell->rout->outflow_natural[0] += runoff;
         for(t=0;t<RID.param.max_days_uh * global_param.model_steps_per_day;t++){
-            cur_cell->rout->outflow_natural[t] += cur_cell->rout->uh[t] * inflow;
+            cur_cell->rout->outflow_natural[t] += cur_cell->rout->uh[t] * (inflow+runoff);
         }
     }
 }

@@ -50,7 +50,6 @@ void default_module_options(void){
     global_param.resolution=VIC_RESOLUTION;
     
     RID.param.firrigation = false;
-    RID.param.fpot_irrigation = false;
     RID.param.fdams = false;
     RID.param.fdebug_mode = false;
     
@@ -148,10 +147,6 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
             if (strcasecmp("IRRIGATION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 RID.param.firrigation=str_to_bool(flgstr);
-            }
-            if (strcasecmp("POTENTIAL_IRRIGATION", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", flgstr);
-                RID.param.fpot_irrigation=str_to_bool(flgstr);
             }
             if (strcasecmp("DAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
@@ -321,12 +316,6 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
     *******************************/
     if(RID.param.param_filename[0]==0){
         log_err("No routing input files, exiting simulation...");
-    } 
-    if(RID.param.fpot_irrigation){
-        if(!RID.param.firrigation){
-            log_warn("No irrigation, but potential irrigation is selected. Setting POTENTIAL_IRRIGATION to FALSE...");
-            RID.param.fpot_irrigation=false;
-        }
     }
     if(RID.param.firrigation){
         if(RID.param.nr_crops==0){
@@ -391,11 +380,6 @@ void display_module_options(){
         fprintf(LOG_DEST, "\nCurrent Irrigation Settings\n");
         fprintf(LOG_DEST, "IRRIGATION\t\t\tTRUE\n");
         
-        if(RID.param.fpot_irrigation){
-            fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tTRUE\n");
-        }else{
-            fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tFALSE\n");
-        }
         fprintf(LOG_DEST, "CROP_CLASS\tCROP_SOW\tCROP_DEVELOPED\tCROP_MATURED\tCROP_HARVEST\n");
         for(i=0;i<RID.param.nr_crops;i++){
             fprintf(LOG_DEST, "%zu\t\t%hu\t\t%hu\n",

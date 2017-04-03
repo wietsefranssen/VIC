@@ -37,14 +37,13 @@
 typedef struct rout_cells rout_cell;
 typedef struct irr_cells irr_cell;
 typedef struct dam_units dam_unit;
-typedef struct serviced_cells serviced_cell;
+//typedef struct serviced_cells serviced_cell;
 typedef struct RID_cells RID_cell;
 typedef struct RID_structs RID_struct;
 typedef struct RID_params RID_param;
 
 struct RID_params{
     bool firrigation;                   /**< bool - TRUE = do irrigation FALSE = do not do irrigation */
-    bool fpot_irrigation;               /**< bool - TRUE = use potential irrigation FALSE = do not use potential irrigation */
     bool fdams;                         /**< bool - TRUE = use dams during routing FALSE = do not use dmas */
     bool fdebug_mode;                   /**< bool - TRUE = use debugging during routing FALSE = do not use debugging */
     
@@ -123,7 +122,12 @@ struct irr_cells {
     size_t *veg_index;                  /**< 1d array [nr_crops] - vegetation index of crops */
     size_t *crop_index;                 /**< 1d array [nr_crops] - crop index of crops */    
     
-    serviced_cell *serviced_cell;       /*< pointer - pointer to serviced cell for this cell */
+    double *demand;                     /**< 1d array [nr_crops] - demand of crops */    
+    double *moisture;                   /**< 1d array [nr_crops] - moisture content of crops */    
+    double *deficit;                    /**< 1d array [nr_crops] - previous demand of crops */    
+    double *storage;                    /**< 1d array [nr_crops] - water storage of crops */    
+    
+    dam_unit *servicing_dam;            /**< pointer - pointer to servicing dam infromation */
 };
 
 struct dam_units{
@@ -162,7 +166,7 @@ struct dam_units{
     double previous_release;            /**< scalar - outflow to be released next timestep [m3] */
     
     size_t nr_serviced_cells;           /**< scalar - number of serviced cells */
-    serviced_cell *serviced_cells;      /**< 1d array [nr_serviced_cells] - serviced cells */
+    irr_cell **serviced_cells;          /**< 1d array [nr_serviced_cells] - pointer to serviced cells */
     
     dmy_struct start_operation;         /**< dmy_struct - start of the operation year of dam */
     double storage_start_operation;     /**< scalar - storage at the start of the operation year of dam [m3] */
@@ -233,19 +237,18 @@ void shift_outflow_array(RID_cell* current_cell);
 void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturalized);
 
 //Irrigation module
-void do_irrigation_module(RID_cell *cur_cell, dmy_struct *cur_dmy);
+void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy);
 bool in_irrigation_season(size_t crop_index, size_t current_julian_day);
-void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content);
-void get_irrigation_demand(size_t cell_id, size_t veg_index, double moisture_content, double *demand_crop);
+void get_moisture_content(irr_cell *cur_irr, size_t veg_index, double *moisture_content);
+void get_demand(irr_cell *cur_irr, size_t veg_index, double *demand_crop, double moisture_content);
 void get_irrigation(double *irrigation_crop, double demand_cell, double demand_crop, double available_water);
-void update_demand_and_irrigation(double *irrigation_cell, double *irrigation_crop, double *demand_cell, double *demand_crop, double *available_water);
-void do_irrigation(size_t cell_id, size_t veg_index, double *moisture_content, double irrigation_crop);
-void update_servicing_dam_values(serviced_cell *ser_cell, size_t crop_index, double moisture_content, double demand_crop);
+void update_demand_and_irrigation(double irrigation_crop, double *demand_cell, double *demand_crop, double *available_water);
+void do_irrigation(irr_cell *cur_irr, size_t veg_index, double *moisture_content, double irrigation_crop);
 
 //Dam module
 void do_dam_flow(dam_unit *cur_dam);
 void do_dam_history_module(dam_unit *cur_dam, dmy_struct *cur_dmy);
-void update_dam_history_day(dam_unit* cur_dam, dmy_struct *cur_dmy);
+void update_dam_history_day(dam_unit* cur_dam);
 void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy);
 void calculate_target_release(dam_unit* cur_dam);
 void update_dam_history_year(dam_unit* cur_dam, dmy_struct* cur_dmy);
@@ -253,7 +256,7 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy);
 
 void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy);
 void get_actual_release(dam_unit* cur_dam, double *actual_release);
-void get_demand_cells(serviced_cell *ser_cell, double *demand_cells, double *demand_cell);
+void get_demand_cells(double *demand_cells, double *demand_cell, double demand_crop);
 void get_dam_irrigation(double demand_cells, double demand_crop, double *irrigation_crop, double available_water);
 void update_dam_demand_and_irrigation(double *demand_cells, double *demand_cell, double *demand_crop, double *irrigation_cells, double *irrigation_cell, double irrigation_crop, double *available_water);
 void do_dam_irrigation(size_t cell_id, size_t veg_index, double *moisture_content, double irrigation_crop);
