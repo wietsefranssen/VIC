@@ -195,6 +195,13 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_MC_CROP].description, "irrigation water demand increase");
         
     /* irrigation demand at the start [hm3] */
+    strcpy(out_metadata[OUT_CROP_STORE].varname, "OUT_CROP_STORE");
+    strcpy(out_metadata[OUT_CROP_STORE].long_name, "crop_pond_storage");
+    strcpy(out_metadata[OUT_CROP_STORE].standard_name, "crop_pond_storage");
+    strcpy(out_metadata[OUT_CROP_STORE].units, "mm");
+    strcpy(out_metadata[OUT_CROP_STORE].description, "storage of crop pond");
+    
+    /* irrigation demand at the start [hm3] */
     strcpy(out_metadata[OUT_AV_WATER].varname, "OUT_AV_WATER");
     strcpy(out_metadata[OUT_AV_WATER].long_name, "irrigation_water_demand_increase");
     strcpy(out_metadata[OUT_AV_WATER].standard_name, "irrigation_water_demand_increase");

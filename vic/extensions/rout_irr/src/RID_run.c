@@ -80,6 +80,8 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     extern global_param_struct global_param;
     extern double ***out_data;
     
+    bool irrigation_season [cur_irr->nr_crops];
+    double infiltration;                                      //mm
     double demand_cell;                                       //m3
     double demand_increase_cell;                              //m3
     double irrigation_crop[cur_irr->nr_crops];                //m3 (per crop)
@@ -93,14 +95,29 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     for(i=0;i<cur_irr->nr_crops;i++){
         irrigation_crop[i]=0;
     }
-    
+        
     for(i=0;i<cur_irr->nr_crops;i++){
         if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
-            continue;
+            set_crop_ksat(false,cur_irr,i);
+            irrigation_season[i]=false;
+        }else{
+            set_crop_ksat(true,cur_irr,i);
+            irrigation_season[i]=true;
         }
+    }
         
-        get_moisture_content(cur_irr,cur_irr->veg_index[i],&cur_irr->moisture[i]);
-        get_demand(cur_irr,cur_irr->veg_index[i],&cur_irr->demand[i],cur_irr->moisture[i]);
+    for(i=0;i<cur_irr->nr_crops;i++){
+        get_moisture_content(cur_irr->cell->id,cur_irr->veg_index[i],&cur_irr->moisture[i]);
+        get_storage_infiltration(cur_irr->cell->id,&cur_irr->storage[i],&infiltration,cur_irr->moisture[i]);
+        increase_moisture_content(cur_irr->cell->id,cur_irr->veg_index[i],&cur_irr->moisture[i],infiltration);
+        
+        out_data[cur_irr->cell->id][OUT_CROP_STORE][0]+=cur_irr->storage[i]/MAX_POND_STORAGE;
+        
+        if(!irrigation_season[i]){
+            continue;
+        }        
+                
+        get_demand(cur_irr,cur_irr->veg_index[i],&cur_irr->demand[i],cur_irr->storage[i]);
         demand_cell += cur_irr->demand[i];
         
         demand_increase_cell += cur_irr->demand[i] - cur_irr->deficit[i];
@@ -114,23 +131,23 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     out_data[cur_irr->cell->id][OUT_DEMAND_INCR][0] = demand_increase_cell / M3_PER_HM3;
     out_data[cur_irr->cell->id][OUT_DEMAND][0] = demand_cell / M3_PER_HM3;
     
-    available_water = cur_irr->cell->rout->outflow[0] * global_param.dt;
+    available_water = cur_irr->cell->rout->outflow[0] * global_param.dt * AVAILABLE_IRR_FRAC;
     
     out_data[cur_irr->cell->id][OUT_AV_WATER][0] = available_water / M3_PER_HM3;
     
     if(available_water>1 && demand_cell>1){
         for(i=0;i<cur_irr->nr_crops;i++){
-            if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
+            if(!irrigation_season[i]){
                 continue;
             }
 
             get_irrigation(&irrigation_crop[i],demand_cell,cur_irr->demand[i],available_water);       
-            do_irrigation(cur_irr,cur_irr->veg_index[i], &cur_irr->moisture[i], irrigation_crop[i]);
+            increase_storage_content(cur_irr->cell->id,cur_irr->veg_index[i], &cur_irr->storage[i], irrigation_crop[i]);
             irrigation_cell += irrigation_crop[i];
         }
         
         for(i=0;i<cur_irr->nr_crops;i++){
-            if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
+            if(!irrigation_season[i]){
                 continue;
             }
             
@@ -141,14 +158,15 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     
     
     for(i=0;i<cur_irr->nr_crops;i++){
-        if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
+        if(!irrigation_season[i]){
             continue;
         }
         
         set_deficit(&cur_irr->deficit[i],&cur_irr->demand[i]);
     }
     
-    cur_irr->cell->rout->outflow[0]= available_water / global_param.dt;
+    cur_irr->cell->rout->outflow[0] = cur_irr->cell->rout->outflow[0] * (1-AVAILABLE_IRR_FRAC) +
+            available_water / global_param.dt;
     
     out_data[cur_irr->cell->id][OUT_LOCAL_IRR][0]=irrigation_cell / M3_PER_HM3;
     

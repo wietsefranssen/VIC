@@ -57,14 +57,14 @@ void default_module_options(void){
     RID.param.debug_path[0]=0;
     RID.param.dam_filename[0]=0;
     
-    RID.param.max_days_uh=MAX_DAYS_UH;
-    RID.param.flow_velocity_uh=FLOW_VELOCITY_UH;
-    RID.param.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+    RID.param.max_days_uh=DEF_UH_DAYS;
+    RID.param.flow_velocity_uh=DEF_FLOW_VEL;
+    RID.param.flow_diffusivity_uh=DEF_FLOW_DIF;
     
     RID.param.nr_crops=0;
     
     RID.param.fnaturalized_flow=false;
-    RID.param.dam_irr_distance=DAM_IRR_DISTANCE;
+    RID.param.dam_irr_distance=DEF_IRR_DIST;
 }
 
 /******************************************************************************
@@ -337,20 +337,20 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
     }
     
     if(RID.param.max_days_uh<1){
-        log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting UH_MAX_DAYS to %d",MAX_DAYS_UH); 
-            RID.param.max_days_uh=MAX_DAYS_UH;
+        log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting UH_MAX_DAYS to %d",DEF_UH_DAYS); 
+            RID.param.max_days_uh=DEF_UH_DAYS;
     }
     if(RID.param.flow_velocity_uh<=0){
-        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",FLOW_VELOCITY_UH); 
-            RID.param.flow_velocity_uh=FLOW_VELOCITY_UH;
+        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",DEF_FLOW_VEL); 
+            RID.param.flow_velocity_uh=DEF_FLOW_VEL;
     }
     if(RID.param.flow_diffusivity_uh<=0){
-        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",FLOW_DIFFUSIVITY_UH); 
-            RID.param.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",DEF_FLOW_DIF); 
+            RID.param.flow_diffusivity_uh=DEF_FLOW_DIF;
     }
     if(RID.param.dam_irr_distance<=0){
-        log_warn("DAM_IRR_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",DAM_IRR_DISTANCE); 
-            RID.param.dam_irr_distance=DAM_IRR_DISTANCE;
+        log_warn("DAM_IRR_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",DEF_IRR_DIST); 
+            RID.param.dam_irr_distance=DEF_IRR_DIST;
     }
 }
 

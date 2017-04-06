@@ -37,6 +37,12 @@ void RID_finalize(void){
             free(RID.irr_cells[i].crop_index);
             free(RID.irr_cells[i].veg_index);
             free(RID.irr_cells[i].veg_class);
+            
+            free(RID.irr_cells[i].demand);
+            free(RID.irr_cells[i].moisture);
+            free(RID.irr_cells[i].deficit);
+            free(RID.irr_cells[i].storage);
+            free(RID.irr_cells[i].normal_Ksat);
         }
     }
         

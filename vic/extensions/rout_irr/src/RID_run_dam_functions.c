@@ -409,7 +409,7 @@ void get_dam_evaporation(dam_unit* cur_dam, double *evaporation){
     size_t i;
     
     for(i=0;i<options.SNOW_BAND;i++){
-        *evaporation+=all_vars[cur_dam->cell->id].cell[0][i].pot_evap / MM_PER_M * 0.7;
+        *evaporation+=all_vars[cur_dam->cell->id].cell[0][i].pot_evap / MM_PER_M * RES_POT_FRAC;
     }
     *evaporation *= cur_dam->area;
 }
