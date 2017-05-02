@@ -76,8 +76,8 @@ void set_dam_information(){
                 continue;
             }
             
-            x = (size_t)((lon_tmp - RID.min_lon)/global_param.resolution);
-            y = (size_t)((lat_tmp - RID.min_lat)/global_param.resolution);
+            x = (size_t)((lon_tmp - (RID.min_lon-(global_param.resolution/2)))/global_param.resolution);
+            y = (size_t)((lat_tmp - (RID.min_lat-(global_param.resolution/2)))/global_param.resolution);
             if(RID.gridded_cells[x][y]==NULL){
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
@@ -137,8 +137,8 @@ void set_dam_information(){
                 continue;
             }
             
-            x = (size_t)((lon_tmp - RID.min_lon)/global_param.resolution);
-            y = (size_t)((lat_tmp - RID.min_lat)/global_param.resolution);
+            x = (size_t)((lon_tmp - (RID.min_lon-(global_param.resolution/2)))/global_param.resolution);
+            y = (size_t)((lat_tmp - (RID.min_lat-(global_param.resolution/2)))/global_param.resolution);
             if(RID.gridded_cells[x][y]==NULL){
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
@@ -188,16 +188,16 @@ void set_dam_information(){
         for(j=0;j<RID.nr_dams;j++){
             if(dams[i].cell==dams2[j].cell){
                 log_warn("\ndam %s and %s have been combined into dam %s because they are in the same cell.\n"
-                    "Capacities and areas have been added. If any dam had an irrigation purpose this is used.\n"
+                    "Capacities and areas have been added. Purpose is based on the biggest dam.\n"
                     "If the dams have different activation years the earliest activation year is used.\n",
                     dams[i].name,dams2[j].name,dams2[j].name);
 
+                if(dams2[j].capacity < dams[i].capacity){
+                    dams2[j].function = dams[i].function;
+                }
+
                 dams2[j].capacity += dams[i].capacity;
                 dams2[j].area += dams[i].area;
-
-                if(dams2[j].function!=DAM_IRR_FUNCTION || dams[i].function==DAM_IRR_FUNCTION){
-                    dams2[j].function=DAM_IRR_FUNCTION;
-                }
 
                 if(dams2[j].activation_year > dams[i].activation_year){
                     dams2[j].activation_year = dams[i].activation_year;

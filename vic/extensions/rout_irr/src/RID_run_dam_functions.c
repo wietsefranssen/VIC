@@ -156,7 +156,7 @@ void calculate_target_release(dam_unit* cur_dam){
         log_err("environmental target release is negative?");
     }
     
-    log_info("\n\ntarget_release %.1f;\n"
+    debug("\n\ntarget_release %.1f;\n"
             "inflow %.1f; annual_inflow %.1f;\n"
             "inflow_natural %.1f; annual_inflow_natural %.1f;\n"
             "demand %.1f; annual_demand %.1f;\n"

@@ -56,13 +56,13 @@ void RID_alloc(void){
         RID.cells[i].rout=&RID.rout_cells[i];
         RID.rout_cells[i].cell=&RID.cells[i];
         
-        RID.cells[i].rout->outflow=malloc(RID.param.max_days_uh * global_param.model_steps_per_day * sizeof(*RID.cells[i].rout->outflow));
+        RID.cells[i].rout->outflow=malloc(MAX_UH_DAYS * global_param.model_steps_per_day * sizeof(*RID.cells[i].rout->outflow));
         check_alloc_status(RID.cells[i].rout->outflow,"Memory allocation error.");
         
-        RID.cells[i].rout->outflow_natural=malloc(RID.param.max_days_uh * global_param.model_steps_per_day * sizeof(*RID.cells[i].rout->outflow_natural));
+        RID.cells[i].rout->outflow_natural=malloc(MAX_UH_DAYS * global_param.model_steps_per_day * sizeof(*RID.cells[i].rout->outflow_natural));
         check_alloc_status(RID.cells[i].rout->outflow_natural,"Memory allocation error.");
         
-        RID.cells[i].rout->uh=malloc(RID.param.max_days_uh * global_param.model_steps_per_day * sizeof(*RID.cells[i].rout->uh));
+        RID.cells[i].rout->uh=malloc(MAX_UH_DAYS * global_param.model_steps_per_day * sizeof(*RID.cells[i].rout->uh));
         check_alloc_status(RID.cells[i].rout->uh,"Memory allocation error.");
         
         RID.cells[i].dam=NULL;

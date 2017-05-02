@@ -46,11 +46,10 @@ void gather_runoff_inflow(RID_cell *cur_cell, double *runoff, double *inflow, bo
 
 void shift_outflow_array(RID_cell* current_cell){
     extern global_param_struct global_param;
-    extern RID_struct RID;
     
     size_t t;                
     
-    for(t=0;t<(RID.param.max_days_uh * global_param.model_steps_per_day)-1;t++){
+    for(t=0;t<(MAX_UH_DAYS * global_param.model_steps_per_day)-1;t++){
         *(current_cell->rout->outflow + t) = *(current_cell->rout->outflow + (t+1));
         *(current_cell->rout->outflow_natural + t) = *(current_cell->rout->outflow_natural + (t+1));
     }
@@ -67,17 +66,16 @@ void shift_outflow_array(RID_cell* current_cell){
  ******************************************************************************/
 
 void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturalized){
-    extern RID_struct RID;
     extern global_param_struct global_param;
     
     size_t t;
     
     if(!naturalized){
-        for(t=0;t<RID.param.max_days_uh * global_param.model_steps_per_day;t++){
+        for(t=0;t<MAX_UH_DAYS * global_param.model_steps_per_day;t++){
             cur_cell->rout->outflow[t] += cur_cell->rout->uh[t] * (inflow+runoff);
         }       
     }else{
-        for(t=0;t<RID.param.max_days_uh * global_param.model_steps_per_day;t++){
+        for(t=0;t<MAX_UH_DAYS * global_param.model_steps_per_day;t++){
             cur_cell->rout->outflow_natural[t] += cur_cell->rout->uh[t] * (inflow+runoff);
         }
     }

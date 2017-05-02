@@ -57,11 +57,11 @@ void default_module_options(void){
     RID.param.debug_path[0]=0;
     RID.param.dam_filename[0]=0;
     
-    RID.param.max_days_uh=DEF_UH_DAYS;
     RID.param.flow_velocity_uh=DEF_FLOW_VEL;
     RID.param.flow_diffusivity_uh=DEF_FLOW_DIF;
     
     RID.param.nr_crops=0;
+    RID.param.crop_ksat=DEF_CROP_KSAT;
     
     RID.param.fnaturalized_flow=false;
     RID.param.dam_irr_distance=DEF_IRR_DIST;
@@ -167,14 +167,14 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
                 sscanf(cmdstr, "%*s %s", RID.param.debug_path);
             }
             
-            if (strcasecmp("UH_MAX_DAYS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %zu", &RID.param.max_days_uh);
-            }
             if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &RID.param.flow_velocity_uh);
             }
             if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &RID.param.flow_diffusivity_uh);
+            }
+            if (strcasecmp("CROP_KSAT", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &RID.param.crop_ksat);
             }
             if (strcasecmp("DAM_IRR_DISTANCE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &RID.param.dam_irr_distance);
@@ -336,10 +336,6 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
         }
     }
     
-    if(RID.param.max_days_uh<1){
-        log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting UH_MAX_DAYS to %d",DEF_UH_DAYS); 
-            RID.param.max_days_uh=DEF_UH_DAYS;
-    }
     if(RID.param.flow_velocity_uh<=0){
         log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",DEF_FLOW_VEL); 
             RID.param.flow_velocity_uh=DEF_FLOW_VEL;
@@ -347,6 +343,10 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
     if(RID.param.flow_diffusivity_uh<=0){
         log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",DEF_FLOW_DIF); 
             RID.param.flow_diffusivity_uh=DEF_FLOW_DIF;
+    }
+    if(RID.param.crop_ksat<=0){
+        log_warn("CROP_KSAT was smaller than or equal to 0. Setting CROP_KSAT to %.1f",DEF_CROP_KSAT); 
+            RID.param.crop_ksat=DEF_CROP_KSAT;
     }
     if(RID.param.dam_irr_distance<=0){
         log_warn("DAM_IRR_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",DEF_IRR_DIST); 
@@ -368,7 +368,6 @@ void display_module_options(){
     
     fprintf(LOG_DEST, "Current Routing Settings\n");
 
-    fprintf(LOG_DEST, "UH_MAX_DAYS\t\t\t%zu\n",RID.param.max_days_uh);
     fprintf(LOG_DEST, "UH_FLOW_VELOCITY\t\t%.2f\n",RID.param.flow_velocity_uh);
     fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",RID.param.flow_diffusivity_uh);
     
@@ -385,6 +384,7 @@ void display_module_options(){
             fprintf(LOG_DEST, "%zu\t\t%hu\t\t%hu\n",
                     RID.param.crop_class[i]+1,RID.param.start_irr[i],RID.param.end_irr[i]);
         }
+        fprintf(LOG_DEST, "CROP_KSAT\t\t%.1f\n",RID.param.crop_ksat);
     }else{
         fprintf(LOG_DEST, "\nIRRIGATION\t\t\tFALSE\n");
     }

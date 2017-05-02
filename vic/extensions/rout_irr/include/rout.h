@@ -6,32 +6,35 @@
 
 #define VIC_RESOLUTION 0.5                  /**< scalar - VIC resolution (FIXME: currently not saved in VIC) */
 
-#define DEF_UH_DAYS 2                       /**< scalar - default maximum number of days an UH is allowed to discharge */
 #define DEF_FLOW_VEL 1.5                    /**< scalar - default flow velocity for UH calculation */
 #define DEF_FLOW_DIF 800.0                  /**< scalar - default flow diffusivity for UH calculation */
 #define DEF_IRR_DIST 5.0                    /**< scalar - default maximum distance from the dam cells can recieve service */
 #define DEF_CROP_DATE 1                     /**< scalar - default value for the crop growing julian date */
+#define DEF_CROP_KSAT 15.0                  /**< scalar - default value for saturated hydraulic conductivity of crop pond [mm/d] */
+
+#define MAX_UH_DAYS 2                       /**< scalar - maximum number of days an UH is allowed to discharge [days] */
+
+#define MIN_IRR_AREA 5                      /**< scalar - minimum irrigation fraction for irrigation cells identification [%] */
 
 #define MAX_POND_STORAGE 150                /**< scalar - maximum ponding storage [mm] */
 #define MIN_POND_FRAC 0.25                  /**< scalar - ponding fraction after which irrigation is needed [-] */
 #define AVAILABLE_IRR_FRAC 0.3              /**< scalar - fraction of local available water that can be used [-] */
-#define POND_KSAT 40                        /**< scalar - saturated hydraulic conductivity of ponds [mm/d] */
 
 #define DAM_NO_DATA -99                     /**< scalar - nodata value for the dam file */
 #define DAM_IRR_FUNCTION 1                  /**< scalar - value for the irrigation purpose of a dam */
 #define DAM_HYD_FUNCTION 2                  /**< scalar - value for the hydropower purpose of a dam */
 #define DAM_CON_FUNCTION 3                  /**< scalar - value for the flood control purpose of a dam */
 
-#define DAM_ENV_FLOW_HIGH 0.4               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
-#define DAM_ENV_FLOW_INT 0.3                /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_HIGH 0.6               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_INT 0.45               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
 #define DAM_ENV_FLOW_LOW 0.3                /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
 #define ENV_HIGH_FLOW_PERC 0.8              /**< scalar - percentage of mean annual inflow that is considered high (Pastor et al., 2014) */
 #define ENV_LOW_FLOW_PERC 0.4               /**< scalar - percentage of mean monthly inflow that is considered low (Pastor et al., 2014) */
 
 #define DAM_EXT_INF_DEFAULT 0.5             /**< scalar - flow variability factor for external influences (demand or monthly inflow) */
 #define DAM_EXT_INF_CHANGE 0.1              /**< scalar - change of external influence on flow variability factor */
-#define DAM_MIN_EXT_INF 0.1                 /**< scalar - minimum of external influence on flow variability factor */
-#define DAM_MAX_EXT_INF 0.9                 /**< scalar - maximum of external influence on flow variability factor */
+#define DAM_MIN_EXT_INF 0.05                 /**< scalar - minimum of external influence on flow variability factor */
+#define DAM_MAX_EXT_INF 0.95                 /**< scalar - maximum of external influence on flow variability factor */
 
 #define DAM_PREF_STORE 0.85                 /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2006) */
 #define DAM_HIST_YEARS 20                   /**< scalar - number of years that dams will use to calculate mean inflow and demand values */
@@ -45,7 +48,6 @@
 typedef struct rout_cells rout_cell;
 typedef struct irr_cells irr_cell;
 typedef struct dam_units dam_unit;
-//typedef struct serviced_cells serviced_cell;
 typedef struct RID_cells RID_cell;
 typedef struct RID_structs RID_struct;
 typedef struct RID_params RID_param;
@@ -60,7 +62,6 @@ struct RID_params{
     char debug_path[MAXSTRING];         /**< string - file path of debug files */
     
     //routing
-    size_t max_days_uh;                 /**< scalar - maximum number of days a unit hydrograph is allowed to produce discharge */
     double flow_velocity_uh;            /**< scalar - flow velocity of the unit hydrograph */
     double flow_diffusivity_uh;         /**< scalar - flow diffusivity of the unit hydrograph */
     
@@ -69,6 +70,7 @@ struct RID_params{
     size_t *crop_class;                 /**< 1d array [nr_crop_classes] - vegetation classes which are irrigated crops */
     unsigned short int *start_irr;      /**< 1d array [nr_crop_classes] - day of year when crop growth starts */
     unsigned short int *end_irr;        /**< 1d array [nr_crop_classes] - day of year when crop growth ends */
+    double crop_ksat;                   /**< scalar - saturated hydraulic conductivity of crop pond [mm/d] */
     
     //dams
     bool fnaturalized_flow;             /**< bool - TRUE = do both normal and naturalized routing FALSE = do not do double routing */
@@ -131,9 +133,10 @@ struct irr_cells {
     size_t *crop_index;                 /**< 1d array [nr_crops] - crop index of crops */    
     
     double *demand;                     /**< 1d array [nr_crops] - demand of crops [m3] */    
-    double *moisture;                   /**< 1d array [nr_crops] - moisture content of crops [mm] */    
-    double *deficit;                    /**< 1d array [nr_crops] - previous demand of crops [m3] */    
+    double *moisture;                   /**< 1d array [nr_crops] - moisture content of crops [mm] */   
     double *storage;                    /**< 1d array [nr_crops] - water storage of crops [mm] */ 
+    
+    double *deficit;                    /**< 1d array [nr_crops] - previous demand of crops [m3] */ 
     double *normal_Ksat;                /**< 1d array [nr_crops] - regular Ksat of crops [mm/d] */ 
     
     dam_unit *servicing_dam;            /**< pointer - pointer to servicing dam infromation */
@@ -223,7 +226,7 @@ void set_cell_upstream(void);
 void set_cell_rank(void);
 
 //Irrigation module
-void set_irr(void);
+void set_irr();
 void set_irr_crops(void); 
 
 //Dam module

@@ -98,10 +98,10 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
         
     for(i=0;i<cur_irr->nr_crops;i++){
         if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
-            set_crop_ksat(false,cur_irr,i);
+            //set_crop_ksat(false,cur_irr,i);
             irrigation_season[i]=false;
         }else{
-            set_crop_ksat(true,cur_irr,i);
+            //set_crop_ksat(true,cur_irr,i);
             irrigation_season[i]=true;
         }
     }
@@ -112,6 +112,8 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
         increase_moisture_content(cur_irr->cell->id,cur_irr->veg_index[i],&cur_irr->moisture[i],infiltration);
         
         out_data[cur_irr->cell->id][OUT_CROP_STORE][0]+=cur_irr->storage[i]/MAX_POND_STORAGE;
+        
+        cur_irr->demand[i]=0.0;
         
         if(!irrigation_season[i]){
             continue;
@@ -292,7 +294,7 @@ void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy){
             
             for(i=0;i<cur_dam->nr_serviced_cells;i++){
                 for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){   
-                    //cur_dam->serviced_cells[i]->demand[j]=cur_dam->serviced_cells[i]->deficit[j];
+                    cur_dam->serviced_cells[i]->deficit[j]=0.0;
                     get_demand_cells(&demand_cells,&demand_cell[i],cur_dam->serviced_cells[i]->demand[j]);
                 }
             }

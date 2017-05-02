@@ -77,10 +77,10 @@ void set_cell_uh(char variable_name[]){
     distance = malloc(global_domain.ncells_active * sizeof(*distance));
     check_alloc_status(distance,"Memory allocation error.");
     
-    uh_precise = malloc((RID.param.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_precise));
+    uh_precise = malloc((MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_precise));
     check_alloc_status(uh_precise,"Memory allocation error.");
     
-    uh_cumulative = malloc((RID.param.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative));
+    uh_cumulative = malloc((MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative));
     check_alloc_status(uh_cumulative,"Memory allocation error.");
     
     size_t start[]={0, 0};
@@ -96,7 +96,7 @@ void set_cell_uh(char variable_name[]){
         /*******************************
          Precise unit-hydrograph calculation, also saving sums (Lohmann et al. (1994) equation)
         *******************************/
-        for(j=0;j< RID.param.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+        for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
             time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP);
             uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * RID.param.flow_diffusivity_uh)))
                     * exp(-(pow(RID.param.flow_velocity_uh * time - distance[i],2)) / (4 * RID.param.flow_diffusivity_uh * time));
@@ -106,7 +106,7 @@ void set_cell_uh(char variable_name[]){
         /*******************************
          Normalizing unit hydro-graphs over extent
         *******************************/
-        for(j=0;j< RID.param.max_days_uh * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+        for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
             uh_precise[j] = uh_precise[j] / uh_sum;
             if(j>0){
                 uh_cumulative[j] = uh_cumulative [j-1] + uh_precise[j];
@@ -121,8 +121,8 @@ void set_cell_uh(char variable_name[]){
         /*******************************
          Aggregate unit hydro-graph over VIC time-step
         *******************************/
-        for(j=0;j< RID.param.max_days_uh * global_param.model_steps_per_day;j++){
-            if(j<(RID.param.max_days_uh * global_param.model_steps_per_day)- 1){
+        for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day;j++){
+            if(j<(MAX_UH_DAYS * global_param.model_steps_per_day)- 1){
                 RID.cells[i].rout->uh[j]=uh_cumulative[(j+1) * UH_STEPS_PER_TIMESTEP] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
             }else{
                 RID.cells[i].rout->uh[j]=uh_cumulative[((j+1) * UH_STEPS_PER_TIMESTEP)-1] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
@@ -203,6 +203,8 @@ void set_cell_downstream(char variable_name[]){
             if(x>=1 && y+1<global_domain.n_ny && RID.gridded_cells[x-1][y+1]!=NULL){
                 RID.gridded_cells[x][y]->rout->downstream=RID.gridded_cells[x-1][y+1]->rout;
             }
+        }else{
+            RID.gridded_cells[x][y]->rout->downstream=NULL;
         }
     }
     

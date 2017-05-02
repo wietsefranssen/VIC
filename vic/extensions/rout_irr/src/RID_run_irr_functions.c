@@ -6,16 +6,6 @@
 
 #include <rout.h>
 
-void set_crop_ksat(bool irr_season, irr_cell *cur_irr, size_t crop_index){
-    extern soil_con_struct *soil_con;
-        
-    if(irr_season){
-        soil_con[cur_irr->cell->id].Ksat[0]=POND_KSAT;
-    }else{
-        soil_con[cur_irr->cell->id].Ksat[0]=cur_irr->normal_Ksat[crop_index];
-    }
-}
-
 /******************************************************************************
  * @section brief
  *  
@@ -76,10 +66,7 @@ void get_storage_infiltration(size_t cell_id, double *storage, double *infiltrat
     extern soil_con_struct *soil_con;
     
     double infiltration_need;
-    double difference;
-    
-    difference = (soil_con[cell_id].Wcr[0]/0.7) + (soil_con[cell_id].max_moist[0]-(soil_con[cell_id].Wcr[0]/0.7))*0.5;
-    infiltration_need = difference - moisture_content;
+    infiltration_need = soil_con[cell_id].max_moist[0] - moisture_content;
     
     if(infiltration_need>0){
         if(*storage>infiltration_need){

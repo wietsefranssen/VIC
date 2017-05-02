@@ -9,7 +9,7 @@
 /******************************************************************************
  * @section brief
  *  
- * Set irr_cells based on the number of cells with crops
+ * Set irr_cells based on the number of cells with crops and the irrigated area
  ******************************************************************************/
 
 void set_irr(){
@@ -19,17 +19,21 @@ void set_irr(){
     
     size_t i;
     size_t j;
-    size_t iIrr;
+    size_t iIrr;  
     
     /*******************************
      Find number of irrigated cells
     *******************************/
     for(i=0;i<global_domain.ncells_active;i++){
+                
         for(j=0;j<RID.param.nr_crops;j++){
-            if(veg_con_map[i].vidx[RID.param.crop_class[j]]!=NODATA_VEG){
-                RID.nr_irr_cells++;
-                break;
+            
+            if(veg_con_map[i].vidx[RID.param.crop_class[j]]==NODATA_VEG){
+                continue;
             }
+
+            RID.nr_irr_cells++;
+            break;
         }
     }
         
@@ -41,13 +45,17 @@ void set_irr(){
     *******************************/
     iIrr=0;
     for(i=0;i<global_domain.ncells_active;i++){
+        
         for(j=0;j<RID.param.nr_crops;j++){
-            if(veg_con_map[i].vidx[RID.param.crop_class[j]]!=NODATA_VEG){
-                RID.cells[i].irr=&RID.irr_cells[iIrr];
-                RID.irr_cells[iIrr].cell=&RID.cells[i];
-                iIrr++;
-                break;
+            
+            if(veg_con_map[i].vidx[RID.param.crop_class[j]]==NODATA_VEG){
+                continue;
             }
+
+            RID.cells[i].irr=&RID.irr_cells[iIrr];
+            RID.irr_cells[iIrr].cell=&RID.cells[i];
+            iIrr++;
+            break;
         }
     }
 }
@@ -116,6 +124,7 @@ void set_irr_crops(){
             RID.irr_cells[i].deficit[j]=0;
             RID.irr_cells[i].storage[j]=0;
             RID.irr_cells[i].normal_Ksat[j]=soil_con[RID.irr_cells[i].cell->id].Ksat[0];
+            soil_con[RID.irr_cells[i].cell->id].Ksat[0] = RID.param.crop_ksat;
         }
         
         RID.irr_cells[i].servicing_dam=NULL;

@@ -15,17 +15,17 @@
 
 void set_dam_irr_service(){
     extern RID_struct RID;
-    extern soil_con_struct *soil_con;
     extern domain_struct local_domain;
     extern veg_con_struct **veg_con;
         
-    dam_unit *assigned_dams[RID.nr_irr_cells];
+    RID_cell *cur_cell;
+    dam_unit *assigned_dams[local_domain.ncells_active];
     
     size_t i;
     size_t j;
     size_t k;
 
-    for(j=0;j<RID.nr_irr_cells;j++){
+    for(j=0;j<local_domain.ncells_active;j++){
         assigned_dams[j]=NULL;
     }
             
@@ -36,27 +36,25 @@ void set_dam_irr_service(){
         if(RID.dams[i].function!=DAM_IRR_FUNCTION){
             continue;
         }          
-        for(j=0;j<RID.nr_irr_cells;j++){
-            if(assigned_dams[j]!=NULL){
+        
+        cur_cell = RID.dams[i].cell;
+        
+        for(j=0;j<RID.param.dam_irr_distance;j++){  
+            if(cur_cell->irr==NULL){
                 continue;
             }
             
-            if(soil_con[RID.irr_cells[j].cell->id].elevation >= soil_con[RID.dams[i].cell->id].elevation){
-                continue;
-            }
-
-            if(distance(RID.irr_cells[j].cell->x,RID.irr_cells[j].cell->y,
-                    RID.dams[i].cell->x,RID.dams[i].cell->y)
-                    >RID.param.dam_irr_distance){
+            if(assigned_dams[cur_cell->id]!=NULL){
                 continue;
             }
             
-            assigned_dams[j]=&RID.dams[i];
-            
-            for(k=0;k<RID.irr_cells[j].nr_crops;k++){
-                RID.dams[i].irrigated_area += local_domain.locations[RID.irr_cells[j].cell->id].area * 
-                        veg_con[RID.irr_cells[j].cell->id][RID.irr_cells[j].veg_index[k]].Cv;
+            for(k=0;k<cur_cell->irr->nr_crops;k++){
+                RID.dams[i].irrigated_area += local_domain.locations[cur_cell->id].area * 
+                        veg_con[cur_cell->id][cur_cell->irr->veg_index[k]].Cv;
             }
+            
+            assigned_dams[cur_cell->id]=&RID.dams[i];            
+            cur_cell = cur_cell->rout->downstream->cell;
         }
     }
     
@@ -66,36 +64,34 @@ void set_dam_irr_service(){
     for(i=0;i<RID.nr_dams;i++){        
         if(RID.dams[i].function!=DAM_IRR_FUNCTION){
             continue;
-        }
+        }  
         
-        for(j=0;j<RID.nr_irr_cells;j++){            
-            if(assigned_dams[j]==&RID.dams[i] || assigned_dams[j]==NULL){
+        cur_cell = RID.dams[i].cell->rout->downstream->cell;
+        
+        for(j=0;j<RID.param.dam_irr_distance;j++){  
+            if(cur_cell==NULL){
                 continue;
             }
             
-            if(soil_con[RID.irr_cells[j].cell->id].elevation >= soil_con[RID.dams[i].cell->id].elevation){
-                continue;
-            }
-
-            if(distance(RID.irr_cells[j].cell->x,RID.irr_cells[j].cell->y,
-                    RID.dams[i].cell->x,RID.dams[i].cell->y)
-                    >RID.param.dam_irr_distance){
+            if(assigned_dams[cur_cell->id]==&RID.dams[i] || assigned_dams[cur_cell->id]==NULL){
                 continue;
             }
             
-            if((assigned_dams[j]->capacity/assigned_dams[j]->irrigated_area) >
+            if((assigned_dams[cur_cell->id]->capacity/assigned_dams[cur_cell->id]->irrigated_area) >
                     (RID.dams[i].capacity/RID.dams[i].irrigated_area)){
                 continue;
             }
             
-            for(k=0;k<RID.irr_cells[j].nr_crops;k++){
-                assigned_dams[j]->irrigated_area -= local_domain.locations[RID.irr_cells[j].cell->id].area * 
-                        veg_con[RID.irr_cells[j].cell->id][RID.irr_cells[j].veg_index[k]].Cv;
-                RID.dams[i].irrigated_area += local_domain.locations[RID.irr_cells[j].cell->id].area * 
-                        veg_con[RID.irr_cells[j].cell->id][RID.irr_cells[j].veg_index[k]].Cv;
+            for(k=0;k<cur_cell->irr->nr_crops;k++){
+                assigned_dams[cur_cell->id]->irrigated_area -= local_domain.locations[cur_cell->id].area * 
+                        veg_con[cur_cell->id][cur_cell->irr->veg_index[k]].Cv;
+                RID.dams[i].irrigated_area += local_domain.locations[cur_cell->id].area * 
+                        veg_con[cur_cell->id][cur_cell->irr->veg_index[k]].Cv;
             }
             
-            assigned_dams[j]=&RID.dams[i];
+            assigned_dams[cur_cell->id]=&RID.dams[i];
+            
+            cur_cell = cur_cell->rout->downstream->cell;
         }
     }
     
@@ -104,7 +100,7 @@ void set_dam_irr_service(){
             continue;
         }          
         
-        for(j=0;j<RID.nr_irr_cells;j++){
+        for(j=0;j<local_domain.ncells_active;j++){
             if(assigned_dams[j]!=&RID.dams[i]){
                 continue;
             }
@@ -119,13 +115,13 @@ void set_dam_irr_service(){
          Assign serviced cells
         *******************************/ 
         k=0;
-        for(j=0;j<RID.nr_irr_cells;j++){
+        for(j=0;j<local_domain.ncells_active;j++){
             if(assigned_dams[j]!=&RID.dams[i]){
                 continue;
             }
             
-            RID.dams[i].serviced_cells[k]=&RID.irr_cells[j];
-            RID.irr_cells[j].servicing_dam=&RID.dams[i];
+            RID.dams[i].serviced_cells[k]=RID.cells[j].irr;
+            RID.cells[j].irr->servicing_dam=&RID.dams[i];
             k++;
         }
     }
