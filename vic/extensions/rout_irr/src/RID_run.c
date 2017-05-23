@@ -107,8 +107,6 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     available_water = cur_irr->cell->rout->outflow[0] * global_param.dt * AVAILABLE_IRR_FRAC;
     
     out_data[cur_irr->cell->id][OUT_CROP_STORE][0] = cur_irr->storage[0]; 
-    out_data[cur_irr->cell->id][OUT_AV_WATER][0] = available_water / M3_PER_HM3;
-    out_data[cur_irr->cell->id][OUT_MC_CROP][0]+=cur_irr->moisture[0];
       
     for(i=0;i<cur_irr->nr_crops;i++){
         if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){  
@@ -127,7 +125,6 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
         demand_cell += cur_irr->demand[i];         
     }
     
-    out_data[cur_irr->cell->id][OUT_DEMAND_INCR][0] = (cur_irr->demand[0] - cur_irr->deficit[0]) / M3_PER_HM3;
     out_data[cur_irr->cell->id][OUT_DEMAND][0] = demand_cell / M3_PER_HM3;
     
     cur_irr->cell->rout->outflow[0] -= available_water / global_param.dt;    

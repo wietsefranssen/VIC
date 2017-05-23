@@ -115,8 +115,8 @@ struct rout_cells {
     rout_cell *downstream;              /**< pointer - pointer to downstream routing cell */
     
     double *uh;                         /**< 1d array [max_days_uh * model_steps_per_day] - value of UH at each timestep */
-    double *outflow;                    /**< 1d array [max_days_uh * model_steps_per_day] - value of the outflow at each timestep [m3/s] */
-    double *outflow_natural;            /**< 1d array [max_days_uh * model_steps_per_day] - value of the natural outflow at each timestep [m3/s] */
+    double *outflow;                    /**< 1d array [max_days_uh * model_steps_per_day] - value of the outflow at each timestep [m3/TS] */
+    double *outflow_natural;            /**< 1d array [max_days_uh * model_steps_per_day] - value of the natural outflow at each timestep [m3/TS] */
 };
 
 struct irr_cells {
@@ -161,7 +161,7 @@ struct dam_units{
     double release;                     /**< scalar - this months release [m3/d] */
     double monthly_release[MONTHS_PER_YEAR];                /**< 1d array [MONTHS_PER_YEAR] - release per month [m3/d] */
     double environmental_release;       /**< scalar - this months environmental release [m3/d] */
-    double monthly_environmental_release[MONTHS_PER_YEAR];  /**< scalar - environmental release per month [m3/d] */
+    double monthly_environmental_release[MONTHS_PER_YEAR];  /**< 1d array [MONTHS_PER_YEAR] - environmental release per month [m3/d] */
     double previous_release;            /**< scalar - outflow to be released next timestep [m3/d] */
     
     size_t nr_serviced_cells;           /**< scalar - number of serviced cells */

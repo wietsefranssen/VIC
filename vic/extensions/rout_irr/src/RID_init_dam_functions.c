@@ -286,28 +286,11 @@ void set_dam_information(){
 void set_dam_natural_routing(){
     extern RID_struct RID;
     
-    size_t i;
-    RID_cell* current_cell;
-    
     if(!RID.param.fenv_flow){
+        RID.param.fnaturalized_flow=false;
         return;
     }
     
-    for(i=0;i<RID.nr_dams;i++){
-        current_cell = RID.dams[i].cell;
-        
-        while(current_cell->rout->downstream!=NULL && current_cell->rout->downstream->cell!=current_cell){
-            current_cell = current_cell->rout->downstream->cell;
-            if(current_cell->dam!=NULL){
-                log_info("Dams are found in series and therefore routing is done twice. "
-                        "Second routing calculates natural stream flow "
-                        "which is needed for environmental flow calculation");
-                RID.param.fnaturalized_flow=true;
-                break;
-            }
-        }
-        if(RID.param.fnaturalized_flow){
-            break;
-        }
-    }
+    RID.param.fnaturalized_flow=true;
+    return;    
 }

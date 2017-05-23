@@ -12,7 +12,6 @@
  * Combine dams with irrigated areas to facilitate redistribution of dam water
  * to irrigated areas.
  ******************************************************************************/
-
 void set_dam_irr_service(){
     extern RID_struct RID;
     extern domain_struct local_domain;

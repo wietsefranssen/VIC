@@ -14,7 +14,6 @@
  *  
  * Set and display options for the routing, irrigation and dam module
  ******************************************************************************/
-
 void RID_start(void){
         
     size_t nr_crops;
@@ -41,7 +40,6 @@ void RID_start(void){
  * Set options for the routing, irrigation and dam module to their default 
  * value
  ******************************************************************************/
-
 void default_module_options(void){
     extern global_param_struct global_param;
     extern RID_struct RID;
@@ -74,7 +72,6 @@ void default_module_options(void){
  * Get options for the routing, irrigation and dam module from the global
  * parameter file
  ******************************************************************************/
-
 void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
     extern RID_struct RID;
     extern option_struct options;
@@ -199,8 +196,7 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
  *  
  * Check options for the routing, irrigation and dam module from the global
  * parameter file
- ******************************************************************************/
-               
+ ******************************************************************************/               
 void check_module_options(size_t nr_crops, size_t **crop_info){
     extern RID_struct RID;
     extern option_struct options;
@@ -365,7 +361,6 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
  * Display options for the routing, irrigation and dam module from the global
  * parameter file
  ******************************************************************************/
-
 void display_module_options(){
     extern RID_struct RID;
     
