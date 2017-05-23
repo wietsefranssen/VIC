@@ -30,6 +30,10 @@ void RID_run(dmy_struct* cur_dmy){
         
         if(cur_cell->irr!=NULL){
             do_irrigation_module(cur_cell->irr,cur_dmy);
+            
+            if(cur_cell->irr->servicing_dam!=NULL){
+                do_dam_demand(cur_cell->irr);
+            }
         }
         
         if(cur_cell->dam!=NULL){
@@ -38,7 +42,7 @@ void RID_run(dmy_struct* cur_dmy){
         
         out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
         out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0]; 
-        out_data[cur_cell->id][OUT_IRR][0]=out_data[cur_cell->id][OUT_DAM_IRR][0]+out_data[cur_cell->id][OUT_LOCAL_IRR][0]; 
+        out_data[cur_cell->id][OUT_IRR][0]=+out_data[cur_cell->id][OUT_LOCAL_IRR][0]; 
     }
     
     for(i=0;i<RID.nr_dams;i++){
@@ -80,10 +84,9 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     extern global_param_struct global_param;
     extern double ***out_data;
     
-    bool irrigation_season [cur_irr->nr_crops];
+    bool run [cur_irr->nr_crops];
     double infiltration;                                      //mm
     double demand_cell;                                       //m3
-    double demand_increase_cell;                              //m3
     double irrigation_crop[cur_irr->nr_crops];                //m3 (per crop)
     double irrigation_cell;                                   //m3
     double available_water;                                   //m3
@@ -91,87 +94,86 @@ void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy){
     
     demand_cell=0;
     irrigation_cell=0;  
-    demand_increase_cell=0;
     for(i=0;i<cur_irr->nr_crops;i++){
-        irrigation_crop[i]=0;
+        irrigation_crop[i]=0;  
     }
         
     for(i=0;i<cur_irr->nr_crops;i++){
-        if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){
-            //set_crop_ksat(false,cur_irr,i);
-            irrigation_season[i]=false;
-        }else{
-            //set_crop_ksat(true,cur_irr,i);
-            irrigation_season[i]=true;
-        }
-    }
-        
-    for(i=0;i<cur_irr->nr_crops;i++){
+        run[i]=true;
         get_moisture_content(cur_irr->cell->id,cur_irr->veg_index[i],&cur_irr->moisture[i]);
         get_storage_infiltration(cur_irr->cell->id,&cur_irr->storage[i],&infiltration,cur_irr->moisture[i]);
-        increase_moisture_content(cur_irr->cell->id,cur_irr->veg_index[i],&cur_irr->moisture[i],infiltration);
-        
-        out_data[cur_irr->cell->id][OUT_CROP_STORE][0]+=cur_irr->storage[i]/MAX_POND_STORAGE;
-        
-        cur_irr->demand[i]=0.0;
-        
-        if(!irrigation_season[i]){
-            continue;
-        }        
-                
-        get_demand(cur_irr,cur_irr->veg_index[i],&cur_irr->demand[i],cur_irr->storage[i]);
-        demand_cell += cur_irr->demand[i];
-        
-        demand_increase_cell += cur_irr->demand[i] - cur_irr->deficit[i];
-        if(demand_increase_cell <0){
-            demand_increase_cell=0;
-        }
-            
-        out_data[cur_irr->cell->id][OUT_MC_CROP][0]+=cur_irr->moisture[i];
-    }
-    
-    out_data[cur_irr->cell->id][OUT_DEMAND_INCR][0] = demand_increase_cell / M3_PER_HM3;
-    out_data[cur_irr->cell->id][OUT_DEMAND][0] = demand_cell / M3_PER_HM3;
-    
+        increase_moisture_content(cur_irr->cell->id,cur_irr->veg_index[i],&cur_irr->moisture[i],infiltration); 
+    }    
     available_water = cur_irr->cell->rout->outflow[0] * global_param.dt * AVAILABLE_IRR_FRAC;
     
+    out_data[cur_irr->cell->id][OUT_CROP_STORE][0] = cur_irr->storage[0]; 
     out_data[cur_irr->cell->id][OUT_AV_WATER][0] = available_water / M3_PER_HM3;
+    out_data[cur_irr->cell->id][OUT_MC_CROP][0]+=cur_irr->moisture[0];
+      
+    for(i=0;i<cur_irr->nr_crops;i++){
+        if(!in_irrigation_season(cur_irr->crop_index[i],cur_dmy->day_in_year)){  
+            run[i]=false;    
+            cur_irr->demand[i]=0.0;
+            cur_irr->deficit[i]=0.0;
+        }   
+    }
+        
+    for(i=0;i<cur_irr->nr_crops;i++){
+        if(!run[i]){
+            continue;
+        }        
+        
+        get_demand(cur_irr,cur_irr->veg_index[i],&cur_irr->demand[i],cur_irr->storage[i]);
+        demand_cell += cur_irr->demand[i];         
+    }
     
+    out_data[cur_irr->cell->id][OUT_DEMAND_INCR][0] = (cur_irr->demand[0] - cur_irr->deficit[0]) / M3_PER_HM3;
+    out_data[cur_irr->cell->id][OUT_DEMAND][0] = demand_cell / M3_PER_HM3;
+    
+    cur_irr->cell->rout->outflow[0] -= available_water / global_param.dt;    
     if(available_water>1 && demand_cell>1){
         for(i=0;i<cur_irr->nr_crops;i++){
-            if(!irrigation_season[i]){
+            if(!run[i]){
                 continue;
             }
-
+            
             get_irrigation(&irrigation_crop[i],demand_cell,cur_irr->demand[i],available_water);       
             increase_storage_content(cur_irr->cell->id,cur_irr->veg_index[i], &cur_irr->storage[i], irrigation_crop[i]);
             irrigation_cell += irrigation_crop[i];
         }
         
-        for(i=0;i<cur_irr->nr_crops;i++){
-            if(!irrigation_season[i]){
+        for(i=0;i<cur_irr->nr_crops;i++){  
+            if(!run[i]){
                 continue;
-            }
+            }          
             
             cur_irr->demand[i] -= irrigation_crop[i];
             available_water -= irrigation_crop[i];
         }
-    }
+    }    
+    cur_irr->cell->rout->outflow[0] += available_water / global_param.dt;
     
+    out_data[cur_irr->cell->id][OUT_LOCAL_IRR][0]=irrigation_cell / M3_PER_HM3;    
+    
+    for(i=0;i<cur_irr->nr_crops;i++){    
+        if(!run[i]){
+            continue;
+        }              
+        set_deficit(&cur_irr->deficit[i],&cur_irr->demand[i]);
+    }    
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Irrigation demand of cells is stored in the dams history
+ ******************************************************************************/
+void do_dam_demand(irr_cell *cur_irr){    
+    size_t i;
     
     for(i=0;i<cur_irr->nr_crops;i++){
-        if(!irrigation_season[i]){
-            continue;
-        }
-        
-        set_deficit(&cur_irr->deficit[i],&cur_irr->demand[i]);
+        cur_irr->servicing_dam->total_demand += cur_irr->deficit[i];               
     }
-    
-    cur_irr->cell->rout->outflow[0] = cur_irr->cell->rout->outflow[0] * (1-AVAILABLE_IRR_FRAC) +
-            available_water / global_param.dt;
-    
-    out_data[cur_irr->cell->id][OUT_LOCAL_IRR][0]=irrigation_cell / M3_PER_HM3;
-    
 }
 
 /******************************************************************************
@@ -205,25 +207,36 @@ void do_dam_flow(dam_unit *cur_dam){
 
 void do_dam_history_module(dam_unit *cur_dam, dmy_struct *cur_dmy){
     extern global_param_struct global_param;
+                
+    double monthly_inflow[MONTHS_PER_YEAR];
+    double monthly_inflow_natural[MONTHS_PER_YEAR];
+    double monthly_demand[MONTHS_PER_YEAR];
+    double annual_inflow;
+    double annual_inflow_natural;
+    double annual_demand;
     
-    /*******************************
-     Operational day has passed
-    *******************************/
-    update_dam_history_day(cur_dam);
-    
-    if(cur_dmy->dayseconds==0 && cur_dmy->day==cur_dam->start_operation.day){  
-        /*******************************
-         Operational month has passed
-        *******************************/
-        update_dam_history_month(cur_dam,cur_dmy);
-        calculate_target_release(cur_dam);
-
-        if(cur_dmy->month == cur_dam->start_operation.month && cur_dmy->year > global_param.startyear){
+    if(cur_dmy->dayseconds==0){        
+        if(cur_dmy->day==cur_dam->start_operation.day){  
             /*******************************
-             Operational year has passed
+             Operational month has passed
             *******************************/
-            update_dam_history_year(cur_dam,cur_dmy);
-            calculate_operational_year(cur_dam, cur_dmy);
+            
+            update_dam_history(cur_dam,cur_dmy);
+
+            if(cur_dmy->month == cur_dam->start_operation.month && cur_dmy->year > global_param.startyear){
+                /*******************************
+                 Operational year has passed
+                *******************************/
+                
+                get_multi_year_average(cur_dam, cur_dmy,
+                        monthly_inflow,monthly_inflow_natural,monthly_demand,
+                        &annual_inflow,&annual_inflow_natural,&annual_demand);
+                calculate_dam_release(cur_dam,cur_dmy,
+                        monthly_inflow,monthly_inflow_natural,
+                        annual_inflow,annual_inflow_natural);
+                calculate_operational_year(cur_dam, cur_dmy,
+                        monthly_inflow, annual_inflow);
+            }
         }
     }
 }
@@ -323,6 +336,7 @@ void do_dam_module(dam_unit *cur_dam, dmy_struct *cur_dmy){
             
             for(i=0;i<cur_dam->nr_serviced_cells;i++){
                 out_data[cur_dam->serviced_cells[i]->cell->id][OUT_DAM_IRR][0]=irrigation_cell[i]/M3_PER_HM3;
+                out_data[cur_dam->serviced_cells[i]->cell->id][OUT_IRR][0]=+out_data[cur_dam->serviced_cells[i]->cell->id][OUT_DAM_IRR][0]; 
                 
                 for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){                    
                     set_deficit(&cur_dam->serviced_cells[i]->deficit[j],&cur_dam->serviced_cells[i]->demand[j]);

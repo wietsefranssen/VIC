@@ -62,6 +62,12 @@ void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_con
     }
 }
 
+/******************************************************************************
+ * @section brief
+ *  
+ * Get the infiltration to saturate the upper layer from water storage, reduce
+ * storage with the infiltration
+ ******************************************************************************/
 void get_storage_infiltration(size_t cell_id, double *storage, double *infiltration, double moisture_content){
     extern soil_con_struct *soil_con;
     
@@ -96,10 +102,6 @@ void get_demand(irr_cell *cur_irr, size_t veg_index, double *demand, double stor
                 / MM_PER_M * (local_domain.locations[cur_irr->cell->id].area * 
                 veg_con[cur_irr->cell->id][veg_index].Cv);
     }
-    if(*demand<0){
-        *demand=0;
-    }
-    
     if(*demand<0){
         log_err("Negative demand?");
     }
@@ -154,6 +156,11 @@ void increase_moisture_content(size_t cell_id, size_t veg_index, double *moistur
     }
 }
 
+/******************************************************************************
+ * @section brief
+ *  
+ * Increase water storage of a field (increase in m3)
+ ******************************************************************************/
 void increase_storage_content(size_t cell_id, size_t veg_index, double *storage, double increase){
     extern domain_struct local_domain;
     extern veg_con_struct **veg_con;

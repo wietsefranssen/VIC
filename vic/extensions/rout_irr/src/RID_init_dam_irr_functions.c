@@ -122,6 +122,7 @@ void set_dam_irr_service(){
             
             RID.dams[i].serviced_cells[k]=RID.cells[j].irr;
             RID.cells[j].irr->servicing_dam=&RID.dams[i];
+            RID.cells[j].irr->servicing_dam_index = k;
             k++;
         }
     }

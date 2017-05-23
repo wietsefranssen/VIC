@@ -155,6 +155,8 @@ enum
     OUT_DISCHARGE,        /**< river discharge [m3 s-1] */
     OUT_MC_CROP,          /**< crop moisture content [mm] */
     OUT_CROP_STORE,       /**< crop pond storage [mm] */
+    OUT_CROP_EVAP,        /**< crop evaporation [mm] */
+    OUT_CROP_TRANS,       /**< crop transpiration [mm] */
     OUT_AV_WATER,         /**< water available for irrigation [m3] */
     
     // Water Balance Terms - fluxes

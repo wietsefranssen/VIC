@@ -9,34 +9,12 @@
 /******************************************************************************
  * @section brief
  *  
- * Update the inflow history of a dam.
- ******************************************************************************/
-void update_dam_history_day(dam_unit* cur_dam){    
-    size_t i;
-    size_t j;
-        
-    if(cur_dam->function == DAM_IRR_FUNCTION){
-        for(i=0;i<cur_dam->nr_serviced_cells;i++){
-            
-            for(j=0;j<cur_dam->serviced_cells[i]->nr_crops;j++){
-                cur_dam->total_demand += cur_dam->serviced_cells[i]->deficit[j];               
-            }
-        }
-    }
-}
-
-/******************************************************************************
- * @section brief
- *  
  * Update the inflow and demand history of a dam. Recalculate multi-year monthly
  * average inflow, natural inflow and demand.
  ******************************************************************************/
-void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy){
-    extern RID_struct RID;
+void update_dam_history(dam_unit* cur_dam, dmy_struct* cur_dmy){
     extern global_param_struct global_param;
     
-    size_t i;
-    size_t years_passed;
     int month_nr;
     int year_nr;
     int prev_month;
@@ -48,128 +26,16 @@ void update_dam_history_month(dam_unit* cur_dam, dmy_struct* cur_dmy){
         prev_month += DAM_HIST_YEARS * MONTHS_PER_YEAR;
     }
     
-    cur_dam->inflow[prev_month] = cur_dam->total_inflow / global_param.model_steps_per_day / nr_days_in_month(cur_dmy->month-1,cur_dmy->year);
-    cur_dam->demand[prev_month] = cur_dam->total_demand / global_param.model_steps_per_day / nr_days_in_month(cur_dmy->month-1,cur_dmy->year);
-    cur_dam->inflow_natural[prev_month] = cur_dam->total_inflow_natural / global_param.model_steps_per_day / nr_days_in_month(cur_dmy->month-1,cur_dmy->year);
+    cur_dam->history_inflow[prev_month] = cur_dam->total_inflow / nr_days_in_month(cur_dmy->month-1,cur_dmy->year);
+    cur_dam->history_demand[prev_month] = cur_dam->total_demand / nr_days_in_month(cur_dmy->month-1,cur_dmy->year);
+    cur_dam->history_inflow_natural[prev_month] = cur_dam->total_inflow_natural / nr_days_in_month(cur_dmy->month-1,cur_dmy->year);
 
     cur_dam->total_inflow=0.0;
     cur_dam->total_inflow_natural=0.0;
     cur_dam->total_demand=0.0;
     
-    years_passed = cur_dmy->year - global_param.startyear;
-    if(years_passed>DAM_HIST_YEARS){
-        years_passed=DAM_HIST_YEARS;
-    }
-    
-    cur_dam->monthly_demand = 0;
-    cur_dam->monthly_inflow = 0;
-    cur_dam->monthly_inflow_natural = 0;
-    for(i=0;i<years_passed;i++){
-        cur_dam->monthly_demand += cur_dam->demand[i * MONTHS_PER_YEAR + month_nr]/years_passed;
-        cur_dam->monthly_inflow += cur_dam->inflow[i * MONTHS_PER_YEAR + month_nr]/years_passed;
-        cur_dam->monthly_inflow_natural += cur_dam->inflow_natural[i * MONTHS_PER_YEAR + month_nr]/years_passed;  
-    }
-
-    if(!RID.param.fnaturalized_flow){
-        cur_dam->monthly_inflow_natural=cur_dam->monthly_inflow;
-        cur_dam->annual_inflow_natural=cur_dam->annual_inflow;
-    }    
-}
-
-/******************************************************************************
- * @section brief
- *  
- * Calculate target release based on operation schemes for hydropower,
- * irrigation and flood control dams
- ******************************************************************************/
-void calculate_target_release(dam_unit* cur_dam){
-    double release_coefficient;
-    double target_release;
-    double environmental_release;
-    double main_release;
-    double external_release;
-    
-    if(cur_dam->annual_inflow==0){
-        cur_dam->release=0;
-        return;
-    }
-    
-    release_coefficient = (double)cur_dam->storage_start_operation / (DAM_PREF_STORE * (double)cur_dam->capacity);
-    
-    if(cur_dam->monthly_inflow_natural > ENV_HIGH_FLOW_PERC * cur_dam->annual_inflow_natural){
-        environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_LOW;
-    }else if(cur_dam->monthly_inflow_natural > ENV_LOW_FLOW_PERC * cur_dam->annual_inflow_natural){
-        environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_INT;
-    }else{
-        environmental_release = cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH;
-    }
-    
-    main_release = (cur_dam->annual_inflow - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH) * 
-            (1-cur_dam->ext_influence_factor);
-    
-    if(cur_dam->annual_inflow>0){
-        external_release = (cur_dam->annual_inflow - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH) * 
-                cur_dam->ext_influence_factor * (cur_dam->monthly_inflow/cur_dam->annual_inflow);
-    }else{
-        external_release = (cur_dam->annual_inflow - cur_dam->monthly_inflow_natural * DAM_ENV_FLOW_HIGH) * 
-                cur_dam->ext_influence_factor;
-    }
-    
-    if(main_release<0){
-        main_release=0;
-    }
-    if(external_release<0){
-        external_release=0;
-    }
-    
-    switch(cur_dam->function){
-        case DAM_IRR_FUNCTION:
-            if(cur_dam->annual_demand>0){
-                target_release = environmental_release + (main_release + external_release) * 
-                        (cur_dam->monthly_demand/cur_dam->annual_demand);
-            }else{
-                target_release = environmental_release + main_release + external_release;
-            }      
-            break;
-            
-        case DAM_CON_FUNCTION:
-            target_release = environmental_release + main_release + external_release;                     
-            break;
-            
-        case DAM_HYD_FUNCTION:
-            target_release = environmental_release + main_release + external_release;            
-            break;        
-        
-        default:
-            log_err("Dam found with unknown function");
-            break;
-    }
-          
-    cur_dam->release = target_release * release_coefficient;
-    cur_dam->environmental_release = environmental_release * release_coefficient;
-    
-    if(cur_dam->release<0){
-        log_err("target release is negative?");
-    }
-    
-    if(cur_dam->environmental_release<0){
-        log_err("environmental target release is negative?");
-    }
-    
-    debug("\n\ntarget_release %.1f;\n"
-            "inflow %.1f; annual_inflow %.1f;\n"
-            "inflow_natural %.1f; annual_inflow_natural %.1f;\n"
-            "demand %.1f; annual_demand %.1f;\n"
-            "function %zu\n"
-            "extreme_stor %zu; influence %.2f\n"
-            "release_coefficient %.1f",
-            cur_dam->release/10000,
-            cur_dam->monthly_inflow/10000, cur_dam->annual_inflow/10000, 
-            cur_dam->monthly_inflow_natural/10000, cur_dam->annual_inflow_natural/10000, 
-            cur_dam->monthly_demand/10000, cur_dam->annual_demand/10000, 
-            cur_dam->function,
-            cur_dam->extreme_stor, cur_dam->ext_influence_factor,
-            release_coefficient); 
+    cur_dam->release = cur_dam->monthly_release[month_nr] / global_param.model_steps_per_day;
+    cur_dam->environmental_release = cur_dam->monthly_environmental_release[month_nr] / global_param.model_steps_per_day;
 }
 
 
@@ -179,46 +45,191 @@ void calculate_target_release(dam_unit* cur_dam){
  * Update the inflow and demand history of a dam. Recalculate multi-year annual
  * average inflow, natural inflow and demand. Recalculate flow variability
  ******************************************************************************/
-void update_dam_history_year(dam_unit* cur_dam, dmy_struct* cur_dmy){
+void get_multi_year_average(dam_unit* cur_dam, dmy_struct* cur_dmy,
+                        double monthly_inflow[], double monthly_inflow_natural[], 
+                        double monthly_demand[], double *annual_inflow, 
+                        double *annual_inflow_natural, double *annual_demand){
     extern global_param_struct global_param;
-    extern RID_struct RID;
     
     size_t i;
     size_t j;
     size_t years_passed;
-        
+    
+    for(j=0;j<MONTHS_PER_YEAR;j++){
+        monthly_inflow[j] = 0;
+        monthly_inflow_natural[j] = 0;
+        monthly_demand[j] = 0;
+    }
+    *annual_inflow=0;
+    *annual_inflow_natural=0;
+    *annual_demand=0;
+    
     years_passed = cur_dmy->year - global_param.startyear;
     if(years_passed>DAM_HIST_YEARS){
         years_passed=DAM_HIST_YEARS;
     }
     
-    cur_dam->annual_inflow=0;
-    cur_dam->annual_inflow_natural=0;
-    cur_dam->annual_demand=0;
     for(i=0;i<years_passed;i++){
         for(j=0;j<MONTHS_PER_YEAR;j++){
-            cur_dam->annual_inflow += cur_dam->inflow[i * MONTHS_PER_YEAR + j]/ (years_passed * MONTHS_PER_YEAR);
-            cur_dam->annual_inflow_natural += cur_dam->inflow_natural[i * MONTHS_PER_YEAR + j]/ (years_passed * MONTHS_PER_YEAR);
-            cur_dam->annual_demand += cur_dam->demand[i * MONTHS_PER_YEAR + j]/ (years_passed * MONTHS_PER_YEAR);
+            monthly_inflow[j] += cur_dam->history_inflow[i * MONTHS_PER_YEAR + j]/years_passed;
+            monthly_inflow_natural[j] += cur_dam->history_inflow_natural[i * MONTHS_PER_YEAR + j]/years_passed;
+            monthly_demand[j] += cur_dam->history_demand[i * MONTHS_PER_YEAR + j]/years_passed;
+            *annual_inflow += cur_dam->history_inflow[i * MONTHS_PER_YEAR + j]/(years_passed * MONTHS_PER_YEAR);
+            *annual_inflow_natural += cur_dam->history_inflow_natural[i * MONTHS_PER_YEAR + j]/(years_passed * MONTHS_PER_YEAR);
+            *annual_demand += cur_dam->history_demand[i * MONTHS_PER_YEAR + j]/(years_passed * MONTHS_PER_YEAR);
         }        
     }
+}
+
+void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
+                        double monthly_inflow[], double monthly_inflow_natural[], 
+                        double annual_inflow, double annual_inflow_natural){
+    extern global_param_struct global_param;
+    extern RID_struct RID;    
     
+    size_t j;
+    size_t month;
+    
+    double annual_factor;
+    double env_release[MONTHS_PER_YEAR];
+    double dam_discharge[MONTHS_PER_YEAR];
+    double cumulative_cap;
+    double total_cap_needed;   
+    double release_added; 
+    double inter_annual_change;
+          
     if(!RID.param.fnaturalized_flow){
-        cur_dam->annual_inflow_natural=cur_dam->annual_inflow;
-    }
+        for(j=0;j<MONTHS_PER_YEAR;j++){
+            monthly_inflow_natural[j]=monthly_inflow[j];
+        }
+        annual_inflow_natural = annual_inflow;
+    }    
     
-    if(cur_dam->extreme_stor>0){
-        cur_dam->ext_influence_factor += DAM_EXT_INF_CHANGE;
+    for(annual_factor = DAM_MIN_ANN_FRACT; annual_factor<DAM_MAX_ANN_FRACT; annual_factor+=DAM_ANN_FRACT_CHANGE){
+        total_cap_needed=0;
+        cumulative_cap=0;
+        
+        for(j=0;j<MONTHS_PER_YEAR;j++){
+            dam_discharge[j]= annual_inflow * (1-annual_factor) +
+                    annual_inflow * annual_factor * (monthly_inflow[j]/annual_inflow);
+            
+            month = global_param.startmonth+j;
+            if(month>MONTHS_PER_YEAR){
+                month-=MONTHS_PER_YEAR;
+            }
+            
+            cumulative_cap += (monthly_inflow[j]-dam_discharge[j]) * nr_days_in_month(month,cur_dmy->year);
+            if(cumulative_cap<0){
+                cumulative_cap=0;
+            }
+            
+            if(cumulative_cap>total_cap_needed){
+                total_cap_needed=cumulative_cap;
+            }
+        }
+        
+        if(total_cap_needed<cur_dam->capacity){
+            break;
+        }        
+    }
+       
+    if(cur_dam->current_storage>cur_dam->capacity){
+        inter_annual_change = ((cur_dam->capacity * DAM_PREF_STORE) - cur_dam->capacity) / DAYS_PER_YEAR;
     }else{
-        cur_dam->ext_influence_factor -= DAM_EXT_INF_CHANGE;
+        inter_annual_change = ((cur_dam->capacity * DAM_PREF_STORE) - cur_dam->current_storage) / DAYS_PER_YEAR;
     }
     
-    if(cur_dam->ext_influence_factor<DAM_MIN_EXT_INF){
-        cur_dam->ext_influence_factor=DAM_MIN_EXT_INF;
-    }else if(cur_dam->ext_influence_factor>DAM_MAX_EXT_INF){
-        cur_dam->ext_influence_factor=DAM_MAX_EXT_INF;
+    for(j=0;j<MONTHS_PER_YEAR;j++){
+        dam_discharge[j] -= inter_annual_change * (dam_discharge[j]/annual_inflow);
+        
+        if(dam_discharge[j]<0){
+            dam_discharge[j]=0;
+        }
     }
-    cur_dam->extreme_stor=0;
+    
+    if(RID.param.fenv_flow){
+        for(j=0;j<MONTHS_PER_YEAR;j++){
+            if(monthly_inflow_natural[j] > ENV_HIGH_FLOW_PERC * annual_inflow_natural){
+                env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_LOW;
+            }else if(monthly_inflow_natural[j] > ENV_LOW_FLOW_PERC * annual_inflow_natural){
+                env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_INT;
+            }else{
+                env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_HIGH;
+            }
+        }
+    }
+    
+    release_added=0;
+    for(j=0;j<MONTHS_PER_YEAR;j++){
+        if(dam_discharge[j]<env_release[j]){
+            month = global_param.startmonth+j;
+            if(month>MONTHS_PER_YEAR){
+                month-=MONTHS_PER_YEAR;
+            }
+            
+            release_added += (env_release[j]-dam_discharge[j]) * nr_days_in_month(month,cur_dmy->year);
+            dam_discharge[j]=env_release[j];
+        }
+    }
+    
+    release_added /= DAYS_PER_YEAR;    
+    for(j=0;j<MONTHS_PER_YEAR;j++){
+        dam_discharge[j] -= release_added;
+        
+        if(dam_discharge[j]<0){
+            dam_discharge[j]=0;
+        }
+        
+        if(dam_discharge[j]<env_release[j]){
+            env_release[j]=dam_discharge[j];
+        }
+    }
+    
+    for(j=0;j<MONTHS_PER_YEAR;j++){
+        cur_dam->monthly_release[j]=dam_discharge[j];
+        cur_dam->monthly_environmental_release[j]=env_release[j];
+    }
+    
+    log_info("\n"
+            "name\t%s\n"
+            "capacity\t%.1f\n"
+            "annual_inflow\t%.1f\n"
+            "annual_factor\t%.2f\n"
+            "total_capacity_needed\t%.1f\n"
+            "inter_annual_change\t%.1f\n"
+            "release_added\t%.1f\n"
+            "inflow;\t\tdischarge;\tenv_release;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n"
+            "%.1f;\t\t%.1f;\t\t%.1f;\n",
+            cur_dam->name,
+            cur_dam->capacity/10000,
+            annual_inflow/10000,
+            annual_factor,
+            total_cap_needed/10000,
+            inter_annual_change/10000,
+            release_added/10000,
+            monthly_inflow[0]/10000,dam_discharge[0]/10000,env_release[0]/10000,
+            monthly_inflow[1]/10000,dam_discharge[1]/10000,env_release[1]/10000,
+            monthly_inflow[2]/10000,dam_discharge[2]/10000,env_release[2]/10000,
+            monthly_inflow[3]/10000,dam_discharge[3]/10000,env_release[3]/10000,
+            monthly_inflow[4]/10000,dam_discharge[4]/10000,env_release[4]/10000,
+            monthly_inflow[5]/10000,dam_discharge[5]/10000,env_release[5]/10000,
+            monthly_inflow[6]/10000,dam_discharge[6]/10000,env_release[6]/10000,
+            monthly_inflow[7]/10000,dam_discharge[7]/10000,env_release[7]/10000,
+            monthly_inflow[8]/10000,dam_discharge[8]/10000,env_release[8]/10000,
+            monthly_inflow[9]/10000,dam_discharge[9]/10000,env_release[9]/10000,
+            monthly_inflow[10]/10000,dam_discharge[10]/10000,env_release[10]/10000,
+            monthly_inflow[11]/10000,dam_discharge[11]/10000,env_release[11]/10000);
 }
 
 /******************************************************************************
@@ -227,35 +238,18 @@ void update_dam_history_year(dam_unit* cur_dam, dmy_struct* cur_dmy){
   * Recalculate beginning operational year as the point where the average
  * monthly inflow is less than annual inflow
  ******************************************************************************/
-void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){    
+void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy,
+                        double monthly_inflow[], double annual_inflow){   
     extern global_param_struct global_param;
     
-    size_t i;
     size_t j;
-    size_t years_passed;
     int count;
     double count_inflow;
     int longest;
     double longest_inflow;
     int month;
     
-    double average_monthly_inflow[MONTHS_PER_YEAR];
-    
-    for(i=0;i<MONTHS_PER_YEAR;i++){
-        average_monthly_inflow[i]=0;
-    }
         
-    years_passed = cur_dmy->year - global_param.startyear;
-    if(years_passed>DAM_HIST_YEARS){
-        years_passed=DAM_HIST_YEARS;
-    }
-    
-    for(i=0;i<years_passed;i++){
-        for(j=0;j<MONTHS_PER_YEAR;j++){
-            average_monthly_inflow[j] += cur_dam->inflow[i * MONTHS_PER_YEAR + j]/years_passed;
-        }        
-    }
-    
     count=0;
     count_inflow=0;
     longest=0;
@@ -264,9 +258,9 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){
     for(j=0;j<(2 * MONTHS_PER_YEAR);j++){
         size_t i = j % MONTHS_PER_YEAR;
 
-        if(average_monthly_inflow[i]>cur_dam->annual_inflow){
+        if(monthly_inflow[i]>annual_inflow){
             count++;
-            count_inflow += average_monthly_inflow[i];
+            count_inflow += monthly_inflow[i];
 
             if(count>longest){
                 longest=count;
@@ -296,6 +290,8 @@ void calculate_operational_year(dam_unit* cur_dam, dmy_struct *cur_dmy){
     if(cur_dam->storage_start_operation > cur_dam->capacity){
         cur_dam->storage_start_operation = cur_dam->capacity;
     }
+    
+    log_info("\nOperational month calculated at:\t%d",cur_dam->start_operation.month);
 }
 
 /******************************************************************************
@@ -394,7 +390,6 @@ void do_dam_irrigation(size_t cell_id, size_t veg_index, double *moisture_conten
 void set_deficit(double *deficit, double *demand){
     
     *deficit = *demand;
-    //*demand=0;
 }
 
 /******************************************************************************
@@ -439,9 +434,5 @@ void do_dam_release(dam_unit* cur_dam, double actual_release, double irrigation_
     cur_dam->current_storage-= actual_release + irrigation_release + overflow + evaporation;
     
     cur_dam->previous_release = actual_release+overflow;
-    
-    if((cur_dam->current_storage/cur_dam->capacity)>DAM_MAX_PREF_STORE || (cur_dam->current_storage/cur_dam->capacity)<DAM_MIN_PREF_STORE){
-        cur_dam->extreme_stor++;
-    }       
 }
 

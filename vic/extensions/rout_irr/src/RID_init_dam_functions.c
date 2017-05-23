@@ -188,11 +188,11 @@ void set_dam_information(){
         for(j=0;j<RID.nr_dams;j++){
             if(dams[i].cell==dams2[j].cell){
                 log_warn("\ndam %s and %s have been combined into dam %s because they are in the same cell.\n"
-                    "Capacities and areas have been added. Purpose is based on the biggest dam.\n"
+                    "Capacities and areas have been added. If any dam is an irrigation dam, the combined dam is an irrigation dam.\n"
                     "If the dams have different activation years the earliest activation year is used.\n",
                     dams[i].name,dams2[j].name,dams2[j].name);
 
-                if(dams2[j].capacity < dams[i].capacity){
+                if(dams[j].function == DAM_IRR_FUNCTION){
                     dams2[j].function = dams[i].function;
                 }
 
@@ -228,14 +228,14 @@ void set_dam_information(){
         RID.dams[i]=dams2[i];
         RID.dams[i].cell->dam=&RID.dams[i];
         
-        RID.dams[i].demand = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].demand));
-        check_alloc_status(RID.dams[i].demand,"Memory allocation error.");
+        RID.dams[i].history_demand = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].history_demand));
+        check_alloc_status(RID.dams[i].history_demand,"Memory allocation error.");
         
-        RID.dams[i].inflow = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].inflow));
-        check_alloc_status(RID.dams[i].inflow,"Memory allocation error.");
+        RID.dams[i].history_inflow = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].history_inflow));
+        check_alloc_status(RID.dams[i].history_inflow,"Memory allocation error.");
         
-        RID.dams[i].inflow_natural = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].inflow_natural));
-        check_alloc_status(RID.dams[i].inflow_natural,"Memory allocation error.");
+        RID.dams[i].history_inflow_natural = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].history_inflow_natural));
+        check_alloc_status(RID.dams[i].history_inflow_natural,"Memory allocation error.");
         
         if(RID.dams[i].activation_year<=global_param.startyear){
             RID.dams[i].run=true;
@@ -245,9 +245,6 @@ void set_dam_information(){
         
         RID.dams[i].release = 0.0;   
         RID.dams[i].previous_release = 0.0;
-        
-        RID.dams[i].ext_influence_factor=DAM_EXT_INF_DEFAULT;
-        RID.dams[i].extreme_stor=0;
         RID.dams[i].irrigated_area=0;
         
         //preferred storage level for the start of the operational year (Hanasaki et al., 2006)
@@ -263,18 +260,10 @@ void set_dam_information(){
         RID.dams[i].total_inflow_natural = 0.0;
         
         for(j=0;j<DAM_HIST_YEARS * MONTHS_PER_YEAR;j++){
-            RID.dams[i].inflow[j] = 0.0;
-            RID.dams[i].demand[j] = 0.0;
-            RID.dams[i].inflow_natural[j]=0.0;
+            RID.dams[i].history_inflow[j] = 0.0;
+            RID.dams[i].history_demand[j] = 0.0;
+            RID.dams[i].history_inflow_natural[j]=0.0;
         }
-        
-        RID.dams[i].monthly_demand=0.0;
-        RID.dams[i].monthly_inflow=0.0;
-        RID.dams[i].monthly_inflow_natural=0.0;
-        
-        RID.dams[i].annual_demand=0.0;
-        RID.dams[i].annual_inflow=0.0;
-        RID.dams[i].annual_inflow_natural=0.0;
                 
         RID.dams[i].nr_serviced_cells = 0;           
     }
@@ -299,6 +288,10 @@ void set_dam_natural_routing(){
     
     size_t i;
     RID_cell* current_cell;
+    
+    if(!RID.param.fenv_flow){
+        return;
+    }
     
     for(i=0;i<RID.nr_dams;i++){
         current_cell = RID.dams[i].cell;

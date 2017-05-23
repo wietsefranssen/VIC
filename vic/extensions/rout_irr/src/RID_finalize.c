@@ -23,9 +23,9 @@ void RID_finalize(void){
     *******************************/
     if(RID.param.fdams){
         for(i=0;i<RID.nr_dams;i++){            
-            free(RID.dams[i].demand);
-            free(RID.dams[i].inflow);
-            free(RID.dams[i].inflow_natural);
+            free(RID.dams[i].history_demand);
+            free(RID.dams[i].history_inflow);
+            free(RID.dams[i].history_inflow_natural);
         }
     }
     

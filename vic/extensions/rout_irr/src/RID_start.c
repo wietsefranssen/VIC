@@ -64,6 +64,7 @@ void default_module_options(void){
     RID.param.crop_ksat=DEF_CROP_KSAT;
     
     RID.param.fnaturalized_flow=false;
+    RID.param.fenv_flow=true;
     RID.param.dam_irr_distance=DEF_IRR_DIST;
 }
 
@@ -178,6 +179,10 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
             }
             if (strcasecmp("DAM_IRR_DISTANCE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &RID.param.dam_irr_distance);
+            }
+            if (strcasecmp("DAM_ENV_RELEASE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                RID.param.fenv_flow=str_to_bool(flgstr);
             }
             
             if (strcasecmp("CROP_CLASS", optstr) == 0) {
@@ -373,6 +378,8 @@ void display_module_options(){
     
     if(RID.param.fdebug_mode){
         fprintf(LOG_DEST, "DEBUG_MODE\t\tTRUE\n");
+    }else{
+        fprintf(LOG_DEST, "DEBUG_MODE\t\tFALSE\n");
     }
     
     if(RID.param.firrigation){
@@ -392,6 +399,11 @@ void display_module_options(){
         fprintf(LOG_DEST, "\nCurrent Dam Settings\n");
         fprintf(LOG_DEST, "DAMS\t\t\t\tTRUE\n");
         fprintf(LOG_DEST, "DAM_IRR_DISTANCE\t\t%.1f\n",RID.param.dam_irr_distance);
+        if(RID.param.fenv_flow){
+            fprintf(LOG_DEST, "DAM_ENV_FLOW\t\t\tTRUE\n");
+        }else{
+            fprintf(LOG_DEST, "DAM_ENV_FLOW\t\t\tFALSE\n");
+        }
     }else{
         fprintf(LOG_DEST, "\nDAMS\t\t\t\tFALSE\n");
     }
