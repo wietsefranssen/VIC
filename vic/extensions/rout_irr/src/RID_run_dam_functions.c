@@ -105,7 +105,7 @@ void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
         annual_inflow_natural = annual_inflow;
     }    
     
-    for(annual_factor = DAM_MIN_ANN_FRACT; annual_factor<DAM_MAX_ANN_FRACT; annual_factor+=DAM_ANN_FRACT_CHANGE){
+    for(annual_factor = DAM_ANN_FRACT_MIN; annual_factor<DAM_ANN_FRACT_MAX; annual_factor+=DAM_ANN_FRACT_ITE){
         total_cap_needed=0;
         cumulative_cap=0;
         
@@ -149,9 +149,9 @@ void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
     
     if(RID.param.fenv_flow){
         for(j=0;j<MONTHS_PER_YEAR;j++){
-            if(monthly_inflow_natural[j] > ENV_HIGH_FLOW_PERC * annual_inflow_natural){
+            if(monthly_inflow_natural[j] > DAM_HIGH_FLOW_PERC * annual_inflow_natural){
                 env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_LOW;
-            }else if(monthly_inflow_natural[j] > ENV_LOW_FLOW_PERC * annual_inflow_natural){
+            }else if(monthly_inflow_natural[j] > DAM_LOW_FLOW_PERC * annual_inflow_natural){
                 env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_INT;
             }else{
                 env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_HIGH;
@@ -404,7 +404,7 @@ void get_dam_evaporation(dam_unit* cur_dam, double *evaporation){
     size_t i;
     
     for(i=0;i<options.SNOW_BAND;i++){
-        *evaporation+=all_vars[cur_dam->cell->id].cell[0][i].pot_evap / MM_PER_M * RES_POT_FRAC;
+        *evaporation+=all_vars[cur_dam->cell->id].cell[0][i].pot_evap / MM_PER_M * DAM_EVAP_FRAC;
     }
     *evaporation *= cur_dam->area;
 }

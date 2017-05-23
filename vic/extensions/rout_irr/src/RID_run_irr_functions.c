@@ -97,8 +97,8 @@ void get_demand(irr_cell *cur_irr, size_t veg_index, double *demand, double stor
     extern veg_con_struct **veg_con;
     extern domain_struct local_domain;
     
-    if(storage <= MIN_POND_FRAC * MAX_POND_STORAGE){                  
-        *demand = (MAX_POND_STORAGE - storage)
+    if(storage <= POND_IRR_FRAC * POND_STORAGE){                  
+        *demand = (POND_STORAGE - storage)
                 / MM_PER_M * (local_domain.locations[cur_irr->cell->id].area * 
                 veg_con[cur_irr->cell->id][veg_index].Cv);
     }

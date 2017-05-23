@@ -8,39 +8,34 @@
 
 #define DEF_FLOW_VEL 1.5                    /**< scalar - default flow velocity for UH calculation */
 #define DEF_FLOW_DIF 800.0                  /**< scalar - default flow diffusivity for UH calculation */
-#define DEF_IRR_DIST 5.0                    /**< scalar - default maximum distance from the dam cells can recieve service */
+#define DEF_IRR_DIST 1.0                    /**< scalar - default maximum distance from the dam cells can recieve service */
 #define DEF_CROP_DATE 1                     /**< scalar - default value for the crop growing julian date */
-#define DEF_CROP_KSAT 15.0                  /**< scalar - default value for saturated hydraulic conductivity of crop pond [mm/d] */
+#define DEF_CROP_KSAT 15.0                  /**< scalar - default value for saturated hydraulic conductivity of crop pond [mm/day] */
 
 #define MAX_UH_DAYS 2                       /**< scalar - maximum number of days an UH is allowed to discharge [days] */
 
-#define MIN_IRR_AREA 5                      /**< scalar - minimum irrigation fraction for irrigation cells identification [%] */
-
-#define MAX_POND_STORAGE 150                /**< scalar - maximum ponding storage [mm] */
-#define MIN_POND_FRAC 0.25                  /**< scalar - ponding fraction after which irrigation is needed [-] */
-#define AVAILABLE_IRR_FRAC 0.3              /**< scalar - fraction of local available water that can be used [-] */
+#define POND_STORAGE 150                    /**< scalar - ponding storage [mm] */
+#define POND_IRR_FRAC 0.25                  /**< scalar - ponding fraction after which irrigation is needed [-] */
+#define AVAILABLE_IRR_FRAC 0.33             /**< scalar - fraction of local river water available for irrigation [-] */
 
 #define DAM_NO_DATA -99                     /**< scalar - nodata value for the dam file */
 #define DAM_IRR_FUNCTION 1                  /**< scalar - value for the irrigation purpose of a dam */
 #define DAM_HYD_FUNCTION 2                  /**< scalar - value for the hydropower purpose of a dam */
 #define DAM_CON_FUNCTION 3                  /**< scalar - value for the flood control purpose of a dam */
 
-#define DAM_ENV_FLOW_HIGH 0.6               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
-#define DAM_ENV_FLOW_INT 0.45               /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
-#define DAM_ENV_FLOW_LOW 0.3                /**< scalar - percentage of mean monthly inflow that is environmental flow (Pastor et al., 2014) */
-#define ENV_HIGH_FLOW_PERC 0.8              /**< scalar - percentage of mean annual inflow that is considered high (Pastor et al., 2014) */
-#define ENV_LOW_FLOW_PERC 0.4               /**< scalar - percentage of mean monthly inflow that is considered low (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_HIGH 0.6               /**< scalar - fraction of mean monthly inflow that is environmental flow [-] (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_INT 0.45               /**< scalar - fraction of mean monthly inflow that is environmental flow [-] (Pastor et al., 2014) */
+#define DAM_ENV_FLOW_LOW 0.3                /**< scalar - fraction of mean monthly inflow that is environmental flow [-] (Pastor et al., 2014) */
+#define DAM_HIGH_FLOW_PERC 0.8              /**< scalar - fraction of mean annual inflow that is considered high [-] (Pastor et al., 2014) */
+#define DAM_LOW_FLOW_PERC 0.4               /**< scalar - fraction of mean monthly inflow that is considered low [-] (Pastor et al., 2014) */
 
-#define DAM_ANN_FRACT_CHANGE 0.05              /**< scalar - change of external influence on flow variability factor */
-#define DAM_MIN_ANN_FRACT 0.0               /**< scalar - minimum of external influence on flow variability factor */
-#define DAM_MAX_ANN_FRACT 1.0                /**< scalar - maximum of external influence on flow variability factor */
+#define DAM_ANN_FRACT_ITE 0.05              /**< scalar - iteration change of annual variability coefficient */
+#define DAM_ANN_FRACT_MIN 0.0               /**< scalar - minimum annual variability coefficient */
+#define DAM_ANN_FRACT_MAX 1.0               /**< scalar - maximum annual variability coefficient */
 
-#define DAM_PREF_STORE 0.85                 /**< scalar - percentage of prefered storage volume (Hanasaki et al., 2006) */
-#define DAM_HIST_YEARS 5                   /**< scalar - number of years that dams will use to calculate mean inflow and demand values */
-#define DAM_MIN_PREF_STORE 0.05             /**< scalar - prefered minimum storage of a dam */
-#define DAM_MAX_PREF_STORE 0.95             /**< scalar - prefered maximum storage of a dam */
-
-#define RES_POT_FRAC 0.7                    /**< scalar - fraction of potential evapotranspiration that is evaporation in reservoirs (Houman, 1973) */
+#define DAM_PREF_STORE 0.85                 /**< scalar - prefered storage volume as a fraction of capacity [-] (Hanasaki et al., 2006) */
+#define DAM_HIST_YEARS 5                    /**< scalar - number of years dam saves mean monthly history values [year] */
+#define DAM_EVAP_FRAC 0.7                   /**< scalar - fraction of potential evapotranspiration that is evaporation in reservoirs [-] (Houman, 1973) */
 
 #include <vic_driver_shared_image.h>
 
@@ -61,8 +56,8 @@ struct RID_params{
     char debug_path[MAXSTRING];         /**< string - file path of debug files */
     
     //routing
-    double flow_velocity_uh;            /**< scalar - flow velocity of the unit hydrograph */
-    double flow_diffusivity_uh;         /**< scalar - flow diffusivity of the unit hydrograph */
+    double flow_velocity;               /**< scalar - flow velocity of the unit hydrograph */
+    double flow_diffusivity;            /**< scalar - flow diffusivity of the unit hydrograph */
     
     //irrigation
     size_t nr_crops;                    /**< scalar - number of vegetation classes that are irrigated crops */
@@ -73,8 +68,8 @@ struct RID_params{
     
     //dams
     bool fnaturalized_flow;             /**< bool - TRUE = do both normal and naturalized routing FALSE = do not do double routing */
-    bool fenv_flow;                      /**< bool - TRUE = do environmental flow release FALSE = do not do environmental flow release */
-    double dam_irr_distance;            /**< scalar - maximum cell distance a cell can be irrigated from a dam */
+    bool fenv_flow;                     /**< bool - TRUE = do environmental flow release FALSE = do not do environmental flow release */
+    double dam_irr_distance;            /**< scalar - maximum cell distance a cell can be irrigated from a dam [cells] */
 };
 
 struct RID_structs {
@@ -91,7 +86,7 @@ struct RID_structs {
     rout_cell *rout_cells;              /**< 1d array [nr_active_cells] - routed cells */     
     
     //irrigation
-    size_t nr_irr_cells;                /**<scalar - number of irrigated cells */
+    size_t nr_irr_cells;                /**< scalar - number of irrigated cells */
     irr_cell *irr_cells;                /**< 1d array [nr_irr_cells] - irrigated cells */ 
     
     //dams
@@ -163,11 +158,11 @@ struct dam_units{
     double *history_inflow_natural;     /**< 1d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged time-step inflow for a month [m3/d] */
     double *history_demand;             /**< 1d array [DAM_CALC_YEARS_MEAN * MONTHS_PER_YEAR] - averaged time-step demand for a month [m3/d] */
     
-    double release;                     /**< scalar - this months release [m3] */
-    double monthly_release[MONTHS_PER_YEAR];
-    double environmental_release;       /**< scalar - this months environmental release [m3] */
-    double monthly_environmental_release[MONTHS_PER_YEAR];
-    double previous_release;            /**< scalar - outflow to be released next timestep [m3] */
+    double release;                     /**< scalar - this months release [m3/d] */
+    double monthly_release[MONTHS_PER_YEAR];                /**< 1d array [MONTHS_PER_YEAR] - release per month [m3/d] */
+    double environmental_release;       /**< scalar - this months environmental release [m3/d] */
+    double monthly_environmental_release[MONTHS_PER_YEAR];  /**< scalar - environmental release per month [m3/d] */
+    double previous_release;            /**< scalar - outflow to be released next timestep [m3/d] */
     
     size_t nr_serviced_cells;           /**< scalar - number of serviced cells */
     irr_cell **serviced_cells;          /**< 1d array [nr_serviced_cells] - pointer to serviced cells */
@@ -228,14 +223,12 @@ void RID_run(dmy_struct* current_dmy);
 
 //Routing module
 void do_routing_module(RID_cell *cur_cell);
-
 void gather_runoff_inflow(RID_cell *cur_cell, double *runoff, double *inflow, bool naturalized);
 void shift_outflow_array(RID_cell* current_cell);
 void do_routing(RID_cell* cur_cell, double runoff, double inflow, bool naturalized);
 
 //Irrigation module
 void do_irrigation_module(irr_cell *cur_irr, dmy_struct *cur_dmy);
-
 void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content);
 void get_storage_infiltration(size_t cell_id, double *storage, double *infiltration, double moisture_content);
 void increase_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content, double irrigation_crop);
@@ -247,16 +240,15 @@ void set_deficit(double *deficit, double *demand);
 
 //Dam module
 void do_dam_demand(irr_cell *cur_irr);
+
 void do_dam_flow(dam_unit *cur_dam);
+
 void do_dam_history_module(dam_unit *cur_dam, dmy_struct *cur_dmy);
-void update_dam_history_step(dam_unit* cur_dam);
 void update_dam_history(dam_unit* cur_dam, dmy_struct* cur_dmy);
-void calculate_target_release(dam_unit* cur_dam);
 void get_multi_year_average(dam_unit* cur_dam, dmy_struct* cur_dmy,
                         double monthly_inflow[], double monthly_inflow_natural[], 
                         double monthly_demand[], double *annual_inflow, 
                         double *annual_inflow_natural, double *annual_demand);
-void update_dam_history_year(dam_unit* cur_dam, dmy_struct* cur_dmy);
 void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
                         double monthly_inflow[], double monthly_inflow_natural[], 
                         double annual_inflow, double annual_inflow_natural);

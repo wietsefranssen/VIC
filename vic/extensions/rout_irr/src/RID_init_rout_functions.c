@@ -98,8 +98,8 @@ void set_cell_uh(char variable_name[]){
         *******************************/
         for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
             time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP);
-            uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * RID.param.flow_diffusivity_uh)))
-                    * exp(-(pow(RID.param.flow_velocity_uh * time - distance[i],2)) / (4 * RID.param.flow_diffusivity_uh * time));
+            uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * RID.param.flow_diffusivity)))
+                    * exp(-(pow(RID.param.flow_velocity * time - distance[i],2)) / (4 * RID.param.flow_diffusivity * time));
             uh_sum += uh_precise[j];
         }
 

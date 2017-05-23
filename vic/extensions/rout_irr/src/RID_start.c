@@ -57,8 +57,8 @@ void default_module_options(void){
     RID.param.debug_path[0]=0;
     RID.param.dam_filename[0]=0;
     
-    RID.param.flow_velocity_uh=DEF_FLOW_VEL;
-    RID.param.flow_diffusivity_uh=DEF_FLOW_DIF;
+    RID.param.flow_velocity=DEF_FLOW_VEL;
+    RID.param.flow_diffusivity=DEF_FLOW_DIF;
     
     RID.param.nr_crops=0;
     RID.param.crop_ksat=DEF_CROP_KSAT;
@@ -169,10 +169,10 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
             }
             
             if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &RID.param.flow_velocity_uh);
+                sscanf(cmdstr, "%*s %lf", &RID.param.flow_velocity);
             }
             if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &RID.param.flow_diffusivity_uh);
+                sscanf(cmdstr, "%*s %lf", &RID.param.flow_diffusivity);
             }
             if (strcasecmp("CROP_KSAT", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &RID.param.crop_ksat);
@@ -341,13 +341,13 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
         }
     }
     
-    if(RID.param.flow_velocity_uh<=0){
+    if(RID.param.flow_velocity<=0){
         log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",DEF_FLOW_VEL); 
-            RID.param.flow_velocity_uh=DEF_FLOW_VEL;
+            RID.param.flow_velocity=DEF_FLOW_VEL;
     }
-    if(RID.param.flow_diffusivity_uh<=0){
+    if(RID.param.flow_diffusivity<=0){
         log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",DEF_FLOW_DIF); 
-            RID.param.flow_diffusivity_uh=DEF_FLOW_DIF;
+            RID.param.flow_diffusivity=DEF_FLOW_DIF;
     }
     if(RID.param.crop_ksat<=0){
         log_warn("CROP_KSAT was smaller than or equal to 0. Setting CROP_KSAT to %.1f",DEF_CROP_KSAT); 
@@ -373,8 +373,8 @@ void display_module_options(){
     
     fprintf(LOG_DEST, "Current Routing Settings\n");
 
-    fprintf(LOG_DEST, "UH_FLOW_VELOCITY\t\t%.2f\n",RID.param.flow_velocity_uh);
-    fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",RID.param.flow_diffusivity_uh);
+    fprintf(LOG_DEST, "UH_FLOW_VELOCITY\t\t%.2f\n",RID.param.flow_velocity);
+    fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",RID.param.flow_diffusivity);
     
     if(RID.param.fdebug_mode){
         fprintf(LOG_DEST, "DEBUG_MODE\t\tTRUE\n");
