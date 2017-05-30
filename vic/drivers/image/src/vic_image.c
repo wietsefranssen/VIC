@@ -124,6 +124,7 @@ main(int    argc,
 
     // initialize routing parameters from parameter files
     RID_init();    // Routing routine (extension)
+    exit(1);
 
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state();

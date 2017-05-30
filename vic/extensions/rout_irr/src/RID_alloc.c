@@ -22,7 +22,10 @@ void RID_alloc(void){
     extern RID_struct RID;
     extern global_param_struct global_param;
     extern domain_struct global_domain;
-    
+    extern int              mpi_rank;
+        
+    if (mpi_rank == VIC_MPI_ROOT) {
+
     size_t i;
     size_t x;
     size_t y;
@@ -71,4 +74,5 @@ void RID_alloc(void){
 
     RID.nr_dams=0;
     RID.nr_irr_cells=0;
+    }
 }

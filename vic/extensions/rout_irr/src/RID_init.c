@@ -22,6 +22,9 @@
 
 void RID_init(void){
     extern RID_struct RID;
+    extern int              mpi_rank;
+        
+    if (mpi_rank == VIC_MPI_ROOT) {
     
     init_module();
     
@@ -36,6 +39,7 @@ void RID_init(void){
     
     if(RID.nr_dams>0 && RID.nr_irr_cells>0){
         init_dam_irr();
+    }
     }
 }
 
