@@ -174,32 +174,32 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_IRR].description, "total irrigation water supplied");
     
     /* irrigation demand at the start [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_START].varname, "OUT_DEMAND_START");
-    strcpy(out_metadata[OUT_DEMAND_START].long_name, "irrigation_water_demand_start");
-    strcpy(out_metadata[OUT_DEMAND_START].standard_name, "irrigation_water_demand_start");
-    strcpy(out_metadata[OUT_DEMAND_START].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_START].description, "irrigation water demand before water is applied");
+    strcpy(out_metadata[OUT_DEMAND].varname, "OUT_DEMAND");
+    strcpy(out_metadata[OUT_DEMAND].long_name, "irrigation_water_demand_start");
+    strcpy(out_metadata[OUT_DEMAND].standard_name, "irrigation_water_demand_start");
+    strcpy(out_metadata[OUT_DEMAND].units, "hm3");
+    strcpy(out_metadata[OUT_DEMAND].description, "irrigation water demand before water is applied");
+        
+    /* pond storage [mm] */
+    strcpy(out_metadata[OUT_CROP_STORE].varname, "OUT_CROP_STORE");
+    strcpy(out_metadata[OUT_CROP_STORE].long_name, "crop_pond_storage");
+    strcpy(out_metadata[OUT_CROP_STORE].standard_name, "crop_pond_storage");
+    strcpy(out_metadata[OUT_CROP_STORE].units, "mm");
+    strcpy(out_metadata[OUT_CROP_STORE].description, "storage of crop pond");
     
-    /* irrigation demand after local irrigation [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_DAM].varname, "OUT_DEMAND_DAM");
-    strcpy(out_metadata[OUT_DEMAND_DAM].long_name, "irrigation_water_demand_dam");
-    strcpy(out_metadata[OUT_DEMAND_DAM].standard_name, "irrigation_water_demand_dam");
-    strcpy(out_metadata[OUT_DEMAND_DAM].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_DAM].description, "irrigation water demand after local water is applied");
-    
-    /* irrigation demand after dam irrigation [hm3] */
-    strcpy(out_metadata[OUT_DEMAND_END].varname, "OUT_DEMAND_END");
-    strcpy(out_metadata[OUT_DEMAND_END].long_name, "irrigation_water_demand_end");
-    strcpy(out_metadata[OUT_DEMAND_END].standard_name, "irrigation_water_demand_end");
-    strcpy(out_metadata[OUT_DEMAND_END].units, "hm3");
-    strcpy(out_metadata[OUT_DEMAND_END].description, "irrigation water demand after dam water is applied");
-    
-    /* dam current storage [-] */
+    /* dam storage [-] */
     strcpy(out_metadata[OUT_DAM_STORE].varname, "OUT_DAM_STORE");
     strcpy(out_metadata[OUT_DAM_STORE].long_name, "current_dam_storage");
     strcpy(out_metadata[OUT_DAM_STORE].standard_name, "current_dam_storage");
     strcpy(out_metadata[OUT_DAM_STORE].units, "-");
     strcpy(out_metadata[OUT_DAM_STORE].description, "fraction of dam storage after water is applied");
+    
+    /* dam evaporation [m3] */
+    strcpy(out_metadata[OUT_DAM_EVAP].varname, "OUT_DAM_EVAP");
+    strcpy(out_metadata[OUT_DAM_EVAP].long_name, "dam_evaporation");
+    strcpy(out_metadata[OUT_DAM_EVAP].standard_name, "dam_evaporation");
+    strcpy(out_metadata[OUT_DAM_EVAP].units, "m3");
+    strcpy(out_metadata[OUT_DAM_EVAP].description, "evaporation from dam reservoir");
     
     /* volumetric liquid water equivalent of snow on top of lake ice [m3] */
     strcpy(out_metadata[OUT_LAKE_SWE_V].varname, "OUT_LAKE_SWE_V");

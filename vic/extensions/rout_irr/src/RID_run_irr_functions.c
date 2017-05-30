@@ -11,7 +11,6 @@
  *  
  * Return whether a crop is in its irrigation season.
  ******************************************************************************/
-
 bool in_irrigation_season(size_t crop_index, size_t current_julian_day){
     extern RID_struct RID;
     
@@ -35,8 +34,7 @@ bool in_irrigation_season(size_t crop_index, size_t current_julian_day){
  *  
  * Get the moisture content over all snow and frost bands. Ice is not included
  ******************************************************************************/
-
-void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture_content){
+void get_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content){
     extern option_struct options;
     extern all_vars_struct *all_vars;
     extern soil_con_struct *soil_con;
@@ -48,16 +46,43 @@ void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture
     size_t j;
     
     for(i=0;i<options.SNOW_BAND;i++){
-        liquid_content +=  all_vars[cur_cell->id].cell[veg_index][i].layer[0].moist 
-                * soil_con[cur_cell->id].AreaFract[i];
+        liquid_content +=  all_vars[cell_id].cell[veg_index][i].layer[0].moist 
+                * soil_con[cell_id].AreaFract[i];
         
         for (j = 0; j < options.Nfrost; j++) {
-            ice_content += all_vars[cur_cell->id].cell[veg_index][i].layer[0].ice[j] 
-                    * soil_con[cur_cell->id].AreaFract[i] * soil_con[cur_cell->id].frost_fract[j];
+            ice_content += all_vars[cell_id].cell[veg_index][i].layer[0].ice[j] 
+                    * soil_con[cell_id].AreaFract[i] * soil_con[cell_id].frost_fract[j];
         }
     }
             
-    *moisture_content=liquid_content - ice_content;
+    *moisture_content = liquid_content - ice_content;
+    
+    if(*moisture_content<0){
+        log_err("Negative moisture content?");
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Get the infiltration to saturate the upper layer from water storage, reduce
+ * storage with the infiltration
+ ******************************************************************************/
+void get_storage_infiltration(size_t cell_id, double *storage, double *infiltration, double moisture_content){
+    extern soil_con_struct *soil_con;
+    
+    double infiltration_need;
+    infiltration_need = soil_con[cell_id].max_moist[0] - moisture_content;
+    
+    if(infiltration_need>0){
+        if(*storage>infiltration_need){
+            *infiltration = infiltration_need;
+            *storage-=infiltration_need;
+        }else{
+            *infiltration=*storage;
+            *storage=0;
+        }
+    }
 }
 
 /******************************************************************************
@@ -68,137 +93,79 @@ void get_moisture_content(RID_cell *cur_cell, size_t veg_index, double *moisture
  * and the field capacity (Wcr/ 0.7). There is only demand when the soil 
  * moisture is below the critical point (Wcr).
  ******************************************************************************/
-
-void get_irrigation_demand(RID_cell *cur_cell, size_t veg_index, double moisture_content, double *demand_crop){
-    extern soil_con_struct *soil_con;
+void get_demand(irr_cell *cur_irr, size_t veg_index, double *demand, double storage){
     extern veg_con_struct **veg_con;
-    extern domain_struct global_domain;
+    extern domain_struct local_domain;
     
-    if(moisture_content <= soil_con[cur_cell->id].Wcr[0]){                  
-        *demand_crop = ((soil_con[cur_cell->id].Wcr[0] / 0.7) - moisture_content)
-                / MM_PER_M * (global_domain.locations[cur_cell->global_domain_id].area * 
-                veg_con[cur_cell->id][veg_index].Cv);
+    if(storage <= POND_IRR_FRAC * POND_STORAGE){                  
+        *demand = (POND_STORAGE - storage)
+                / MM_PER_M * (local_domain.locations[cur_irr->cell->id].area * 
+                veg_con[cur_irr->cell->id][veg_index].Cv);
+    }
+    if(*demand<0){
+        log_err("Negative demand?");
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Get crop irrigation based on available water, distribute irrigation
+ * equally across crops.
+ ******************************************************************************/
+void get_irrigation(double *irrigation_crop, double demand_cell, double demand_crop, double available_water){ 
+    
+    if(demand_cell<available_water){        
+        *irrigation_crop = demand_crop;
     }else{
-        *demand_crop=0;
-    }    
+        *irrigation_crop = demand_crop * (available_water / demand_cell);
+    }
+    
+    if(*irrigation_crop<0){
+        log_err("Negative crop irrigation?");
+    }
 }
 
 /******************************************************************************
  * @section brief
  *  
- * If there is a local source of water, do irrigation. If the local source
- * is not enough to supply the full irrigation demands then spread irrigation
- * equally.
+ * Update values used in irrigation, mostly for output.
  ******************************************************************************/
+void update_demand_and_irrigation(double irrigation_crop, double *demand_cell, double *demand_crop, double *available_water){
+    
+    *demand_crop -= irrigation_crop;
+    *demand_cell -= irrigation_crop;
+    *available_water -= irrigation_crop;
+}
 
-void do_irrigation(RID_cell *cur_cell, double demand_crop[], double *demand_cell, double moisture_content[]){
-    extern double ***out_data;
-    extern global_param_struct global_param;
+/******************************************************************************
+ * @section brief
+ *  
+ * Add irrigation water to moisture content across snow bands
+ ******************************************************************************/
+void increase_moisture_content(size_t cell_id, size_t veg_index, double *moisture_content, double increase){
     extern all_vars_struct *all_vars;
-    extern domain_struct global_domain;
-    extern veg_con_struct **veg_con;
     extern option_struct options;
-    extern RID_struct RID;
-    
-    double added_water_cell;
-    double *added_water_crop;
-    double available_water;
-    
+        
     size_t i;
-    size_t j;
-    
-    added_water_crop = malloc(cur_cell->irr->nr_crops * sizeof(*added_water_crop));
-    check_alloc_status(added_water_crop,"Memory allocation error");
-    
-    added_water_cell=0;
-    for(i=0;i<cur_cell->irr->nr_crops;i++){
-        added_water_crop[i]=0;
+      
+    *moisture_content += increase;
+
+    for(i=0;i<options.SNOW_BAND;i++){ 
+        all_vars[cell_id].cell[veg_index][i].layer[0].moist = *moisture_content;
     }
-    
-    available_water = cur_cell->rout->outflow[0] * global_param.dt;
-    
-    if(available_water<=0){
-        return;
-    }    
-    
-    for(i=0;i<cur_cell->irr->nr_crops;i++){
-        if(demand_crop[i]<=0){
-            continue;
-        }
-        
-        if(*demand_cell<available_water){        
-            added_water_crop[i] = demand_crop[i];
-        }else{
-            added_water_crop[i] = available_water * (demand_crop[i] / *demand_cell);
-        }
-    }
-    
-    double old_demand = *demand_cell;
-    
-    for(i=0;i<cur_cell->irr->nr_crops;i++){   
-        if(demand_crop[i]<=0){
-            continue;
-        }
-        
-        available_water -= added_water_crop[i];
-        added_water_cell += added_water_crop[i];
-        demand_crop[i] -= added_water_crop[i];
-        *demand_cell -= added_water_crop[i];
-        
-        if(RID.param.fpot_irrigation){
-            added_water_crop[i]+=demand_crop[i];
-            added_water_cell += added_water_crop[i];
-            demand_crop[i] = 0;
-            *demand_cell = 0;
-        }
-    }
-    
-    double difference = old_demand - *demand_cell;
-    if(difference != added_water_cell){
-        //log_info(" ");
-    }
-    
-    if(added_water_cell<0){
-        log_err("Adding a negative amount of water?");
-    }
-    
-    for(i=0;i<cur_cell->irr->nr_crops;i++){
-        if(demand_crop[i]<=0){
-            continue;
-        }
-        
-        moisture_content[i] += added_water_crop[i] 
-                    / (global_domain.locations[cur_cell->global_domain_id].area * 
-                    veg_con[cur_cell->id][cur_cell->irr->veg_index[i]].Cv) * MM_PER_M;
-        
-        for(j=0;j<options.SNOW_BAND;j++){ 
-            all_vars[cur_cell->id].cell[cur_cell->irr->veg_index[i]][j].layer[0].moist = moisture_content[i];
-        }
-    }
-    
-    cur_cell->rout->outflow[0]= available_water / global_param.dt;
-    
-    out_data[cur_cell->id][OUT_LOCAL_IRR][0] = added_water_cell / M3_PER_HM3;
-    out_data[cur_cell->id][OUT_IRR][0] += out_data[cur_cell->id][OUT_LOCAL_IRR][0];
-    
-    free(added_water_crop);
 }
 
 /******************************************************************************
  * @section brief
  *  
- * Distribute demand and moisture content values over the servicing dam
+ * Increase water storage of a field (increase in m3)
  ******************************************************************************/
-
-void update_servicing_dam_values(RID_cell *cur_cell, double moisture_content[], double demand_crop[]){    
-    size_t i;
+void increase_storage_content(size_t cell_id, size_t veg_index, double *storage, double increase){
+    extern domain_struct local_domain;
+    extern veg_con_struct **veg_con;
     
-    if(cur_cell->irr->serviced_cell==NULL){
-        return;
-    }
-    
-    for(i=0;i<cur_cell->irr->nr_crops;i++){
-        cur_cell->irr->serviced_cell->demand_crop[i]=demand_crop[i];
-        cur_cell->irr->serviced_cell->moisture_content[i]=moisture_content[i];
-    }
+    *storage+=increase 
+                / (local_domain.locations[cell_id].area * 
+                veg_con[cell_id][veg_index].Cv) * MM_PER_M;
 }

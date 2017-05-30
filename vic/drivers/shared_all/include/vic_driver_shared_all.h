@@ -145,14 +145,14 @@ enum
     OUT_IRR,              /**< total irrigation applied [hm3] */
     OUT_LOCAL_IRR,        /**< local irrigation applied [hm3] */
     OUT_DAM_IRR,          /**< dam irrigation applied [hm3] */
-    OUT_DEMAND_START,     /**< irrigation demand at start of timestep [hm3] */
-    OUT_DEMAND_DAM,       /**< irrigation demand after local irrigation [hm3] */
-    OUT_DEMAND_END,       /**< irrigation demand after dam irrigation [hm3] */
+    OUT_DEMAND,           /**< irrigation demand at start of timestep [hm3] */
     OUT_DAM_STORE,        /**< relative dam storage [-] */
+    OUT_DAM_EVAP,         /**< dam evaporation [mm] */  
     OUT_NATURAL_DISCHARGE,/**< natural river discharge [m3 s-1] */
     OUT_RUNOFF_ROUT,      /**< runoff entering the routing module [m3 s-1] */
     OUT_INFLOW_ROUT,      /**< inflow entering the routing module [m3 s-1] */
     OUT_DISCHARGE,        /**< river discharge [m3 s-1] */
+    OUT_CROP_STORE,       /**< crop pond storage [mm] */
     
     // Water Balance Terms - fluxes
     OUT_BASEFLOW,         /**< baseflow out of the bottom layer  [mm] */

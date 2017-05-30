@@ -24,6 +24,7 @@ void set_dam_information(){
     char name_tmp[MAXSTRING];
     int purp_tmp;
     double cap_tmp;
+    double area_tmp;
     int year_tmp;
     float lat_tmp;
     float lon_tmp;
@@ -59,7 +60,7 @@ void set_dam_information(){
                 continue;
             }
             
-            sscanf(cmdstr, "%*u %*200[^\t] %d %lf %*u %f %f",&year_tmp,&cap_tmp,&lon_tmp,&lat_tmp);
+            sscanf(cmdstr, "%*u %*200[^\t] %d %lf %*f %*u %f %f",&year_tmp,&cap_tmp,&lon_tmp,&lat_tmp);
             
             if(lat_tmp<RID.min_lat - (global_param.resolution/2) || 
                     lon_tmp < RID.min_lon - (global_param.resolution/2) || 
@@ -75,8 +76,8 @@ void set_dam_information(){
                 continue;
             }
             
-            x = (size_t)((lon_tmp - RID.min_lon)/global_param.resolution);
-            y = (size_t)((lat_tmp - RID.min_lat)/global_param.resolution);
+            x = (size_t)((lon_tmp - (RID.min_lon-(global_param.resolution/2)))/global_param.resolution);
+            y = (size_t)((lat_tmp - (RID.min_lat-(global_param.resolution/2)))/global_param.resolution);
             if(RID.gridded_cells[x][y]==NULL){
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
@@ -120,7 +121,7 @@ void set_dam_information(){
                 continue;
             }
             
-            sscanf(cmdstr, "%zu %200[^\t] %d %lf %d %f %f",&id_tmp,name_tmp,&year_tmp,&cap_tmp,&purp_tmp,&lon_tmp,&lat_tmp);
+            sscanf(cmdstr, "%zu %200[^\t] %d %lf %lf %d %f %f",&id_tmp,name_tmp,&year_tmp,&cap_tmp, &area_tmp ,&purp_tmp,&lon_tmp,&lat_tmp);
             
             if(lat_tmp<RID.min_lat - (global_param.resolution/2) || 
                     lon_tmp < RID.min_lon - (global_param.resolution/2) || 
@@ -136,26 +137,35 @@ void set_dam_information(){
                 continue;
             }
             
-            x = (size_t)((lon_tmp - RID.min_lon)/global_param.resolution);
-            y = (size_t)((lat_tmp - RID.min_lat)/global_param.resolution);
+            x = (size_t)((lon_tmp - (RID.min_lon-(global_param.resolution/2)))/global_param.resolution);
+            y = (size_t)((lat_tmp - (RID.min_lat-(global_param.resolution/2)))/global_param.resolution);
             if(RID.gridded_cells[x][y]==NULL){
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
             }
             
             if(cap_tmp<=0 || cap_tmp==DAM_NO_DATA){
+                debug("Dam capacity is missing");
                 fgets(cmdstr, MAXSTRING, rf);
                 continue;
             }
             
             if((purp_tmp!=DAM_HYD_FUNCTION && purp_tmp!=DAM_IRR_FUNCTION &&
                     purp_tmp!=DAM_CON_FUNCTION) || purp_tmp==DAM_NO_DATA){
+                debug("Defaulting dam to hydropower function");
                 purp_tmp = DAM_HYD_FUNCTION;
+            }
+            
+            if(area_tmp==DAM_NO_DATA){
+                //Takeuchi (1997) formula for estimating reservoir area
+                debug("Approximating dam area due to missing data");
+                area_tmp = pow((cap_tmp / 9.208),(1/1.114));
             }
             
             dams[i].global_id=id_tmp;            
             strncpy(dams[i].name,name_tmp,MAXSTRING);
             dams[i].capacity=cap_tmp * 1000000;
+            dams[i].area=area_tmp * 1000000;
             dams[i].activation_year=year_tmp;
             dams[i].function=(size_t)purp_tmp;
             dams[i].cell = RID.gridded_cells[x][y];
@@ -177,16 +187,17 @@ void set_dam_information(){
         combine=false;
         for(j=0;j<RID.nr_dams;j++){
             if(dams[i].cell==dams2[j].cell){
-                log_warn("dam %s and %s have been combined into dam %s because they are in the same cell"
-                    " and capacities have been added. If any dam had an irrigation purpose this is used."
-                    " If the dams have different activation years the earliest activation year is used.",
+                log_warn("\ndam %s and %s have been combined into dam %s because they are in the same cell.\n"
+                    "Capacities and areas have been added. If any dam is an irrigation dam, the combined dam is an irrigation dam.\n"
+                    "If the dams have different activation years the earliest activation year is used.\n",
                     dams[i].name,dams2[j].name,dams2[j].name);
 
-                dams2[j].capacity += dams[i].capacity;
-
-                if(dams2[j].function!=DAM_IRR_FUNCTION || dams[i].function==DAM_IRR_FUNCTION){
-                    dams2[j].function=DAM_IRR_FUNCTION;
+                if(dams[j].function == DAM_IRR_FUNCTION){
+                    dams2[j].function = dams[i].function;
                 }
+
+                dams2[j].capacity += dams[i].capacity;
+                dams2[j].area += dams[i].area;
 
                 if(dams2[j].activation_year > dams[i].activation_year){
                     dams2[j].activation_year = dams[i].activation_year;
@@ -217,14 +228,14 @@ void set_dam_information(){
         RID.dams[i]=dams2[i];
         RID.dams[i].cell->dam=&RID.dams[i];
         
-        RID.dams[i].demand = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].demand));
-        check_alloc_status(RID.dams[i].demand,"Memory allocation error.");
+        RID.dams[i].history_demand = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].history_demand));
+        check_alloc_status(RID.dams[i].history_demand,"Memory allocation error.");
         
-        RID.dams[i].inflow = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].inflow));
-        check_alloc_status(RID.dams[i].inflow,"Memory allocation error.");
+        RID.dams[i].history_inflow = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].history_inflow));
+        check_alloc_status(RID.dams[i].history_inflow,"Memory allocation error.");
         
-        RID.dams[i].inflow_natural = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].inflow_natural));
-        check_alloc_status(RID.dams[i].inflow_natural,"Memory allocation error.");
+        RID.dams[i].history_inflow_natural = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*RID.dams[i].history_inflow_natural));
+        check_alloc_status(RID.dams[i].history_inflow_natural,"Memory allocation error.");
         
         if(RID.dams[i].activation_year<=global_param.startyear){
             RID.dams[i].run=true;
@@ -234,9 +245,6 @@ void set_dam_information(){
         
         RID.dams[i].release = 0.0;   
         RID.dams[i].previous_release = 0.0;
-        
-        RID.dams[i].ext_influence_factor=DAM_EXT_INF_DEFAULT;
-        RID.dams[i].extreme_stor=0;
         RID.dams[i].irrigated_area=0;
         
         //preferred storage level for the start of the operational year (Hanasaki et al., 2006)
@@ -252,18 +260,10 @@ void set_dam_information(){
         RID.dams[i].total_inflow_natural = 0.0;
         
         for(j=0;j<DAM_HIST_YEARS * MONTHS_PER_YEAR;j++){
-            RID.dams[i].inflow[j] = 0.0;
-            RID.dams[i].demand[j] = 0.0;
-            RID.dams[i].inflow_natural[j]=0.0;
+            RID.dams[i].history_inflow[j] = 0.0;
+            RID.dams[i].history_demand[j] = 0.0;
+            RID.dams[i].history_inflow_natural[j]=0.0;
         }
-        
-        RID.dams[i].monthly_demand=0.0;
-        RID.dams[i].monthly_inflow=0.0;
-        RID.dams[i].monthly_inflow_natural=0.0;
-        
-        RID.dams[i].annual_demand=0.0;
-        RID.dams[i].annual_inflow=0.0;
-        RID.dams[i].annual_inflow_natural=0.0;
                 
         RID.dams[i].nr_serviced_cells = 0;           
     }
@@ -286,24 +286,11 @@ void set_dam_information(){
 void set_dam_natural_routing(){
     extern RID_struct RID;
     
-    size_t i;
-    RID_cell* current_cell;
-    
-    for(i=0;i<RID.nr_dams;i++){
-        current_cell = RID.dams[i].cell;
-        
-        while(current_cell->rout->downstream!=NULL && current_cell->rout->downstream->cell!=current_cell){
-            current_cell = current_cell->rout->downstream->cell;
-            if(current_cell->dam!=NULL){
-                log_info("Dams are found in series and therefore routing is done twice. "
-                        "Second routing calculates natural stream flow "
-                        "which is needed for environmental flow calculation");
-                RID.param.fnaturalized_flow=true;
-                break;
-            }
-        }
-        if(RID.param.fnaturalized_flow){
-            break;
-        }
+    if(!RID.param.fenv_flow){
+        RID.param.fnaturalized_flow=false;
+        return;
     }
+    
+    RID.param.fnaturalized_flow=true;
+    return;    
 }

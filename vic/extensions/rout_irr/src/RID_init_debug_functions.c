@@ -188,7 +188,7 @@ void make_uh_file(char file_path[], char file_name[]){
         size_t j;
         for(i=0;i<global_domain.ncells_active;i++){
             fprintf(file,"Cell = %zu -> ",RID.cells[i].id);
-            for(j=0;j<RID.param.max_days_uh * global_param.model_steps_per_day;j++){
+            for(j=0;j<MAX_UH_DAYS * global_param.model_steps_per_day;j++){
                 fprintf(file,"%2f;",RID.cells[i].rout->uh[j]);
                 sum+=RID.cells[i].rout->uh[j];
             }
@@ -302,26 +302,37 @@ void make_dam_service_file(char file_path[], char file_name[]){
                         fprintf(file,"   ;");
                         continue;
                     }
-                        
-                    if(RID.gridded_cells[x][y-1]->dam!=NULL && RID.gridded_cells[x][y-1]->dam->global_id == RID.dams[r].global_id){
-                        fprintf(file," OO;");
-                        continue;
-                    }
 
                     if(RID.gridded_cells[x][y-1]->irr==NULL){
-                        fprintf(file," XX;");
+                        if(RID.gridded_cells[x][y-1]->dam!=NULL && RID.gridded_cells[x][y-1]->dam->global_id == RID.dams[r].global_id){
+                            fprintf(file," OO;");
+                        }else{
+                            fprintf(file," XX;");
+                        }
                         continue;
                     }
-                    
-                    if(RID.gridded_cells[x][y-1]->irr->serviced_cell!=NULL){
-
-                        if(RID.gridded_cells[x][y-1]->irr->serviced_cell->dam->global_id==RID.dams[r].global_id){
-                            fprintf(file," ~~;");
+                        
+                    if(RID.gridded_cells[x][y-1]->irr->servicing_dam!=NULL){
+                        if(RID.gridded_cells[x][y-1]->irr->servicing_dam->global_id==RID.dams[r].global_id){
+                            
+                            if(RID.gridded_cells[x][y-1]->dam!=NULL && RID.gridded_cells[x][y-1]->dam->global_id == RID.dams[r].global_id){
+                                fprintf(file," O~;");
+                            }else{
+                                fprintf(file," ~~;");
+                            }  
+                        }else{
+                            if(RID.gridded_cells[x][y-1]->dam!=NULL && RID.gridded_cells[x][y-1]->dam->global_id == RID.dams[r].global_id){
+                                fprintf(file," OO;");
+                            }else{
+                                fprintf(file," XX;");
+                            }  
+                        }
+                    }else{
+                        if(RID.gridded_cells[x][y-1]->dam!=NULL && RID.gridded_cells[x][y-1]->dam->global_id == RID.dams[r].global_id){
+                            fprintf(file," OO;");
                         }else{
                             fprintf(file," XX;");
                         }  
-                    }else{
-                        fprintf(file," XX;");
                     }
                 }
             fprintf(file,"\n");

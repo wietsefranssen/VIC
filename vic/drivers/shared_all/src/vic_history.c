@@ -337,9 +337,7 @@ get_default_outvar_aggtype(unsigned int varid)
     case OUT_IRR:
         agg_type = AGG_TYPE_SUM;
         break;
-    case OUT_DEMAND_START:
-    case OUT_DEMAND_DAM:
-    case OUT_DEMAND_END:
+    case OUT_DEMAND:
     default:
         agg_type = AGG_TYPE_AVG;
     }

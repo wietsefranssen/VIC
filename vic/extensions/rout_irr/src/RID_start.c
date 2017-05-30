@@ -14,25 +14,24 @@
  *  
  * Set and display options for the routing, irrigation and dam module
  ******************************************************************************/
-
 void RID_start(void){
+        
     size_t nr_crops;
     size_t **crop_info;
+    
+    default_module_options();
     
     extern filenames_struct filenames;
     extern filep_struct     filep;
     extern int              mpi_rank;
-    
     if (mpi_rank == VIC_MPI_ROOT) {
-        default_module_options();
-        
         filep.globalparam = open_file(filenames.global, "r");
         get_module_options(filep.globalparam,&nr_crops,&crop_info);
-    
-        check_module_options(nr_crops,crop_info);
-
-        display_module_options();
     }
+    
+    check_module_options(nr_crops,crop_info);
+    
+    display_module_options();
 }
 
 /******************************************************************************
@@ -41,7 +40,6 @@ void RID_start(void){
  * Set options for the routing, irrigation and dam module to their default 
  * value
  ******************************************************************************/
-
 void default_module_options(void){
     extern global_param_struct global_param;
     extern RID_struct RID;
@@ -50,7 +48,6 @@ void default_module_options(void){
     global_param.resolution=VIC_RESOLUTION;
     
     RID.param.firrigation = false;
-    RID.param.fpot_irrigation = false;
     RID.param.fdams = false;
     RID.param.fdebug_mode = false;
     
@@ -58,14 +55,15 @@ void default_module_options(void){
     RID.param.debug_path[0]=0;
     RID.param.dam_filename[0]=0;
     
-    RID.param.max_days_uh=MAX_DAYS_UH;
-    RID.param.flow_velocity_uh=FLOW_VELOCITY_UH;
-    RID.param.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+    RID.param.flow_velocity=DEF_FLOW_VEL;
+    RID.param.flow_diffusivity=DEF_FLOW_DIF;
     
     RID.param.nr_crops=0;
+    RID.param.crop_ksat=DEF_CROP_KSAT;
     
     RID.param.fnaturalized_flow=false;
-    RID.param.dam_irr_distance=DAM_IRR_DISTANCE;
+    RID.param.fenv_flow=true;
+    RID.param.dam_irr_distance=DEF_IRR_DIST;
 }
 
 /******************************************************************************
@@ -74,7 +72,6 @@ void default_module_options(void){
  * Get options for the routing, irrigation and dam module from the global
  * parameter file
  ******************************************************************************/
-
 void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
     extern RID_struct RID;
     extern option_struct options;
@@ -149,10 +146,6 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
                 sscanf(cmdstr, "%*s %s", flgstr);
                 RID.param.firrigation=str_to_bool(flgstr);
             }
-            if (strcasecmp("POTENTIAL_IRRIGATION", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", flgstr);
-                RID.param.fpot_irrigation=str_to_bool(flgstr);
-            }
             if (strcasecmp("DAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 RID.param.fdams=str_to_bool(flgstr);
@@ -172,17 +165,21 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
                 sscanf(cmdstr, "%*s %s", RID.param.debug_path);
             }
             
-            if (strcasecmp("UH_MAX_DAYS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %zu", &RID.param.max_days_uh);
-            }
             if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &RID.param.flow_velocity_uh);
+                sscanf(cmdstr, "%*s %lf", &RID.param.flow_velocity);
             }
             if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &RID.param.flow_diffusivity_uh);
+                sscanf(cmdstr, "%*s %lf", &RID.param.flow_diffusivity);
+            }
+            if (strcasecmp("CROP_KSAT", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &RID.param.crop_ksat);
             }
             if (strcasecmp("DAM_IRR_DISTANCE", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &RID.param.dam_irr_distance);
+            }
+            if (strcasecmp("DAM_ENV_RELEASE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                RID.param.fenv_flow=str_to_bool(flgstr);
             }
             
             if (strcasecmp("CROP_CLASS", optstr) == 0) {
@@ -199,8 +196,7 @@ void get_module_options(FILE *gp, size_t *nr_crops, size_t ***crop_info){
  *  
  * Check options for the routing, irrigation and dam module from the global
  * parameter file
- ******************************************************************************/
-               
+ ******************************************************************************/               
 void check_module_options(size_t nr_crops, size_t **crop_info){
     extern RID_struct RID;
     extern option_struct options;
@@ -321,12 +317,6 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
     *******************************/
     if(RID.param.param_filename[0]==0){
         log_err("No routing input files, exiting simulation...");
-    } 
-    if(RID.param.fpot_irrigation){
-        if(!RID.param.firrigation){
-            log_warn("No irrigation, but potential irrigation is selected. Setting POTENTIAL_IRRIGATION to FALSE...");
-            RID.param.fpot_irrigation=false;
-        }
     }
     if(RID.param.firrigation){
         if(RID.param.nr_crops==0){
@@ -347,21 +337,21 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
         }
     }
     
-    if(RID.param.max_days_uh<1){
-        log_warn("ROUT_UH_MAX_DAYS was smaller than 1. Setting UH_MAX_DAYS to %d",MAX_DAYS_UH); 
-            RID.param.max_days_uh=MAX_DAYS_UH;
+    if(RID.param.flow_velocity<=0){
+        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",DEF_FLOW_VEL); 
+            RID.param.flow_velocity=DEF_FLOW_VEL;
     }
-    if(RID.param.flow_velocity_uh<=0){
-        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",FLOW_VELOCITY_UH); 
-            RID.param.flow_velocity_uh=FLOW_VELOCITY_UH;
+    if(RID.param.flow_diffusivity<=0){
+        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",DEF_FLOW_DIF); 
+            RID.param.flow_diffusivity=DEF_FLOW_DIF;
     }
-    if(RID.param.flow_diffusivity_uh<=0){
-        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",FLOW_DIFFUSIVITY_UH); 
-            RID.param.flow_diffusivity_uh=FLOW_DIFFUSIVITY_UH;
+    if(RID.param.crop_ksat<=0){
+        log_warn("CROP_KSAT was smaller than or equal to 0. Setting CROP_KSAT to %.1f",DEF_CROP_KSAT); 
+            RID.param.crop_ksat=DEF_CROP_KSAT;
     }
     if(RID.param.dam_irr_distance<=0){
-        log_warn("DAM_IRR_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",DAM_IRR_DISTANCE); 
-            RID.param.dam_irr_distance=DAM_IRR_DISTANCE;
+        log_warn("DAM_IRR_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",DEF_IRR_DIST); 
+            RID.param.dam_irr_distance=DEF_IRR_DIST;
     }
 }
 
@@ -371,7 +361,6 @@ void check_module_options(size_t nr_crops, size_t **crop_info){
  * Display options for the routing, irrigation and dam module from the global
  * parameter file
  ******************************************************************************/
-
 void display_module_options(){
     extern RID_struct RID;
     
@@ -379,28 +368,25 @@ void display_module_options(){
     
     fprintf(LOG_DEST, "Current Routing Settings\n");
 
-    fprintf(LOG_DEST, "UH_MAX_DAYS\t\t\t%zu\n",RID.param.max_days_uh);
-    fprintf(LOG_DEST, "UH_FLOW_VELOCITY\t\t%.2f\n",RID.param.flow_velocity_uh);
-    fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",RID.param.flow_diffusivity_uh);
+    fprintf(LOG_DEST, "UH_FLOW_VELOCITY\t\t%.2f\n",RID.param.flow_velocity);
+    fprintf(LOG_DEST, "UH_FLOW_DIFFUSION\t\t%.1f\n",RID.param.flow_diffusivity);
     
     if(RID.param.fdebug_mode){
         fprintf(LOG_DEST, "DEBUG_MODE\t\tTRUE\n");
+    }else{
+        fprintf(LOG_DEST, "DEBUG_MODE\t\tFALSE\n");
     }
     
     if(RID.param.firrigation){
         fprintf(LOG_DEST, "\nCurrent Irrigation Settings\n");
         fprintf(LOG_DEST, "IRRIGATION\t\t\tTRUE\n");
         
-        if(RID.param.fpot_irrigation){
-            fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tTRUE\n");
-        }else{
-            fprintf(LOG_DEST, "POTENTIAL_IRRIGATION\t\tFALSE\n");
-        }
         fprintf(LOG_DEST, "CROP_CLASS\tCROP_SOW\tCROP_DEVELOPED\tCROP_MATURED\tCROP_HARVEST\n");
         for(i=0;i<RID.param.nr_crops;i++){
             fprintf(LOG_DEST, "%zu\t\t%hu\t\t%hu\n",
                     RID.param.crop_class[i]+1,RID.param.start_irr[i],RID.param.end_irr[i]);
         }
+        fprintf(LOG_DEST, "CROP_KSAT\t\t%.1f\n",RID.param.crop_ksat);
     }else{
         fprintf(LOG_DEST, "\nIRRIGATION\t\t\tFALSE\n");
     }
@@ -408,6 +394,11 @@ void display_module_options(){
         fprintf(LOG_DEST, "\nCurrent Dam Settings\n");
         fprintf(LOG_DEST, "DAMS\t\t\t\tTRUE\n");
         fprintf(LOG_DEST, "DAM_IRR_DISTANCE\t\t%.1f\n",RID.param.dam_irr_distance);
+        if(RID.param.fenv_flow){
+            fprintf(LOG_DEST, "DAM_ENV_FLOW\t\t\tTRUE\n");
+        }else{
+            fprintf(LOG_DEST, "DAM_ENV_FLOW\t\t\tFALSE\n");
+        }
     }else{
         fprintf(LOG_DEST, "\nDAMS\t\t\t\tFALSE\n");
     }
