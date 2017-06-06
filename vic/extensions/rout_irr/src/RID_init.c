@@ -22,28 +22,22 @@
 
 void RID_init(void){
     extern RID_struct RID;
-    extern int              mpi_rank;
-        
-    if (mpi_rank == VIC_MPI_ROOT) {
-    
-    init_module();
+    extern int mpi_rank;
 
-    init_routing();
-    printf("RID: Okay till here!\n");
+    if (mpi_rank == VIC_MPI_ROOT) {
+        init_module();
     
+        init_routing();
+    }
     if(RID.param.firrigation){
         init_irr();
-    printf("RID: Okay till here2!\n");
     }
     if(RID.param.fdams){
         init_dams();
-    printf("RID: Okay till here3!\n");
     }
     
     if(RID.nr_dams>0 && RID.nr_irr_cells>0){
         init_dam_irr();
-    printf("RID: Okay till here4!\n");
-    }
     }
 }
 
@@ -83,7 +77,7 @@ void init_routing(void){
         make_ranked_cells_file(RID.param.debug_path, "ranks");
         make_uh_file(RID.param.debug_path, "unit_hydrograph");
     }
-
+    
 }
 
 /******************************************************************************
@@ -97,15 +91,11 @@ void init_irr(void){
     extern RID_struct RID;
     
     set_irr();
-        printf("1RID: Okay till here2!\n");
-
     set_irr_crops();
-    printf("2RID: Okay till here2!\n");
     
     if(RID.param.fdebug_mode){
         //Debug functions
         make_nr_crops_file(RID.param.debug_path, "nr_crops");
-    printf("3RID: Okay till here2!\n");
     }
 }
 

@@ -75,7 +75,10 @@ get_global_param(FILE *gp)
             /*************************************
                Get Model Global Parameters
             *************************************/
-            if (strcasecmp("NODES", optstr) == 0) {
+            if (strcasecmp("RESOLUTION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &global_param.resolution);
+            }
+            else if (strcasecmp("NODES", optstr) == 0) {
                 sscanf(cmdstr, "%*s %zu", &options.Nnode);
             }
             else if (strcasecmp("MODEL_STEPS_PER_DAY", optstr) == 0) {

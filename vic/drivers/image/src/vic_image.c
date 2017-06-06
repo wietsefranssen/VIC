@@ -118,61 +118,59 @@ main(int    argc,
     
     // allocate memory for routing
     RID_alloc();   // Routing routine (extension)
- 
+
     // initialize routing parameters from parameter files
     RID_init();    // Routing routine (extension)
- //   sleep(5000);
-    exit(1);
-//
-//    // populate model state, either using a cold start or from a restart file
-//    vic_populate_model_state();
-//
-//    // initialize output structures
-//    vic_init_output(&(dmy[0]));
-//    
-//    // Initialization is complete, print settings
-//    log_info(
-//        "Initialization is complete, print global param and options structures");
-//    print_global_param(&global_param);
-//    print_option(&options);
-//
-//    // stop init timer
-//    timer_stop(&(global_timers[TIMER_VIC_INIT]));
-//    // start vic run timer
-//    timer_start(&(global_timers[TIMER_VIC_RUN]));
-//
-//    // loop over all timesteps
-//    for (current = 0; current < global_param.nrecs; current++) {
-//        // read forcing data
-//        vic_force();
-//
-//        // run vic over the domain
+
+    // populate model state, either using a cold start or from a restart file
+    vic_populate_model_state();
+
+    // initialize output structures
+    vic_init_output(&(dmy[0]));
+    
+    // Initialization is complete, print settings
+    log_info(
+        "Initialization is complete, print global param and options structures");
+    print_global_param(&global_param);
+    print_option(&options);
+
+    // stop init timer
+    timer_stop(&(global_timers[TIMER_VIC_INIT]));
+    // start vic run timer
+    timer_start(&(global_timers[TIMER_VIC_RUN]));
+
+    // loop over all timesteps
+    for (current = 0; current < global_param.nrecs; current++) {
+        // read forcing data
+        vic_force();
+
+        // run vic over the domain
         vic_image_run(&(dmy[current]));
-//
-//        // Write history files
-//        vic_write_output(&(dmy[current]));
-//  
-//        // if output (routing)
-//        RID_write(); // Routing routine (extension)
-//
-//        // Write state file
-//        if (check_save_state_flag(current)) {
-//            debug("writing state file for timestep %zu", current);
-//            vic_store(&(dmy[current]), state_filename);
-//            debug("finished storing state file: %s", state_filename)
-//        }
-//    }
-//    // stop vic run timer
-//    timer_stop(&(global_timers[TIMER_VIC_RUN]));
-//    // start vic final timer
-//    timer_start(&(global_timers[TIMER_VIC_FINAL]));
-//    
-//    // clean up
-//    vic_image_finalize();
-//
-//    // clean up routing
-//    RID_finalize();    // Routing routine (extension)
-//
+
+        // Write history files
+        vic_write_output(&(dmy[current]));
+  
+        // if output (routing)
+        RID_write(); // Routing routine (extension)
+
+        // Write state file
+        if (check_save_state_flag(current)) {
+            debug("writing state file for timestep %zu", current);
+            vic_store(&(dmy[current]), state_filename);
+            debug("finished storing state file: %s", state_filename)
+        }
+    }
+    // stop vic run timer
+    timer_stop(&(global_timers[TIMER_VIC_RUN]));
+    // start vic final timer
+    timer_start(&(global_timers[TIMER_VIC_FINAL]));
+    
+    // clean up
+    vic_image_finalize();
+
+    // clean up routing
+    RID_finalize();    // Routing routine (extension)
+
     // finalize MPI
     status = MPI_Finalize();
     if (status != MPI_SUCCESS) {
