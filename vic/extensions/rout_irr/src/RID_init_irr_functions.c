@@ -21,11 +21,13 @@ void set_irr(){
     size_t j;
     size_t iIrr;  
     
+    printf("3RID: Okay till here2!\n");
     /*******************************
      Find number of irrigated cells
     *******************************/
     for(i=0;i<global_domain.ncells_active;i++){
                 
+    printf("RID: %zu!\n", i );
         for(j=0;j<RID.param.nr_crops;j++){
             
             if(veg_con_map[i].vidx[RID.param.crop_class[j]]==NODATA_VEG){
@@ -39,7 +41,7 @@ void set_irr(){
         
     RID.irr_cells=malloc(RID.nr_irr_cells * sizeof(*RID.irr_cells));
     check_alloc_status(RID.irr_cells,"Memory allocation error.");
-    
+
     /*******************************
      Assign irrigated cells
     *******************************/

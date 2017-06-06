@@ -287,11 +287,11 @@ void set_cell_upstream(){
             }
         }
         
-        
         RID.cells[i].rout->upstream = malloc(RID.cells[i].rout->nr_upstream * sizeof(*RID.cells[i].rout->upstream));
         check_alloc_status(RID.cells[i].rout->upstream,"Memory allocation error.");
-        
+
         for(j=0;j<RID.cells[i].rout->nr_upstream;j++){
+            printf("Cell: %zu, upstream: %zu, %zu\n",i,RID.cells[i].rout->nr_upstream, RID.gridded_cells[x][y]->rout->nr_upstream=0);
             RID.cells[i].rout->upstream[j]=upstream_cells[j];
         }
     }

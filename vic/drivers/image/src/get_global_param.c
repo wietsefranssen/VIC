@@ -27,6 +27,8 @@
 
 #include <vic_driver_image.h>
 
+#include "rout.h"
+
 /******************************************************************************
  * @brief    Read the VIC model global control file, getting values for
  *           global parameters, model options, and debugging controls.
@@ -39,6 +41,7 @@ get_global_param(FILE *gp)
     extern param_set_struct    param_set;
     extern filenames_struct    filenames;
     extern size_t              NF, NR;
+    extern RID_struct          RID;
 
     char                       cmdstr[MAXSTRING];
     char                       optstr[MAXSTRING];
@@ -49,8 +52,11 @@ get_global_param(FILE *gp)
     unsigned int               tmpstartdate;
     unsigned int               tmpenddate;
     unsigned short int         lastday[MONTHS_PER_YEAR];
-
-
+    unsigned short int        *tmpcropinfo;
+    unsigned short int         icrop = 0;
+    size_t                     i;
+    size_t                     j;
+    
     /** Read through global control file to find parameters **/
 
     rewind(gp);
@@ -546,6 +552,71 @@ get_global_param(FILE *gp)
             }
 
             /***********************************
+             RID Scheme
+            ***********************************/
+            // General            
+            else if (strcasecmp("DEBUG_MODE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                RID.param.fdebug_mode=str_to_bool(flgstr);
+            }
+            else if (strcasecmp("DEBUG_OUTPUT", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", RID.param.debug_path);
+            }            
+            
+            // Routing
+            else if (strcasecmp("ROUT_PARAM", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", RID.param.param_filename);
+            } 
+            else if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &RID.param.flow_velocity);
+            }
+            else if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &RID.param.flow_diffusivity);
+            }
+            
+            // Irrigation
+            else if (strcasecmp("IRRIGATION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                RID.param.firrigation=str_to_bool(flgstr);
+            }
+            else if (strcasecmp("NCROP", optstr) == 0) {
+                sscanf(cmdstr, "%*s %zu", &RID.param.nr_crops);
+                // Crop vegetation class, start of irrigation season and end of irrigation season
+                // is stored in this variable
+                tmpcropinfo = malloc(3 * RID.param.nr_crops * sizeof(*tmpcropinfo));
+                check_alloc_status(tmpcropinfo,"Memory allocation error");
+            }
+            else if (strcasecmp("CROP_KSAT", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &RID.param.crop_ksat);
+            }
+            else if (strcasecmp("CROP_CLASS", optstr) == 0) {
+                if(RID.param.nr_crops == 0) { 
+                    log_err("Number of crop classes (NCROP) should be defined first");
+                } else if (icrop>RID.param.nr_crops) {
+                    log_err("Number of crop classes (NCROP) is less than the defined crops");
+                } else {
+                    sscanf(cmdstr, "%*s %hu %hu %hu", &tmpcropinfo[icrop * 3 + 0], &tmpcropinfo[icrop * 3 + 1], &tmpcropinfo[icrop * 3 + 2]);
+                    icrop++;
+                }
+            }
+            
+            // Dams
+            else if (strcasecmp("DAMS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                RID.param.fdams=str_to_bool(flgstr);
+            }
+            else if (strcasecmp("DAM_PARAM", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", RID.param.dam_filename);
+            }
+            else if (strcasecmp("DAM_IRR_DISTANCE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &RID.param.dam_irr_distance);
+            }
+            else if (strcasecmp("DAM_ENV_RELEASE", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                RID.param.fenv_flow=str_to_bool(flgstr);
+            }            
+            
+            /***********************************
                Unrecognized Global Parameter Flag
             ***********************************/
             else {
@@ -994,6 +1065,89 @@ get_global_param(FILE *gp)
     // Default file formats (if unset)
     if (options.SAVE_STATE && options.STATE_FORMAT == UNSET_FILE_FORMAT) {
         options.STATE_FORMAT = NETCDF4_CLASSIC;
+    }
+
+    /***********************************
+     RID Scheme
+    ***********************************/
+    // General
+    if(strcmp(RID.param.param_filename, "MISSING") == 0){
+        log_err("No routing input files, exiting simulation...");
+    }
+    if(RID.param.fdebug_mode){
+        if(strcmp(RID.param.debug_path, "MISSING") == 0){
+            log_warn("No debug output path, but debug is selected. Setting DEBUG_MODE to FALSE..."); 
+            RID.param.fdebug_mode=false;
+        }
+    }
+    // Routing    
+    if(RID.param.flow_velocity<=0){
+        log_warn("ROUT_UH_FLOW_VELOCITY was smaller than or equal to 0. Setting UH_FLOW_VELOCITY to %.2f",DEF_FLOW_VEL); 
+            RID.param.flow_velocity=DEF_FLOW_VEL;
+    }
+    if(RID.param.flow_diffusivity<=0){
+        log_warn("ROUT_UH_FLOW_DIFFUSIVITY was smaller than or equal to 0. Setting UH_FLOW_DIFFUSIVITY to %.2f",DEF_FLOW_DIF); 
+            RID.param.flow_diffusivity=DEF_FLOW_DIF;
+    }
+    
+    // Irrigation
+    if(RID.param.firrigation){
+        if(RID.param.nr_crops==0){
+            log_warn("No crops given, but irrigation is selected. Setting IRRIGATION to FALSE...");
+            RID.param.firrigation=false;
+        }
+        if(RID.param.crop_ksat<=0){
+            log_warn("CROP_KSAT was smaller than or equal to 0. Setting CROP_KSAT to %.1f",DEF_CROP_KSAT); 
+                RID.param.crop_ksat=DEF_CROP_KSAT;
+        }
+        
+        RID.param.crop_class = malloc(RID.param.nr_crops * sizeof(*RID.param.crop_class));
+        check_alloc_status(RID.param.crop_class,"Memory allocation error");
+        RID.param.start_irr = malloc(RID.param.nr_crops * sizeof(*RID.param.start_irr));
+        check_alloc_status(RID.param.start_irr,"Memory allocation error");
+        RID.param.end_irr = malloc(RID.param.nr_crops * sizeof(*RID.param.end_irr));
+        check_alloc_status(RID.param.end_irr,"Memory allocation error");
+        
+        // Go through the crops 2 times to identify duplicates in the global
+        // configuration file. If there are duplicates, exit the simulation
+        for(i=0; i<RID.param.nr_crops; i++){
+            for(j=0; j<RID.param.nr_crops; j++){
+                if(j==i){
+                    continue;
+                }
+
+                if(tmpcropinfo[i * 3 + 0]==tmpcropinfo[j * 3 + 0]){                
+                    if(tmpcropinfo[i * 3 + 1]<tmpcropinfo[i * 3 + 2]){
+                        if((tmpcropinfo[j * 3 + 1]<=tmpcropinfo[i * 3 + 2] && tmpcropinfo[j * 3 + 1]>=tmpcropinfo[i * 3 + 1]) || 
+                                (tmpcropinfo[j * 3 + 2]>=tmpcropinfo[i * 3 + 1] && tmpcropinfo[j * 3 + 2]<=tmpcropinfo[i * 3 + 2])){
+                            log_err("Crop vegetation class %d is duplicated or overlapping", tmpcropinfo[i *3 +0]);
+                        }
+                    }else{
+                        if((tmpcropinfo[j * 3 + 1]>=tmpcropinfo[i * 3 + 2] && tmpcropinfo[j * 3 + 1]<=tmpcropinfo[i * 3 + 1]) || 
+                                (tmpcropinfo[j * 3 + 2]<=tmpcropinfo[i * 3 + 1] && tmpcropinfo[j * 3 + 2]>=tmpcropinfo[i * 3 + 2])){
+                            log_err("Crop vegetation class %d is duplicated or overlapping", tmpcropinfo[i *3 +0]);
+                        }
+                    }
+                }
+            }
+            RID.param.crop_class[i] = tmpcropinfo[i * 3 + 0];
+            RID.param.start_irr[i] = tmpcropinfo[i * 3 + 1];
+            RID.param.end_irr[i] = tmpcropinfo[i * 3 + 2];
+        }
+    }
+    
+    free(tmpcropinfo);
+    
+    // Dams
+    if(RID.param.fdams){
+        if(strcmp(RID.param.dam_filename, "MISSING") == 0){
+            log_warn("No dam input files, but dams are selected. Setting DAMS to FALSE..."); 
+            RID.param.fdams=false;
+        }
+    }    
+    if(RID.param.dam_irr_distance<=0){
+        log_warn("DAM_IRR_DISTANCE was smaller than or equal to 0. Setting DAM_IRR_DISTANCE to %.1f",DEF_IRR_DIST); 
+            RID.param.dam_irr_distance=DEF_IRR_DIST;
     }
 
     /*********************************

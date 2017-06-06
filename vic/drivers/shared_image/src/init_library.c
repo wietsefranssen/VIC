@@ -26,6 +26,8 @@
 
 #include <vic_driver_shared_image.h>
 
+#include "rout.h"
+
 /******************************************************************************
  * @brief    Initialize soil con sructure.
  *****************************************************************************/
@@ -166,6 +168,26 @@ initialize_domain_info(domain_info_struct *info)
 }
 
 /******************************************************************************
+ * @brief    Initialize domain info stucture
+ *****************************************************************************/
+void
+initialize_RID_param(RID_param *params)
+{
+    strcpy(params->dam_filename, "MISSING");
+    strcpy(params->param_filename, "MISSING");
+    strcpy(params->debug_path, "MISSING");
+    params->nr_crops = 0;
+    params->flow_velocity = DEF_FLOW_VEL;
+    params->flow_diffusivity = DEF_FLOW_DIF;
+    params->crop_ksat = DEF_CROP_KSAT;
+    params->dam_irr_distance = DEF_IRR_DIST;
+    params->fdams = false;
+    params->firrigation = false;
+    params->fdebug_mode = false;
+    params->fenv_flow = false;
+}
+
+/******************************************************************************
  * @brief    Initialize global structures
  *****************************************************************************/
 void
@@ -174,6 +196,7 @@ initialize_global_structures(void)
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern int           mpi_rank;
+    extern RID_struct    RID;
 
     initialize_domain_info(&local_domain.info);
     if (mpi_rank == VIC_MPI_ROOT) {
@@ -183,5 +206,6 @@ initialize_global_structures(void)
         initialize_filenames();
         initialize_domain_info(&global_domain.info);
         initialize_domain(&global_domain);
+        initialize_RID_param(&RID.param);
     }
 }
