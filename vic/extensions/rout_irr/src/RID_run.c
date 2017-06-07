@@ -19,35 +19,38 @@ void RID_run(dmy_struct* cur_dmy){
     extern domain_struct global_domain;
     extern RID_struct RID;
     extern double ***out_data;
+    extern int mpi_rank;
     
     RID_cell *cur_cell;
     size_t i;
-        
-    for(i=0;i<global_domain.ncells_active;i++){
-        cur_cell = RID.sorted_cells[i];
-        
-        do_routing_module(cur_cell);
-        
-        if(cur_cell->irr!=NULL){
-            do_irrigation_module(cur_cell->irr,cur_dmy);
-            
-            if(cur_cell->irr->servicing_dam!=NULL){
-                do_dam_demand(cur_cell->irr);
+
+    if (mpi_rank == VIC_MPI_ROOT) {        
+        for(i=0;i<global_domain.ncells_active;i++){
+            cur_cell = RID.sorted_cells[i];
+
+            do_routing_module(cur_cell);
+
+            if(cur_cell->irr!=NULL){
+                do_irrigation_module(cur_cell->irr,cur_dmy);
+
+                if(cur_cell->irr->servicing_dam!=NULL){
+                    do_dam_demand(cur_cell->irr);
+                }
             }
+
+            if(cur_cell->dam!=NULL){
+                do_dam_flow(cur_cell->dam);
+            }
+
+            out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
+            out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0]; 
+            out_data[cur_cell->id][OUT_IRR][0]=+out_data[cur_cell->id][OUT_LOCAL_IRR][0]; 
         }
-        
-        if(cur_cell->dam!=NULL){
-            do_dam_flow(cur_cell->dam);
+
+        for(i=0;i<RID.nr_dams;i++){
+            do_dam_history_module(&RID.dams[i], cur_dmy);
+            do_dam_module(&RID.dams[i], cur_dmy);
         }
-        
-        out_data[cur_cell->id][OUT_DISCHARGE][0]=cur_cell->rout->outflow[0]; 
-        out_data[cur_cell->id][OUT_NATURAL_DISCHARGE][0]=cur_cell->rout->outflow_natural[0]; 
-        out_data[cur_cell->id][OUT_IRR][0]=+out_data[cur_cell->id][OUT_LOCAL_IRR][0]; 
-    }
-    
-    for(i=0;i<RID.nr_dams;i++){
-        do_dam_history_module(&RID.dams[i], cur_dmy);
-        do_dam_module(&RID.dams[i], cur_dmy);
     }
 }
 

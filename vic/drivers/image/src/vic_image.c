@@ -116,12 +116,16 @@ main(int    argc,
     // initialize model parameters from parameter files
     vic_image_init();
     
+    printf("Into RIDalloc\n");
     // allocate memory for routing
     RID_alloc();   // Routing routine (extension)
-
+    printf("Exit RIDalloc, into RIDinit\n");
     // initialize routing parameters from parameter files
     RID_init();    // Routing routine (extension)
-
+    printf("Exit RIDinit\n");
+    
+    exit(1);
+    
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state();
 

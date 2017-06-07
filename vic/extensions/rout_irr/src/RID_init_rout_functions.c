@@ -9,31 +9,53 @@
 /******************************************************************************
  * @section brief
  *  
- * Set the cell information. ID is set to match VIC ID, cells are placed
- * in grid and set their coordinates in the grid.
+ * Initialize RID structure and cells
  ******************************************************************************/
+void init_RID(){
+    extern RID_struct RID;
+    extern domain_struct global_domain;
+    
+    size_t i;
+    
+    RID.nr_dams=0;
+    RID.nr_irr_cells=0;
+    RID.min_lat = DBL_MAX;
+    RID.min_lon = DBL_MAX;
+    
+    for(i=0;i<global_domain.ncells_active;i++){
+        RID.cells[i].global_domain_id=0;
+        RID.cells[i].id=0;
+        RID.cells[i].x=0;
+        RID.cells[i].y=0;
+        RID.cells[i].rout=NULL;
+        RID.cells[i].dam=NULL;
+        RID.cells[i].irr=NULL;
+    }
+}
 
-void set_cell_location(){
+/******************************************************************************
+ * @section brief
+ *  
+ * Set the cell information. Each cell is matched to a VIC cell
+ * and cells are also placed in a grid.
+ ******************************************************************************/
+void set_cell_locations(){
     extern RID_struct RID;
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern global_param_struct global_param;
     
-    RID.min_lat=DBL_MAX;
-    RID.min_lon=DBL_MAX;
-    
     size_t i;
-    size_t j;
+    size_t iCell;
     size_t x;
     size_t y;
     
-    j=0;
-    
+    iCell=0;    
     for(i=0;i<global_domain.ncells_total;i++){
         if(global_domain.locations[i].run){
-            RID.cells[j].global_domain_id=i;
-            RID.cells[j].id=j;
-            j++;
+            RID.cells[iCell].global_domain_id=i;
+            RID.cells[iCell].id=iCell;
+            iCell++;
         }
         
         if(global_domain.locations[i].latitude<RID.min_lat){
@@ -56,11 +78,60 @@ void set_cell_location(){
 /******************************************************************************
  * @section brief
  *  
+ * Initialize routing cells
+ ******************************************************************************/
+void init_routing(){
+    extern RID_struct RID;
+    extern global_param_struct global_param;
+    extern domain_struct global_domain;
+    
+    size_t i;
+    size_t j;
+    
+    for(i=0;i<global_domain.ncells_active;i++){
+        RID.rout_cells[i].cell=NULL;
+        RID.rout_cells[i].upstream=NULL;
+        RID.rout_cells[i].nr_upstream=0;
+        RID.rout_cells[i].outflow=NULL;
+        RID.rout_cells[i].outflow_natural=NULL;
+        RID.rout_cells[i].rank=0;
+        RID.rout_cells[i].uh=NULL;
+        RID.rout_cells[i].upstream=NULL;
+        
+        printf("So far so good...\n");
+        
+        for(j=0;j<MAX_UH_DAYS * global_param.model_steps_per_day;j++){
+            RID.rout_cells[i].uh[j]=0.0;
+            RID.rout_cells[i].outflow[j]=0.0;
+            RID.rout_cells[i].outflow_natural[j]=0.0;
+        }
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
+ * Set the routing information. Each RID cell has a routing cell
+ ******************************************************************************/
+void set_routing_locations(){
+    extern RID_struct RID;
+    extern domain_struct global_domain;
+    
+    size_t i;  
+          
+    for(i=0;i<global_domain.ncells_active;i++){
+        RID.cells[i].rout=&RID.rout_cells[i];
+        RID.rout_cells[i].cell=&RID.cells[i];
+    }
+}
+
+/******************************************************************************
+ * @section brief
+ *  
  * Set the unit-hydrograph for the routing module. Unit hydro-graphs are first
  * calculated precisely and later aggregated to match the time-step of VIC
  ******************************************************************************/
-
-void set_cell_uh(char variable_name[]){
+void set_routing_uh(char variable_name[]){
     extern RID_struct RID;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
@@ -69,66 +140,71 @@ void set_cell_uh(char variable_name[]){
     double *distance;
     double *uh_precise;
     double *uh_cumulative;
+    
     double uh_sum;
+    size_t time;
     
     size_t i;
-    size_t j=0;
+    size_t iCell;
+    size_t j;
     
-    distance = malloc(global_domain.ncells_active * sizeof(*distance));
-    check_alloc_status(distance,"Memory allocation error.");
-    
+    distance = malloc(global_domain.ncells_total * sizeof(*distance));
+    check_alloc_status(distance,"Memory allocation error.");    
     uh_precise = malloc((MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_precise));
-    check_alloc_status(uh_precise,"Memory allocation error.");
-    
+    check_alloc_status(uh_precise,"Memory allocation error.");    
     uh_cumulative = malloc((MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP) * sizeof(*uh_cumulative));
     check_alloc_status(uh_cumulative,"Memory allocation error.");
     
+    /*******************************
+     Get direction information
+    *******************************/
     size_t start[]={0, 0};
     size_t count[]={global_domain.n_ny, global_domain.n_nx};
-    get_scatter_nc_field_double(RID.param.param_filename,variable_name,start,count,distance);    
+    get_nc_field_double(RID.param.param_filename,variable_name,start,count,distance);    
     
-    
-    for (i=0;i<global_domain.ncells_active;i++){
-        size_t time=0;
-        uh_sum=0.0;
+    iCell=0;
+    for (i=0;i<global_domain.ncells_total;i++){
+        if(global_domain.locations[i].run){     
+        
+            /*******************************
+             Precise unit-hydrograph calculation, also saving sums (Lohmann et al. (1994) equation)
+            *******************************/        
+            time=0;
+            uh_sum=0.0;
+            for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+                time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP);
+                uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * RID.param.flow_diffusivity)))
+                        * exp(-(pow(RID.param.flow_velocity * time - distance[i],2)) / (4 * RID.param.flow_diffusivity * time));
+                uh_sum += uh_precise[j];
+            }
 
-            
-        /*******************************
-         Precise unit-hydrograph calculation, also saving sums (Lohmann et al. (1994) equation)
-        *******************************/
-        for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
-            time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP);
-            uh_precise[j]=(distance[i]/(2 * time * sqrt(M_PI * time * RID.param.flow_diffusivity)))
-                    * exp(-(pow(RID.param.flow_velocity * time - distance[i],2)) / (4 * RID.param.flow_diffusivity * time));
-            uh_sum += uh_precise[j];
-        }
-
-        /*******************************
-         Normalizing unit hydro-graphs over extent
-        *******************************/
-        for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
-            uh_precise[j] = uh_precise[j] / uh_sum;
-            if(j>0){
-                uh_cumulative[j] = uh_cumulative [j-1] + uh_precise[j];
-                if(uh_cumulative[j]>1){
-                    uh_cumulative[j]=1.0;
+            /*******************************
+             Normalizing unit hydro-graphs over extent
+            *******************************/
+            for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day * UH_STEPS_PER_TIMESTEP;j++){
+                uh_precise[j] = uh_precise[j] / uh_sum;
+                if(j>0){
+                    uh_cumulative[j] = uh_cumulative [j-1] + uh_precise[j];
+                    if(uh_cumulative[j]>1){
+                        uh_cumulative[j]=1.0;
+                    }
+                }else{
+                    uh_cumulative[j] = uh_precise[j];
                 }
-            }else{
-                uh_cumulative[j] = uh_precise[j];
             }
-        }
 
-        /*******************************
-         Aggregate unit hydro-graph over VIC time-step
-        *******************************/
-        for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day;j++){
-            if(j<(MAX_UH_DAYS * global_param.model_steps_per_day)- 1){
-                RID.cells[i].rout->uh[j]=uh_cumulative[(j+1) * UH_STEPS_PER_TIMESTEP] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
-            }else{
-                RID.cells[i].rout->uh[j]=uh_cumulative[((j+1) * UH_STEPS_PER_TIMESTEP)-1] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
+            /*******************************
+             Aggregate unit hydro-graph over VIC time-step
+            *******************************/
+            for(j=0;j< MAX_UH_DAYS * global_param.model_steps_per_day;j++){
+                if(j<(MAX_UH_DAYS * global_param.model_steps_per_day)- 1){
+                    RID.cells[iCell].rout->uh[j]=uh_cumulative[(j+1) * UH_STEPS_PER_TIMESTEP] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
+                }else{
+                    RID.cells[iCell].rout->uh[j]=uh_cumulative[((j+1) * UH_STEPS_PER_TIMESTEP)-1] - uh_cumulative[j * UH_STEPS_PER_TIMESTEP];
+                }
             }
-            RID.cells[i].rout->outflow[j]=0.0;
-            RID.cells[i].rout->outflow_natural[j]=0.0;
+            
+            iCell++;
         }
     }
     
@@ -142,8 +218,7 @@ void set_cell_uh(char variable_name[]){
  *  
  * Set the pointer to downstream cells based on direction map.
  ******************************************************************************/
-
-void set_cell_downstream(char variable_name[]){
+void set_routing_downstream(char variable_name[]){
     extern RID_struct RID;
     extern domain_struct global_domain;
     
@@ -217,8 +292,7 @@ void set_cell_downstream(char variable_name[]){
  * Set the pointer to upstream cells based on previously defined
  * downstream cells.
  ******************************************************************************/
-
-void set_cell_upstream(){
+void set_routing_upstream(){
     extern RID_struct RID;
     extern domain_struct global_domain;
     
@@ -307,8 +381,7 @@ void set_cell_upstream(){
  * algorithm. As cells are removed other cells will be freed of upstream cells.
  * Continue until finished.
  ******************************************************************************/
-
-void set_cell_rank(void){ 
+void set_routing_rank(void){ 
     extern RID_struct RID;
     extern domain_struct global_domain;
     

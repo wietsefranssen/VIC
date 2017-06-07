@@ -74,22 +74,23 @@ struct RID_params{
 
 struct RID_structs {
     RID_param param;                    /**< module parameters */
+    double min_lat;
+    double min_lon;
     
-    double min_lon;                     /**< scalar - minimum longitude in domain [degree] */
-    double min_lat;                     /**< scalar - minimum latitude in domain [degree] */
-    
+    // General
     RID_cell *cells;                    /**< 1d array [nr_active_cells] - module cells */  
     RID_cell **sorted_cells;            /**< 1d array [nr_active_cells] - pointers to sorted module cells */
     RID_cell ***gridded_cells;          /**< 2d array [n_nx][n_ny] - pointer to gridded module cells */
     
-    //routing
-    rout_cell *rout_cells;              /**< 1d array [nr_active_cells] - routed cells */     
+    // Routing
+    rout_cell *rout_cells;              /**< 1d array [nr_active_cells] - routed cells */
+    double *rout_run_bas;               /**< 1d array [nr_active_cells] - runoff and baseflow of cells */
     
-    //irrigation
+    // Irrigation
     size_t nr_irr_cells;                /**< scalar - number of irrigated cells */
     irr_cell *irr_cells;                /**< 1d array [nr_irr_cells] - irrigated cells */ 
     
-    //dams
+    // Dams
     size_t nr_dams;                     /**< scalar - number of dam units */
     dam_unit *dams;                     /**< 1d array [nr_dams] - dam units */  
 };
@@ -197,15 +198,20 @@ void init_irr(void);
 void init_dams(void);
 void init_dam_irr(void);
 
-//Routing module
-void set_cell_location(void);
-void set_cell_uh(char variable_name[]);
-void set_cell_downstream(char variable_name[]);
-void set_cell_upstream(void);
-void set_cell_rank(void);
+// General
+void init_RID(void);
+void set_cell_locations(void);
+
+// Routing module
+void init_routing(void);
+void set_routing_locations(void);
+void set_routing_uh(char variable_name[]);
+void set_routing_downstream(char variable_name[]);
+void set_routing_upstream(void);
+void set_routing_rank(void);
 
 //Irrigation module
-void set_irr();
+void alloc_init_set_irrigation();
 void set_irr_crops(void); 
 
 //Dam module
@@ -289,6 +295,13 @@ void make_nr_crops_file(char file_path[], char file_name[]);
 int is_leap_year(int year);
 int nr_days_in_month(int month, int year);
 double distance(size_t from_x, size_t from_y, size_t to_x, size_t to_y);
+
+/*******************************
+ MPI
+*******************************/
+void gather_put_var_int(int *ivar, int *ivar_local);
+void gather_put_var_double(double *dvar, double *dvar_local);
+
 
 #endif /* ROUT_H */
 
