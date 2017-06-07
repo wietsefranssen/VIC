@@ -59,7 +59,7 @@
 #define ERROR        -999      /**< Error Flag returned by subroutines */
 
 /***** Define maximum array sizes for model source code *****/
-#define MAX_VEG         12     /**< maximum number of vegetation types per cell */
+#define MAX_VEG         15     /**< maximum number of vegetation types per cell */
 #define MAX_LAYERS      3      /**< maximum number of soil moisture layers */
 #define MAX_NODES       50     /**< maximum number of soil thermal nodes */
 #define MAX_BANDS       10     /**< maximum number of snow bands */
@@ -336,6 +336,32 @@ typedef struct {
     unsigned short int time_units;  /**< Units for numeric times */
     double time_origin_num;        /**< Numeric date origin */
     char time_origin_str[MAXSTRING];  /**< string date origin */
+    
+    // RID    
+    bool firrigation;                   /**< bool - TRUE = do irrigation FALSE = do not do irrigation */
+    bool fdams;                         /**< bool - TRUE = use dams during routing FALSE = do not use dmas */
+    bool fdebug_mode;                   /**< bool - TRUE = use debugging during routing FALSE = do not use debugging */
+    
+    char param_filename[MAXSTRING];     /**< string - file path and name of routing paramaters */
+    char dam_filename[MAXSTRING];       /**< string - file path and name of dam information */
+    char debug_path[MAXSTRING];         /**< string - file path of debug files */
+    
+    //routing
+    double flow_velocity;               /**< scalar - flow velocity of the unit hydrograph */
+    double flow_diffusivity;            /**< scalar - flow diffusivity of the unit hydrograph */
+    
+    //irrigation
+    unsigned int nr_crops;                    /**< scalar - number of vegetation classes that are irrigated crops */
+    unsigned int crop_class[MAX_VEG];                 /**< 1d array [nr_crop_classes] - vegetation classes which are irrigated crops */
+    unsigned short int start_irr[MAX_VEG];      /**< 1d array [nr_crop_classes] - day of year when crop growth starts */
+    unsigned short int end_irr[MAX_VEG];        /**< 1d array [nr_crop_classes] - day of year when crop growth ends */
+    double crop_ksat;                   /**< scalar - saturated hydraulic conductivity of crop pond [mm/d] */
+    
+    //dams
+    bool fnaturalized_flow;             /**< bool - TRUE = do both normal and naturalized routing FALSE = do not do double routing */
+    bool fenv_flow;                     /**< bool - TRUE = do environmental flow release FALSE = do not do environmental flow release */
+    double dam_irr_distance;            /**< scalar - maximum cell distance a cell can be irrigated from a dam [cells] */
+
 } global_param_struct;
 
 /******************************************************************************

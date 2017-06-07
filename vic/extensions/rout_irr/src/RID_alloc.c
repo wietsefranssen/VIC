@@ -26,7 +26,6 @@ void RID_alloc(void){
     
     size_t i;
     size_t x;
-    size_t y;
     
     if (mpi_rank == VIC_MPI_ROOT) {
         /*******************************
@@ -54,18 +53,12 @@ void RID_alloc(void){
 
         RID.sorted_cells = malloc(global_domain.ncells_active * sizeof(*RID.sorted_cells));
         check_alloc_status(RID.sorted_cells,"Memory allocation error.");
-        for(i=0;i<global_domain.ncells_active;i++){
-            RID.sorted_cells[i] = NULL;
-        }
 
         RID.gridded_cells = malloc(global_domain.n_nx * sizeof(*RID.gridded_cells));
         check_alloc_status(RID.gridded_cells,"Memory allocation error.");
         for(x=0;x<global_domain.n_nx;x++){
             RID.gridded_cells[x] = malloc(global_domain.n_ny * sizeof(*RID.gridded_cells[x]));
-            check_alloc_status(RID.gridded_cells[x],"Memory allocation error.");
-            for(y=0;y<global_domain.n_ny;y++){
-                RID.gridded_cells[x][y]= NULL;
-            }                
+            check_alloc_status(RID.gridded_cells[x],"Memory allocation error.");      
         }
     }
 }

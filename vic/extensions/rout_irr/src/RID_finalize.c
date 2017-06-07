@@ -18,12 +18,13 @@ void RID_finalize(void){
     extern domain_struct global_domain;
     size_t i;
     extern int mpi_rank;
+    extern global_param_struct global_param;
     
     if (mpi_rank == VIC_MPI_ROOT) {   
         /*******************************
          Dam module
         *******************************/
-        if(RID.param.fdams){
+        if(global_param.fdams){
             for(i=0;i<RID.nr_dams;i++){            
                 free(RID.dams[i].history_demand);
                 free(RID.dams[i].history_inflow);
@@ -34,7 +35,7 @@ void RID_finalize(void){
         /*******************************
          Irrigation module
         *******************************/
-        if(RID.param.firrigation){
+        if(global_param.firrigation){
             for(i=0;i<RID.nr_irr_cells;i++){
                 free(RID.irr_cells[i].crop_index);
                 free(RID.irr_cells[i].veg_index);
@@ -71,13 +72,6 @@ void RID_finalize(void){
 
             free(RID.rout_cells[i].upstream);
         }
-
-        /*******************************
-         Parameters
-        *******************************/
-        free(RID.param.crop_class);
-        free(RID.param.start_irr);
-        free(RID.param.end_irr);
 
         /*******************************
          RID module

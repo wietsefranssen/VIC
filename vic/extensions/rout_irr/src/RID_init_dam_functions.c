@@ -44,7 +44,7 @@ void set_dam_information(){
     size_t y;
     bool combine;
         
-    rf=open_file(RID.param.dam_filename,"r");
+    rf=open_file(global_param.dam_filename,"r");
     fgets(cmdstr, MAXSTRING, rf);
     
     /*******************************
@@ -284,13 +284,13 @@ void set_dam_information(){
  ******************************************************************************/
 
 void set_dam_natural_routing(){
-    extern RID_struct RID;
+    extern global_param_struct global_param;
     
-    if(!RID.param.fenv_flow){
-        RID.param.fnaturalized_flow=false;
+    if(!global_param.fenv_flow){
+        global_param.fnaturalized_flow=false;
         return;
     }
     
-    RID.param.fnaturalized_flow=true;
+    global_param.fnaturalized_flow=true;
     return;    
 }

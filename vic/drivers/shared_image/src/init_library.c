@@ -171,7 +171,7 @@ initialize_domain_info(domain_info_struct *info)
  * @brief    Initialize domain info stucture
  *****************************************************************************/
 void
-initialize_RID_param(RID_param *params)
+initialize_RID_param(global_param_struct *params)
 {
     strcpy(params->dam_filename, "MISSING");
     strcpy(params->param_filename, "MISSING");
@@ -196,7 +196,7 @@ initialize_global_structures(void)
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern int           mpi_rank;
-    extern RID_struct    RID;
+    extern global_param_struct global_param;
 
     initialize_domain_info(&local_domain.info);
     if (mpi_rank == VIC_MPI_ROOT) {
@@ -206,6 +206,6 @@ initialize_global_structures(void)
         initialize_filenames();
         initialize_domain_info(&global_domain.info);
         initialize_domain(&global_domain);
-        initialize_RID_param(&RID.param);
+        initialize_RID_param(&global_param);
     }
 }

@@ -61,7 +61,7 @@ void RID_run(dmy_struct* cur_dmy){
  * upstream cells, and uses unit hydro-graphs to rout the water.
  ******************************************************************************/
 void do_routing_module(RID_cell *cur_cell){
-    extern RID_struct RID;
+    extern global_param_struct global_param;
     
     double runoff = 0.0;                                //m^3s
     double inflow = 0.0;                                //m^3s
@@ -70,7 +70,7 @@ void do_routing_module(RID_cell *cur_cell){
     shift_outflow_array(cur_cell);
     do_routing(cur_cell, runoff, inflow, false);
 
-    if(RID.param.fnaturalized_flow){
+    if(global_param.fnaturalized_flow){
         gather_runoff_inflow(cur_cell, &runoff, &inflow, true);
         do_routing(cur_cell,runoff, inflow, true);
     }
@@ -187,7 +187,7 @@ void do_dam_flow(dam_unit *cur_dam){
     extern global_param_struct global_param;
     
     cur_dam->total_inflow += cur_dam->cell->rout->outflow[0] * global_param.dt;
-    if(RID.param.fnaturalized_flow){
+    if(global_param.fnaturalized_flow){
         cur_dam->total_inflow_natural+=cur_dam->cell->rout->outflow_natural[0] * global_param.dt;
     }
     

@@ -23,6 +23,7 @@
 void RID_init(void){
     extern RID_struct RID;
     extern int mpi_rank;
+    extern global_param_struct global_param;
 
     if (mpi_rank == VIC_MPI_ROOT) {
         
@@ -49,13 +50,18 @@ void RID_init(void){
         printf("Done set_routing_rank()\n");
         
         printf("Exit INITrouting, into INITirrigation\n");
+    }    
+    printf("finished, node: %d\n",mpi_rank);
+    // Irrigation
+    if (global_param.firrigation) {
+        printf("en?!?!!?\n");
+        alloc_init_set_irrigation();
+    printf("finished2, node: %d\n",mpi_rank);
+    }
+
+    if (mpi_rank == VIC_MPI_ROOT) {
         
-        // Irrigation
-        if(RID.param.firrigation){
-            alloc_init_set_irrigation();
-        }
-        
-        if(RID.param.fdams){
+        if(global_param.fdams){
             init_dams();
         }
 
@@ -64,27 +70,27 @@ void RID_init(void){
         }
         
         //Debug
-        if(RID.param.fdebug_mode){
-            make_location_file(RID.param.debug_path, "locations");
-            make_global_location_file(RID.param.debug_path, "global_locations");
-            make_nr_upstream_file(RID.param.debug_path, "nr_upstream");
-            make_ranked_cells_file(RID.param.debug_path, "ranks");
-            make_uh_file(RID.param.debug_path, "unit_hydrograph");
+        if(global_param.fdebug_mode){
+            make_location_file(global_param.debug_path, "locations");
+            make_global_location_file(global_param.debug_path, "global_locations");
+            make_nr_upstream_file(global_param.debug_path, "nr_upstream");
+            make_ranked_cells_file(global_param.debug_path, "ranks");
+            make_uh_file(global_param.debug_path, "unit_hydrograph");
             
-            if(RID.param.firrigation){
-                make_nr_crops_file(RID.param.debug_path, "nr_crops");
+            if(global_param.firrigation){
+                make_nr_crops_file(global_param.debug_path, "nr_crops");
             }
-            if(RID.param.fdams){
-                make_dam_file(RID.param.debug_path,"dams");
+            if(global_param.fdams){
+                make_dam_file(global_param.debug_path,"dams");
             }
 
             if(RID.nr_dams>0 && RID.nr_irr_cells>0){
-                make_dam_service_file(RID.param.debug_path,"dam_service");
+                make_dam_service_file(global_param.debug_path,"dam_service");
             }
         }
     }else{
         printf("Entering sleep...\n");
-        sleep(500000);
+//        sleep(500000);
     }
 }
 

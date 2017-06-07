@@ -65,7 +65,7 @@ save_data_struct   *save_data;  // [ncells]
 double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
-RID_struct         RID; // Routing routine (extension)
+RID_struct          RID; // Routing routine (extension)
 //rout_struct         rout;
 
 /******************************************************************************

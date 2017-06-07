@@ -85,7 +85,6 @@ void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
                         double monthly_inflow[], double monthly_inflow_natural[], 
                         double annual_inflow, double annual_inflow_natural){
     extern global_param_struct global_param;
-    extern RID_struct RID;    
     
     size_t j;
     size_t month;
@@ -98,7 +97,7 @@ void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
     double release_added; 
     double inter_annual_change;
           
-    if(!RID.param.fnaturalized_flow){
+    if(!global_param.fnaturalized_flow){
         for(j=0;j<MONTHS_PER_YEAR;j++){
             monthly_inflow_natural[j]=monthly_inflow[j];
         }
@@ -147,7 +146,7 @@ void calculate_dam_release(dam_unit *cur_dam, dmy_struct* cur_dmy,
         }
     }
     
-    if(RID.param.fenv_flow){
+    if(global_param.fenv_flow){
         for(j=0;j<MONTHS_PER_YEAR;j++){
             if(monthly_inflow_natural[j] > DAM_HIGH_FLOW_PERC * annual_inflow_natural){
                 env_release[j] = monthly_inflow_natural[j] * DAM_ENV_FLOW_LOW;

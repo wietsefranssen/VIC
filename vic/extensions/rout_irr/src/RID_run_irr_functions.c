@@ -12,16 +12,16 @@
  * Return whether a crop is in its irrigation season.
  ******************************************************************************/
 bool in_irrigation_season(size_t crop_index, size_t current_julian_day){
-    extern RID_struct RID;
-    
-    if(RID.param.start_irr[crop_index] < RID.param.end_irr[crop_index]){
-        if(current_julian_day>=RID.param.start_irr[crop_index] && current_julian_day < RID.param.end_irr[crop_index]){
+    extern global_param_struct global_param;
+
+    if(global_param.start_irr[crop_index] < global_param.end_irr[crop_index]){
+        if(current_julian_day>=global_param.start_irr[crop_index] && current_julian_day < global_param.end_irr[crop_index]){
             return true;
         }else{
             return false;
         }
     }else{
-        if(current_julian_day>=RID.param.start_irr[crop_index] && current_julian_day < RID.param.end_irr[crop_index]){
+        if(current_julian_day>=global_param.start_irr[crop_index] && current_julian_day < global_param.end_irr[crop_index]){
             return false;
         }else{
             return true;

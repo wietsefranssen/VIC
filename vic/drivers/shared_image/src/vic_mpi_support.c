@@ -100,7 +100,7 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in global_param_struct
-    nitems = 32;
+    nitems = 48;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -254,6 +254,77 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
     blocklengths[i] = MAXSTRING;
     mpi_types[i++] = MPI_CHAR;
 
+//    bool firrigation;
+    offsets[i] = offsetof(global_param_struct, firrigation);
+    mpi_types[i++] = MPI_C_BOOL;
+    
+//    bool fdams;      
+    offsets[i] = offsetof(global_param_struct, fdams);
+    mpi_types[i++] = MPI_C_BOOL;   
+    
+//    bool fdebug_mode;    
+    offsets[i] = offsetof(global_param_struct, fdebug_mode);
+    mpi_types[i++] = MPI_C_BOOL;    
+    
+//    char param_filename[MAXSTRING];  
+    offsets[i] = offsetof(global_param_struct, param_filename);
+    blocklengths[i] = MAXSTRING;
+    mpi_types[i++] = MPI_CHAR;
+   
+//    char dam_filename[MAXSTRING]; 
+    offsets[i] = offsetof(global_param_struct, dam_filename);
+    blocklengths[i] = MAXSTRING;
+    mpi_types[i++] = MPI_CHAR;
+      
+//    char debug_path[MAXSTRING];  
+    offsets[i] = offsetof(global_param_struct, debug_path);
+    blocklengths[i] = MAXSTRING;
+    mpi_types[i++] = MPI_CHAR;
+       
+//    double flow_velocity;  
+    offsets[i] = offsetof(global_param_struct, flow_velocity);
+    mpi_types[i++] = MPI_DOUBLE;
+            
+//    double flow_diffusivity;  
+    offsets[i] = offsetof(global_param_struct, flow_diffusivity);
+    mpi_types[i++] = MPI_DOUBLE;
+          
+//    unsigned int nr_crops;  
+    offsets[i] = offsetof(global_param_struct, nr_crops);
+    mpi_types[i++] = MPI_UNSIGNED;
+    
+//    unsigned int *crop_class;                 
+    offsets[i] = offsetof(global_param_struct, crop_class);
+    blocklengths[i] = MAX_VEG;
+    mpi_types[i++] = MPI_UNSIGNED;
+
+//    unsigned short int *start_irr;      
+    offsets[i] = offsetof(global_param_struct, start_irr);
+    blocklengths[i] = MAX_VEG;
+    mpi_types[i++] = MPI_UNSIGNED_SHORT;
+
+//    unsigned short int *end_irr;
+    offsets[i] = offsetof(global_param_struct, end_irr);
+    blocklengths[i] = MAX_VEG;
+    mpi_types[i++] = MPI_UNSIGNED_SHORT;
+    
+//    double crop_ksat;
+    offsets[i] = offsetof(global_param_struct, crop_ksat);
+    mpi_types[i++] = MPI_DOUBLE;
+                   
+//    bool fnaturalized_flow;  
+    offsets[i] = offsetof(global_param_struct, fnaturalized_flow);
+    mpi_types[i++] = MPI_C_BOOL; 
+    
+//    bool fenv_flow;      
+    offsets[i] = offsetof(global_param_struct, fenv_flow);
+    mpi_types[i++] = MPI_C_BOOL; 
+    
+//    double dam_irr_distance; 
+    offsets[i] = offsetof(global_param_struct, dam_irr_distance);
+    mpi_types[i++] = MPI_DOUBLE;
+          
+    
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);
@@ -1383,8 +1454,8 @@ create_MPI_param_struct_type(MPI_Datatype *mpi_type)
 
     // double ROOT_BRENT_T
     offsets[i] = offsetof(parameters_struct, ROOT_BRENT_T);
-    mpi_types[i++] = MPI_DOUBLE;
-
+    mpi_types[i++] = MPI_DOUBLE;        
+    
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);

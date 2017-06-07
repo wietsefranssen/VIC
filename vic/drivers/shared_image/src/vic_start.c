@@ -115,7 +115,7 @@ vic_start(void)
         validate_parameters();
     }
 
-    // broadcast global, option, param structures as well as global valies
+    // broadcast global, option, param structures as well as global values
     // such as NF and NR
     status = MPI_Bcast(&NF, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");

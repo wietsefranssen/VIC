@@ -40,18 +40,14 @@ void gather_put_var_double(double *dvar, double *var_local) {
     extern int mpi_rank;
     extern int *mpi_map_global_array_offsets;
     extern int *mpi_map_local_array_sizes;
-    extern size_t *filter_active_cells;
     extern size_t *mpi_map_mapping_array;
     int status;
     double *dvar_gathered = NULL;
     double *dvar_remapped = NULL;
-    size_t               grid_size;
     size_t               i;
     
     if (mpi_rank == VIC_MPI_ROOT) {
-        grid_size = global_domain.n_nx * global_domain.n_ny;
-
-        for (i = 0; i < grid_size; i++) {
+        for (i = 0; i < global_domain.ncells_active; i++) {
             dvar[i] = 0;
         }
 
@@ -73,10 +69,7 @@ void gather_put_var_double(double *dvar, double *var_local) {
     if (mpi_rank == VIC_MPI_ROOT) {
         // remap the array
         map(sizeof (double), global_domain.ncells_active, NULL,
-                mpi_map_mapping_array, dvar_gathered, dvar_remapped);
-        // expand to full grid size
-        map(sizeof (double), global_domain.ncells_active, NULL,
-                filter_active_cells, dvar_remapped, dvar);
+                mpi_map_mapping_array, dvar_gathered, dvar);
 
         // cleanup
         free(dvar_gathered);
@@ -96,46 +89,39 @@ void gather_put_var_int(int *ivar, int *ivar_local) {
     extern int mpi_rank;
     extern int *mpi_map_global_array_offsets;
     extern int *mpi_map_local_array_sizes;
-    extern size_t *filter_active_cells;
     extern size_t *mpi_map_mapping_array;
     int status;
-    int *dvar_gathered = NULL;
-    int *dvar_remapped = NULL;
-    size_t               grid_size;
+    int *ivar_gathered = NULL;
+    int *ivar_remapped = NULL;
     size_t               i;
     
     if (mpi_rank == VIC_MPI_ROOT) {
-        grid_size = global_domain.n_nx * global_domain.n_ny;
-
-        for (i = 0; i < grid_size; i++) {
+        for (i = 0; i < global_domain.ncells_active; i++) {
             ivar[i] = 0;
         }
 
-        dvar_gathered =
-                malloc(global_domain.ncells_active * sizeof (*dvar_gathered));
-        check_alloc_status(dvar_gathered, "Memory allocation error.");
+        ivar_gathered =
+                malloc(global_domain.ncells_active * sizeof (*ivar_gathered));
+        check_alloc_status(ivar_gathered, "Memory allocation error.");
 
-        dvar_remapped =
-                malloc(global_domain.ncells_active * sizeof (*dvar_remapped));
-        check_alloc_status(dvar_remapped, "Memory allocation error.");
+        ivar_remapped =
+                malloc(global_domain.ncells_active * sizeof (*ivar_remapped));
+        check_alloc_status(ivar_remapped, "Memory allocation error.");
     }
     // Gather the results from the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Gatherv(ivar_local, local_domain.ncells_active, MPI_INT,
-            dvar_gathered, mpi_map_local_array_sizes,
+            ivar_gathered, mpi_map_local_array_sizes,
             mpi_map_global_array_offsets, MPI_INT,
             VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
     if (mpi_rank == VIC_MPI_ROOT) {
         // remap the array
         map(sizeof (int), global_domain.ncells_active, NULL,
-                mpi_map_mapping_array, dvar_gathered, dvar_remapped);
-        // expand to full grid size
-        map(sizeof (int), global_domain.ncells_active, NULL,
-                filter_active_cells, dvar_remapped, ivar);
+                mpi_map_mapping_array, ivar_gathered, ivar);
 
         // cleanup
-        free(dvar_gathered);
-        free(dvar_remapped);
+        free(ivar_gathered);
+        free(ivar_remapped);
     }
 }
