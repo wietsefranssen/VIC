@@ -39,6 +39,7 @@ domain_struct       global_domain;
 global_param_struct global_param;
 lake_con_struct    *lake_con = NULL;
 domain_struct       local_domain;
+mpi_param_struct    mpi_param;
 MPI_Comm            MPI_COMM_VIC = MPI_COMM_WORLD;
 MPI_Datatype        mpi_global_struct_type;
 MPI_Datatype        mpi_filenames_struct_type;
@@ -106,7 +107,8 @@ main(int    argc,
 
     // read global parameters
     vic_image_start();
-
+    extention_image_start();
+    
     // allocate memory
     vic_alloc();
 

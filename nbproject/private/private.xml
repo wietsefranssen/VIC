@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <code-assistance-data xmlns="http://www.netbeans.org/ns/make-project-private/1">
+        <code-model-enabled>true</code-model-enabled>
+    </code-assistance-data>
+    <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
+        <activeConfTypeElem>0</activeConfTypeElem>
+        <activeConfIndexElem>5</activeConfIndexElem>
+    </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="4">
+        <file>
+            <url>vic/drivers/shared_all/src/put_data.c</url>
+            <bookmark id="4">
+                <name/>
+                <line>34</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>vic/drivers/shared_image/src/vic_mpi_support.c</url>
+            <bookmark id="2">
+                <name/>
+                <line>1779</line>
+                <key/>
+            </bookmark>
+            <bookmark id="3">
+                <name/>
+                <line>1791</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/wietse/Documents/Projects/VIC_model/VIC/vic/drivers/shared_image/include/vic_mpi.h</file>
+            <file>file:/home/wietse/Documents/Projects/VIC_model/VIC/vic/drivers/shared_image/src/vic_mpi_support.c</file>
+        </group>
+    </open-files>
+</project-private>

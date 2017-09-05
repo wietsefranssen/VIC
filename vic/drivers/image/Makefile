@@ -35,6 +35,9 @@ DRIVERPATH = .
 SHAREDPATH = ../shared_all
 SHAREDIMAGEPATH = ../shared_image
 
+# EXTENTION RUN PATH
+EXTSHAREDIMAGEPATH = ../../extensions/shared_image
+
 # VIC RUN PATH
 VICPATH = ../../vic_run
 
@@ -71,7 +74,8 @@ LOG_LVL = 5
 INCLUDES = -I ${DRIVERPATH}/include \
 		   -I ${VICPATH}/include \
 		   -I ${SHAREDPATH}/include \
-		   -I ${SHAREDIMAGEPATH}/include
+		   -I ${SHAREDIMAGEPATH}/include \
+		   -I ${EXTSHAREDIMAGEPATH}/include
 
 # Uncomment to include debugging information
 CFLAGS  =  ${INCLUDES} ${NC_CFLAGS}  -ggdb -O0 -Wall -Wextra -std=c99 \

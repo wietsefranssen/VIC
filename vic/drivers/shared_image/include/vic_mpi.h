@@ -32,6 +32,15 @@
 
 #define VIC_MPI_ROOT 0
 
+enum{
+    BASIN_DELINEATION,
+    CELL_DELINEATION
+};
+
+typedef struct{
+    unsigned short int delineation_method;
+} mpi_param_struct;
+
 void create_MPI_filenames_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_global_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_location_struct_type(MPI_Datatype *mpi_type);
