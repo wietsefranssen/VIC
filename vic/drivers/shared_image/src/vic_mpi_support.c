@@ -1637,7 +1637,7 @@ map(size_t  size,
  *        MPI_Gatherv
  *****************************************************************************/
 void
-mpi_map_decomp_domain(size_t   ncells,
+mpi_map_decomp_domain_random(size_t   ncells,
                       size_t   mpi_size,
                       int    **mpi_map_local_array_sizes,
                       int    **mpi_map_global_array_offsets,
@@ -1654,7 +1654,7 @@ mpi_map_decomp_domain(size_t   ncells,
                                            sizeof(*(*
                                                     mpi_map_global_array_offsets)));
     *mpi_map_mapping_array = calloc(ncells, sizeof(*(*mpi_map_mapping_array)));
-
+    
     // determine number of cells per node
     for (n = ncells, i = 0; n > 0; n--, i++) {
         if (i >= mpi_size) {

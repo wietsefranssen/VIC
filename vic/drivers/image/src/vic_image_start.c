@@ -47,4 +47,5 @@ vic_image_start(void)
 
     // initialize image mode structures and settings
     vic_start();
+    //ext_start();
 }

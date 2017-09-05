@@ -66,6 +66,11 @@ double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
+ext_option_struct  ext_options;
+ext_filenames_struct  ext_filenames;
+basin_struct     basins = NULL;
+rout_con_struct *rout_con = NULL;
+
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model
  * @details The image mode driver runs VIC for a single timestep for all grid
@@ -107,14 +112,13 @@ main(int    argc,
 
     // read global parameters
     vic_image_start();
-    //extention_image_start();
     
     // allocate memory
     vic_alloc();
 
     // initialize model parameters from parameter files
     vic_image_init();
-
+    
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state();
 
@@ -139,6 +143,7 @@ main(int    argc,
 
         // run vic over the domain
         vic_image_run(&(dmy[current]));
+        //ext_image_run();
 
         // Write history files
         vic_write_output(&(dmy[current]));

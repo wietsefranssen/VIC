@@ -377,6 +377,10 @@
               <in>routing.h</in>
             </df>
             <df name="src">
+              <in>ext_initialize_files.c</in>
+              <in>ext_start.c</in>
+              <in>get_routing_parameters.c</in>
+              <in>initialize_extension_options.c</in>
             </df>
           </df>
         </df>

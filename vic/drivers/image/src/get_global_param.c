@@ -35,9 +35,11 @@ void
 get_global_param(FILE *gp)
 {
     extern option_struct       options;
+    extern ext_option_struct   ext_options;
     extern global_param_struct global_param;
     extern param_set_struct    param_set;
     extern filenames_struct    filenames;
+    extern ext_filenames_struct    ext_filenames;
     extern size_t              NF, NR;
 
     char                       cmdstr[MAXSTRING];
@@ -278,7 +280,18 @@ get_global_param(FILE *gp)
                     log_err("Unknown RC_MODE option: %s", flgstr);
                 }
             }
-
+            
+            /*************************************
+               Extension options
+            *************************************/            
+            else if (strcasecmp("ROUTING", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                ext_options.ROUTING = str_to_bool(flgstr);
+            }            
+            else if (strcasecmp("DAMS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                ext_options.DAMS = str_to_bool(flgstr);
+            }
             /*************************************
                Define log directory
             *************************************/
@@ -382,6 +395,14 @@ get_global_param(FILE *gp)
             else if (strcasecmp("PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.params);
             }
+            
+            /*************************************
+               Define extension parameter files
+            *************************************/
+            else if (strcasecmp("ROUTING_PARAMETERS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", ext_filenames.routing);
+            }
+            
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("TRUE", flgstr) == 0) {
@@ -995,7 +1016,14 @@ get_global_param(FILE *gp)
     if (options.SAVE_STATE && options.STATE_FORMAT == UNSET_FILE_FORMAT) {
         options.STATE_FORMAT = NETCDF4_CLASSIC;
     }
-
+    
+    /******************************************
+       Check for undefined required extension parameters
+    ******************************************/
+    if(ext_options.ROUTING && strcmp(ext_filenames.routing, "MISSING") == 0){
+        log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing.");
+    }
+    
     /*********************************
        Output major options
     *********************************/

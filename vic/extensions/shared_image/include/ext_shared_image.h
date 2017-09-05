@@ -14,8 +14,22 @@
 #ifndef EXT_SHARED_IMAGE_H
 #define EXT_SHARED_IMAGE_H
 
+#include <vic_driver_shared_image.h>
 #include <routing.h>
 #include <dams.h>
+
+typedef struct{
+    bool ROUTING;
+    bool DAMS;
+}ext_option_struct;
+
+typedef struct {
+    char routing[MAXSTRING];
+} ext_filenames_struct;
+
+void initialise_extention_options(void);
+void initialise_extension_filenames(void);
+void ext_start(void);
 
 #endif
 

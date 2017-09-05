@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_image.h>
+#include <ext_shared_image.h>
 
 /******************************************************************************
  * @brief    Initialize soil con sructure.
@@ -183,5 +184,8 @@ initialize_global_structures(void)
         initialize_filenames();
         initialize_domain_info(&global_domain.info);
         initialize_domain(&global_domain);
+        
+        //initialize_extension_options();
+        //initialize_extension_filenames();
     }
 }
