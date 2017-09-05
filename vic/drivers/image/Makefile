@@ -36,6 +36,7 @@ SHAREDPATH = ../shared_all
 SHAREDIMAGEPATH = ../shared_image
 
 # EXTENTION RUN PATH
+EXTSHAREDPATH = ../../extensions/shared_all
 EXTSHAREDIMAGEPATH = ../../extensions/shared_image
 
 # VIC RUN PATH
@@ -75,6 +76,7 @@ INCLUDES = -I ${DRIVERPATH}/include \
 		   -I ${VICPATH}/include \
 		   -I ${SHAREDPATH}/include \
 		   -I ${SHAREDIMAGEPATH}/include \
+		   -I ${EXTSHAREDPATH}/include \
 		   -I ${EXTSHAREDIMAGEPATH}/include
 
 # Uncomment to include debugging information
@@ -102,13 +104,17 @@ HDRS = \
 	$(wildcard ${VICPATH}/include/*.h) \
 	$(wildcard ${DRIVERPATH}/include/*.h) \
 	$(wildcard ${SHAREDPATH}/include/*.h) \
-	$(wildcard ${SHAREDIMAGEPATH}/include/*.h)
+	$(wildcard ${SHAREDIMAGEPATH}/include/*.h) \
+	$(wildcard ${EXTSHAREDPATH}/include/*.h) \
+	$(wildcard ${EXTSHAREDIMAGEPATH}/include/*.h)
 
 SRCS = \
 	$(wildcard ${VICPATH}/src/*.c) \
 	$(wildcard ${DRIVERPATH}/src/*.c) \
 	$(wildcard ${SHAREDPATH}/src/*.c) \
-	$(wildcard ${SHAREDIMAGEPATH}/src/*.c)
+	$(wildcard ${SHAREDIMAGEPATH}/src/*.c) \
+	$(wildcard ${EXTSHAREDPATH}/src/*.c) \
+	$(wildcard ${EXTSHAREDIMAGEPATH}/src/*.c)
 
 OBJS = $(SRCS:%.o=%.c)
 

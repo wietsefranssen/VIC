@@ -107,7 +107,7 @@ main(int    argc,
 
     // read global parameters
     vic_image_start();
-    extention_image_start();
+    //extention_image_start();
     
     // allocate memory
     vic_alloc();

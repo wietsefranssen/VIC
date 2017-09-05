@@ -364,15 +364,17 @@
               <in>rout.c</in>
             </df>
           </df>
+          <df name="shared_all">
+            <df name="include">
+            </df>
+            <df name="src">
+            </df>
+          </df>
           <df name="shared_image">
             <df name="include">
-              <in>ext_driver_shared_image.h</in>
-            </df>
-            <df name="routing">
-              <df name="include">
-              </df>
-              <df name="src">
-              </df>
+              <in>dams.h</in>
+              <in>ext_shared_image.h</in>
+              <in>routing.h</in>
             </df>
             <df name="src">
             </df>
