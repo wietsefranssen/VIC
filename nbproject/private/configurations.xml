@@ -44,6 +44,188 @@
         <df name="notebooks">
         </df>
       </df>
+      <df name="samples_wur">
+        <df name="image_driver">
+          <df name="debug_output">
+          </df>
+          <df name="forcing">
+          </df>
+          <df name="input">
+            <df name="parameters_Danube">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Mekong">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Mekong_irr">
+              <df name="SA">
+              </df>
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Mississippi">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Ob">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Pearl">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Yangtze">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="parameters_Yellow">
+              <df name="temp">
+                <df name="RVIC_params">
+                  <df name="output">
+                    <df name="logs">
+                    </df>
+                    <df name="params">
+                    </df>
+                    <df name="plots">
+                    </df>
+                  </df>
+                </df>
+                <df name="RVIC_params_temp">
+                  <df name="aggregated">
+                  </df>
+                  <df name="remapped">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="VIC_Dams">
+              <df name="Backup">
+              </df>
+              <df name="GRanD_origional">
+                <df name="GRanD_Version_1_1">
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="output">
+          </df>
+        </df>
+      </df>
       <df name="tests">
         <df name="examples">
         </df>
@@ -364,12 +546,6 @@
               <in>rout.c</in>
             </df>
           </df>
-          <df name="shared_all">
-            <df name="include">
-            </df>
-            <df name="src">
-            </df>
-          </df>
           <df name="shared_image">
             <df name="include">
               <in>dams.h</in>
@@ -540,6 +716,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -551,7 +729,6 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Wietse_image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Wietse/Wietse_image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Wietse/image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Stehekin_image_test_wietse.global</runcommandpicklistitem>
@@ -561,8 +738,9 @@
           <runcommandpicklistitem>mpiexec -np 2 "${OUTPUT_PATH}" -g input/image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/global.param.sample.image.rout_rvic.txt</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -g input/global.param.sample.image.rout_rvic.txt</runcommand>
+        <runcommand>"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommand>
         <rundir>./samples_wur/image_driver/</rundir>
         <buildfirst>false</buildfirst>
         <terminal-type>0</terminal-type>
@@ -757,6 +935,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>

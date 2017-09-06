@@ -2849,6 +2849,23 @@
           </preprocessorList>
         </cTool>
       </folder>
+      <folder path="0/vic/extensions/shared_image">
+        <cTool>
+          <incDir>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
+            <pElem>/usr/include</pElem>
+            <pElem>/usr/include/hdf5/serial</pElem>
+            <pElem>/usr/include/mpich</pElem>
+            <pElem>vic/drivers/image</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
       <folder path="0/vic/vic_run">
         <cTool>
           <incDir>
@@ -3132,16 +3149,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3153,16 +3171,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3190,16 +3209,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3431,16 +3451,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3449,16 +3470,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3470,16 +3492,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3491,16 +3514,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3529,16 +3553,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3612,16 +3637,17 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3711,16 +3737,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3734,16 +3761,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3757,16 +3785,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3801,16 +3830,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3824,16 +3854,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3847,16 +3878,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3870,16 +3902,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3893,16 +3926,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3916,16 +3950,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3939,16 +3974,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3962,16 +3998,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -3985,16 +4022,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4008,16 +4046,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4050,16 +4089,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4073,16 +4113,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4096,16 +4137,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4142,16 +4184,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4185,16 +4228,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4208,16 +4252,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4231,16 +4276,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4254,16 +4300,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4277,16 +4324,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4300,16 +4348,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4323,16 +4372,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4346,16 +4396,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4369,16 +4420,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4392,16 +4444,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4415,16 +4468,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4438,16 +4492,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4461,16 +4516,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4507,16 +4563,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4530,16 +4587,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4553,16 +4611,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4576,16 +4635,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4599,16 +4659,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4622,16 +4683,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4645,16 +4707,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4668,16 +4731,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4691,16 +4755,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4714,16 +4779,17 @@
             <pElem>vic/vic_run/include</pElem>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4733,16 +4799,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4752,16 +4819,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4771,16 +4839,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4790,16 +4859,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4809,16 +4879,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4828,16 +4899,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4847,16 +4919,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4885,16 +4958,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4904,16 +4978,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4939,16 +5014,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4974,16 +5050,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -4993,16 +5070,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5012,16 +5090,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5050,16 +5129,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5069,16 +5149,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5088,16 +5169,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5107,16 +5189,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5126,16 +5209,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5145,16 +5229,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5164,16 +5249,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5183,16 +5269,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5338,16 +5425,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5357,16 +5445,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5376,16 +5465,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5395,16 +5485,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5414,16 +5505,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5448,16 +5540,17 @@
             flavor2="3">
         <cTool flags="3">
           <incDir>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5588,62 +5681,58 @@
         <cTool flags="3">
         </cTool>
       </item>
-      <item path="vic/extensions/shared_image/include/dams.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/include/ext_shared_image.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/include/routing.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/src/ext_initialize_files.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/ext_start.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/get_basins.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/initialize_extension_options.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/sort.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/vic_run/src/CalcAerodynamic.c" ex="false" tool="0" flavor2="3">
         <cTool flags="3">
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5652,17 +5741,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5671,17 +5761,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5693,17 +5784,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5715,17 +5807,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5737,17 +5830,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5756,17 +5850,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5775,17 +5870,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5797,17 +5893,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5819,17 +5916,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5838,17 +5936,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5860,17 +5959,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5882,17 +5982,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5901,17 +6002,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5940,17 +6042,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5959,17 +6062,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5978,17 +6082,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -5997,17 +6102,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6019,17 +6125,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6038,17 +6145,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6060,17 +6168,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6079,17 +6188,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6098,17 +6208,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6117,17 +6228,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6136,17 +6248,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6155,17 +6268,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6177,17 +6291,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6199,17 +6314,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6221,17 +6337,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6243,17 +6360,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6262,17 +6380,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6281,17 +6400,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6300,17 +6420,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6319,17 +6440,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6338,17 +6460,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6360,17 +6483,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6379,17 +6503,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6412,17 +6537,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6431,17 +6557,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6450,17 +6577,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6469,17 +6597,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6491,17 +6620,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6524,17 +6654,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6543,17 +6674,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6562,17 +6694,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6581,17 +6714,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6600,17 +6734,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6622,17 +6757,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6641,17 +6777,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6660,17 +6797,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6679,17 +6817,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6698,17 +6837,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6717,17 +6857,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6736,17 +6877,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6758,17 +6900,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6777,17 +6920,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6796,17 +6940,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -6815,17 +6960,18 @@
           <incDir>
             <pElem>vic/drivers/shared_all/include</pElem>
             <pElem>vic/drivers/shared_image/include</pElem>
-            <pElem>vic/extensions/rout_rvic/include</pElem>
+            <pElem>vic/extensions/shared_all/include</pElem>
+            <pElem>vic/extensions/shared_image/include</pElem>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/hdf5/serial</pElem>
             <pElem>/usr/include/mpich</pElem>
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.5.0.1-137-g9d68"</Elem>
-            <Elem>HOSTNAME="wlin"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
+            <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
-            <Elem>USERNAME="wietse"</Elem>
+            <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
         </cTool>
       </item>
@@ -17222,7 +17368,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -17520,7 +17666,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17542,7 +17688,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17580,7 +17726,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17822,7 +17968,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17841,7 +17987,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17863,7 +18009,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17885,7 +18031,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -17924,7 +18070,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18008,7 +18154,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18108,7 +18254,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18132,7 +18278,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18156,7 +18302,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18201,7 +18347,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18225,7 +18371,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18249,7 +18395,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18273,7 +18419,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18297,7 +18443,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18321,7 +18467,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18345,7 +18491,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18369,7 +18515,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18393,7 +18539,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18417,7 +18563,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18460,7 +18606,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18484,7 +18630,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18508,7 +18654,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18555,7 +18701,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18599,7 +18745,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18623,7 +18769,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18647,7 +18793,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18671,7 +18817,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18695,7 +18841,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18719,7 +18865,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18743,7 +18889,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18767,7 +18913,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18791,7 +18937,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18815,7 +18961,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18839,7 +18985,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18863,7 +19009,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18887,7 +19033,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18934,7 +19080,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18958,7 +19104,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -18982,7 +19128,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19006,7 +19152,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19030,7 +19176,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19054,7 +19200,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19078,7 +19224,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19102,7 +19248,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19126,7 +19272,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19150,7 +19296,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19170,7 +19316,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19190,7 +19336,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19210,7 +19356,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19230,7 +19376,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19250,7 +19396,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19270,7 +19416,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19290,7 +19436,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19330,7 +19476,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19350,7 +19496,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19386,7 +19532,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19422,7 +19568,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19442,7 +19588,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19462,7 +19608,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19501,7 +19647,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19521,7 +19667,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19541,7 +19687,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19561,7 +19707,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19581,7 +19727,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19601,7 +19747,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19621,7 +19767,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19641,7 +19787,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19797,7 +19943,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19817,7 +19963,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19837,7 +19983,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19857,7 +20003,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19877,7 +20023,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -19912,7 +20058,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -20307,7 +20453,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20327,7 +20473,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20347,7 +20493,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20370,7 +20516,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20393,7 +20539,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20416,7 +20562,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20436,7 +20582,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20456,7 +20602,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20479,7 +20625,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20502,7 +20648,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20522,7 +20668,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20545,7 +20691,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20568,7 +20714,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20588,7 +20734,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20628,7 +20774,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20648,7 +20794,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20668,7 +20814,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20688,7 +20834,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20711,7 +20857,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20731,7 +20877,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20754,7 +20900,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20774,7 +20920,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20794,7 +20940,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20814,7 +20960,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20834,7 +20980,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20854,7 +21000,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20877,7 +21023,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20900,7 +21046,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20923,7 +21069,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20946,7 +21092,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20966,7 +21112,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -20986,7 +21132,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21006,7 +21152,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21026,7 +21172,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21046,7 +21192,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21069,7 +21215,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21089,7 +21235,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21123,7 +21269,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21143,7 +21289,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21163,7 +21309,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21183,7 +21329,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21206,7 +21352,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21240,7 +21386,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21260,7 +21406,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21280,7 +21426,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21300,7 +21446,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21320,7 +21466,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21343,7 +21489,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21363,7 +21509,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21383,7 +21529,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21403,7 +21549,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21423,7 +21569,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21443,7 +21589,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21463,7 +21609,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21486,7 +21632,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21506,7 +21652,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21526,7 +21672,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -21546,7 +21692,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1282-ga2955-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1283-g51d6-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>

@@ -24,7 +24,7 @@ void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending){
     }
 }
 
-void sizet2_sort(size_t *array, int *cost, size_t Nelements, bool acending){
+void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending){
     size_t i,j;
     
     if(acending){
