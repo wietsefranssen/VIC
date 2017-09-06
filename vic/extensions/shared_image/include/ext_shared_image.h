@@ -33,6 +33,8 @@ void ext_start(void);
 void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending);
 void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending);
 void sizet_swap(size_t i, size_t j, size_t *array);
+void int_swap(size_t i, size_t j, int *array);
+void make_basin_map_file(basin_struct *basins);
 
 #endif
 

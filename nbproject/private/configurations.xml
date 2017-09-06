@@ -557,6 +557,7 @@
               <in>ext_start.c</in>
               <in>get_basins.c</in>
               <in>initialize_extension_options.c</in>
+              <in>make_basin_map_file.c</in>
               <in>sort.c</in>
             </df>
           </df>

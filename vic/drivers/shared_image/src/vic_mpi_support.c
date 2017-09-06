@@ -1653,9 +1653,10 @@ mpi_map_decomp_domain(size_t   ncells,
         float extended_cell_cost=5;
 
         get_basins(ext_filenames.routing, &basins);
-
-        if(basins.Ncells[basins.sorted_basins[0]] * normal_cell_cost <
-                ncells * extended_cell_cost){            
+        
+        if(true){
+        //if(basins.Ncells[basins.sorted_basins[0]] * normal_cell_cost <
+        //        ncells * extended_cell_cost / mpi_size){            
             // decompose the mask by basin
             mpi_map_decomp_domain_basin(ncells, mpi_size,
                               mpi_map_local_array_sizes,
@@ -1730,8 +1731,8 @@ mpi_map_decomp_domain_basin(size_t   ncells,
     // determine number of cells per node
     for(i=0;i<basins->Nbasin;i++){        
         //sort nodes by size
-        for(i=0;i<mpi_size;i++){
-            node_ids[i]=i;
+        for(j=0;j<mpi_size;j++){
+            node_ids[j]=j;
         }
         sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,true);   
         
