@@ -26,8 +26,6 @@
 
 #include <vic_driver_shared_image.h>
 
-#include "ext_shared_image.h"
-
 /******************************************************************************
  * @brief    Wrapper function for VIC startup tasks.
  *****************************************************************************/
@@ -81,12 +79,12 @@ vic_start(void)
         // add the number of vegetation type to the location info in the
         // global domain struct. This just makes life easier
         add_nveg_to_global_domain(filenames.params, &global_domain);
-        
+
         // decompose the mask
         mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
-                          &mpi_map_local_array_sizes,
-                          &mpi_map_global_array_offsets,
-                          &mpi_map_mapping_array);
+                              &mpi_map_local_array_sizes,
+                              &mpi_map_global_array_offsets,
+                              &mpi_map_mapping_array);
 
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *
