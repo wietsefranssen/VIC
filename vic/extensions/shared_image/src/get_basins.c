@@ -40,7 +40,7 @@ void get_basins(char *nc_name, basin_struct *basins){
         basins->basin_map[i] = NODATA_BASIN;
     }
     
-    get_nc_field_int(nc_name, global_domain.info.mask_var, d2start, d2count,
+    get_nc_field_int(nc_name, "flow_direction", d2start, d2count,
                      direction);
     
     // -1 = unavailable
@@ -52,86 +52,90 @@ void get_basins(char *nc_name, basin_struct *basins){
     basins->Nbasin = 0;
     Nriver=0;
     for (i = 0; i < global_domain.ncells_total; i++) {
-        
-        Nriver=0;
-        cur_cell = i;        
-        
-        if(direction[cur_cell] == NODATA_DIRECTION){
-            continue;
-        }
-        
-        while(true){    
-            
-            cur_direction = direction[cur_cell];
-            river[Nriver]=cur_cell; 
-            Nriver++;          
-            
-            if(basins->basin_map[cur_cell]!=NODATA_BASIN){
-                for(j=0;j<Nriver;j++){
-                    basins->basin_map[river[j]]=basins->basin_map[cur_cell];
-                }
-                break;
+            if(global_domain.locations[i].run){        
+
+            Nriver=0;
+            cur_cell = next_cell = i;        
+
+            if(direction[cur_cell] == NODATA_DIRECTION){
+                continue;
             }
-            
-            switch(cur_direction){
-                case 1:
-                    if(i<global_domain.n_nx){
-                        log_err("Flow direction is going outside of domain");                        
+
+            while(true){    
+
+                cur_direction = direction[cur_cell];
+                river[Nriver]=cur_cell; 
+                Nriver++;          
+
+                if(basins->basin_map[cur_cell]!=NODATA_BASIN){
+                    for(j=0;j<Nriver;j++){
+                        basins->basin_map[river[j]]=basins->basin_map[cur_cell];
                     }
-                    next_cell = i - global_domain.n_nx;
                     break;
-                case 2:
-                    if(i<global_domain.n_nx){
-                        log_err("Flow direction is going outside of domain");                        
-                    }
-                    next_cell = i - global_domain.n_nx + 1;
-                    break;
-                case 3:
-                    next_cell = i + 1;
-                    break;
-                case 4:
-                    next_cell = i + global_domain.n_nx + 1;
-                    break;
-                case 5:
-                    next_cell = i + global_domain.n_nx;
-                    break;
-                case 6:
-                    next_cell = i + global_domain.n_nx - 1;
-                    break;
-                case 7:
-                    next_cell = i - 1;
-                    break;
-                case 8:
-                    if(i<global_domain.n_nx){
-                        log_err("Flow direction is going outside of domain");                        
-                    }
-                    next_cell = i - global_domain.n_nx - 1;
-                    break;
-                case 9:
-                    next_cell = i;
-                    break;
-                default:
-                    log_err("Unknown flow direction in file")
-                    break;
-            }   
-            
-            if(next_cell >= global_domain.ncells_total){
-                log_err("Flow direction is going outside of domain");
-            }    
-            
-            if(next_cell == cur_cell){
-                for(j=0;j<Nriver;j++){
-                    basins->basin_map[river[j]]=basins->Nbasin;
                 }
-                
-                basins->Nbasin++;
-                break;
+
+                switch(cur_direction){
+                    case 1:
+                        if(i<global_domain.n_nx){
+                            log_err("Flow direction is going outside of domain");                        
+                        }
+                        next_cell = i + global_domain.n_nx;
+                        break;
+                    case 2:
+                        if(i<global_domain.n_nx){
+                            log_err("Flow direction is going outside of domain");                        
+                        }
+                        next_cell = i + global_domain.n_nx + 1;
+                        break;
+                    case 3:
+                        next_cell = i + 1;
+                        break;
+                    case 4:
+                        next_cell = i - global_domain.n_nx + 1;
+                        break;
+                    case 5:
+                        next_cell = i - global_domain.n_nx;
+                        break;
+                    case 6:
+                        next_cell = i - global_domain.n_nx - 1;
+                        break;
+                    case 7:
+                        next_cell = i - 1;
+                        break;
+                    case 8:
+                        if(i<global_domain.n_nx){
+                            log_err("Flow direction is going outside of domain");                        
+                        }
+                        next_cell = i + global_domain.n_nx - 1;
+                        break;
+                    case 9:
+                        next_cell = i;
+                        break;
+                    default:
+                        log_err("Unknown flow direction in file")
+                        break;
+                }   
+
+                if(next_cell >= global_domain.ncells_total){
+                    log_err("Flow direction is going outside of domain");
+                }    
+
+                if(next_cell == cur_cell){
+                    for(j=0;j<Nriver;j++){
+                        basins->basin_map[river[j]]=basins->Nbasin;
+                    }
+
+                    basins->Nbasin++;
+                    break;
+                }
+
+                cur_cell = next_cell;
             }
-            
-            cur_cell = next_cell;
         }
     }
         
+    
+    
     basins->Ncells = malloc(basins->Nbasin * sizeof(*basins->Ncells));
     check_alloc_status(basins->Ncells, "Memory allocation error.");
     basins->sorted_basins = malloc(basins->Nbasin * sizeof(*basins->sorted_basins));

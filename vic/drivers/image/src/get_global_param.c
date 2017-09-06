@@ -287,10 +287,6 @@ get_global_param(FILE *gp)
             else if (strcasecmp("ROUTING", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 ext_options.ROUTING = str_to_bool(flgstr);
-            }            
-            else if (strcasecmp("DAMS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", flgstr);
-                ext_options.DAMS = str_to_bool(flgstr);
             }
             /*************************************
                Define log directory

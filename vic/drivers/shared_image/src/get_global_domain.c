@@ -62,7 +62,7 @@ get_global_domain(char          *nc_name,
 
     get_nc_field_int(nc_name, global_domain->info.mask_var, d2start, d2count,
                      run);
-
+    
     for (i = 0; i < global_domain->ncells_total; i++) {
         if (run[i] == 1) {
             global_domain->ncells_active++;
