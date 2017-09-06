@@ -24,22 +24,4 @@ void make_basin_map_file(basin_struct *basins){
     }
     
     fclose(file);
-    
-    strcpy(full_path, "debug_output/mekong.txt");
-    
-    if((file = fopen(full_path, "w"))!=NULL){
-        for(i = 0;i < global_domain.ncells_total; i++){
-            if(!global_domain.locations[i].run){
-                fprintf(file,"   ;");
-            }else{
-                fprintf(file,"%zu;",i);
-            }
-            
-            if(i%global_domain.n_nx==0){
-                fprintf(file,"\n");
-            }
-        }
-    }
-    
-    fclose(file);
 }
