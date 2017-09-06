@@ -30,6 +30,9 @@ typedef struct {
 void initialise_extention_options(void);
 void initialise_extension_filenames(void);
 void ext_start(void);
+void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending);
+void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending);
+void sizet_swap(size_t i, size_t j, size_t *array);
 
 #endif
 

@@ -42,7 +42,6 @@ vic_start(void)
     extern size_t             *filter_active_cells;
     extern size_t             *mpi_map_mapping_array;
     extern filenames_struct    filenames;
-    extern ext_filenames_struct ext_filenames;
     extern filep_struct        filep;
     extern domain_struct       global_domain;
     extern domain_struct       local_domain;
@@ -58,10 +57,8 @@ vic_start(void)
     extern int                 mpi_rank;
     extern int                 mpi_size;
     extern option_struct       options;
-    extern ext_option_struct   ext_options;
     extern parameters_struct   param;
     size_t                     j;
-    extern basin_struct  basins;
 
     status = MPI_Bcast(&filenames, 1, mpi_filenames_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
@@ -85,15 +82,11 @@ vic_start(void)
         // global domain struct. This just makes life easier
         add_nveg_to_global_domain(filenames.params, &global_domain);
         
-        if(ext_options.ROUTING){
-            get_basins(ext_filenames.routing, &basins);
-        }else{
-            // decompose the mask
-            mpi_map_decomp_domain_random(global_domain.ncells_active, mpi_size,
-                              &mpi_map_local_array_sizes,
-                              &mpi_map_global_array_offsets,
-                              &mpi_map_mapping_array);
-        }
+        // decompose the mask
+        mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
+                          &mpi_map_local_array_sizes,
+                          &mpi_map_global_array_offsets,
+                          &mpi_map_mapping_array);
 
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *

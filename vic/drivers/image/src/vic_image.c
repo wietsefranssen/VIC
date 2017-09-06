@@ -68,7 +68,7 @@ nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
-basin_struct     basins = NULL;
+basin_struct     basins;
 rout_con_struct *rout_con = NULL;
 
 /******************************************************************************

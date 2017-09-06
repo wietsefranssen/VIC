@@ -379,8 +379,9 @@
             <df name="src">
               <in>ext_initialize_files.c</in>
               <in>ext_start.c</in>
-              <in>get_routing_parameters.c</in>
+              <in>get_basins.c</in>
               <in>initialize_extension_options.c</in>
+              <in>sort.c</in>
             </df>
           </df>
         </df>
