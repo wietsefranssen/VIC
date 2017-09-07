@@ -1,10 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-#include <ext_shared_image.h>
+#include <ext_mpi.h>
 
 void get_basins(char *nc_name, basin_struct *basins){
     extern domain_struct global_domain;
@@ -12,7 +6,7 @@ void get_basins(char *nc_name, basin_struct *basins){
     int    *direction = NULL;
     size_t *river = NULL;
     
-    size_t  Nriver = 0;
+    size_t  Nriver;
     int cur_direction;
     
     size_t cur_cell;
@@ -30,7 +24,7 @@ void get_basins(char *nc_name, basin_struct *basins){
     
     direction = malloc(global_domain.ncells_total * sizeof(*direction));
     check_alloc_status(direction, "Memory allocation error.");
-    river = malloc(global_domain.ncells_total * sizeof(*river));
+    river = malloc(global_domain.ncells_active * sizeof(*river));
     check_alloc_status(river, "Memory allocation error.");
     
     basins->basin_map = malloc(global_domain.ncells_total * sizeof(*basins->basin_map));
@@ -139,7 +133,7 @@ void get_basins(char *nc_name, basin_struct *basins){
         }
     }
         
-    make_basin_map_file(basins);
+    //make_basin_map_file(basins);
     basins->Ncells = malloc(basins->Nbasin * sizeof(*basins->Ncells));
     check_alloc_status(basins->Ncells, "Memory allocation error.");
     basins->sorted_basins = malloc(basins->Nbasin * sizeof(*basins->sorted_basins));
@@ -175,13 +169,15 @@ void get_basins(char *nc_name, basin_struct *basins){
         }
     }
     
+    j=0;
     for (i = 0; i < global_domain.ncells_total; i++) {
         if(basins->basin_map[i]!=NODATA_BASIN){
-            basins->catchment[basins->basin_map[i]][basins->Ncells[basins->basin_map[i]]] = i;
+            basins->catchment[basins->basin_map[i]][basins->Ncells[basins->basin_map[i]]] = j;
             basins->Ncells[basins->basin_map[i]]++;
+            j++;
         }
     }
     
-    //free(direction);
-    //free(river);
+    free(direction);
+    free(river);
 }

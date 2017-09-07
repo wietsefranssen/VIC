@@ -28,7 +28,7 @@
 #define VIC_DRIVER_IMAGE_H
 
 #include <vic_driver_shared_image.h>
-#include <ext_shared_image.h>
+#include <ext_driver_shared_image.h>
 
 #define VIC_DRIVER "Image"
 

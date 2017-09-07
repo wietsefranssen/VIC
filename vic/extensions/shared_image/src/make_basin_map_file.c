@@ -1,4 +1,4 @@
-#include <ext_shared_image.h>
+#include <ext_mpi.h>
 
 void make_basin_map_file(basin_struct *basins){
     extern domain_struct global_domain;

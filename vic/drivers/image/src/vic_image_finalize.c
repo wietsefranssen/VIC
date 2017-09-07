@@ -38,4 +38,5 @@ vic_image_finalize(void)
     free(dmy);
 
     vic_finalize();
+    ext_finalize();
 }

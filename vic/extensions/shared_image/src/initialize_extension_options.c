@@ -1,5 +1,4 @@
-
-#include <ext_shared_image.h>
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief    Initialize all options before they are called by the

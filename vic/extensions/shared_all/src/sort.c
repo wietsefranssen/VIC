@@ -1,6 +1,4 @@
-
-#include <vic_driver_shared_image.h>
-#include <ext_shared_image.h>
+#include <ext_driver_shared_all.h>
 
 void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending){
     size_t i,j;

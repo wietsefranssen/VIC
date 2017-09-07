@@ -27,7 +27,6 @@
 #ifndef VIC_MPI_H
 #define VIC_MPI_H
 
-#include <routing.h>
 #include <vic_def.h>
 #include <mpi.h>
 
@@ -58,19 +57,6 @@ void get_scatter_nc_field_int(char *nc_name, char *var_name, size_t *start,
 void initialize_mpi(void);
 void map(size_t size, size_t n, size_t *from_map, size_t *to_map, void *from,
          void *to);
-void mpi_map_decomp_domain(size_t ncells, size_t mpi_size,
-                           int **mpi_map_local_array_sizes,
-                           int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array);
-void mpi_map_decomp_domain_basin(size_t ncells, size_t mpi_size,
-                           int **mpi_map_local_array_sizes,
-                           int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array,
-                           basin_struct *basins);
-void mpi_map_decomp_domain_random(size_t ncells, size_t mpi_size,
-                           int **mpi_map_local_array_sizes,
-                           int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array);
 void print_mpi_error_str(int error_code);
 
 #endif

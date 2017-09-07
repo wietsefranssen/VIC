@@ -24,9 +24,6 @@
 
 #define MAX_UPSTREAM 8
 
-#define NODATA_BASIN 99999
-#define NODATA_DIRECTION -1
-
 typedef struct{
     short unsigned int direction;
     short unsigned int Nupstream;
@@ -34,15 +31,6 @@ typedef struct{
     size_t upstream[MAX_UPSTREAM];
 }rout_con_struct;
 
-typedef struct{
-    size_t *basin_map;
-    size_t *sorted_basins;
-    size_t Nbasin;
-    size_t *Ncells;
-    size_t **catchment;
-}basin_struct;
-
-void get_basins(char *nc_name, basin_struct *basins);
 
 #endif
 
