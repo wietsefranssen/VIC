@@ -550,7 +550,6 @@
               <in>ext_driver_shared_all.h</in>
             </df>
             <df name="src">
-              <in>ext_init_library.c</in>
               <in>sort.c</in>
             </df>
           </df>

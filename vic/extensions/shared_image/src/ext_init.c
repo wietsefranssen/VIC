@@ -101,10 +101,7 @@ routing_local_init(char *nc_name)
     }
     
     // get upstream cells    
-    for (i = 0; i < local_domain.ncells_active; i++) {
-        global_active_id = mpi_map_mapping_array[mpi_map_global_array_offsets[mpi_rank] + i];
-        global_total_id = filter_active_cells[global_active_id];     
-        
+    for (i = 0; i < local_domain.ncells_active; i++) {        
         for(j=0;j<MAX_UPSTREAM;j++){
             upstream[j]=0;
         }
@@ -136,6 +133,9 @@ routing_global_init(char *nc_name)
     int    *direction = NULL;
     size_t next_global_total_id;
     size_t next_global_active_id;
+        
+    size_t upstream[MAX_UPSTREAM];
+    size_t Nupstream;
     
     size_t  i;
     size_t  j;
@@ -217,7 +217,28 @@ routing_global_init(char *nc_name)
         j++;
     }
     
-    
+    // get upstream cells    
+    for (i = 0; i < global_domain.ncells_active; i++) {
+        for(j=0;j<MAX_UPSTREAM;j++){
+            upstream[j]=0;
+        }
+        Nupstream=0;
+        
+        for(j=0;j<global_domain.ncells_active;j++){
+            if(rout_con[j].downstream==i){
+                upstream[Nupstream]=j;
+                Nupstream++;
+            }
+        }
+        
+        rout_con[i].upstream = malloc(Nupstream * sizeof(*rout_con[i].upstream));
+        check_alloc_status(rout_con[i].upstream, "Memory allocation error");
+        
+        for(j=0;j<Nupstream;j++){
+            rout_con[i].upstream[j]=upstream[j];
+        }
+        rout_con[i].Nupstream=Nupstream;
+    }    
 }
 
 void
