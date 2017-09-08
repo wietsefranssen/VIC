@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_all.h>
+#include <ext_driver_shared_all.h>
 
 /******************************************************************************
  * @brief    Read the VIC model parameters file
@@ -36,6 +37,7 @@ get_parameters(FILE *paramfile)
     char                     optstr[MAXSTRING];
 
     extern parameters_struct param;
+    extern ext_parameters_struct ext_param;
 
     /** Read through parameter file to find parameters **/
 
@@ -521,6 +523,19 @@ get_parameters(FILE *paramfile)
             }
             else if (strcasecmp("ROOT_BRENT_T", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &param.ROOT_BRENT_T);
+            }
+            // Extension parameters
+            else if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &ext_param.UH_FLOW_DIFFUSION);
+            }
+            else if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &ext_param.UH_FLOW_VELOCITY);
+            }
+            else if (strcasecmp("UH_MAX_LENGTH", optstr) == 0) {
+                sscanf(cmdstr, "%*s %d", &ext_param.UH_MAX_LENGTH);
+            }
+            else if (strcasecmp("UH_PARTITIONS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %d", &ext_param.UH_PARTITIONS);
             }
             else {
                 log_warn("Unrecognized option in the parameter file:  %s "

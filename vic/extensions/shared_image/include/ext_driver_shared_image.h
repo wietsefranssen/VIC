@@ -28,9 +28,8 @@ typedef struct {
     char routing[MAXSTRING];
 } ext_filenames_struct;
 
-void initialise_extention_options(void);
-void initialise_extension_filenames(void);
-void ext_start(void);
+void ext_alloc(void);
+void ext_init(void);
 void ext_finalize(void);
 
 #endif

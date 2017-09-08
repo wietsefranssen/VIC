@@ -40,4 +40,5 @@ vic_image_init(void)
     dmy = make_dmy(&global_param);
 
     vic_init();
+    ext_init();
 }

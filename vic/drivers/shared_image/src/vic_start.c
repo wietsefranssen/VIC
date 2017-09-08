@@ -40,6 +40,7 @@ vic_start(void)
     size_t                     i;
     extern size_t             *filter_active_cells;
     extern size_t             *mpi_map_mapping_array;
+    extern size_t             *mpi_map_mapping_array_reverse;
     extern filenames_struct    filenames;
     extern filep_struct        filep;
     extern domain_struct       global_domain;
@@ -85,7 +86,8 @@ vic_start(void)
         mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
                               &mpi_map_local_array_sizes,
                               &mpi_map_global_array_offsets,
-                              &mpi_map_mapping_array);
+                              &mpi_map_mapping_array,
+                              &mpi_map_mapping_array_reverse);
 
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *

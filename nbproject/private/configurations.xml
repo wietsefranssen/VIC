@@ -552,6 +552,7 @@
               <in>ext_driver_shared_all.h</in>
             </df>
             <df name="src">
+              <in>init_ext_library.c</in>
               <in>sort.c</in>
             </df>
           </df>
@@ -563,13 +564,12 @@
               <in>routing.h</in>
             </df>
             <df name="src">
+              <in>ext_alloc.c</in>
               <in>ext_finalize.c</in>
-              <in>ext_initialize_files.c</in>
+              <in>ext_init.c</in>
               <in>ext_mpi_support.c</in>
               <in>ext_start.c</in>
               <in>get_basins.c</in>
-              <in>initialize_extension_options.c</in>
-              <in>make_basin_map_file.c</in>
             </df>
           </df>
         </df>
@@ -728,6 +728,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -794,7 +796,6 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Wietse/Wietse_image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Stehekin_image_test_wietse.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Simage_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g ../../image_test/input/Stehekin_image_test.global</runcommandpicklistitem>
@@ -804,8 +805,9 @@
           <runcommandpicklistitem>mpiexec -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.rout_rvic.txt</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Wietse/image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
+          <runcommandpicklistitem>mpirun -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommand>
+        <runcommand>mpirun -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommand>
         <rundir>./samples_wur/image_driver/</rundir>
         <buildfirst>false</buildfirst>
         <terminal-type>0</terminal-type>

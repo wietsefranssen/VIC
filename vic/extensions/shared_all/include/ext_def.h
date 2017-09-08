@@ -16,8 +16,11 @@
 
 #include <vic_def.h>
 
+#define VIC_RESOLUTION 0.5
+
 #define NODATA_BASIN 99999
 #define NODATA_DIRECTION -1
+#define MAX_UPSTREAM 8
 
 #endif /* EXT_DEF_H */
 

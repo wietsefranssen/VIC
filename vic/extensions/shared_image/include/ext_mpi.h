@@ -17,6 +17,15 @@
 #include <vic_driver_shared_image.h>
 #include <ext_driver_shared_image.h>
 
+enum{
+    BASIN_DECOMPOSITION,
+    RANDOM_DECOMPOSITION
+};
+
+typedef struct{
+    int decomposition_method;
+}ext_mpi_option_struct;
+
 typedef struct{
     size_t *basin_map;
     size_t *sorted_basins;
@@ -26,11 +35,11 @@ typedef struct{
 }basin_struct;
 
 void get_basins(char *nc_name, basin_struct *basins);
-void make_basin_map_file(basin_struct *basins);
 void mpi_map_decomp_domain(size_t ncells, size_t mpi_size,
                            int **mpi_map_local_array_sizes,
                            int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array);
+                           size_t **mpi_map_mapping_array,
+                           size_t **mpi_map_mapping_array_reverse);
 void mpi_map_decomp_domain_random(size_t ncells, size_t mpi_size,
                            int **mpi_map_local_array_sizes,
                            int **mpi_map_global_array_offsets,

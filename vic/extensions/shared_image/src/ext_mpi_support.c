@@ -23,11 +23,18 @@ mpi_map_decomp_domain(size_t   ncells,
                       size_t   mpi_size,
                       int    **mpi_map_local_array_sizes,
                       int    **mpi_map_global_array_offsets,
-                      size_t **mpi_map_mapping_array)
+                      size_t **mpi_map_mapping_array,
+                      size_t **mpi_map_mapping_array_reverse)
 {
     extern ext_option_struct ext_options;
     extern ext_filenames_struct ext_filenames;
     extern basin_struct  basins;
+    extern ext_mpi_option_struct ext_mpi_options;
+    
+    size_t i;
+    int j;
+    size_t k;
+    size_t node_ids[mpi_size];
     
     if(ext_options.ROUTING){
         float normal_cell_cost=4;
@@ -35,28 +42,48 @@ mpi_map_decomp_domain(size_t   ncells,
 
         get_basins(ext_filenames.routing, &basins);
         
-        if(true){
-        //if(basins.Ncells[basins.sorted_basins[0]] * normal_cell_cost <
-        //        ncells * extended_cell_cost / mpi_size){            
-            // decompose the mask by basin
-            mpi_map_decomp_domain_basin(ncells, mpi_size,
-                              mpi_map_local_array_sizes,
-                              mpi_map_global_array_offsets,
-                              mpi_map_mapping_array,
-                              &basins);
-        }else{
+        // decompose the mask by basin
+        mpi_map_decomp_domain_basin(ncells, mpi_size,
+                          mpi_map_local_array_sizes,
+                          mpi_map_global_array_offsets,
+                          mpi_map_mapping_array,
+                          &basins);
+        ext_mpi_options.decomposition_method=BASIN_DECOMPOSITION;
+        
+        for(i=0;i<mpi_size;i++){
+            node_ids[i]=i;
+        }
+        sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
+        
+        // check if basin decomposition is effective
+        if((*mpi_map_local_array_sizes)[node_ids[0]] * normal_cell_cost > 
+                           ncells / mpi_size * extended_cell_cost){
             // decompose the mask at random
             mpi_map_decomp_domain_random(ncells, mpi_size,
                               mpi_map_local_array_sizes,
                               mpi_map_global_array_offsets,
                               mpi_map_mapping_array);
-        }            
+            ext_mpi_options.decomposition_method=RANDOM_DECOMPOSITION;
+        }
     }else{
         // decompose the mask at random
         mpi_map_decomp_domain_random(ncells, mpi_size,
                           mpi_map_local_array_sizes,
                           mpi_map_global_array_offsets,
                           mpi_map_mapping_array);
+        ext_mpi_options.decomposition_method=RANDOM_DECOMPOSITION;
+    }
+    
+    //set reverse map
+    (*mpi_map_mapping_array_reverse) = malloc(ncells * sizeof (*(*mpi_map_mapping_array_reverse)));
+    check_alloc_status((*mpi_map_mapping_array_reverse),"Memory allocation error");
+            
+    k=0;
+    for (i = 0; i < mpi_size; i++) {
+        for(j = 0; j < (*mpi_map_local_array_sizes)[i]; j++){
+            (*mpi_map_mapping_array_reverse)[(*mpi_map_mapping_array)[k]] = j;              
+            k++;
+        }
     }
 }
 
