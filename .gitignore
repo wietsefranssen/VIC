@@ -31,8 +31,8 @@ _vic.py
 vic_timing_*txt
 massif.out.*
 vic_call_graph_*
-samples_wur
-nbproject
+samples_wur/
+nbproject/
 
 vic_call_graph*
 gmon.out
