@@ -27,19 +27,18 @@ mpi_map_decomp_domain(size_t   ncells,
                       size_t **mpi_map_mapping_array_reverse)
 {
     extern ext_option_struct ext_options;
+    extern ext_parameters_struct ext_param;
     extern ext_filenames_struct ext_filenames;
     extern basin_struct  basins;
-    extern ext_mpi_option_struct ext_mpi_options;
     
     size_t i;
     int j;
     size_t k;
     size_t node_ids[mpi_size];
     
-    if(ext_options.ROUTING){
-        float normal_cell_cost=4;
-        float extended_cell_cost=5;
-
+    if(ext_options.MPI_DECOMPOSITION == CALCULATE_DECOMPOSITION ||
+            ext_options.MPI_DECOMPOSITION == BASIN_DECOMPOSITION){
+        
         get_basins(ext_filenames.routing, &basins);
         
         // decompose the mask by basin
@@ -48,22 +47,30 @@ mpi_map_decomp_domain(size_t   ncells,
                           mpi_map_global_array_offsets,
                           mpi_map_mapping_array,
                           &basins);
-        ext_mpi_options.decomposition_method=BASIN_DECOMPOSITION;
         
-        for(i=0;i<mpi_size;i++){
-            node_ids[i]=i;
-        }
-        sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
-        
-        // check if basin decomposition is effective
-        if((*mpi_map_local_array_sizes)[node_ids[0]] * normal_cell_cost > 
-                           ncells / mpi_size * extended_cell_cost){
-            // decompose the mask at random
-            mpi_map_decomp_domain_random(ncells, mpi_size,
-                              mpi_map_local_array_sizes,
-                              mpi_map_global_array_offsets,
-                              mpi_map_mapping_array);
-            ext_mpi_options.decomposition_method=RANDOM_DECOMPOSITION;
+        if(ext_options.MPI_DECOMPOSITION == CALCULATE_DECOMPOSITION){
+
+            for(i=0;i<mpi_size;i++){
+                node_ids[i]=i;
+            }
+            sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
+
+            // check if basin decomposition is effective
+            if((*mpi_map_local_array_sizes)[node_ids[0]] * 
+            ext_param.MPI_N_PROCESS_COST > ncells / mpi_size * 
+            ext_param.MPI_N_PROCESS_COST){
+                
+                // decompose the mask at random
+                mpi_map_decomp_domain_random(ncells, mpi_size,
+                                  mpi_map_local_array_sizes,
+                                  mpi_map_global_array_offsets,
+                                  mpi_map_mapping_array);
+                
+                ext_options.MPI_DECOMPOSITION=RANDOM_DECOMPOSITION;
+            }else{            
+                ext_options.MPI_DECOMPOSITION=BASIN_DECOMPOSITION;
+                
+            }
         }
     }else{
         // decompose the mask at random
@@ -71,7 +78,14 @@ mpi_map_decomp_domain(size_t   ncells,
                           mpi_map_local_array_sizes,
                           mpi_map_global_array_offsets,
                           mpi_map_mapping_array);
-        ext_mpi_options.decomposition_method=RANDOM_DECOMPOSITION;
+        
+        ext_options.MPI_DECOMPOSITION=RANDOM_DECOMPOSITION;
+    }
+    
+    if(ext_options.MPI_DECOMPOSITION == BASIN_DECOMPOSITION){
+        debug("Basin mask decomposition for MPI");
+    }else if(ext_options.MPI_DECOMPOSITION == RANDOM_DECOMPOSITION){    
+        debug("Random mask decomposition for MPI");
     }
     
     //set reverse map

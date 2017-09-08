@@ -1,30 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   ext_mpi.h
- * Author: bram
- *
- * Created on September 7, 2017, 12:08 AM
- */
-
 #ifndef EXT_MPI_H
 #define EXT_MPI_H
 
-#include <vic_driver_shared_image.h>
 #include <ext_driver_shared_image.h>
+#include <vic_mpi.h>
 
 enum{
+    CALCULATE_DECOMPOSITION,
     BASIN_DECOMPOSITION,
     RANDOM_DECOMPOSITION
 };
-
-typedef struct{
-    int decomposition_method;
-}ext_mpi_option_struct;
 
 typedef struct{
     size_t *basin_map;

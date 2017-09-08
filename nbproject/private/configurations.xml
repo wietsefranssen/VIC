@@ -46,8 +46,6 @@
       </df>
       <df name="samples_wur">
         <df name="image_driver">
-          <df name="debug_output">
-          </df>
           <df name="forcing">
           </df>
           <df name="input">
@@ -552,13 +550,12 @@
               <in>ext_driver_shared_all.h</in>
             </df>
             <df name="src">
-              <in>init_ext_library.c</in>
+              <in>ext_init_library.c</in>
               <in>sort.c</in>
             </df>
           </df>
           <df name="shared_image">
             <df name="include">
-              <in>dams.h</in>
               <in>ext_driver_shared_image.h</in>
               <in>ext_mpi.h</in>
               <in>routing.h</in>
@@ -567,6 +564,7 @@
               <in>ext_alloc.c</in>
               <in>ext_finalize.c</in>
               <in>ext_init.c</in>
+              <in>ext_init_library.c</in>
               <in>ext_mpi_support.c</in>
               <in>ext_start.c</in>
               <in>get_basins.c</in>
@@ -728,8 +726,6 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
-        <gdb_signals>
-        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -796,8 +792,6 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Stehekin_image_test_wietse.global</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Simage_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g ../../image_test/input/Stehekin_image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g Wietse/input/image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/image_test.global</runcommandpicklistitem>
@@ -805,9 +799,11 @@
           <runcommandpicklistitem>mpiexec -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.rout_rvic.txt</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/Wietse/image_test.global</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
-          <runcommandpicklistitem>mpirun -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
+          <runcommandpicklistitem>runmpi -np 2"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
+          <runcommandpicklistitem>mpiexec -np 2"${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
+          <runcommandpicklistitem>mpiexec -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>mpirun -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommand>
+        <runcommand>mpiexec -np 2 "${OUTPUT_PATH}" -g input/global.param.sample.image.txt</runcommand>
         <rundir>./samples_wur/image_driver/</rundir>
         <buildfirst>false</buildfirst>
         <terminal-type>0</terminal-type>

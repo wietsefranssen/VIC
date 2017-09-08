@@ -288,6 +288,23 @@ get_global_param(FILE *gp)
                 sscanf(cmdstr, "%*s %s", flgstr);
                 ext_options.ROUTING = str_to_bool(flgstr);
             }
+            else if (strcasecmp("MPI_DECOMPOSITION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                if (strcasecmp("CALCULATE", flgstr) == 0) {
+                    ext_options.MPI_DECOMPOSITION = CALCULATE_DECOMPOSITION;
+                }
+                else if (strcasecmp("BASIN", flgstr) == 0) {
+                    ext_options.MPI_DECOMPOSITION = BASIN_DECOMPOSITION;
+                }
+                else if (strcasecmp("RANDOM", flgstr) == 0) {
+                    ext_options.MPI_DECOMPOSITION = RANDOM_DECOMPOSITION;
+                }
+                else {
+                    log_err("MPI_DECOMPOSITION must be either CALCULATE, "
+                            "BASIN, or RANDOM.");
+                }
+            }
+            
             /*************************************
                Define log directory
             *************************************/
@@ -1016,6 +1033,11 @@ get_global_param(FILE *gp)
     /******************************************
        Check for undefined required extension parameters
     ******************************************/
+    if((ext_options.MPI_DECOMPOSITION == CALCULATE_DECOMPOSITION ||
+            ext_options.MPI_DECOMPOSITION == BASIN_DECOMPOSITION)
+            && !ext_options.ROUTING){
+        log_err("MPI_DECOMPOSITION = CALCULATE or BASIN but ROUTING = FALSE");
+    }
     if(ext_options.ROUTING && strcmp(ext_filenames.routing, "MISSING") == 0){
         log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing.");
     }

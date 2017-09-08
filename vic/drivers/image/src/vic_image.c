@@ -65,13 +65,11 @@ double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
-size_t *mpi_map_mapping_array_reverse;
-ext_mpi_option_struct ext_mpi_options;
-basin_struct     basins;
-
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
+size_t *mpi_map_mapping_array_reverse;
+basin_struct     basins;
 rout_con_struct *rout_con = NULL;
 
 /******************************************************************************

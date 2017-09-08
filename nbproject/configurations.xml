@@ -246,7 +246,7 @@
               <in>ext_driver_shared_all.h</in>
             </df>
             <df name="src">
-              <in>init_ext_library.c</in>
+              <in>ext_init_library.c</in>
               <in>sort.c</in>
             </df>
           </df>
@@ -258,6 +258,7 @@
               <in>ext_alloc.c</in>
               <in>ext_finalize.c</in>
               <in>ext_init.c</in>
+              <in>ext_init_library.c</in>
               <in>ext_mpi_support.c</in>
               <in>ext_start.c</in>
               <in>get_basins.c</in>
@@ -1644,19 +1645,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -1664,7 +1655,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -2808,7 +2799,7 @@
             <pElem>vic/drivers/shared_image/include</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="wlin"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="wietse"</Elem>
@@ -3182,7 +3173,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3204,7 +3195,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3242,7 +3233,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3484,7 +3475,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3503,7 +3494,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3525,7 +3516,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3547,7 +3538,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3586,7 +3577,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3670,7 +3661,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3770,7 +3761,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3794,7 +3785,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3818,7 +3809,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3863,7 +3854,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3887,7 +3878,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3911,7 +3902,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3935,7 +3926,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3959,7 +3950,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -3983,7 +3974,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4007,7 +3998,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4031,7 +4022,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4055,7 +4046,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4079,7 +4070,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4122,7 +4113,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4146,7 +4137,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4170,7 +4161,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4217,7 +4208,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4261,7 +4252,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4285,7 +4276,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4309,7 +4300,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4333,7 +4324,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4357,7 +4348,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4381,7 +4372,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4405,7 +4396,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4429,7 +4420,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4453,7 +4444,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4477,7 +4468,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4501,7 +4492,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4525,7 +4516,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4549,7 +4540,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4596,7 +4587,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4620,7 +4611,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4644,7 +4635,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4668,7 +4659,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4692,7 +4683,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4716,7 +4707,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4740,7 +4731,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4764,7 +4755,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4788,7 +4779,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4812,7 +4803,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4832,7 +4823,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4852,7 +4843,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4872,7 +4863,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4892,7 +4883,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4912,7 +4903,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4932,7 +4923,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4952,7 +4943,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -4991,7 +4982,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5011,7 +5002,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5047,7 +5038,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5083,7 +5074,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5103,7 +5094,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5123,7 +5114,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5162,7 +5153,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5182,7 +5173,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5202,7 +5193,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5222,7 +5213,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5242,7 +5233,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5262,7 +5253,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5282,7 +5273,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5302,7 +5293,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5458,7 +5449,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5478,7 +5469,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5498,7 +5489,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5518,7 +5509,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5538,7 +5529,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5573,7 +5564,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -5706,10 +5697,12 @@
         <cTool flags="3">
         </cTool>
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
+      <item path="vic/extensions/shared_all/src/ext_init_library.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_all/src/sort.c"
             ex="false"
@@ -5721,7 +5714,9 @@
       <item path="vic/extensions/shared_image/src/ext_alloc.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
             ex="false"
@@ -5733,7 +5728,19 @@
       <item path="vic/extensions/shared_image/src/ext_init.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="3">
+        </cTool>
+      </item>
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
+            ex="false"
+            tool="0"
+            flavor2="2">
+        <cTool>
+          <preprocessorList>
+            <Elem>GIT_VERSION="VIC.4.2.b-1288-g4ecb-dirty"</Elem>
+          </preprocessorList>
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/ext_mpi_support.c"
             ex="false"
@@ -5769,7 +5776,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5789,7 +5796,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5809,7 +5816,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5832,7 +5839,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5855,7 +5862,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5878,7 +5885,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5898,7 +5905,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5918,7 +5925,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5941,7 +5948,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5964,7 +5971,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -5984,7 +5991,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6007,7 +6014,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6030,7 +6037,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6050,7 +6057,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6090,7 +6097,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6110,7 +6117,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6130,7 +6137,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6150,7 +6157,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6173,7 +6180,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6193,7 +6200,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6216,7 +6223,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6236,7 +6243,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6256,7 +6263,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6276,7 +6283,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6296,7 +6303,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6316,7 +6323,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6339,7 +6346,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6362,7 +6369,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6385,7 +6392,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6408,7 +6415,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6428,7 +6435,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6448,7 +6455,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6468,7 +6475,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6488,7 +6495,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6508,7 +6515,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6531,7 +6538,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6551,7 +6558,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6585,7 +6592,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6605,7 +6612,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6625,7 +6632,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6645,7 +6652,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6668,7 +6675,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6702,7 +6709,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6722,7 +6729,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6742,7 +6749,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6762,7 +6769,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6782,7 +6789,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6805,7 +6812,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6825,7 +6832,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6845,7 +6852,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6865,7 +6872,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6885,7 +6892,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6905,7 +6912,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6925,7 +6932,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6948,7 +6955,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6968,7 +6975,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -6988,7 +6995,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -7008,7 +7015,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -7091,7 +7098,7 @@
             <pElem>vic/drivers/shared_image/include</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="wietse"</Elem>
@@ -7206,7 +7213,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7228,7 +7235,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7266,7 +7273,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7506,7 +7513,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7525,7 +7532,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7547,7 +7554,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7569,7 +7576,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7606,7 +7613,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7688,7 +7695,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7778,7 +7785,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7798,7 +7805,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7818,7 +7825,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7851,7 +7858,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7871,7 +7878,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7891,7 +7898,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7911,7 +7918,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7931,7 +7938,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7951,7 +7958,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7971,7 +7978,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -7991,7 +7998,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8011,7 +8018,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8031,7 +8038,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8064,7 +8071,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8084,7 +8091,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8104,7 +8111,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8137,7 +8144,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8170,7 +8177,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8190,7 +8197,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8210,7 +8217,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8230,7 +8237,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8250,7 +8257,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8270,7 +8277,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8290,7 +8297,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8310,7 +8317,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8330,7 +8337,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8350,7 +8357,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8370,7 +8377,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8390,7 +8397,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8410,7 +8417,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8443,7 +8450,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8463,7 +8470,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8483,7 +8490,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8503,7 +8510,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8523,7 +8530,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8543,7 +8550,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8563,7 +8570,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8583,7 +8590,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8603,7 +8610,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8623,7 +8630,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8643,7 +8650,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8663,7 +8670,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8683,7 +8690,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8703,7 +8710,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8723,7 +8730,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8743,7 +8750,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8763,7 +8770,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8802,7 +8809,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8822,7 +8829,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8855,7 +8862,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8888,7 +8895,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8908,7 +8915,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8928,7 +8935,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8961,7 +8968,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -8981,7 +8988,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9001,7 +9008,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9021,7 +9028,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9041,7 +9048,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9061,7 +9068,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9081,7 +9088,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9101,7 +9108,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9121,7 +9128,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9141,7 +9148,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9161,7 +9168,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9181,7 +9188,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9201,7 +9208,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9236,7 +9243,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>USERNAME="bram"</Elem>
           </preprocessorList>
@@ -9305,10 +9312,12 @@
         <cTool flags="2">
         </cTool>
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
+      <item path="vic/extensions/shared_all/src/ext_init_library.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="2">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_all/src/sort.c"
             ex="false"
@@ -9320,7 +9329,9 @@
       <item path="vic/extensions/shared_image/src/ext_alloc.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="2">
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
             ex="false"
@@ -9332,7 +9343,19 @@
       <item path="vic/extensions/shared_image/src/ext_init.c"
             ex="false"
             tool="0"
-            flavor2="0">
+            flavor2="3">
+        <cTool flags="2">
+        </cTool>
+      </item>
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
+            ex="false"
+            tool="0"
+            flavor2="3">
+        <cTool flags="2">
+          <preprocessorList>
+            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+          </preprocessorList>
+        </cTool>
       </item>
       <item path="vic/extensions/shared_image/src/ext_mpi_support.c"
             ex="false"
@@ -9368,7 +9391,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9388,7 +9411,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9408,7 +9431,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9431,7 +9454,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9454,7 +9477,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9477,7 +9500,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9497,7 +9520,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9517,7 +9540,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9540,7 +9563,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9563,7 +9586,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9583,7 +9606,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9606,7 +9629,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9629,7 +9652,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9649,7 +9672,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9689,7 +9712,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9709,7 +9732,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9729,7 +9752,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9749,7 +9772,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9772,7 +9795,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9792,7 +9815,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9815,7 +9838,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9835,7 +9858,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9855,7 +9878,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9875,7 +9898,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9895,7 +9918,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9915,7 +9938,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9938,7 +9961,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9961,7 +9984,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -9984,7 +10007,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10007,7 +10030,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10027,7 +10050,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10047,7 +10070,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10067,7 +10090,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10087,7 +10110,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10107,7 +10130,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10130,7 +10153,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10150,7 +10173,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10184,7 +10207,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10204,7 +10227,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10224,7 +10247,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10244,7 +10267,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10267,7 +10290,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10301,7 +10324,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10321,7 +10344,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10341,7 +10364,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10361,7 +10384,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10381,7 +10404,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10404,7 +10427,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10424,7 +10447,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10444,7 +10467,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10464,7 +10487,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10484,7 +10507,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10504,7 +10527,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10524,7 +10547,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10547,7 +10570,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10567,7 +10590,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10587,7 +10610,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -10607,7 +10630,7 @@
             <pElem>vic/drivers/image</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>GIT_VERSION="VIC.4.2.b-1289-g0041-dirty"</Elem>
+            <Elem>GIT_VERSION="VIC.4.2.b-1290-gb3eb-dirty"</Elem>
             <Elem>HOSTNAME="ubuntu"</Elem>
             <Elem>LOG_LVL=5</Elem>
             <Elem>USERNAME="bram"</Elem>
@@ -12838,19 +12861,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -12858,7 +12871,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -16196,19 +16209,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -16216,7 +16219,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -20569,19 +20572,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -20589,7 +20582,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -24911,19 +24904,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -24931,7 +24914,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -29283,19 +29266,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -29303,7 +29276,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -32769,19 +32742,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -32789,7 +32752,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -36360,19 +36323,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -36380,7 +36333,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">
@@ -39951,19 +39904,9 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_all/src/init_ext_library.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="vic/extensions/shared_image/include/ext_mpi.h"
             ex="false"
             tool="3"
-            flavor2="0">
-      </item>
-      <item path="vic/extensions/shared_image/src/ext_alloc.c"
-            ex="false"
-            tool="0"
             flavor2="0">
       </item>
       <item path="vic/extensions/shared_image/src/ext_finalize.c"
@@ -39971,7 +39914,7 @@
             tool="0"
             flavor2="0">
       </item>
-      <item path="vic/extensions/shared_image/src/ext_init.c"
+      <item path="vic/extensions/shared_image/src/ext_init_library.c"
             ex="false"
             tool="0"
             flavor2="0">

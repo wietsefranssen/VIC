@@ -25,7 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_all.h>
-#include <ext_driver_shared_all.h>
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief    Read the VIC model parameters file
@@ -536,6 +536,12 @@ get_parameters(FILE *paramfile)
             }
             else if (strcasecmp("UH_PARTITIONS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %d", &ext_param.UH_PARTITIONS);
+            }
+            else if (strcasecmp("MPI_N_PROCESS_COST", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &ext_param.MPI_N_PROCESS_COST);
+            }
+            else if (strcasecmp("MPI_E_PROCESS_COST", optstr) == 0) {
+                sscanf(cmdstr, "%*s %lf", &ext_param.MPI_N_PROCESS_COST);
             }
             else {
                 log_warn("Unrecognized option in the parameter file:  %s "

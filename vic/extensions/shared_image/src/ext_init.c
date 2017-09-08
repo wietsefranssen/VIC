@@ -118,7 +118,7 @@ routing_local_init(char *nc_name)
         }
         
         rout_con[i].upstream = malloc(Nupstream * sizeof(*rout_con[i].upstream));
-        check_alloc_status(rout_con[i].upstream);
+        check_alloc_status(rout_con[i].upstream, "Memory allocation error");
         
         for(j=0;j<Nupstream;j++){
             rout_con[i].upstream[j]=upstream[j];
@@ -131,6 +131,7 @@ void
 routing_global_init(char *nc_name)
 {
     extern domain_struct global_domain;
+    extern rout_con_struct *rout_con;
     
     int    *direction = NULL;
     size_t next_global_total_id;
@@ -222,13 +223,13 @@ routing_global_init(char *nc_name)
 void
 routing_init(char *nc_name)
 {    
-    extern ext_mpi_option_struct ext_mpi_options;
+    extern ext_option_struct ext_options;
     extern int mpi_rank;
        
-    if(ext_mpi_options.decomposition_method==BASIN_DECOMPOSITION){
+    if(ext_options.MPI_DECOMPOSITION==BASIN_DECOMPOSITION){
         routing_local_init(nc_name);  
         
-    } else if(ext_mpi_options.decomposition_method==RANDOM_DECOMPOSITION && 
+    } else if(ext_options.MPI_DECOMPOSITION==RANDOM_DECOMPOSITION && 
             mpi_rank==VIC_MPI_ROOT){
         routing_global_init(nc_name);        
     }
