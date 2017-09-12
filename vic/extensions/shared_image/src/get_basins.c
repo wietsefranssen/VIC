@@ -1,6 +1,6 @@
 #include <ext_mpi.h>
 
-void get_basins(char *nc_name, basin_struct *basins){
+void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
     extern domain_struct global_domain;
     
     int    *direction = NULL;
@@ -35,7 +35,7 @@ void get_basins(char *nc_name, basin_struct *basins){
         basins->basin_map[i] = NODATA_BASIN;
     }
     
-    get_nc_field_int(nc_name, "flow_direction", d2start, d2count,
+    get_nc_field_int(nc_name, direction_var, d2start, d2count,
                      direction);
     
     // 1 = north

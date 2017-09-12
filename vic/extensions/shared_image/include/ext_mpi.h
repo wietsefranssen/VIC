@@ -18,7 +18,9 @@ typedef struct{
     size_t **catchment;
 }basin_struct;
 
-void get_basins(char *nc_name, basin_struct *basins);
+void mpi_alloc();
+        
+void get_basins(char *nc_name, char *direction_var, basin_struct *basins);
 void mpi_map_decomp_domain(size_t ncells, size_t mpi_size,
                            int **mpi_map_local_array_sizes,
                            int **mpi_map_global_array_offsets,

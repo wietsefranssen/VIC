@@ -40,6 +40,7 @@ get_global_param(FILE *gp)
     extern param_set_struct    param_set;
     extern filenames_struct    filenames;
     extern ext_filenames_struct    ext_filenames;
+    extern int                  mpi_decomposition;
     extern size_t              NF, NR;
 
     char                       cmdstr[MAXSTRING];
@@ -291,17 +292,30 @@ get_global_param(FILE *gp)
             else if (strcasecmp("MPI_DECOMPOSITION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("CALCULATE", flgstr) == 0) {
-                    ext_options.MPI_DECOMPOSITION = CALCULATE_DECOMPOSITION;
+                    mpi_decomposition = CALCULATE_DECOMPOSITION;
                 }
                 else if (strcasecmp("BASIN", flgstr) == 0) {
-                    ext_options.MPI_DECOMPOSITION = BASIN_DECOMPOSITION;
+                    mpi_decomposition = BASIN_DECOMPOSITION;
                 }
                 else if (strcasecmp("RANDOM", flgstr) == 0) {
-                    ext_options.MPI_DECOMPOSITION = RANDOM_DECOMPOSITION;
+                    mpi_decomposition = RANDOM_DECOMPOSITION;
                 }
                 else {
                     log_err("MPI_DECOMPOSITION must be either CALCULATE, "
                             "BASIN, or RANDOM.");
+                }
+            }
+            else if (strcasecmp("ROUTING_UH_PARAMETERS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                if (strcasecmp("CONSTANT", flgstr) == 0) {
+                    ext_options.UH_PARAMETERS = CONSTANT_UH_PARAMETERS;
+                }
+                else if (strcasecmp("FROM_FILE", flgstr) == 0) {
+                    ext_options.UH_PARAMETERS = FILE_UH_PARAMETERS;
+                }
+                else {
+                    log_err("ROUTING_UH_PARAMETERS must be either CONSTANT, "
+                            "or FROM_FILE.");
                 }
             }
             
@@ -528,7 +542,15 @@ get_global_param(FILE *gp)
                 sscanf(cmdstr, "%*s %s", flgstr);
                 options.LAKE_PROFILE = str_to_bool(flgstr);
             }
-
+            
+            /*************************************
+               Define extension parameter files
+            *************************************/
+            else if (strcasecmp("ROUTING_TYPE", optstr) == 0) {
+                get_routing_type(cmdstr);
+            }
+            
+            
             /*************************************
                Define output files
             *************************************/
@@ -1033,8 +1055,8 @@ get_global_param(FILE *gp)
     /******************************************
        Check for undefined required extension parameters
     ******************************************/
-    if((ext_options.MPI_DECOMPOSITION == CALCULATE_DECOMPOSITION ||
-            ext_options.MPI_DECOMPOSITION == BASIN_DECOMPOSITION)
+    if((mpi_decomposition == CALCULATE_DECOMPOSITION ||
+            mpi_decomposition == BASIN_DECOMPOSITION)
             && !ext_options.ROUTING){
         log_err("MPI_DECOMPOSITION = CALCULATE or BASIN but ROUTING = FALSE");
     }

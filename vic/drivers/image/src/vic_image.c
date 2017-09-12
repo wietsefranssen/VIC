@@ -26,19 +26,7 @@
 
 #include <vic_driver_image.h>
 
-size_t              NF, NR;
-size_t              current;
-size_t             *filter_active_cells = NULL;
-size_t             *mpi_map_mapping_array = NULL;
-all_vars_struct    *all_vars = NULL;
-force_data_struct  *force = NULL;
-dmy_struct         *dmy = NULL;
-filenames_struct    filenames;
-filep_struct        filep;
-domain_struct       global_domain;
-global_param_struct global_param;
-lake_con_struct    *lake_con = NULL;
-domain_struct       local_domain;
+// MPI
 MPI_Comm            MPI_COMM_VIC = MPI_COMM_WORLD;
 MPI_Datatype        mpi_global_struct_type;
 MPI_Datatype        mpi_filenames_struct_type;
@@ -46,18 +34,37 @@ MPI_Datatype        mpi_location_struct_type;
 MPI_Datatype        mpi_alarm_struct_type;
 MPI_Datatype        mpi_option_struct_type;
 MPI_Datatype        mpi_param_struct_type;
+size_t             *mpi_map_mapping_array = NULL;
 int                *mpi_map_local_array_sizes = NULL;
 int                *mpi_map_global_array_offsets = NULL;
 int                 mpi_rank;
 int                 mpi_size;
-option_struct       options;
+
+// Global
+domain_struct       global_domain;
+domain_struct       local_domain;
+global_param_struct global_param;
 parameters_struct   param;
 param_set_struct    param_set;
+option_struct       options;
+filenames_struct    filenames;
+filep_struct        filep;
+size_t             *filter_active_cells = NULL;
+size_t              NF, NR;
+size_t              current;
+dmy_struct         *dmy = NULL;
+
+// Con & vars
 soil_con_struct    *soil_con = NULL;
-veg_con_map_struct *veg_con_map = NULL;
 veg_con_struct    **veg_con = NULL;
+lake_con_struct    *lake_con = NULL;
+veg_con_map_struct *veg_con_map = NULL;
 veg_hist_struct   **veg_hist = NULL;
 veg_lib_struct    **veg_lib = NULL;
+force_data_struct  *force = NULL;
+all_vars_struct    *all_vars = NULL;
+
+// IO
 metadata_struct     state_metadata[N_STATE_VARS];
 metadata_struct     out_metadata[N_OUTVAR_TYPES];
 save_data_struct   *save_data;  // [ncells]
@@ -65,12 +72,20 @@ double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
+// Extension MPI
+int mpi_decomposition;
+size_t *mpi_map_mapping_array_reverse = NULL;
+basin_struct     basins;
+
+// Extension global
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
-size_t *mpi_map_mapping_array_reverse;
-basin_struct     basins;
+size_t *cell_order = NULL;
+
+// Extension con & vars
 rout_con_struct *rout_con = NULL;
+ext_all_vars_struct *ext_all_vars = NULL;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model
@@ -120,6 +135,7 @@ main(int    argc,
 
     // initialize model parameters from parameter files
     vic_image_init();
+    ext_init();
 
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state();
@@ -145,6 +161,7 @@ main(int    argc,
 
         // run vic over the domain
         vic_image_run(&(dmy[current]));
+        ext_run(&(dmy[current]));
 
         // Write history files
         vic_write_output(&(dmy[current]));
@@ -161,6 +178,7 @@ main(int    argc,
     // start vic final timer
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
     // clean up
+    ext_finalize();
     vic_image_finalize();
 
     // finalize MPI

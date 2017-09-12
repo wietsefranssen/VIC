@@ -9,7 +9,7 @@ initialize_ext_options(ext_option_struct *options)
 {    
     options->ROUTING = false;
     
-    options->MPI_DECOMPOSITION = RANDOM_DECOMPOSITION;
+    options->UH_PARAMETERS = CONSTANT_UH_PARAMETERS;
 }
 
 /******************************************************************************
@@ -20,6 +20,10 @@ void
 initialize_ext_filenames(ext_filenames_struct *filenames)
 {
     strcpy(filenames->routing, "MISSING");
+    
+    strcpy(filenames->info.direction_var, "MISSING");
+    strcpy(filenames->info.velocity_var, "MISSING");
+    strcpy(filenames->info.diffusion_var, "MISSING");
 }
 
 /******************************************************************************
@@ -47,8 +51,10 @@ initialize_ext_global_structures(void)
     extern ext_filenames_struct ext_filenames;
     extern ext_option_struct ext_options;
     extern ext_parameters_struct ext_param;
+    extern int mpi_decomposition;
     
     initialize_ext_options(&ext_options);
     initialize_ext_filenames(&ext_filenames);
     initialize_ext_parameters(&ext_param);
+    mpi_decomposition = RANDOM_DECOMPOSITION;
 }

@@ -26,20 +26,20 @@ mpi_map_decomp_domain(size_t   ncells,
                       size_t **mpi_map_mapping_array,
                       size_t **mpi_map_mapping_array_reverse)
 {
-    extern ext_option_struct ext_options;
     extern ext_parameters_struct ext_param;
     extern ext_filenames_struct ext_filenames;
     extern basin_struct  basins;
+    extern int mpi_decomposition;
     
     size_t i;
     int j;
     size_t k;
     size_t node_ids[mpi_size];
     
-    if(ext_options.MPI_DECOMPOSITION == CALCULATE_DECOMPOSITION ||
-            ext_options.MPI_DECOMPOSITION == BASIN_DECOMPOSITION){
+    if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
+            mpi_decomposition == BASIN_DECOMPOSITION){
         
-        get_basins(ext_filenames.routing, &basins);
+        get_basins(ext_filenames.routing, ext_filenames.info.direction_var, &basins);
         
         // decompose the mask by basin
         mpi_map_decomp_domain_basin(ncells, mpi_size,
@@ -48,7 +48,7 @@ mpi_map_decomp_domain(size_t   ncells,
                           mpi_map_mapping_array,
                           &basins);
         
-        if(ext_options.MPI_DECOMPOSITION == CALCULATE_DECOMPOSITION){
+        if(mpi_decomposition == CALCULATE_DECOMPOSITION){
 
             for(i=0;i<mpi_size;i++){
                 node_ids[i]=i;
@@ -66,9 +66,9 @@ mpi_map_decomp_domain(size_t   ncells,
                                   mpi_map_global_array_offsets,
                                   mpi_map_mapping_array);
                 
-                ext_options.MPI_DECOMPOSITION=RANDOM_DECOMPOSITION;
+                mpi_decomposition=RANDOM_DECOMPOSITION;
             }else{            
-                ext_options.MPI_DECOMPOSITION=BASIN_DECOMPOSITION;
+                mpi_decomposition=BASIN_DECOMPOSITION;
                 
             }
         }
@@ -79,12 +79,12 @@ mpi_map_decomp_domain(size_t   ncells,
                           mpi_map_global_array_offsets,
                           mpi_map_mapping_array);
         
-        ext_options.MPI_DECOMPOSITION=RANDOM_DECOMPOSITION;
+        mpi_decomposition=RANDOM_DECOMPOSITION;
     }
     
-    if(ext_options.MPI_DECOMPOSITION == BASIN_DECOMPOSITION){
+    if(mpi_decomposition == BASIN_DECOMPOSITION){
         debug("Basin mask decomposition for MPI");
-    }else if(ext_options.MPI_DECOMPOSITION == RANDOM_DECOMPOSITION){    
+    }else if(mpi_decomposition == RANDOM_DECOMPOSITION){    
         debug("Random mask decomposition for MPI");
     }
     
