@@ -15,6 +15,7 @@
 #define EXT_DEF_H
 
 #include <vic_def.h>
+#include <mpi.h>
 
 #define VIC_RESOLUTION 0.5
 

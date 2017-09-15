@@ -249,6 +249,7 @@ void sprint_location(char *str, location_struct *loc);
 void vic_alloc(void);
 void vic_finalize(void);
 void vic_image_run(dmy_struct *dmy_current);
+void vic_process_data(dmy_struct *dmy_current);
 void vic_init(void);
 void vic_init_output(dmy_struct *dmy_current);
 void vic_restore(void);

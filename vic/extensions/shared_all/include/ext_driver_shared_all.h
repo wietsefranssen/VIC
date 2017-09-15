@@ -9,5 +9,7 @@ void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending);
 void sizet_swap(size_t i, size_t j, size_t *array);
 void int_swap(size_t i, size_t j, int *array);
 
+void cshift(double *data, int nx, int ny, int axis, int direction);
+
 #endif
 

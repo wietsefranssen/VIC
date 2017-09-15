@@ -40,7 +40,6 @@ vic_start(void)
     size_t                     i;
     extern size_t             *filter_active_cells;
     extern size_t             *mpi_map_mapping_array;
-    extern size_t             *mpi_map_mapping_array_reverse;
     extern filenames_struct    filenames;
     extern filep_struct        filep;
     extern domain_struct       global_domain;
@@ -86,12 +85,12 @@ vic_start(void)
         mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
                               &mpi_map_local_array_sizes,
                               &mpi_map_global_array_offsets,
-                              &mpi_map_mapping_array,
-                              &mpi_map_mapping_array_reverse);
+                              &mpi_map_mapping_array);
 
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *
-                                     sizeof(*filter_active_cells));
+                                     sizeof(*filter_active_cells)); 
+        check_alloc_status(filter_active_cells, "Memory allocation error");
 
         j = 0;
         for (i = 0; i < global_domain.ncells_total; i++) {
@@ -119,7 +118,7 @@ vic_start(void)
         // Check that model parameters are valid
         validate_parameters();
     }
-
+        
     // broadcast global, option, param structures as well as global valies
     // such as NF and NR
     status = MPI_Bcast(&NF, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);

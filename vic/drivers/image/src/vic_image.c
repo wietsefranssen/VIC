@@ -73,15 +73,21 @@ stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
 // Extension MPI
-int mpi_decomposition;
-size_t *mpi_map_mapping_array_reverse = NULL;
-basin_struct     basins;
+int                 mpi_decomposition;
+size_t             *mpi_map_mapping_array_reverse = NULL;
+MPI_Datatype        mpi_ext_filenames_struct_type;
+MPI_Datatype        mpi_ext_option_struct_type;
+MPI_Datatype        mpi_ext_param_struct_type;
+MPI_Datatype        mpi_ext_info_struct_type;
+basin_struct        basins;
 
 // Extension global
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
-size_t *cell_order = NULL;
+ext_info_struct ext_info;
+size_t *cell_order_global = NULL;
+size_t *cell_order_local = NULL;
 
 // Extension con & vars
 rout_con_struct *rout_con = NULL;
@@ -102,7 +108,7 @@ main(int    argc,
     int          status;
     timer_struct global_timers[N_TIMERS];
     char         state_filename[MAXSTRING];
-
+    
     // start vic all timer
     timer_start(&(global_timers[TIMER_VIC_ALL]));
     // start vic init timer
@@ -120,14 +126,16 @@ main(int    argc,
 
     // initialize mpi
     initialize_mpi();
+    initialize_ext_mpi();
 
     // process command line arguments
     if (mpi_rank == VIC_MPI_ROOT) {
         cmd_proc(argc, argv, filenames.global);
     }
 
-    // read global parameters
+    // read global parameters    
     vic_image_start();
+    ext_start();
 
     // allocate memory
     vic_alloc();
@@ -162,7 +170,9 @@ main(int    argc,
         // run vic over the domain
         vic_image_run(&(dmy[current]));
         ext_run(&(dmy[current]));
-
+        
+        // Aggregate data
+        vic_process_data(&(dmy[current]));
         // Write history files
         vic_write_output(&(dmy[current]));
 

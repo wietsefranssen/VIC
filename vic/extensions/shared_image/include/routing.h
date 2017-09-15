@@ -10,12 +10,13 @@ enum{
 };
 
 typedef struct{
-    short unsigned int direction;
-    short unsigned int Nupstream;
-    size_t downstream;
-    size_t *upstream;
+    size_t downstream_global;
+    size_t downstream_local;
     
-    size_t rank;
+    short unsigned int Nupstream_global;
+    short unsigned int Nupstream_local;
+    size_t *upstream_global;
+    size_t *upstream_local;
     
     double *uh;
 }rout_con_struct;
@@ -27,18 +28,17 @@ typedef struct{
 void get_routing_type(char *cmdstr);
 
 void routing_init();
-void routing_init_direction(size_t Ncells);
-void routing_init_uh(size_t Ncells);
-void routing_init_order(size_t Ncells);
+void routing_init_downstream();
+void routing_init_uh();
+void routing_init_order();
 
-size_t get_downstream_id(size_t id, int direction);
-size_t get_total_id(size_t active_id);
-size_t get_active_id(size_t global_id);
+void routing_run();
+void rout(double **discharge, double *uh, double quantity, int uh_length);
+
+void get_downstream(size_t id, int direction, size_t *downstream);
 void set_upstream(size_t id, size_t Ncells);
 void set_uh(size_t id, double distance, double diffusion, double velocity);
 double uh(double time, double distance, double velocity, double diffusion);
-
-void routing_run();
 
 #endif
 

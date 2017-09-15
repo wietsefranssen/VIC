@@ -282,6 +282,14 @@ enum
     // Timing and Profiling Terms
     OUT_TIME_VICRUN_WALL, /**< Wall time spent inside vic_run [seconds] */
     OUT_TIME_VICRUN_CPU,  /**< Wall time spent inside vic_run [seconds] */
+    
+    // Extension variables
+    // Routing terms
+    OUT_DISCHARGE,      /**< Discharge [mm/s] */
+    // Timing and Profiling Terms
+    OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
+    OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */
+    
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum
     N_OUTVAR_TYPES        /**< used as a loop counter*/
