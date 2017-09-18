@@ -26,7 +26,20 @@
 
 #include <vic_driver_image.h>
 
-// MPI
+size_t              NF, NR;
+size_t              current;
+size_t             *filter_active_cells = NULL;
+size_t             *mpi_map_mapping_array = NULL;
+all_vars_struct    *all_vars = NULL;
+force_data_struct  *force = NULL;
+dmy_struct         *dmy = NULL;
+dmy_struct          dmy_state;
+filenames_struct    filenames;
+filep_struct        filep;
+domain_struct       global_domain;
+global_param_struct global_param;
+lake_con_struct    *lake_con = NULL;
+domain_struct       local_domain;
 MPI_Comm            MPI_COMM_VIC = MPI_COMM_WORLD;
 MPI_Datatype        mpi_global_struct_type;
 MPI_Datatype        mpi_filenames_struct_type;
@@ -34,37 +47,18 @@ MPI_Datatype        mpi_location_struct_type;
 MPI_Datatype        mpi_alarm_struct_type;
 MPI_Datatype        mpi_option_struct_type;
 MPI_Datatype        mpi_param_struct_type;
-size_t             *mpi_map_mapping_array = NULL;
 int                *mpi_map_local_array_sizes = NULL;
 int                *mpi_map_global_array_offsets = NULL;
 int                 mpi_rank;
 int                 mpi_size;
-
-// Global
-domain_struct       global_domain;
-domain_struct       local_domain;
-global_param_struct global_param;
+option_struct       options;
 parameters_struct   param;
 param_set_struct    param_set;
-option_struct       options;
-filenames_struct    filenames;
-filep_struct        filep;
-size_t             *filter_active_cells = NULL;
-size_t              NF, NR;
-size_t              current;
-dmy_struct         *dmy = NULL;
-
-// Con & vars
 soil_con_struct    *soil_con = NULL;
-veg_con_struct    **veg_con = NULL;
-lake_con_struct    *lake_con = NULL;
 veg_con_map_struct *veg_con_map = NULL;
+veg_con_struct    **veg_con = NULL;
 veg_hist_struct   **veg_hist = NULL;
 veg_lib_struct    **veg_lib = NULL;
-force_data_struct  *force = NULL;
-all_vars_struct    *all_vars = NULL;
-
-// IO
 metadata_struct     state_metadata[N_STATE_VARS];
 metadata_struct     out_metadata[N_OUTVAR_TYPES];
 save_data_struct   *save_data;  // [ncells]
@@ -108,7 +102,7 @@ main(int    argc,
     int          status;
     timer_struct global_timers[N_TIMERS];
     char         state_filename[MAXSTRING];
-    
+
     // start vic all timer
     timer_start(&(global_timers[TIMER_VIC_ALL]));
     // start vic init timer
@@ -133,7 +127,7 @@ main(int    argc,
         cmd_proc(argc, argv, filenames.global);
     }
 
-    // read global parameters    
+    // read global parameters
     vic_image_start();
     ext_start();
 
@@ -146,7 +140,7 @@ main(int    argc,
     ext_init();
 
     // populate model state, either using a cold start or from a restart file
-    vic_populate_model_state();
+    vic_populate_model_state(&(dmy[0]));
 
     // initialize output structures
     vic_init_output(&(dmy[0]));
@@ -165,7 +159,9 @@ main(int    argc,
     // loop over all timesteps
     for (current = 0; current < global_param.nrecs; current++) {
         // read forcing data
+        timer_continue(&(global_timers[TIMER_VIC_FORCE]));
         vic_force();
+        timer_stop(&(global_timers[TIMER_VIC_FORCE]));
 
         // run vic over the domain
         vic_image_run(&(dmy[current]));
@@ -174,12 +170,14 @@ main(int    argc,
         // Aggregate data
         vic_process_data(&(dmy[current]));
         // Write history files
+        timer_continue(&(global_timers[TIMER_VIC_WRITE]));
         vic_write_output(&(dmy[current]));
+        timer_stop(&(global_timers[TIMER_VIC_WRITE]));
 
         // Write state file
-        if (check_save_state_flag(current)) {
+        if (check_save_state_flag(current, &dmy_state)) {
             debug("writing state file for timestep %zu", current);
-            vic_store(&(dmy[current]), state_filename);
+            vic_store(&dmy_state, state_filename);
             debug("finished storing state file: %s", state_filename)
         }
     }

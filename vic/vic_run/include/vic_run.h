@@ -49,6 +49,9 @@ double calc_atmos_energy_bal(double, double, double, double, double, double,
                              double, double *, double *, double *, double *,
                              double *, double *, bool *, unsigned int*);
 double calc_density(double);
+void calc_gridcell_avg_albedo(double *, double, size_t, bool,
+                              energy_bal_struct **, snow_data_struct **,
+                              veg_con_struct *, soil_con_struct *);
 double calc_latent_heat_of_sublimation(double temp);
 double calc_latent_heat_of_vaporization(double temp);
 int calc_layer_average_thermal_props(energy_bal_struct *, layer_data_struct *,
@@ -113,6 +116,7 @@ void compute_pot_evap(size_t, double, double, double, double, double, double,
                       double, double *);
 void compute_runoff_and_asat(soil_con_struct *, double *, double, double *,
                              double *);
+double calc_Q12(double, double, double, double, double);
 void compute_soil_resp(int, double *, double, double, double *, double *,
                        double, double, double, double *, double *, double *);
 void compute_soil_layer_thermal_properties(layer_data_struct *, double *,

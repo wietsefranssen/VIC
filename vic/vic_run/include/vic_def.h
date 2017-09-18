@@ -268,7 +268,7 @@ typedef struct {
                             Default = TRUE */
 
     // input options
-    bool BASEFLOW;       /**< ARNO: read Ds, Dm, Ws, c; NIJSSEN2001: read d1, d2, d3, d4 */
+    unsigned short int BASEFLOW;     /**< ARNO: read Ds, Dm, Ws, c; NIJSSEN2001: read d1, d2, d3, d4 */
     unsigned short int GRID_DECIMAL; /**< Number of decimal places in grid file extensions */
     bool VEGLIB_FCAN;    /**< TRUE = veg library file contains monthly fcanopy values */
     bool VEGLIB_PHOTO;   /**< TRUE = veg library contains photosynthesis parameters */
@@ -1000,6 +1000,14 @@ typedef struct {
 } snow_data_struct;
 
 /******************************************************************************
+ * @brief   This structures stores variables averaged over a grid cell
+ *****************************************************************************/
+typedef struct {
+    // Grid cell averaged variables
+    double avg_albedo;            /**< Average albedo over a grid cell */
+} gridcell_avg_struct;
+
+/******************************************************************************
  * @brief   This structure stores the lake/wetland parameters for a grid cell
  *****************************************************************************/
 typedef struct {
@@ -1085,6 +1093,7 @@ typedef struct {
     lake_var_struct lake_var;     /**< Stores lake/wetland variables */
     snow_data_struct **snow;      /**< Stores snow variables */
     veg_var_struct **veg_var;     /**< Stores vegetation variables */
+    gridcell_avg_struct gridcell_avg;   /**< Stores gridcell average variables */
 } all_vars_struct;
 
 #endif
