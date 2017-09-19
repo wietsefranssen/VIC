@@ -27,7 +27,6 @@ mpi_map_decomp_domain(size_t   ncells,
 {
     extern ext_parameters_struct ext_param;
     extern ext_filenames_struct ext_filenames;
-    extern ext_info_struct ext_info;
     extern basin_struct  basins;
     extern int mpi_decomposition;
     
@@ -37,7 +36,7 @@ mpi_map_decomp_domain(size_t   ncells,
     if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
             mpi_decomposition == BASIN_DECOMPOSITION){
         
-        get_basins(ext_filenames.routing, ext_info.direction_var, &basins);
+        get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
         
         // decompose the mask by basin
         mpi_map_decomp_domain_basin(ncells, mpi_size,
@@ -244,13 +243,8 @@ void gather_double(double *dvar, double *var_local) {
     extern size_t *mpi_map_mapping_array;
     int status;
     double *dvar_gathered = NULL;
-    size_t               i;
     
     if (mpi_rank == VIC_MPI_ROOT) {
-        for (i = 0; i < global_domain.ncells_active; i++) {
-            dvar[i] = 0;
-        }
-
         dvar_gathered =
                 malloc(global_domain.ncells_active * sizeof (*dvar_gathered));
         check_alloc_status(dvar_gathered, "Memory allocation error.");
@@ -289,8 +283,10 @@ void gather_double_2d(double **dvar, double **var_local, int depth) {
     size_t i;
     size_t j;
     
-    tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
-    check_alloc_status(tmp_global, "Memory allocation error");
+    if(mpi_rank == VIC_MPI_ROOT){
+        tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
+        check_alloc_status(tmp_global, "Memory allocation error");
+    }
     tmp_local = malloc(local_domain.ncells_active * sizeof(*tmp_local));
     check_alloc_status(tmp_local, "Memory allocation error");
     
@@ -308,6 +304,11 @@ void gather_double_2d(double **dvar, double **var_local, int depth) {
             }
         }
     }
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(tmp_global);
+    }
+    free(tmp_local);
 }
 
 /******************************************************************************
@@ -324,14 +325,8 @@ void gather_int(int *ivar, int *ivar_local) {
     extern size_t *mpi_map_mapping_array;
     int status;
     int *ivar_gathered = NULL;
-    size_t               i;
     
     if (mpi_rank == VIC_MPI_ROOT) {
-
-        for (i = 0; i < global_domain.ncells_active; i++) {
-            ivar[i] = 0;
-        }
-
         ivar_gathered =
                 malloc(global_domain.ncells_active * sizeof (*ivar_gathered));
         check_alloc_status(ivar_gathered, "Memory allocation error.");
@@ -369,15 +364,8 @@ void gather_sizet(size_t *svar, size_t *svar_local) {
     extern size_t *mpi_map_mapping_array;
     int status;
     size_t *svar_gathered = NULL;
-    size_t               i;
-    
+        
     if (mpi_rank == VIC_MPI_ROOT) {
-
-        for (i = 0; i < global_domain.ncells_active; i++) {
-            svar[i] = 0;
-        }
-        log_info("bl");
-
         svar_gathered =
                 malloc(global_domain.ncells_active * sizeof (*svar_gathered));
         check_alloc_status(svar_gathered, "Memory allocation error.");
@@ -390,13 +378,11 @@ void gather_sizet(size_t *svar, size_t *svar_local) {
             mpi_map_global_array_offsets, MPI_AINT,
             VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-    log_info("bl2");
     
     if (mpi_rank == VIC_MPI_ROOT) {
         // remap the array
         map(sizeof (size_t), global_domain.ncells_active, NULL,
                 mpi_map_mapping_array, svar_gathered, svar);
-        log_info("bl3");
 
         // cleanup
         free(svar_gathered);
@@ -418,8 +404,10 @@ void gather_sizet_2d(size_t **svar, size_t **var_local, int depth) {
     size_t i;
     size_t j;
     
-    tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
-    check_alloc_status(tmp_global, "Memory allocation error");
+    if(mpi_rank == VIC_MPI_ROOT){
+        tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
+        check_alloc_status(tmp_global, "Memory allocation error");
+    }
     tmp_local = malloc(local_domain.ncells_active * sizeof(*tmp_local));
     check_alloc_status(tmp_local, "Memory allocation error");
     
@@ -437,6 +425,11 @@ void gather_sizet_2d(size_t **svar, size_t **var_local, int depth) {
             }
         }
     }
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(tmp_global);
+    }
+    free(tmp_local);
 }
 
 /******************************************************************************
@@ -476,6 +469,48 @@ void scatter_double(double *dvar, double *var_local) {
     if (mpi_rank == VIC_MPI_ROOT) {
         free(dvar_mapped);
     }
+}
+
+/******************************************************************************
+ * @brief   Scatter double precision variable
+ * @details values from master node are scattered to the local nodes
+ *****************************************************************************/
+void scatter_double_2d(double **dvar, double **var_local, int depth) {
+    extern domain_struct global_domain;
+    extern domain_struct local_domain;
+    extern int mpi_rank;
+        
+    double *tmp_global = NULL;
+    double *tmp_local = NULL;
+    
+    size_t i;
+    size_t j;
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
+        check_alloc_status(tmp_global, "Memory allocation error");
+    }
+    tmp_local = malloc(local_domain.ncells_active * sizeof(*tmp_local));
+    check_alloc_status(tmp_local, "Memory allocation error");
+    
+    for(i = 0; i < (size_t) depth; i++){        
+        if(mpi_rank == VIC_MPI_ROOT){
+            for(j=0;j<global_domain.ncells_active;j++){
+                tmp_global[j] = dvar[j][i];
+            }
+        }
+        
+        scatter_double(tmp_global, tmp_local);
+                        
+        for(j=0;j<local_domain.ncells_active;j++){
+            var_local[j][i] = tmp_local[j];
+        }
+    } 
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(tmp_global);
+    }
+    free(tmp_local);
 }
 
 /******************************************************************************
@@ -571,13 +606,14 @@ void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth) {
     size_t i;
     size_t j;
     
-    tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
-    check_alloc_status(tmp_global, "Memory allocation error");
+    if(mpi_rank == VIC_MPI_ROOT){
+        tmp_global = malloc(global_domain.ncells_active * sizeof(*tmp_global));
+        check_alloc_status(tmp_global, "Memory allocation error");
+    }
     tmp_local = malloc(local_domain.ncells_active * sizeof(*tmp_local));
     check_alloc_status(tmp_local, "Memory allocation error");
     
-    for(i = 0; i < (size_t) depth; i++){
-        
+    for(i = 0; i < (size_t) depth; i++){        
         if(mpi_rank == VIC_MPI_ROOT){
             for(j=0;j<global_domain.ncells_active;j++){
                 tmp_global[j] = svar[j][i];
@@ -589,8 +625,12 @@ void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth) {
         for(j=0;j<local_domain.ncells_active;j++){
             var_local[j][i] = tmp_local[j];
         }
-    }
+    }    
     
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(tmp_global);
+    }
+    free(tmp_local);
 }
 
 void 
@@ -629,57 +669,6 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     offsets[i] = offsetof(ext_option_struct, UH_PARAMETERS);
     mpi_types[i++] = MPI_INT;
         
-    // make sure that the we have the right number of elements
-    if (i != (size_t) nitems) {
-        log_err("Miscount: %zd not equal to %d.", i, nitems);
-    }
-
-    status = MPI_Type_create_struct(nitems, blocklengths, offsets, mpi_types,
-                                    mpi_type);
-    check_mpi_status(status, "MPI error.");
-
-    status = MPI_Type_commit(mpi_type);
-    check_mpi_status(status, "MPI error.");
-
-    // cleanup
-    free(blocklengths);
-    free(offsets);
-    free(mpi_types);
-}
-
-void 
-create_MPI_ext_filenames_struct_type(MPI_Datatype *mpi_type){
-    extern MPI_Comm MPI_COMM_VIC;
-    int             nitems; // number of elements in struct
-    int             status;
-    int            *blocklengths;
-    size_t          i;
-    MPI_Aint       *offsets;
-    MPI_Datatype   *mpi_types;
-    
-    nitems = 1;
-    blocklengths = malloc(nitems * sizeof(*blocklengths));
-    check_alloc_status(blocklengths, "Memory allocation error.");
-
-    offsets = malloc(nitems * sizeof(*offsets));
-    check_alloc_status(offsets, "Memory allocation error.");
-
-    mpi_types = malloc(nitems * sizeof(*mpi_types));
-    check_alloc_status(mpi_types, "Memory allocation error.");
-    
-    // most of the elements in filenames_struct are character arrays. Use
-    // MAXSTRING as the default block length and reset as needed
-    for (i = 0; i < (size_t) nitems; i++) {
-        blocklengths[i] = MAXSTRING;
-    }
-
-    // reset i
-    i = 0;
-        
-    //char routing[MAXSTRING];
-    offsets[i] = offsetof(ext_filenames_struct, routing);
-    mpi_types[i++] = MPI_CHAR;
-    
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);
@@ -763,79 +752,15 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     free(mpi_types);
 }
 
-void 
-create_MPI_ext_info_struct_type(MPI_Datatype *mpi_type){
-    extern MPI_Comm MPI_COMM_VIC;
-    int             nitems; // number of elements in struct
-    int             status;
-    int            *blocklengths;
-    size_t          i;
-    MPI_Aint       *offsets;
-    MPI_Datatype   *mpi_types;
-    
-    nitems = 4;
-    blocklengths = malloc(nitems * sizeof(*blocklengths));
-    check_alloc_status(blocklengths, "Memory allocation error.");
-
-    offsets = malloc(nitems * sizeof(*offsets));
-    check_alloc_status(offsets, "Memory allocation error.");
-
-    mpi_types = malloc(nitems * sizeof(*mpi_types));
-    check_alloc_status(mpi_types, "Memory allocation error.");
-    
-    // most of the elements in filenames_struct are character arrays. Use
-    // MAXSTRING as the default block length and reset as needed
-    for (i = 0; i < (size_t) nitems; i++) {
-        blocklengths[i] = MAXSTRING;
-    }
-
-    // reset i
-    i = 0;
-    
-    //char direction_var[MAXSTRING];
-    offsets[i] = offsetof(ext_info_struct, direction_var);
-    mpi_types[i++] = MPI_CHAR;
-    //char velocity_var[MAXSTRING];
-    offsets[i] = offsetof(ext_info_struct, velocity_var);
-    mpi_types[i++] = MPI_CHAR;
-    //char diffusion_var[MAXSTRING];
-    offsets[i] = offsetof(ext_info_struct, diffusion_var);
-    mpi_types[i++] = MPI_CHAR;
-    //char distance_var[MAXSTRING];
-    offsets[i] = offsetof(ext_info_struct, distance_var);
-    mpi_types[i++] = MPI_CHAR;
-    
-    // make sure that the we have the right number of elements
-    if (i != (size_t) nitems) {
-        log_err("Miscount: %zd not equal to %d.", i, nitems);
-    }
-
-    status = MPI_Type_create_struct(nitems, blocklengths, offsets, mpi_types,
-                                    mpi_type);
-    check_mpi_status(status, "MPI error.");
-
-    status = MPI_Type_commit(mpi_type);
-    check_mpi_status(status, "MPI error.");
-
-    // cleanup
-    free(blocklengths);
-    free(offsets);
-    free(mpi_types);
-}
-
 void
 initialize_ext_mpi(){    
     extern int mpi_decomposition;
     
-    extern MPI_Datatype mpi_ext_filenames_struct_type;
     extern MPI_Datatype mpi_ext_option_struct_type;
-    extern MPI_Datatype mpi_ext_info_struct_type;
     extern MPI_Datatype mpi_ext_param_struct_type;
     
     create_MPI_ext_option_struct_type(&mpi_ext_option_struct_type);
-    create_MPI_ext_filenames_struct_type(&mpi_ext_filenames_struct_type);
     create_MPI_ext_parameters_struct_type(&mpi_ext_param_struct_type);
-    create_MPI_ext_info_struct_type(&mpi_ext_info_struct_type);    
     
     mpi_decomposition = RANDOM_DECOMPOSITION;    
 }

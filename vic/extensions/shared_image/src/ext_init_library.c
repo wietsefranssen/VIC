@@ -1,13 +1,12 @@
 #include "ext_driver_shared_image.h"
 
 /******************************************************************************
- * @brief    Initialize basins before they are called by the
+ * @brief    Initialize local cell order before it is called by the
  *           model.
  *****************************************************************************/
 void
-initialize_basins(basin_struct *basins)
-{   
-    basins->Nbasin = 0;    
+initialize_local_cell_order(size_t *cell_order){    
+    (*cell_order) = MISSING_USI;
 }
 
 /******************************************************************************
@@ -39,10 +38,13 @@ initialize_ext_all_vars(ext_all_vars_struct *ext_all_vars)
 {    
     extern global_param_struct global_param;
     extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     size_t i;
         
-    for(i=0;i<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;i++){
-        ext_all_vars->rout_var.discharge[i] = 0.0;                
+    if(ext_options.ROUTING){
+        for(i=0;i<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;i++){
+            ext_all_vars->rout_var.discharge[i] = 0.0;                
+        }
     }
     
 }
@@ -53,22 +55,21 @@ initialize_ext_all_vars(ext_all_vars_struct *ext_all_vars)
 void
 initialize_ext_local_structures(void)
 {  
+    extern ext_option_struct ext_options;
     extern domain_struct local_domain;
-    extern basin_struct basins;
     extern rout_con_struct *rout_con;
     extern ext_all_vars_struct *ext_all_vars;
     extern size_t *cell_order_local;
-    extern size_t *mpi_map_mapping_array_reverse;
     
     size_t i;
     
     for(i=0;i<local_domain.ncells_active;i++){
-        initialize_basins(&basins);
-        initialize_rout_con(&rout_con[i]);
         initialize_ext_all_vars(&ext_all_vars[i]);
         
-        cell_order_local[i] = MISSING_USI;
-        mpi_map_mapping_array_reverse[i] = MISSING_USI;
+        if(ext_options.ROUTING){
+            initialize_rout_con(&rout_con[i]);
+            initialize_local_cell_order(&cell_order_local[i]);
+        }
     }
 }
 
@@ -91,7 +92,10 @@ initialize_ext_options(ext_option_struct *options)
 void
 initialize_ext_filenames(ext_filenames_struct *filenames)
 {
-    strcpy(filenames->routing, "MISSING");
+    strcpy(filenames->routing.nc_filename, "MISSING");
+    filenames->routing.nc_id = NODATA_NC_ID;
+    
+    initialize_ext_info(&filenames->info);
 }
 
 /******************************************************************************
@@ -103,6 +107,7 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->direction_var, "MISSING");
     strcpy(info->velocity_var, "MISSING");
     strcpy(info->diffusion_var, "MISSING");
+    strcpy(info->distance_var, "MISSING");
 }
 
 /******************************************************************************
@@ -121,17 +126,6 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->MPI_E_PROCESS_COST=5;      
 }
 
-void
-initialize_global_cell_order(size_t *cell_order){
-    extern domain_struct global_domain;
-    
-    size_t i;
-    
-    for(i=0;i<global_domain.ncells_active;i++){
-        cell_order[i] = MISSING_USI;
-    }
-}
-
 /******************************************************************************
  * @brief    Initialize global structures
  *****************************************************************************/
@@ -141,13 +135,26 @@ initialize_ext_global_structures(void)
     extern ext_filenames_struct ext_filenames;
     extern ext_option_struct ext_options;
     extern ext_parameters_struct ext_param;
-    extern ext_info_struct ext_info;
     extern int mpi_rank;
     
     if(mpi_rank == VIC_MPI_ROOT){    
         initialize_ext_options(&ext_options);
         initialize_ext_filenames(&ext_filenames);
         initialize_ext_parameters(&ext_param);
-        initialize_ext_info(&ext_info);
+    }
+}
+
+/******************************************************************************
+ * @brief    Initialize global cell order before it is called by the
+ *           model.
+ *****************************************************************************/
+void
+initialize_global_cell_order(size_t *cell_order){
+    extern domain_struct global_domain;
+    
+    size_t i;
+    
+    for(i=0;i<global_domain.ncells_active;i++){
+        cell_order[i] = MISSING_USI;
     }
 }

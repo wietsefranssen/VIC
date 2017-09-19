@@ -19,6 +19,7 @@
 
 #define VIC_RESOLUTION 0.5
 
+#define NODATA_NC_ID -1
 #define NODATA_BASIN 99999
 #define NODATA_DIRECTION -1
 #define MAX_UPSTREAM 8

@@ -44,8 +44,9 @@ typedef struct {
 }ext_info_struct;
 
 typedef struct {
-    char routing[MAXSTRING];
+    nameid_struct routing;
     
+    ext_info_struct info;
 }ext_filenames_struct;
 
 typedef struct{
@@ -57,32 +58,35 @@ void initialize_ext_options(ext_option_struct *);
 void initialize_ext_info(ext_info_struct *);
 void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);
+
 void initialize_global_cell_order(size_t *);
+
 void initialize_ext_local_structures(void);
 void initialize_rout_con(rout_con_struct *);
 void initialize_ext_all_vars(ext_all_vars_struct *);
+void initialize_local_cell_order(size_t *);
 
 void ext_start(void);
 void ext_alloc(void);
 void ext_init(void);
 void ext_update_step_vars(ext_all_vars_struct *);
-void ext_run(dmy_struct *);
+void ext_run();
 void ext_put_data();
 void ext_finalize(void);
 
-void routing_gather(rout_con_struct **rout_con, ext_all_vars_struct **ext_all_vars, double **runoff);
+void routing_gather(rout_con_struct *rout_con, ext_all_vars_struct *ext_all_vars, double *runoff);
 
-void get_active_nc_field_double(char   *nc_name,
+void get_active_nc_field_double(nameid_struct   *nc_nameid,
                     char   *var_name,
                     size_t *start,
                     size_t *count,
                     double *var);
-void get_active_nc_field_float(char   *nc_name,
+void get_active_nc_field_float(nameid_struct   *nc_nameid,
             char   *var_name,
             size_t *start,
             size_t *count,
             float *var);
-void get_active_nc_field_int(char   *nc_name,
+void get_active_nc_field_int(nameid_struct   *nc_nameid,
             char   *var_name,
             size_t *start,
             size_t *count,

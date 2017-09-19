@@ -428,7 +428,7 @@ get_global_param(FILE *gp)
                Define extension parameter files
             *************************************/
             else if (strcasecmp("ROUTING_PARAMETERS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", ext_filenames.routing);
+                sscanf(cmdstr, "%*s %s", ext_filenames.routing.nc_filename);
             }
             
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
@@ -1070,7 +1070,7 @@ get_global_param(FILE *gp)
             && !ext_options.ROUTING){
         log_err("MPI_DECOMPOSITION = CALCULATE or BASIN but ROUTING = FALSE");
     }
-    if(ext_options.ROUTING && strcmp(ext_filenames.routing, "MISSING") == 0){
+    if(ext_options.ROUTING && strcmp(ext_filenames.routing.nc_filename, "MISSING") == 0){
         log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing.");
     }
     

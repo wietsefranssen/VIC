@@ -116,9 +116,7 @@ routing_init_downstream() {
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern ext_filenames_struct ext_filenames;
-    extern ext_info_struct ext_info;
     extern rout_con_struct *rout_con;
-    extern size_t *mpi_map_mapping_array_reverse;
     extern int mpi_rank;
     
     int *direction = NULL;
@@ -126,16 +124,17 @@ routing_init_downstream() {
     size_t *downstream_local = NULL;
         
     size_t i; 
+    size_t j;
     
     size_t  d2count[2];
     size_t  d2start[2];
         
-    downstream_global = malloc(global_domain.ncells_active * sizeof(*downstream_global));
-    check_alloc_status(downstream_global, "Memory allocation error.");
     downstream_local = malloc(local_domain.ncells_active * sizeof(*downstream_local));
     check_alloc_status(downstream_local, "Memory allocation error.");
     
     if(mpi_rank == VIC_MPI_ROOT){
+        downstream_global = malloc(global_domain.ncells_active * sizeof(*downstream_global));
+        check_alloc_status(downstream_global, "Memory allocation error.");
         direction = malloc(global_domain.ncells_active * sizeof(*direction));
         check_alloc_status(direction, "Memory allocation error.");
         
@@ -144,7 +143,7 @@ routing_init_downstream() {
         d2count[0] = global_domain.n_ny;
         d2count[1] = global_domain.n_nx;
 
-        get_active_nc_field_int(ext_filenames.routing, ext_info.direction_var, d2start, d2count,
+        get_active_nc_field_int(&ext_filenames.routing, ext_filenames.info.direction_var, d2start, d2count,
                          direction);
                 
         // Get global downstream
@@ -155,13 +154,22 @@ routing_init_downstream() {
         free(direction);
     }    
     scatter_sizet(downstream_global, downstream_local);
-    free(downstream_global);
     
     // Set global and local downstream cells
     for(i=0; i<local_domain.ncells_active; i++){
         rout_con[i].downstream_global = downstream_local[i];
-        rout_con[i].downstream_local = mpi_map_mapping_array_reverse[downstream_local[i]];
+        
+        for(j=0;j<local_domain.ncells_active;j++){
+            if(local_domain.locations[j].global_idx == rout_con[i].downstream_global){
+                rout_con[i].downstream_local = j;
+                break;
+            }
+        }
     }    
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(downstream_global);
+    }
     free(downstream_local);
 }
 
@@ -170,7 +178,6 @@ routing_init_upstream(){
     extern domain_struct global_domain;
     extern domain_struct local_domain;        
     extern rout_con_struct *rout_con;
-    extern size_t *mpi_map_mapping_array_reverse;
     extern int mpi_rank;
     
     size_t *downstream_local = NULL;
@@ -184,56 +191,42 @@ routing_init_upstream(){
     
     size_t i;    
     size_t j;
+    size_t k;
     
-    downstream_global = malloc(global_domain.ncells_active * sizeof(*downstream_global));
-    check_alloc_status(downstream_global, "Memory allocation error.");
+    // Alloc
+    if(mpi_rank == VIC_MPI_ROOT){
+        downstream_global = malloc(global_domain.ncells_active * sizeof(*downstream_global));
+        check_alloc_status(downstream_global, "Memory allocation error.");
+        nupstream_global = malloc(global_domain.ncells_active * sizeof(*nupstream_global));
+        check_alloc_status(nupstream_global, "Memory allocation error.");
+        upstream_global = malloc(global_domain.ncells_active * sizeof(*upstream_global));
+        check_alloc_status(upstream_global, "Memory allocation error.");
+        for (i = 0; i < global_domain.ncells_active; i++) {
+            upstream_global[i] = malloc(MAX_UPSTREAM * sizeof(*upstream_global[i]));
+            check_alloc_status(upstream_global[i], "Memory allocation error.");
+        }
+    }
     downstream_local = malloc(local_domain.ncells_active * sizeof(*downstream_local));
     check_alloc_status(downstream_local, "Memory allocation error.");
-    log_info("Finish alloc downstream");
-    
-    for(i=0; i<local_domain.ncells_active;i++){
-        downstream_local[i]=rout_con[i].downstream_global;
-    }    
-    log_info("Finish set downstream");
-    gather_sizet(downstream_global,downstream_local);
-    free(downstream_local);
-    log_info("Finish gather downstream");
-    
-    nupstream_global = malloc(global_domain.ncells_active * sizeof(*nupstream_global));
-    check_alloc_status(nupstream_global, "Memory allocation error.");
     nupstream_local = malloc(local_domain.ncells_active * sizeof(*nupstream_local));
     check_alloc_status(nupstream_local, "Memory allocation error."); 
-    upstream_global = malloc(global_domain.ncells_active * sizeof(*upstream_global));
-    check_alloc_status(upstream_global, "Memory allocation error.");
     upstream_local = malloc(local_domain.ncells_active * sizeof(*upstream_local));
     check_alloc_status(upstream_local, "Memory allocation error."); 
-    for (i = 0; i < global_domain.ncells_active; i++) {
-        upstream_global[i] = malloc(MAX_UPSTREAM * sizeof(*upstream_global[i]));
-        check_alloc_status(upstream_global[i], "Memory allocation error.");
-    }
     for (i = 0; i < local_domain.ncells_active; i++) {
         upstream_local[i] = malloc(MAX_UPSTREAM * sizeof(*upstream_local[i]));
         check_alloc_status(upstream_local[i], "Memory allocation error.");
-    }  
-    log_info("Finish alloc upstream");
-    
-    for (i = 0; i < global_domain.ncells_active; i++) {
-        nupstream_global[i] = 0;
-        for(j=0;j<MAX_UPSTREAM;j++){
-            upstream_global[i][j]=MISSING_USI;
-        }
-    }    
-    for (i = 0; i < local_domain.ncells_active; i++) {
-        nupstream_local[i] = 0;
-        for(j=0;j<MAX_UPSTREAM;j++){
-            upstream_local[i][j]=MISSING_USI;
-        }
     }
-    log_info("Finish init upstream");
     
-    if(mpi_rank == VIC_MPI_ROOT){
-        
-        // Get global number of upstream and upstream
+    // Get global downstream
+    for(i=0; i<local_domain.ncells_active;i++){
+        downstream_local[i]=rout_con[i].downstream_global;
+    }    
+    
+    // Gather to master node
+    gather_sizet(downstream_global,downstream_local);
+    
+    // Get global upstream
+    if(mpi_rank == VIC_MPI_ROOT){        
         for(i=0;i<global_domain.ncells_active;i++){        
             nupstream_global[i] = 0;
             
@@ -245,21 +238,14 @@ routing_init_upstream(){
             }
         }        
     }
-    log_info("Finish getting upstream");
     
+    // Scatter to nodes
     scatter_int(nupstream_global, nupstream_local);
     scatter_sizet_2d(upstream_global, upstream_local, MAX_UPSTREAM);
-    log_info("Finish scatter upstream");
-    
-    for(i=0;i<global_domain.ncells_active;i++){
-        free(upstream_global[i]);
-    }
-    free(downstream_global);
-    free(nupstream_global);
-    free(upstream_global);
-    
-    // Set global and local number of upstream and upstream cells
+        
+    // Set global & local upstream
     for(i=0; i<local_domain.ncells_active; i++){
+        // Set global upstream
         rout_con[i].Nupstream_global = nupstream_local[i];        
         rout_con[i].upstream_global = malloc(rout_con[i].Nupstream_global*sizeof(*rout_con[i].upstream_global));
         check_alloc_status(rout_con[i].upstream_global,"Memory allocation error");
@@ -267,26 +253,39 @@ routing_init_upstream(){
             rout_con[i].upstream_global[j] = upstream_local[i][j];
         }      
         
-        rout_con[i].Nupstream_local = 0;        
-        
+        // Get local upstream
+        rout_con[i].Nupstream_local = 0;
         for(j=0;j<rout_con[i].Nupstream_global;j++){
-            if(mpi_map_mapping_array_reverse[rout_con[i].upstream_global[j]] != MISSING_USI){
-                upstream[rout_con[i].Nupstream_local] = mpi_map_mapping_array_reverse[rout_con[i].upstream_global[j]];
-                rout_con[i].Nupstream_local++;
+            for(k=0;k<local_domain.ncells_active;k++){
+                if(rout_con[i].upstream_global[j] == local_domain.locations[k].global_idx){
+                    upstream[rout_con[i].Nupstream_local] = k;
+                    rout_con[i].Nupstream_local++;
+                }
             }
         }
             
+        // Set local upstream
         rout_con[i].upstream_local = malloc(rout_con[i].Nupstream_local*sizeof(*rout_con[i].upstream_local));
         check_alloc_status(rout_con[i].upstream_local,"Memory allocation error");
         for(j=0;j<rout_con[i].Nupstream_local;j++){
             rout_con[i].upstream_local[j] = upstream[j];
         } 
-    }   
+    }       
     
+    // Free
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(downstream_global);
+        free(nupstream_global);        
+        for(i=0;i<global_domain.ncells_active;i++){
+            free(upstream_global[i]);
+        }
+        free(upstream_global);  
+    }    
+    free(downstream_local);
+    free(nupstream_local);    
     for(i=0;i<local_domain.ncells_active;i++){
         free(upstream_local[i]);
-    }    
-    free(nupstream_local);
+    }  
     free(upstream_local);    
 }
     
@@ -297,7 +296,6 @@ routing_init_uh(){
     extern ext_option_struct ext_options;
     extern domain_struct global_domain;
     extern domain_struct local_domain;
-    extern ext_info_struct ext_info;
     
     double *velocity_array = NULL;
     double *distance_array = NULL;
@@ -315,7 +313,7 @@ routing_init_uh(){
     d2start[1] = 0;
     d2count[0] = global_domain.n_ny;
     d2count[1] = global_domain.n_nx; 
-
+    
     distance_array = malloc(local_domain.ncells_active * sizeof(*distance_array));
     check_alloc_status(distance_array, "Memory allocation error.");                    
     velocity_array = malloc(local_domain.ncells_active * sizeof(*velocity_array));
@@ -323,23 +321,24 @@ routing_init_uh(){
     diffusion_array = malloc(local_domain.ncells_active * sizeof(*diffusion_array));
     check_alloc_status(diffusion_array, "Memory allocation error.");   
         
-    get_scatter_nc_field_double(ext_filenames.routing, ext_info.distance_var, d2start, d2count,
+    get_scatter_nc_field_double(&ext_filenames.routing, ext_filenames.info.distance_var, d2start, d2count,
                      distance_array);
     
     if(ext_options.UH_PARAMETERS == FILE_UH_PARAMETERS){     
-        get_scatter_nc_field_double(ext_filenames.routing, ext_info.velocity_var, d2start, d2count,
+        get_scatter_nc_field_double(&ext_filenames.routing, ext_filenames.info.velocity_var, d2start, d2count,
                          velocity_array);
-        get_scatter_nc_field_double(ext_filenames.routing, ext_info.diffusion_var, d2start, d2count,
+        get_scatter_nc_field_double(&ext_filenames.routing, ext_filenames.info.diffusion_var, d2start, d2count,
                          diffusion_array);        
     }
     
-    for(i=0;i<local_domain.ncells_active;i++){        
+    for(i=0;i<local_domain.ncells_active;i++){       
         distance = distance_array[i];
         
         if(ext_options.UH_PARAMETERS == FILE_UH_PARAMETERS){
             velocity = velocity_array[i];
             diffusion = diffusion_array[i];            
-        }else if(ext_options.UH_PARAMETERS == CONSTANT_UH_PARAMETERS){
+        }
+        else if(ext_options.UH_PARAMETERS == CONSTANT_UH_PARAMETERS){
             velocity = ext_param.UH_FLOW_VELOCITY;
             diffusion = ext_param.UH_FLOW_DIFFUSION;   
         }
@@ -362,39 +361,82 @@ routing_init_order(){
     extern size_t *cell_order_local;
     extern int mpi_rank;
     
-    bool *done;
+    int *nupstream_global = NULL;
+    size_t **upstream_global = NULL;
+    int *nupstream_local = NULL;
+    size_t **upstream_local = NULL;
+    
+    bool *done_global;
+    bool *done_local;
     
     size_t i;
     size_t j;
     size_t upstream_id;
     size_t rank;
     
+    // Alloc & init
     if(mpi_rank == VIC_MPI_ROOT){
-        done = malloc(global_domain.ncells_active * sizeof(*done));
-        check_alloc_status(done,"Memory allocation error");
-        for(i=0;i<global_domain.ncells_active;i++){
-            done[i]=false;
+        nupstream_global = malloc(global_domain.ncells_active * sizeof(*nupstream_global));
+        check_alloc_status(nupstream_global, "Memory allocation error.");
+        upstream_global = malloc(global_domain.ncells_active * sizeof(*upstream_global));
+        check_alloc_status(upstream_global, "Memory allocation error.");
+        for (i = 0; i < global_domain.ncells_active; i++) {
+            upstream_global[i] = malloc(MAX_UPSTREAM * sizeof(*upstream_global[i]));
+            check_alloc_status(upstream_global[i], "Memory allocation error.");
         }
-        
+        done_global = malloc(global_domain.ncells_active * sizeof(*done_global));
+        check_alloc_status(done_global,"Memory allocation error");        
+        for(i=0;i<global_domain.ncells_active;i++){
+            done_global[i]=false;
+        }
+    }
+    nupstream_local = malloc(local_domain.ncells_active * sizeof(*nupstream_local));
+    check_alloc_status(nupstream_local, "Memory allocation error."); 
+    upstream_local = malloc(local_domain.ncells_active * sizeof(*upstream_local));
+    check_alloc_status(upstream_local, "Memory allocation error."); 
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        upstream_local[i] = malloc(MAX_UPSTREAM * sizeof(*upstream_local[i]));
+        check_alloc_status(upstream_local[i], "Memory allocation error.");
+    }
+    done_local = malloc(local_domain.ncells_active * sizeof(*done_local));
+    check_alloc_status(done_local,"Memory allocation error");
+    for(i=0;i<local_domain.ncells_active;i++){
+        done_local[i]=false;
+    }   
+    
+    // Set local upstream
+    for(i=0;i<local_domain.ncells_active;i++){
+        nupstream_local[i] = rout_con[i].Nupstream_global;
+        for(j=0;j<rout_con[i].Nupstream_global;j++){
+            upstream_local[i][j] = rout_con[i].upstream_global[j];
+        }
+    }
+    
+    // Gather upstream to master node
+    gather_int(nupstream_global, nupstream_local);
+    gather_sizet_2d(upstream_global, upstream_local, MAX_UPSTREAM);
+    
+    // Set cell_order_global for master node
+    if(mpi_rank == VIC_MPI_ROOT){        
         // Set global upstream cells
         rank=0;
         while(true){
             for(i=0;i<global_domain.ncells_active;i++){
-                if(done[i]){
+                if(done_global[i]){
                    continue; 
                 }
 
                 // count number of upstream cells that are not processed yet
-                for(j=0;j<rout_con[i].Nupstream_global;j++){
-                    upstream_id = rout_con[i].upstream_global[j];
-                    if(!done[upstream_id]){
+                for(j=0;j<(size_t) nupstream_global[i];j++){
+                    upstream_id = upstream_global[i][j];
+                    if(!done_global[upstream_id]){
                         continue;
                     }
                 }
 
                 // if no upstream, add as next order
                 cell_order_global[rank]=i;
-                done[i]=true;                                
+                done_global[i]=true;                                
                 rank++;
 
                 if(rank>global_domain.ncells_active){
@@ -406,35 +448,27 @@ routing_init_order(){
                 break;
             }
         }
-
-        free(done);
     }
     
-    done = malloc(local_domain.ncells_active * sizeof(*done));
-    check_alloc_status(done,"Memory allocation error");
-    for(i=0;i<local_domain.ncells_active;i++){
-        done[i]=false;
-    }
-    
-    // Set local upstream cells
+    // Set cell_order_local for node
     rank=0;
     while(true){
         for(i=0;i<local_domain.ncells_active;i++){
-            if(done[i]){
+            if(done_local[i]){
                continue; 
             }
 
             // count number of upstream cells that are not processed yet
             for(j=0;j<rout_con[i].Nupstream_local;j++){
                 upstream_id = rout_con[i].upstream_local[j];
-                if(!done[upstream_id]){
+                if(!done_local[upstream_id]){
                     continue;
                 }
             }
 
             // if no upstream, add as next order
             cell_order_local[rank]=i;
-            done[i]=true;                                
+            done_local[i]=true;                                
             rank++;
 
             if(rank>local_domain.ncells_active){
@@ -446,27 +480,33 @@ routing_init_order(){
             break;
         }
     }
-
-    free(done);    
+    
+    // Free
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(nupstream_global);        
+        for(i=0;i<global_domain.ncells_active;i++){
+            free(upstream_global[i]);
+        }
+        free(upstream_global);  
+        free(done_global);   
+    }
+    free(nupstream_local);    
+    for(i=0;i<local_domain.ncells_active;i++){
+        free(upstream_local[i]);
+    }  
+    free(upstream_local);  
+    free(done_local);
 }
 
 void
-routing_init(){  
-    log_info("Into routing_init");
+routing_init(){        
     routing_init_uh();
-    log_info("Finish uh");
-    
     routing_init_downstream();
-    log_info("Finish downstream");
     routing_init_upstream();
-    log_info("Finish upstream");
     routing_init_order();
-    log_info("Finish order");
     
     debug_nupstream();
     debug_downstream();
     debug_id();
-    
-    log_info("Finish routing init");
 }
 

@@ -82,27 +82,41 @@ debug_downstream(){
     
     size_t i;
     
-    svar_global = malloc(global_domain.ncells_active * sizeof(*svar_global));
-    check_alloc_status(svar_global,"Memory allocation error");
+    // Alloc
+    if(mpi_rank == VIC_MPI_ROOT){
+        svar_global = malloc(global_domain.ncells_active * sizeof(*svar_global));
+        check_alloc_status(svar_global,"Memory allocation error");
+    }
     svar_local = malloc(local_domain.ncells_active * sizeof(*svar_local));
     check_alloc_status(svar_local,"Memory allocation error");
     
+    // Set local downstream
     for(i=0;i<local_domain.ncells_active;i++){
         svar_local[i] = rout_con[i].downstream_global;
     }
+    
+    // Gather downstream to master node
     gather_sizet(svar_global,svar_local);
+    
+    // Make debug file
     if(mpi_rank == VIC_MPI_ROOT){
         debug_file_sizet("./debug_output/global_downstream",svar_global);
     }   
     
+    // Set local downstream
     for(i=0;i<local_domain.ncells_active;i++){
         svar_local[i] = rout_con[i].downstream_local;
     }
+    
+    // Gather downstream to master node
     gather_sizet(svar_global,svar_local);
+        
+    // Make debug file
     if(mpi_rank == VIC_MPI_ROOT){
         debug_file_sizet("./debug_output/local_downstream",svar_global);
     }   
     
+    // Free
     free(svar_global);
     free(svar_local);
 }
@@ -130,7 +144,7 @@ debug_nupstream(){
     gather_int(ivar_global,ivar_local);
     if(mpi_rank == VIC_MPI_ROOT){
         debug_file_int("./debug_output/global_nupstream",ivar_global);
-    }    
+    }
     
     for(i=0;i<local_domain.ncells_active;i++){
         ivar_local[i] = rout_con[i].Nupstream_local;

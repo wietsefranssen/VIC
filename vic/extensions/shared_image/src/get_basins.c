@@ -1,6 +1,6 @@
 #include <ext_mpi.h>
 
-void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
+void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *basins){
     extern domain_struct global_domain;
     
     int    *direction = NULL;
@@ -22,45 +22,31 @@ void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
     d2count[0] = global_domain.n_ny;
     d2count[1] = global_domain.n_nx;
     
-    direction = malloc(global_domain.ncells_total * sizeof(*direction));
+    direction = malloc(global_domain.ncells_active * sizeof(*direction));
     check_alloc_status(direction, "Memory allocation error.");
     river = malloc(global_domain.ncells_active * sizeof(*river));
     check_alloc_status(river, "Memory allocation error.");
     
-    basins->basin_map = malloc(global_domain.ncells_total * sizeof(*basins->basin_map));
+    basins->basin_map = malloc(global_domain.ncells_active * sizeof(*basins->basin_map));
     check_alloc_status(basins->basin_map, "Memory allocation error.");
     
-    for (i = 0; i < global_domain.ncells_total; i++) {
+    for (i = 0; i < global_domain.ncells_active; i++) {
         direction[i] = NODATA_DIRECTION;
         basins->basin_map[i] = NODATA_BASIN;
     }
     
-    get_nc_field_int(nc_name, direction_var, d2start, d2count,
+    get_active_nc_field_int(nc_nameid, direction_var, d2start, d2count,
                      direction);
     
-    // 1 = north
-    // 2 = north-east
-    // 3 = east
-    // etc.
-    // 9 = outflow
     basins->Nbasin = 0;
     Nriver=0;
-    for (i = 0; i < global_domain.ncells_total; i++) {
-        if(!global_domain.locations[i].run){  
-            continue;
-        }
-                
+    for (i = 0; i < global_domain.ncells_active; i++) {                
         Nriver=0;
-        cur_cell = next_cell = i;        
+        cur_cell = next_cell = i;
 
-        if(direction[cur_cell] == NODATA_DIRECTION){
-            log_err("Flow direction is not present");
-        }
-
-        while(true){    
-
+        while(true){
             cur_direction = direction[cur_cell];
-            river[Nriver]=cur_cell; 
+            river[Nriver] = cur_cell; 
             Nriver++;          
 
             if(basins->basin_map[cur_cell]!=NODATA_BASIN){
@@ -70,55 +56,7 @@ void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
                 break;
             }
 
-            switch(cur_direction){
-                case 3:
-                    next_cell = cur_cell + 1;
-                    break;
-                case 4:
-                    if(i<global_domain.n_nx){
-                        log_err("Flow direction is going outside of domain");                        
-                    }
-                    next_cell = cur_cell - global_domain.n_nx + 1;
-                    break;
-                case 5:
-                    if(i<global_domain.n_nx){
-                        log_err("Flow direction is going outside of domain");                        
-                    }
-                    next_cell = cur_cell - global_domain.n_nx;
-                    break;
-                case 6:
-                    if(i<global_domain.n_nx){
-                        log_err("Flow direction is going outside of domain");                        
-                    }
-                    next_cell = cur_cell - global_domain.n_nx - 1;
-                    break;
-                case 7:
-                    next_cell = cur_cell - 1;
-                    break;
-                case 8:
-                    next_cell = cur_cell + global_domain.n_nx - 1;
-                    break;
-                case 1:
-                    next_cell = cur_cell + global_domain.n_nx;
-                    break;
-                case 2:
-                    next_cell = cur_cell + global_domain.n_nx + 1;
-                    break;
-                case 9:
-                    next_cell = cur_cell;
-                    break;
-                default:
-                    log_err("Unknown flow direction in file")
-                    break;
-            }   
-
-            if(next_cell >= global_domain.ncells_total){
-                log_err("Flow direction is going outside of domain");
-            }    
-            
-            if(!global_domain.locations[next_cell].run){
-                log_err("Flow direction is going outside of domain");
-            }
+            get_downstream(cur_cell, cur_direction, &next_cell);
             
             if(next_cell == cur_cell){
                 for(j=0;j<Nriver;j++){
@@ -133,7 +71,7 @@ void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
         }
     }
         
-    //make_basin_map_file(basins);
+    
     basins->Ncells = malloc(basins->Nbasin * sizeof(*basins->Ncells));
     check_alloc_status(basins->Ncells, "Memory allocation error.");
     basins->sorted_basins = malloc(basins->Nbasin * sizeof(*basins->sorted_basins));
@@ -149,7 +87,7 @@ void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
         basins->Ncells[i]=0;
     }
     
-    for (i = 0; i < global_domain.ncells_total; i++) {
+    for (i = 0; i < global_domain.ncells_active; i++) {
         if(basins->basin_map[i]!=NODATA_BASIN){
             basins->Ncells[basins->basin_map[i]]++;
         }
@@ -170,7 +108,7 @@ void get_basins(char *nc_name, char *direction_var, basin_struct *basins){
     }
     
     j=0;
-    for (i = 0; i < global_domain.ncells_total; i++) {
+    for (i = 0; i < global_domain.ncells_active; i++) {
         if(basins->basin_map[i]!=NODATA_BASIN){
             basins->catchment[basins->basin_map[i]][basins->Ncells[basins->basin_map[i]]] = j;
             basins->Ncells[basins->basin_map[i]]++;

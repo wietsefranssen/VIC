@@ -2,7 +2,7 @@
 
 void get_routing_type(char *cmdstr)
 {
-    extern ext_info_struct ext_info;
+    extern ext_filenames_struct ext_filenames;
     
     char                 optstr[MAXSTRING];
     char                 ncvarname[MAXSTRING];
@@ -12,16 +12,16 @@ void get_routing_type(char *cmdstr)
     sscanf(cmdstr, "%*s %s %s", optstr, ncvarname);
     
     if (strcasecmp("DIRECTION", optstr) == 0) {
-        strcpy(ext_info.direction_var, ncvarname);
+        strcpy(ext_filenames.info.direction_var, ncvarname);
     }
     else if (strcasecmp("VELOCITY", optstr) == 0) {
-        strcpy(ext_info.velocity_var, ncvarname);
+        strcpy(ext_filenames.info.velocity_var, ncvarname);
     }
     else if (strcasecmp("DIFFUSION", optstr) == 0) {
-        strcpy(ext_info.diffusion_var, ncvarname);
+        strcpy(ext_filenames.info.diffusion_var, ncvarname);
     }
     else if (strcasecmp("DISTANCE", optstr) == 0) {
-        strcpy(ext_info.distance_var, ncvarname);
+        strcpy(ext_filenames.info.distance_var, ncvarname);
     }
     else {
         log_err("Unrecognized routing variable: %s %s", optstr, ncvarname);

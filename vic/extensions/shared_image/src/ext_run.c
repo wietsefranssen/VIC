@@ -1,9 +1,10 @@
 #include <ext_driver_shared_image.h>
 
 void
-ext_run(dmy_struct *dmy_current)
+ext_run()
 {
     extern domain_struct local_domain;
+    extern ext_option_struct ext_options;
     extern ext_all_vars_struct *ext_all_vars;
     extern double ***out_data;
     
@@ -15,7 +16,9 @@ ext_run(dmy_struct *dmy_current)
     }
     
     timer_start(&timer);
-    routing_run();          
+    if(ext_options.ROUTING){
+        routing_run();      
+    }
     timer_stop(&timer);
     
     for(i=0;i<local_domain.ncells_active;i++){

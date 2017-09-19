@@ -68,18 +68,14 @@ nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
 // Extension MPI
 int                 mpi_decomposition;
-size_t             *mpi_map_mapping_array_reverse = NULL;
-MPI_Datatype        mpi_ext_filenames_struct_type;
 MPI_Datatype        mpi_ext_option_struct_type;
 MPI_Datatype        mpi_ext_param_struct_type;
-MPI_Datatype        mpi_ext_info_struct_type;
 basin_struct        basins;
 
 // Extension global
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
-ext_info_struct ext_info;
 size_t *cell_order_global = NULL;
 size_t *cell_order_local = NULL;
 
@@ -121,7 +117,7 @@ main(int    argc,
     // initialize mpi
     initialize_mpi();
     initialize_ext_mpi();
-
+    
     // process command line arguments
     if (mpi_rank == VIC_MPI_ROOT) {
         cmd_proc(argc, argv, filenames.global);
@@ -134,9 +130,9 @@ main(int    argc,
     // allocate memory
     vic_alloc();
     ext_alloc();
-
+        
     // initialize model parameters from parameter files
-    vic_image_init();
+    vic_image_init();    
     ext_init();
 
     // populate model state, either using a cold start or from a restart file
@@ -165,7 +161,7 @@ main(int    argc,
 
         // run vic over the domain
         vic_image_run(&(dmy[current]));
-        ext_run(&(dmy[current]));
+        ext_run();
         
         // Aggregate data
         vic_process_data(&(dmy[current]));
