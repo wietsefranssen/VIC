@@ -53,6 +53,7 @@ void scatter_int_2d(int **ivar, int **var_local, int depth);
 void scatter_sizet(size_t *svar, size_t *var_local);
 void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth);
 
+void debug_basins();
 
 #endif /* EXT_MPI_H */
 

@@ -179,3 +179,14 @@ debug_id(){
     
     free(svar_global);
 }
+
+void
+debug_basins(){
+    extern basin_struct basins;
+    extern int mpi_rank;
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        debug_file_sizet("./debug_output/basins",basins.basin_map);
+    }
+    
+}

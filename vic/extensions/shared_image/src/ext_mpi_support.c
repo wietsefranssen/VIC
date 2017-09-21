@@ -51,11 +51,11 @@ mpi_map_decomp_domain(size_t   ncells,
                 node_ids[i]=i;
             }
             sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
-
+            
             // check if basin decomposition is effective
             if((*mpi_map_local_array_sizes)[node_ids[0]] * 
             ext_param.MPI_N_PROCESS_COST > ncells / mpi_size * 
-            ext_param.MPI_N_PROCESS_COST){
+            ext_param.MPI_E_PROCESS_COST){
                 
                 // decompose the mask at random
                 mpi_map_decomp_domain_random(ncells, mpi_size,

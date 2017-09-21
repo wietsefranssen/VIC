@@ -122,6 +122,7 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->UH_MAX_LENGTH=2;
     parameters->UH_PARTITIONS=20;  
     
+    // FOLLOWING PARAMETERS NEED TO BE ADJUSTED BASED ON EXPERIMENTATION
     parameters->MPI_N_PROCESS_COST=4;  
     parameters->MPI_E_PROCESS_COST=5;      
 }

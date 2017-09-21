@@ -47,8 +47,8 @@ void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *bas
         while(true){
             cur_direction = direction[cur_cell];
             river[Nriver] = cur_cell; 
-            Nriver++;          
-
+            Nriver++;
+            
             if(basins->basin_map[cur_cell]!=NODATA_BASIN){
                 for(j=0;j<Nriver;j++){
                     basins->basin_map[river[j]]=basins->basin_map[cur_cell];
@@ -60,7 +60,7 @@ void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *bas
             
             if(next_cell == cur_cell){
                 for(j=0;j<Nriver;j++){
-                    basins->basin_map[river[j]]=basins->Nbasin;
+                    basins->basin_map[river[j]] = basins->Nbasin;
                 }
 
                 basins->Nbasin++;
@@ -71,27 +71,26 @@ void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *bas
         }
     }
         
+    debug_basins();
     
     basins->Ncells = malloc(basins->Nbasin * sizeof(*basins->Ncells));
     check_alloc_status(basins->Ncells, "Memory allocation error.");
     basins->sorted_basins = malloc(basins->Nbasin * sizeof(*basins->sorted_basins));
-    check_alloc_status(basins->sorted_basins, "Memory allocation error.");
-        
-    // sort basins by size
+    check_alloc_status(basins->sorted_basins, "Memory allocation error.");        
     for(i=0;i<basins->Nbasin;i++){
         basins->sorted_basins[i]=i;
-    }     
-    sizet_sort(basins->sorted_basins,basins->Ncells,basins->Nbasin,false);
-
-    for(i=0;i<basins->Nbasin;i++){
         basins->Ncells[i]=0;
-    }
+    }   
     
     for (i = 0; i < global_domain.ncells_active; i++) {
-        if(basins->basin_map[i]!=NODATA_BASIN){
-            basins->Ncells[basins->basin_map[i]]++;
-        }
+        if(basins->basin_map[i] == NODATA_BASIN){
+            log_err("Found active cell not in basin");
+        }        
+        basins->Ncells[basins->basin_map[i]]++;
     }
+    
+    // Sort basins by size
+    sizet_sort(basins->sorted_basins,basins->Ncells,basins->Nbasin,false);
         
     basins->catchment = malloc(basins->Nbasin * sizeof(*basins->catchment));
     check_alloc_status(basins->catchment, "Memory allocation error.");
@@ -101,19 +100,15 @@ void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *bas
     }
         
     for(i=0;i<basins->Nbasin;i++){
-        basins->Ncells[i]=0;
         for(j=0;j<basins->Ncells[i];j++){
-            basins->catchment[i][j]=0;
+            basins->catchment[i][j] = MISSING_USI;
         }
+        basins->Ncells[i]=0;
     }
     
-    j=0;
-    for (i = 0; i < global_domain.ncells_active; i++) {
-        if(basins->basin_map[i]!=NODATA_BASIN){
-            basins->catchment[basins->basin_map[i]][basins->Ncells[basins->basin_map[i]]] = j;
-            basins->Ncells[basins->basin_map[i]]++;
-            j++;
-        }
+    for (i = 0; i < global_domain.ncells_active; i++) {        
+        basins->catchment[basins->basin_map[i]][basins->Ncells[basins->basin_map[i]]] = i;
+        basins->Ncells[basins->basin_map[i]]++;
     }
     
     free(direction);

@@ -9,35 +9,34 @@ get_downstream(size_t id, int direction, size_t *downstream){
     size_t next_total_id;  
     size_t total_id;
             
-    total_id = filter_active_cells[id];
-    
-    if(direction == NODATA_DIRECTION){
-        log_err("Flow direction is not present");
-    }         
+    total_id = filter_active_cells[id];     
 
     switch(direction){
         case 3:
             next_total_id = total_id + 1;
             break;
         case 4:
-            if(total_id<global_domain.n_nx){
-                log_err("Flow direction is going outside of domain");                        
+            if(total_id < global_domain.n_nx - 1){
+                log_err("Flow direction is going outside of domain");      
             }
             next_total_id = total_id - global_domain.n_nx + 1;
             break;
         case 5:
-            if(total_id<global_domain.n_nx){
-                log_err("Flow direction is going outside of domain");                        
+            if(total_id < global_domain.n_nx){
+                log_err("Flow direction is going outside of domain");      
             }
             next_total_id = total_id - global_domain.n_nx;
             break;
         case 6:
-            if(total_id<global_domain.n_nx){
-                log_err("Flow direction is going outside of domain");                        
+            if(total_id < global_domain.n_nx + 1){
+                log_err("Flow direction is going outside of domain");      
             }
             next_total_id = total_id - global_domain.n_nx - 1;
             break;
         case 7:
+            if(total_id <= 0){
+                log_err("Flow direction is going outside of domain");      
+            }
             next_total_id = total_id - 1;
             break;
         case 8:
@@ -53,8 +52,15 @@ get_downstream(size_t id, int direction, size_t *downstream){
             next_total_id = total_id;
             break;
         default:
-            log_err("Unknown flow direction")
+            next_total_id = total_id;
             break;
+    }
+    
+    if(next_total_id >= global_domain.ncells_total){
+        log_err("Flow direction is going outside of domain");      
+    }    
+    if(global_domain.locations[next_total_id].global_idx == MISSING_USI){
+        next_total_id = total_id;
     }
     
     (*downstream) = global_domain.locations[next_total_id].global_idx;
