@@ -1509,6 +1509,14 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_IND_WITHDRAWAL].description,
            "industrial_withdrawal");
         
+    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].varname, "OUT_TOT_WITHDRAWAL");
+    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].long_name, "total_withdrawal");
+    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].standard_name,
+           "total_withdrawal");
+    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].units, "m3");
+    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].description,
+           "total_withdrawal");
+        
     strcpy(out_metadata[OUT_IRR_CONSUMPTION].varname, "OUT_IRR_CONSUMPTION");
     strcpy(out_metadata[OUT_IRR_CONSUMPTION].long_name, "irrigation_consumption");
     strcpy(out_metadata[OUT_IRR_CONSUMPTION].standard_name,
@@ -1533,6 +1541,14 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_IND_CONSUMPTION].description,
            "industrial_consumption");
     
+    strcpy(out_metadata[OUT_TOT_CONSUMPTION].varname, "OUT_TOT_CONSUMPTION");
+    strcpy(out_metadata[OUT_TOT_CONSUMPTION].long_name, "total_consumption");
+    strcpy(out_metadata[OUT_TOT_CONSUMPTION].standard_name,
+           "total_consumption");
+    strcpy(out_metadata[OUT_TOT_CONSUMPTION].units, "m3");
+    strcpy(out_metadata[OUT_TOT_CONSUMPTION].description,
+           "total_consumption");
+    
     strcpy(out_metadata[OUT_IRR_DEMAND].varname, "OUT_IRR_DEMAND");
     strcpy(out_metadata[OUT_IRR_DEMAND].long_name, "irrigation_demand");
     strcpy(out_metadata[OUT_IRR_DEMAND].standard_name,
@@ -1556,6 +1572,86 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_IND_DEMAND].units, "m3");
     strcpy(out_metadata[OUT_IND_DEMAND].description,
            "industrial_demand");
+    
+    strcpy(out_metadata[OUT_TOT_DEMAND].varname, "OUT_TOT_DEMAND");
+    strcpy(out_metadata[OUT_TOT_DEMAND].long_name, "total_demand");
+    strcpy(out_metadata[OUT_TOT_DEMAND].standard_name,
+           "total_demand");
+    strcpy(out_metadata[OUT_TOT_DEMAND].units, "m3");
+    strcpy(out_metadata[OUT_TOT_DEMAND].description,
+           "total_demand");
+    
+    strcpy(out_metadata[OUT_IRR_SHORTAGE].varname, "OUT_IRR_SHORTAGE");
+    strcpy(out_metadata[OUT_IRR_SHORTAGE].long_name, "irrigation_shortage");
+    strcpy(out_metadata[OUT_IRR_SHORTAGE].standard_name,
+           "irrigation_shortage");
+    strcpy(out_metadata[OUT_IRR_SHORTAGE].units, "m3");
+    strcpy(out_metadata[OUT_IRR_SHORTAGE].description,
+           "irrigation_shortage");
+    
+    strcpy(out_metadata[OUT_DOM_SHORTAGE].varname, "OUT_DOM_SHORTAGE");
+    strcpy(out_metadata[OUT_DOM_SHORTAGE].long_name, "domestic_shortage");
+    strcpy(out_metadata[OUT_DOM_SHORTAGE].standard_name,
+           "domestic_shortage");
+    strcpy(out_metadata[OUT_DOM_SHORTAGE].units, "m3");
+    strcpy(out_metadata[OUT_DOM_SHORTAGE].description,
+           "domestic_shortage");
+    
+    strcpy(out_metadata[OUT_IND_SHORTAGE].varname, "OUT_IND_SHORTAGE");
+    strcpy(out_metadata[OUT_IND_SHORTAGE].long_name, "industrial_shortage");
+    strcpy(out_metadata[OUT_IND_SHORTAGE].standard_name,
+           "industrial_shortage");
+    strcpy(out_metadata[OUT_IND_SHORTAGE].units, "m3");
+    strcpy(out_metadata[OUT_IND_SHORTAGE].description,
+           "industrial_shortage");
+    
+    strcpy(out_metadata[OUT_TOT_SHORTAGE].varname, "OUT_TOT_SHORTAGE");
+    strcpy(out_metadata[OUT_TOT_SHORTAGE].long_name, "total_shortage");
+    strcpy(out_metadata[OUT_TOT_SHORTAGE].standard_name,
+           "total_shortage");
+    strcpy(out_metadata[OUT_TOT_SHORTAGE].units, "m3");
+    strcpy(out_metadata[OUT_TOT_SHORTAGE].description,
+           "total_shortage");
+    
+    strcpy(out_metadata[OUT_IRR_RETURN].varname, "OUT_IRR_RETURN");
+    strcpy(out_metadata[OUT_IRR_RETURN].long_name, "irrigation_return_flow");
+    strcpy(out_metadata[OUT_IRR_RETURN].standard_name,
+           "irrigation_return_flow");
+    strcpy(out_metadata[OUT_IRR_RETURN].units, "m3");
+    strcpy(out_metadata[OUT_IRR_RETURN].description,
+           "irrigation_return_flow");
+    
+    strcpy(out_metadata[OUT_DOM_RETURN].varname, "OUT_DOM_RETURN");
+    strcpy(out_metadata[OUT_DOM_RETURN].long_name, "domestic_return_flow");
+    strcpy(out_metadata[OUT_DOM_RETURN].standard_name,
+           "domestic_return_flow");
+    strcpy(out_metadata[OUT_DOM_RETURN].units, "m3");
+    strcpy(out_metadata[OUT_DOM_RETURN].description,
+           "domestic_return_flow");
+    
+    strcpy(out_metadata[OUT_IND_RETURN].varname, "OUT_IND_RETURN");
+    strcpy(out_metadata[OUT_IND_RETURN].long_name, "industrial_return_flow");
+    strcpy(out_metadata[OUT_IND_RETURN].standard_name,
+           "industrial_return_flow");
+    strcpy(out_metadata[OUT_IND_RETURN].units, "m3");
+    strcpy(out_metadata[OUT_IND_RETURN].description,
+           "industrial_return_flow");
+    
+    strcpy(out_metadata[OUT_TOT_RETURN].varname, "OUT_TOT_RETURN");
+    strcpy(out_metadata[OUT_TOT_RETURN].long_name, "total_return_flow");
+    strcpy(out_metadata[OUT_TOT_RETURN].standard_name,
+           "total_return_flow");
+    strcpy(out_metadata[OUT_TOT_RETURN].units, "m3");
+    strcpy(out_metadata[OUT_TOT_RETURN].description,
+           "total_return_flow");
+    
+    strcpy(out_metadata[OUT_TOT_RETURN].varname, "OUT_TOT_RETURN");
+    strcpy(out_metadata[OUT_TOT_RETURN].long_name, "total_return_flow");
+    strcpy(out_metadata[OUT_TOT_RETURN].standard_name,
+           "total_return_flow");
+    strcpy(out_metadata[OUT_TOT_RETURN].units, "m3");
+    strcpy(out_metadata[OUT_TOT_RETURN].description,
+           "total_return_flow");
     
     /* Wall time spent inside ext_run [seconds] */
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].varname, "OUT_TIME_EXTRUN_WALL");

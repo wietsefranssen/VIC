@@ -5,6 +5,7 @@ ext_run()
 {
     extern domain_struct local_domain;
     extern ext_option_struct ext_options;
+    extern ext_parameters_struct ext_param;
     extern ext_all_vars_struct *ext_all_vars;
     extern wu_hist_struct **wu_hist;
     extern wu_con_struct **wu_con;
@@ -20,6 +21,10 @@ ext_run()
         if(ext_options.WATER_USE){
             water_use_update_step_vars(&ext_all_vars[i], wu_con[i], wu_hist[i]);
         }
+    }
+    
+    if(ext_options.WATER_USE){  
+        ext_param.wu_hist_offset++;
     }
     
     timer_start(&timer);

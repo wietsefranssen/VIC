@@ -23,6 +23,4 @@ water_use_update_step_vars(ext_all_vars_struct *ext_all_vars, wu_con_struct *wu_
         ext_all_vars->wu_var[i].return_flow[0] = 0.0;
         cshift(ext_all_vars->wu_var[i].return_flow, wu_con[i].delay, 1, 0, 1);
     }
-    
-    ext_param.wu_hist_offset++;
 }
