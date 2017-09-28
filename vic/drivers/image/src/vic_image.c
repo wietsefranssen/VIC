@@ -81,6 +81,8 @@ size_t *cell_order_local = NULL;
 
 // Extension con & vars
 rout_con_struct *rout_con = NULL;
+wu_con_struct **wu_con = NULL;
+wu_hist_struct **wu_hist = NULL;
 ext_all_vars_struct *ext_all_vars = NULL;
 
 /******************************************************************************
@@ -157,6 +159,7 @@ main(int    argc,
         // read forcing data
         timer_continue(&(global_timers[TIMER_VIC_FORCE]));
         vic_force();
+        ext_force();
         timer_stop(&(global_timers[TIMER_VIC_FORCE]));
 
         // run vic over the domain

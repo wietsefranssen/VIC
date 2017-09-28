@@ -289,6 +289,16 @@ enum
     // Extension variables
     // Routing terms
     OUT_DISCHARGE,      /**< Discharge [mm/s] */
+    // Water use terms
+    OUT_IRR_DEMAND,
+    OUT_IRR_WITHDRAWAL,
+    OUT_IRR_CONSUMPTION,
+    OUT_DOM_DEMAND,
+    OUT_DOM_WITHDRAWAL,
+    OUT_DOM_CONSUMPTION,
+    OUT_IND_DEMAND,
+    OUT_IND_WITHDRAWAL,
+    OUT_IND_CONSUMPTION,
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */

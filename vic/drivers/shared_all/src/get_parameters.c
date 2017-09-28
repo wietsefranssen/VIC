@@ -542,6 +542,54 @@ get_parameters(FILE *paramfile)
             }
             else if (strcasecmp("MPI_E_PROCESS_COST", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &ext_param.MPI_N_PROCESS_COST);
+            }            
+            else if (strcasecmp("RETURN_DELAY_IRRIGATION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %hu", &ext_param.RETURN_DELAY[WU_IRRIGATION]);
+            }
+            else if (strcasecmp("RETURN_DELAY_DOMESTIC", optstr) == 0) {
+                sscanf(cmdstr, "%*s %hu", &ext_param.RETURN_DELAY[WU_DOMESTIC]);
+            }
+            else if (strcasecmp("RETURN_DELAY_INDUSTRIAL", optstr) == 0) {
+                sscanf(cmdstr, "%*s %hu", &ext_param.RETURN_DELAY[WU_INDUSTRIAL]);
+            }
+            else if (strcasecmp("RETURN_LOCATION_IRRIGATION", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", optstr);
+                if (strcasecmp("GROUNDWATER", optstr) == 0) {
+                    ext_param.RETURN_LOCATION[WU_IRRIGATION] = WU_RETURN_GROUNDWATER;
+                }
+                else if (strcasecmp("SURFACEWATER", optstr) == 0) {
+                    ext_param.RETURN_LOCATION[WU_IRRIGATION] = WU_RETURN_SURFACEWATER;
+                }
+                else {
+                    log_err("RETURN_LOCATION must be either GROUNDWATER, "
+                            "or SURFACEWATER.");
+                }
+            }
+            else if (strcasecmp("RETURN_LOCATION_DOMESTIC", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", optstr);
+                if (strcasecmp("GROUNDWATER", optstr) == 0) {
+                    ext_param.RETURN_LOCATION[WU_DOMESTIC] = WU_RETURN_GROUNDWATER;
+                }
+                else if (strcasecmp("SURFACEWATER", optstr) == 0) {
+                    ext_param.RETURN_LOCATION[WU_DOMESTIC] = WU_RETURN_SURFACEWATER;
+                }
+                else {
+                    log_err("RETURN_LOCATION must be either GROUNDWATER, "
+                            "or SURFACEWATER.");
+                }
+            }
+            else if (strcasecmp("RETURN_LOCATION_INDUSTRIAL", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", optstr);
+                if (strcasecmp("GROUNDWATER", optstr) == 0) {
+                    ext_param.RETURN_LOCATION[WU_INDUSTRIAL] = WU_RETURN_GROUNDWATER;
+                }
+                else if (strcasecmp("SURFACEWATER", optstr) == 0) {
+                    ext_param.RETURN_LOCATION[WU_INDUSTRIAL] = WU_RETURN_SURFACEWATER;
+                }
+                else {
+                    log_err("RETURN_LOCATION must be either GROUNDWATER, "
+                            "or SURFACEWATER.");
+                }
             }
             else {
                 log_warn("Unrecognized option in the parameter file:  %s "
@@ -559,7 +607,8 @@ void
 validate_parameters()
 {
     extern parameters_struct param;
-
+    extern ext_parameters_struct ext_param;
+    
     // Validate Parameters
     // Lapse Rate
     if (!(param.LAPSE_RATE >= -1 && param.LAPSE_RATE <= 0)) {
@@ -938,5 +987,25 @@ validate_parameters()
     }
     if (!(param.ROOT_BRENT_T >= 0.)) {
         log_err("ROOT_BRENT_T must be defined on the interval [0, inf)");
+    }
+    
+    // Validate extension parameters
+    if(!(ext_param.MPI_E_PROCESS_COST >= 0)) {
+        log_err("MPI_E_PROCESS_COST must be defined on the interval [0, inf)");
+    }
+    if(!(ext_param.MPI_N_PROCESS_COST >= 0)) {
+        log_err("MPI_N_PROCESS_COST must be defined on the interval [0, inf)");
+    }
+    if(!(ext_param.UH_FLOW_DIFFUSION >= 0)) {
+        log_err("UH_FLOW_DIFFUSION must be defined on the interval [0, inf)");
+    }
+    if(!(ext_param.UH_FLOW_VELOCITY >= 0)) {
+        log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
+    }
+    if(!(ext_param.UH_PARTITIONS >= 0)) {
+        log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
+    }
+    if(!(ext_param.UH_MAX_LENGTH >= 0)) {
+        log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
     }
 }

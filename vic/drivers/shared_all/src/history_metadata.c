@@ -1477,14 +1477,85 @@ set_output_met_data_info()
            "CPU time spent inside vic_run");
     
     // Extensions
-    /* discharge [mm/s] */
     strcpy(out_metadata[OUT_DISCHARGE].varname, "OUT_DISCHARGE");
     strcpy(out_metadata[OUT_DISCHARGE].long_name, "discharge");
     strcpy(out_metadata[OUT_DISCHARGE].standard_name,
            "discharge");
-    strcpy(out_metadata[OUT_DISCHARGE].units, "mm/s");
+    strcpy(out_metadata[OUT_DISCHARGE].units, "m3/s");
     strcpy(out_metadata[OUT_DISCHARGE].description,
            "discharge");
+    
+    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].varname, "OUT_IRR_WITHDRAWAL");
+    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].long_name, "irrigation_withdrawal");
+    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].standard_name,
+           "irrigation_withdrawal");
+    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].units, "m3");
+    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].description,
+           "irrigation_withdrawal");
+        
+    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].varname, "OUT_DOM_WITHDRAWAL");
+    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].long_name, "domestic_withdrawal");
+    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].standard_name,
+           "domestic_withdrawal");
+    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].units, "m3");
+    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].description,
+           "domestic_withdrawal");
+        
+    strcpy(out_metadata[OUT_IND_WITHDRAWAL].varname, "OUT_IND_WITHDRAWAL");
+    strcpy(out_metadata[OUT_IND_WITHDRAWAL].long_name, "industrial_withdrawal");
+    strcpy(out_metadata[OUT_IND_WITHDRAWAL].standard_name,
+           "industrial_withdrawal");
+    strcpy(out_metadata[OUT_IND_WITHDRAWAL].units, "m3");
+    strcpy(out_metadata[OUT_IND_WITHDRAWAL].description,
+           "industrial_withdrawal");
+        
+    strcpy(out_metadata[OUT_IRR_CONSUMPTION].varname, "OUT_IRR_CONSUMPTION");
+    strcpy(out_metadata[OUT_IRR_CONSUMPTION].long_name, "irrigation_consumption");
+    strcpy(out_metadata[OUT_IRR_CONSUMPTION].standard_name,
+           "irrigation_consumption");
+    strcpy(out_metadata[OUT_IRR_CONSUMPTION].units, "m3");
+    strcpy(out_metadata[OUT_IRR_CONSUMPTION].description,
+           "irrigation_consumption");
+    
+    strcpy(out_metadata[OUT_DOM_CONSUMPTION].varname, "OUT_DOM_CONSUMPTION");
+    strcpy(out_metadata[OUT_DOM_CONSUMPTION].long_name, "domestic_consumption");
+    strcpy(out_metadata[OUT_DOM_CONSUMPTION].standard_name,
+           "domestic_consumption");
+    strcpy(out_metadata[OUT_DOM_CONSUMPTION].units, "m3");
+    strcpy(out_metadata[OUT_DOM_CONSUMPTION].description,
+           "domestic_consumption");
+    
+    strcpy(out_metadata[OUT_IND_CONSUMPTION].varname, "OUT_IND_CONSUMPTION");
+    strcpy(out_metadata[OUT_IND_CONSUMPTION].long_name, "industrial_consumption");
+    strcpy(out_metadata[OUT_IND_CONSUMPTION].standard_name,
+           "industrial_consumption");
+    strcpy(out_metadata[OUT_IND_CONSUMPTION].units, "m3");
+    strcpy(out_metadata[OUT_IND_CONSUMPTION].description,
+           "industrial_consumption");
+    
+    strcpy(out_metadata[OUT_IRR_DEMAND].varname, "OUT_IRR_DEMAND");
+    strcpy(out_metadata[OUT_IRR_DEMAND].long_name, "irrigation_demand");
+    strcpy(out_metadata[OUT_IRR_DEMAND].standard_name,
+           "irrigation_demand");
+    strcpy(out_metadata[OUT_IRR_DEMAND].units, "m3");
+    strcpy(out_metadata[OUT_IRR_DEMAND].description,
+           "irrigation_demand");
+    
+    strcpy(out_metadata[OUT_DOM_DEMAND].varname, "OUT_DOM_DEMAND");
+    strcpy(out_metadata[OUT_DOM_DEMAND].long_name, "domestic_demand");
+    strcpy(out_metadata[OUT_DOM_DEMAND].standard_name,
+           "domestic_demand");
+    strcpy(out_metadata[OUT_DOM_DEMAND].units, "m3");
+    strcpy(out_metadata[OUT_DOM_DEMAND].description,
+           "domestic_demand");
+    
+    strcpy(out_metadata[OUT_IND_DEMAND].varname, "OUT_IND_DEMAND");
+    strcpy(out_metadata[OUT_IND_DEMAND].long_name, "industrial_demand");
+    strcpy(out_metadata[OUT_IND_DEMAND].standard_name,
+           "industrial_demand");
+    strcpy(out_metadata[OUT_IND_DEMAND].units, "m3");
+    strcpy(out_metadata[OUT_IND_DEMAND].description,
+           "industrial_demand");
     
     /* Wall time spent inside ext_run [seconds] */
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].varname, "OUT_TIME_EXTRUN_WALL");

@@ -31,14 +31,13 @@ void routing_init();
 void routing_init_downstream();
 void routing_init_uh();
 void routing_init_order();
-
-void routing_run();
-void rout(double **discharge, double *uh, double quantity, int uh_length);
-
 void get_downstream(size_t id, int direction, size_t *downstream);
 void set_upstream(size_t id, size_t Ncells);
 void set_uh(size_t id, double distance, double diffusion, double velocity);
 double uh(double time, double distance, double velocity, double diffusion);
+
+void routing_run();
+void rout(double **discharge, double *uh, double quantity, int uh_length);
 
 #endif
 

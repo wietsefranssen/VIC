@@ -17,6 +17,7 @@
 #include <vic_driver_shared_image.h>
 #include <ext_driver_shared_all.h>
 #include <routing.h>
+#include <water_use.h>
 #include <ext_mpi.h>
 #include <debug.h>
 
@@ -28,10 +29,17 @@ typedef struct{
     
     double MPI_N_PROCESS_COST;
     double MPI_E_PROCESS_COST;
+    
+    unsigned short int RETURN_LOCATION[WU_NSECTORS];
+    unsigned short int RETURN_DELAY[WU_NSECTORS];
+        
+    unsigned int forceoffset;
+    unsigned short int wu_hist_offset;
 }ext_parameters_struct;
 
 typedef struct{
-    bool ROUTING;    
+    bool ROUTING;
+    bool WATER_USE;
     
     int UH_PARAMETERS;
 }ext_option_struct;
@@ -41,21 +49,31 @@ typedef struct {
     char velocity_var[MAXSTRING];
     char diffusion_var[MAXSTRING];
     char distance_var[MAXSTRING];
+    
+    char irr_demand_var[MAXSTRING];
+    char dom_demand_var[MAXSTRING];
+    char ind_demand_var[MAXSTRING];
+    char irr_cons_var[MAXSTRING];
+    char dom_cons_var[MAXSTRING];
+    char ind_cons_var[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
     nameid_struct routing;
+    nameid_struct water_use;
     
     ext_info_struct info;
 }ext_filenames_struct;
 
 typedef struct{
     rout_var_struct rout_var;
+    wu_var_struct *wu_var;
 }ext_all_vars_struct;
 
 void initialize_ext_global_structures(void);
 void initialize_ext_options(ext_option_struct *);
 void initialize_ext_info(ext_info_struct *);
+void initialize_nameid(nameid_struct *);
 void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);
 
@@ -63,15 +81,22 @@ void initialize_global_cell_order(size_t *);
 
 void initialize_ext_local_structures(void);
 void initialize_rout_con(rout_con_struct *);
+void initialize_wu_con(wu_con_struct **);
+void initialize_wu_hist_struct(wu_hist_struct **);
 void initialize_ext_all_vars(ext_all_vars_struct *);
+
 void initialize_local_cell_order(size_t *);
 
 void ext_start(void);
 void ext_alloc(void);
 void ext_init(void);
-void ext_update_step_vars(ext_all_vars_struct *);
-void ext_run();
-void ext_put_data();
+void ext_force(void);
+void routing_update_step_vars(ext_all_vars_struct *);
+void water_use_update_step_vars(ext_all_vars_struct *, wu_con_struct *, wu_hist_struct *);
+void ext_run(void);
+void ext_put_data(ext_all_vars_struct *ext_all_vars,
+                double **out_data,
+                timer_struct *timer);
 void ext_finalize(void);
 
 void routing_gather(rout_con_struct *rout_con, ext_all_vars_struct *ext_all_vars, double *runoff);

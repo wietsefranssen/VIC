@@ -319,6 +319,10 @@ get_global_param(FILE *gp)
                             "or FROM_FILE.");
                 }
             }
+            else if(strcasecmp("WATER_USE", optstr) == 0){                
+                sscanf(cmdstr, "%*s %s", flgstr);
+                ext_options.WATER_USE = str_to_bool(flgstr);
+            }
             
             /*************************************
                Define log directory
@@ -429,6 +433,9 @@ get_global_param(FILE *gp)
             *************************************/
             else if (strcasecmp("ROUTING_PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", ext_filenames.routing.nc_filename);
+            }
+            else if (strcasecmp("WATER_USE_PARAMETERS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", ext_filenames.water_use.nc_filename);
             }
             
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
@@ -549,6 +556,9 @@ get_global_param(FILE *gp)
             *************************************/
             else if (strcasecmp("ROUTING_TYPE", optstr) == 0) {
                 get_routing_type(cmdstr);
+            }
+            else if (strcasecmp("WATER_USE_TYPE", optstr) == 0) {
+                get_water_use_type(cmdstr);
             }
             
             
@@ -1065,13 +1075,20 @@ get_global_param(FILE *gp)
     /******************************************
        Check for undefined required extension parameters
     ******************************************/
-    if((mpi_decomposition == CALCULATE_DECOMPOSITION ||
-            mpi_decomposition == BASIN_DECOMPOSITION)
-            && !ext_options.ROUTING){
-        log_err("MPI_DECOMPOSITION = CALCULATE or BASIN but ROUTING = FALSE");
-    }
     if(ext_options.ROUTING && strcmp(ext_filenames.routing.nc_filename, "MISSING") == 0){
         log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing.");
+    }
+    if(ext_options.WATER_USE && strcmp(ext_filenames.water_use.nc_filename, "MISSING") == 0){
+        log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing.");
+    }
+    if(!ext_options.ROUTING){
+        if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
+            mpi_decomposition == BASIN_DECOMPOSITION){
+            log_err("MPI_DECOMPOSITION = CALCULATE or BASIN but ROUTING = FALSE");
+        }
+        if(ext_options.WATER_USE){
+            log_err("WATER_USE = TRUE but ROUTING = FALSE");
+        }
     }
     
     /*********************************

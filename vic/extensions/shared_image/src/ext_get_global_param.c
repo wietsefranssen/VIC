@@ -27,3 +27,34 @@ void get_routing_type(char *cmdstr)
         log_err("Unrecognized routing variable: %s %s", optstr, ncvarname);
     }
 }
+
+void get_water_use_type(char *cmdstr)
+{
+    extern ext_filenames_struct ext_filenames;
+    
+    char                 optstr[MAXSTRING];
+    char                 ncvarname[MAXSTRING];
+
+    strcpy(ncvarname, "MISSING");
+
+    sscanf(cmdstr, "%*s %s %s", optstr, ncvarname);
+    
+    if (strcasecmp("D_IRRIGATION", optstr) == 0) {
+        strcpy(ext_filenames.info.irr_demand_var, ncvarname);
+    }
+    else if (strcasecmp("D_DOMESTIC", optstr) == 0) {
+        strcpy(ext_filenames.info.dom_demand_var, ncvarname);
+    }
+    else if (strcasecmp("D_INDUSTRIAL", optstr) == 0) {
+        strcpy(ext_filenames.info.ind_demand_var, ncvarname);
+    }
+    else if (strcasecmp("C_IRRIGATION", optstr) == 0) {
+        strcpy(ext_filenames.info.irr_cons_var, ncvarname);
+    }
+    else if (strcasecmp("C_DOMESTIC", optstr) == 0) {
+        strcpy(ext_filenames.info.dom_cons_var, ncvarname);
+    }
+    else if (strcasecmp("C_INDUSTRIAL", optstr) == 0) {
+        strcpy(ext_filenames.info.ind_cons_var, ncvarname);
+    }
+}

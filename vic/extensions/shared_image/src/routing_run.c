@@ -48,7 +48,7 @@ routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_va
     
     // Get local runoff
     for(i=0;i<local_domain.ncells_active;i++){
-        dvar_local[i] = (out_data[i][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) / global_param.dt;
+        dvar_local[i] = (out_data[i][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) * local_domain.locations[i].area / (MM_PER_M * global_param.dt);
     }        
     // Gather runoff
     gather_double(dvar_global,dvar_local); 
@@ -284,7 +284,7 @@ routing_run(){
             inflow = 0;
             
             // Gather runoff and inflow
-            runoff = (out_data[i][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) / global_param.dt;            
+            runoff = (out_data[i][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) * local_domain.locations[i].area / (MM_PER_M * global_param.dt);            
             for(j=0;j<rout_con[i].Nupstream_local;j++){
                 inflow += ext_all_vars[rout_con[i].upstream_local[j]].rout_var.discharge[0];
             }            
