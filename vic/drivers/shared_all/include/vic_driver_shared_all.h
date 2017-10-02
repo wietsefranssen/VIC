@@ -366,6 +366,10 @@ enum
     STATE_LAKE_ICE_SNOW_ALBEDO,        /**<  lake ice snow albedo: lake_var.SAlbedo */
     STATE_LAKE_ICE_SNOW_DEPTH,         /**<  lake ice snow depth: lake_var.sdepth */
     STATE_AVG_ALBEDO,                  /**<  gridcell-averaged albedo: gridcell_avg.avg_albedo */
+    
+    // Extensions
+    STATE_DISCHARGE,
+    
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum
     N_STATE_VARS                       /**< used as a loop counter*/

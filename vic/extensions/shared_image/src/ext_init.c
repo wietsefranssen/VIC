@@ -12,6 +12,8 @@ ext_init(void){
         routing_init();
     }
     
+    ext_set_state_meta_data_info();
+    
     // close external parameter file
     if (mpi_rank == VIC_MPI_ROOT) {
         status = nc_close(ext_filenames.routing.nc_id);

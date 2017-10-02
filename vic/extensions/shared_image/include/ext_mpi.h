@@ -10,22 +10,10 @@ enum{
     RANDOM_DECOMPOSITION
 };
 
-typedef struct{
-    size_t *basin_map;
-    size_t *sorted_basins;
-    size_t Nbasin;
-    size_t *Ncells;
-    size_t **catchment;
-}basin_struct;
-
 void initialize_ext_mpi();
 void create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type);
 
-void mpi_init();
-void initialize_basins(basin_struct *);
-        
-void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *basins);
 void mpi_map_decomp_domain(size_t ncells, size_t mpi_size,
                            int **mpi_map_local_array_sizes,
                            int **mpi_map_global_array_offsets,
@@ -52,8 +40,6 @@ void scatter_int(int *ivar, int *var_local);
 void scatter_int_2d(int **ivar, int **var_local, int depth);
 void scatter_sizet(size_t *svar, size_t *var_local);
 void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth);
-
-void debug_basins();
 
 #endif /* EXT_MPI_H */
 

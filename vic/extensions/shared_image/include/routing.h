@@ -10,6 +10,14 @@ enum{
 };
 
 typedef struct{
+    size_t *basin_map;
+    size_t *sorted_basins;
+    size_t Nbasin;
+    size_t *Ncells;
+    size_t **catchment;
+}basin_struct;
+
+typedef struct{
     size_t downstream;    
     short unsigned int Nupstream;
     size_t *upstream;
@@ -22,6 +30,8 @@ typedef struct{
 }rout_var_struct;
 
 void get_routing_type(char *cmdstr);
+
+void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *basins);
 
 void routing_init();
 void routing_init_downstream();

@@ -16,14 +16,14 @@ initialize_local_cell_order(size_t *cell_order){
 void
 initialize_rout_con(rout_con_struct *rout_con)
 {   
-    extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
-    size_t i;
+    extern ext_option_struct ext_options;
     
+    size_t i;
+        
     rout_con->Nupstream=0;
     rout_con->downstream=MISSING_USI;
 
-    for(i=0;i<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;i++){
+    for(i=0;i<ext_options.uh_steps;i++){
         rout_con->uh[i]=0.0;
     }
 }
@@ -35,14 +35,12 @@ initialize_rout_con(rout_con_struct *rout_con)
 void
 initialize_ext_all_vars(ext_all_vars_struct *ext_all_vars)
 {    
-    extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
     extern ext_option_struct ext_options;
     
     size_t j;
         
     if(ext_options.ROUTING){
-        for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+        for(j=0;j<ext_options.uh_steps;j++){
             ext_all_vars->rout_var.discharge[j] = 0.0;                
         }
     }
@@ -82,6 +80,8 @@ initialize_ext_options(ext_option_struct *options)
     options->ROUTING = false;
     
     options->UH_PARAMETERS = CONSTANT_UH_PARAMETERS;
+    
+    options->uh_steps = -1;
 }
 
 /******************************************************************************

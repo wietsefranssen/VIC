@@ -643,7 +643,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 2;
+    nitems = 3;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -666,6 +666,9 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     mpi_types[i++] = MPI_C_BOOL;    
     //int UH_PARAMETERS;
     offsets[i] = offsetof(ext_option_struct, UH_PARAMETERS);
+    mpi_types[i++] = MPI_INT;
+    //int uh_steps;
+    offsets[i] = offsetof(ext_option_struct, uh_steps);
     mpi_types[i++] = MPI_INT;
         
     // make sure that the we have the right number of elements

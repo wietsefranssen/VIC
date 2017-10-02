@@ -114,9 +114,6 @@ typedef struct {
     short int s_fillvalue;
     int nc_id;
     
-    // Extension
-    int wu_sectors_dimid;
-    
     int band_dimid;
     int front_dimid;
     int frost_dimid;
@@ -130,11 +127,10 @@ typedef struct {
     int time_bounds_dimid;
     int veg_dimid;
     int time_varid;
-    int time_bounds_varid;
-    
+    int time_bounds_varid;    
     // Extension
-    size_t wu_sector_size;
-    
+    int discharge_dimid;
+        
     size_t band_size;
     size_t front_size;
     size_t frost_size;
@@ -146,6 +142,9 @@ typedef struct {
     size_t root_zone_size;
     size_t time_size;
     size_t veg_size;
+    // Extension
+    size_t discharge_size;
+    
     bool open;
     nc_var_struct *nc_vars;
 } nc_file_struct;

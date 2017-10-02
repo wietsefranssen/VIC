@@ -4,13 +4,11 @@ void
 ext_alloc(void)
 {    
     extern domain_struct local_domain;
-    extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
     extern ext_option_struct ext_options;
     extern rout_con_struct *rout_con;
     extern ext_all_vars_struct *ext_all_vars;
     extern size_t *cell_order_local;
-       
+    
     size_t i;
     
     ext_all_vars = malloc(local_domain.ncells_active * sizeof(*ext_all_vars));
@@ -24,9 +22,9 @@ ext_alloc(void)
         check_alloc_status(rout_con, "Memory allocation error");
 
         for(i=0;i<local_domain.ncells_active;i++){
-            rout_con[i].uh = malloc(global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH * sizeof(*rout_con[i].uh));
+            rout_con[i].uh = malloc(ext_options.uh_steps * sizeof(*rout_con[i].uh));
             check_alloc_status(rout_con[i].uh, "Memory allocation error");
-            ext_all_vars[i].rout_var.discharge = malloc(global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH * sizeof(*ext_all_vars[i].rout_var.discharge));
+            ext_all_vars[i].rout_var.discharge = malloc(ext_options.uh_steps * sizeof(*ext_all_vars[i].rout_var.discharge));
             check_alloc_status(ext_all_vars[i].rout_var.discharge, "Memory allocation error");
         }
     }

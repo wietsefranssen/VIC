@@ -15,8 +15,7 @@ void
 routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struct **rout_con_global, double **runoff_global){
     
     extern domain_struct global_domain;
-    extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     extern int mpi_rank;
     
     size_t i;
@@ -30,13 +29,11 @@ routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struct **r
         check_alloc_status((*runoff_global),"Memory allocation error");
         for(i=0;i<global_domain.ncells_active;i++){
             (*ext_all_vars_global)[i].rout_var.discharge = 
-                    malloc(global_param.model_steps_per_day * 
-                    ext_param.UH_MAX_LENGTH * 
+                    malloc(ext_options.uh_steps * 
                     sizeof(*(*ext_all_vars_global)[i].rout_var.discharge));
             check_alloc_status((*ext_all_vars_global)[i].rout_var.discharge,"Memory allocation error");
             (*rout_con_global)[i].uh = 
-                    malloc(global_param.model_steps_per_day * 
-                    ext_param.UH_MAX_LENGTH * 
+                    malloc(ext_options.uh_steps * 
                     sizeof(*(*rout_con_global)[i].uh));
             check_alloc_status((*rout_con_global)[i].uh,"Memory allocation error");
         }
@@ -50,7 +47,7 @@ routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *ro
     extern rout_con_struct *rout_con;
     extern ext_all_vars_struct *ext_all_vars;
     extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     extern double ***out_data;
     extern int mpi_rank;
     
@@ -127,7 +124,7 @@ routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *ro
         svar_global_2d = malloc(global_domain.ncells_active * sizeof(*svar_global_2d));
         check_alloc_status(svar_global_2d,"Memory allocation error");
         for(i=0;i<global_domain.ncells_active;i++){
-            dvar_global_2d[i] = malloc(global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH * sizeof(*dvar_global_2d[i]));
+            dvar_global_2d[i] = malloc(ext_options.uh_steps * sizeof(*dvar_global_2d[i]));
             check_alloc_status(dvar_global_2d[i],"Memory allocation error");
             svar_global_2d[i] = malloc(MAX_UPSTREAM * sizeof(*svar_global_2d[i]));
             check_alloc_status(svar_global_2d[i],"Memory allocation error");
@@ -141,7 +138,7 @@ routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *ro
     svar_local_2d = malloc(local_domain.ncells_active * sizeof(*svar_local_2d));
     check_alloc_status(svar_local_2d,"Memory allocation error");
     for(i=0;i<local_domain.ncells_active;i++){
-        dvar_local_2d[i] = malloc(global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH * sizeof(*dvar_local_2d[i]));
+        dvar_local_2d[i] = malloc(ext_options.uh_steps * sizeof(*dvar_local_2d[i]));
         check_alloc_status(dvar_local_2d[i],"Memory allocation error");
         svar_local_2d[i] = malloc(MAX_UPSTREAM * sizeof(*svar_local_2d[i]));
         check_alloc_status(svar_local_2d[i],"Memory allocation error");
@@ -152,16 +149,16 @@ routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *ro
     
     // Get uh from local nodes
     for(i=0;i<local_domain.ncells_active;i++){
-        for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+        for(j=0;j<ext_options.uh_steps;j++){
             dvar_local_2d[i][j] = rout_con[i].uh[j];
         }
     }    
     // Gather uh
-    gather_double_2d(dvar_global_2d,dvar_local_2d,global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH);
+    gather_double_2d(dvar_global_2d,dvar_local_2d,ext_options.uh_steps);
     // Set uh on master node
     if(mpi_rank == VIC_MPI_ROOT){        
         for(i=0;i<global_domain.ncells_active;i++){
-            for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+            for(j=0;j<ext_options.uh_steps;j++){
                 rout_con_global[i].uh[j] = dvar_global_2d[i][j];
             }
         }
@@ -169,16 +166,16 @@ routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *ro
     
     // Get discharge from local nodes
     for(i=0;i<local_domain.ncells_active;i++){
-        for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+        for(j=0;j<ext_options.uh_steps;j++){
             dvar_local_2d[i][j] = ext_all_vars[i].rout_var.discharge[j];
         }
     }    
     // Gather discharge
-    gather_double_2d(dvar_global_2d,dvar_local_2d,global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH);
+    gather_double_2d(dvar_global_2d,dvar_local_2d,ext_options.uh_steps);
     // Set discharge on master node
     if(mpi_rank == VIC_MPI_ROOT){        
         for(i=0;i<global_domain.ncells_active;i++){
-            for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+            for(j=0;j<ext_options.uh_steps;j++){
                 ext_all_vars_global[i].rout_var.discharge[j] = dvar_global_2d[i][j];
             }
         }
@@ -222,8 +219,7 @@ void
 routing_run_scatter(ext_all_vars_struct *ext_all_vars_global){
     extern domain_struct local_domain;
     extern domain_struct global_domain;
-    extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     extern ext_all_vars_struct *ext_all_vars;
     extern int mpi_rank;
     
@@ -239,8 +235,7 @@ routing_run_scatter(ext_all_vars_struct *ext_all_vars_global){
         check_alloc_status(discharge_global,"Memory allocation error");
         for(i=0;i<global_domain.ncells_active;i++){
             discharge_global[i] = 
-                    malloc(global_param.model_steps_per_day * 
-                    ext_param.UH_MAX_LENGTH * 
+                    malloc(ext_options.uh_steps * 
                     sizeof(*discharge_global[i]));
             check_alloc_status(discharge_global[i],"Memory allocation error");
         }
@@ -249,8 +244,7 @@ routing_run_scatter(ext_all_vars_struct *ext_all_vars_global){
     check_alloc_status(discharge_local,"Memory allocation error");
     for(i=0;i<local_domain.ncells_active;i++){
         discharge_local[i] = 
-                malloc(global_param.model_steps_per_day * 
-                ext_param.UH_MAX_LENGTH * 
+                malloc(ext_options.uh_steps * 
                 sizeof(*discharge_local[i]));
         check_alloc_status(discharge_local[i],"Memory allocation error");
     }
@@ -258,16 +252,16 @@ routing_run_scatter(ext_all_vars_struct *ext_all_vars_global){
     // Get global discharge
     if(mpi_rank == VIC_MPI_ROOT){
         for(i=0;i<global_domain.ncells_active;i++){
-            for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+            for(j=0;j<ext_options.uh_steps;j++){
                 discharge_global[i][j]=ext_all_vars_global[i].rout_var.discharge[j];
             }
         }
     }
     // Scatter output to local nodes
-    scatter_double_2d(discharge_global,discharge_local,global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH);
+    scatter_double_2d(discharge_global,discharge_local,ext_options.uh_steps);
     // Set local discharge
     for(i=0;i<local_domain.ncells_active;i++){
-        for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
+        for(j=0;j<ext_options.uh_steps;j++){
             ext_all_vars[i].rout_var.discharge[j]=discharge_local[i][j];
         }
     }
@@ -304,8 +298,7 @@ void
 routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, 
                                 ext_all_vars_struct *ext_all_vars, double runoff){
     
-    extern global_param_struct global_param;
-    extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     
     double inflow;
     
@@ -321,5 +314,5 @@ routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this,
     }            
 
     rout(&rout_var.discharge, rout_con.uh, (runoff + inflow),
-            (global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH));
+            ext_options.uh_steps);
 }

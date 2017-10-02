@@ -5,6 +5,7 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     extern rout_con_struct *rout_con;
     extern global_param_struct global_param;
     extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     
     double *uh_precise = NULL;
     double *uh_cumulative = NULL;
@@ -13,30 +14,30 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     
     size_t i;
         
-    uh_precise = malloc((ext_param.UH_MAX_LENGTH * global_param.model_steps_per_day * ext_param.UH_PARTITIONS) * sizeof(*uh_precise));
+    uh_precise = malloc((ext_options.uh_steps * ext_param.UH_PARTITIONS) * sizeof(*uh_precise));
     check_alloc_status(uh_precise,"Memory allocation error.");    
-    uh_cumulative = malloc((ext_param.UH_MAX_LENGTH * global_param.model_steps_per_day * ext_param.UH_PARTITIONS) * sizeof(*uh_cumulative));
+    uh_cumulative = malloc((ext_options.uh_steps * ext_param.UH_PARTITIONS) * sizeof(*uh_cumulative));
     check_alloc_status(uh_cumulative,"Memory allocation error.");
     
-    for(i = 0;i < ext_param.UH_MAX_LENGTH * global_param.model_steps_per_day * ext_param.UH_PARTITIONS; i++){         
+    for(i = 0;i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){         
         time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * ext_param.UH_PARTITIONS);
         
         uh_precise[i] = uh(time, distance, velocity, diffusion);
         uh_sum += uh_precise[i];
     }
     
-    for(i = 0;i < ext_param.UH_MAX_LENGTH * global_param.model_steps_per_day * ext_param.UH_PARTITIONS; i++){ 
+    for(i = 0;i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){ 
         uh_precise[i] = uh_precise[i] / uh_sum;
     }
     
     uh_cumulative[0] = uh_precise[0];
-    for(i = 1;i < ext_param.UH_MAX_LENGTH * global_param.model_steps_per_day * ext_param.UH_PARTITIONS - 1; i++){
+    for(i = 1;i < ext_options.uh_steps * ext_param.UH_PARTITIONS - 1; i++){
         uh_cumulative[i] = uh_cumulative[i-1] + uh_precise[i];
     }
     uh_cumulative[i]=1.0;
     
     rout_con[id].uh[0] = uh_cumulative[ext_param.UH_PARTITIONS - 1];
-    for(i = 1; i < ext_param.UH_MAX_LENGTH * global_param.model_steps_per_day; i++){
+    for(i = 1; i < ext_options.uh_steps; i++){
         rout_con[id].uh[i] = uh_cumulative[(i+1) * ext_param.UH_PARTITIONS - 1] - uh_cumulative[i * ext_param.UH_PARTITIONS - 1];
     }  
     

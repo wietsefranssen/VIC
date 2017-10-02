@@ -21,6 +21,7 @@ void debug_file_sizet(char *path, size_t *data);
 void debug_nupstream();
 void debug_downstream();
 void debug_id();
+void debug_basins();
 
 #endif /* DEBUG_H */
 

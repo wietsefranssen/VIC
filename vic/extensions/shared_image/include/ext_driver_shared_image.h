@@ -34,6 +34,8 @@ typedef struct{
     bool ROUTING;
     
     int UH_PARAMETERS;
+    
+    size_t uh_steps;
 }ext_option_struct;
 
 typedef struct {
@@ -53,30 +55,36 @@ typedef struct{
     rout_var_struct rout_var;
 }ext_all_vars_struct;
 
+// Master node initialization
 void initialize_ext_global_structures(void);
 void initialize_ext_options(ext_option_struct *);
 void initialize_ext_info(ext_info_struct *);
 void initialize_nameid(nameid_struct *);
 void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);
-
 void initialize_global_cell_order(size_t *);
-
+// Local node initialization
 void initialize_ext_local_structures(void);
 void initialize_rout_con(rout_con_struct *);
 void initialize_ext_all_vars(ext_all_vars_struct *);
-
 void initialize_local_cell_order(size_t *);
 
+// Preperations
 void ext_start(void);
+void validate_ext_parameters(void);
 void ext_alloc(void);
 void ext_init(void);
+void ext_set_state_meta_data_info(void);
+void ext_set_output_met_data_info(void);
+void ext_populate_model_state(void);
+void generate_default_routing_state(ext_all_vars_struct *);
+void ext_restore(void);
+// Run
 void ext_force(void);
 void routing_update_step_vars(ext_all_vars_struct *);
 void ext_run(void);
-void ext_put_data(ext_all_vars_struct *ext_all_vars,
-                double **out_data,
-                timer_struct *timer);
+void ext_put_data(ext_all_vars_struct *, double **, timer_struct *);
+// Finalizations
 void ext_finalize(void);
 
 void routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struct **rout_con_global, double **runoff_global);
@@ -85,21 +93,9 @@ void routing_run_scatter(ext_all_vars_struct *ext_all_vars_global);
 void routing_run_free(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
 void routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, ext_all_vars_struct *ext_all_vars, double runoff);
 
-void get_active_nc_field_double(nameid_struct   *nc_nameid,
-                    char   *var_name,
-                    size_t *start,
-                    size_t *count,
-                    double *var);
-void get_active_nc_field_float(nameid_struct   *nc_nameid,
-            char   *var_name,
-            size_t *start,
-            size_t *count,
-            float *var);
-void get_active_nc_field_int(nameid_struct   *nc_nameid,
-            char   *var_name,
-            size_t *start,
-            size_t *count,
-            int *var);
+void get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
+void get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);
+void get_active_nc_field_int(nameid_struct *, char *, size_t *, size_t *, int *);
 
 #endif
 

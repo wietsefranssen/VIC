@@ -3,6 +3,7 @@
 void
 ext_start(){
     extern domain_struct global_domain;
+    extern global_param_struct global_param;
     extern ext_parameters_struct ext_param;
     extern ext_option_struct ext_options;
     extern size_t *cell_order_global;
@@ -15,12 +16,17 @@ ext_start(){
     int status;
         
     if(ext_options.ROUTING){
-        if(mpi_rank == VIC_MPI_ROOT){        
+        if(mpi_rank == VIC_MPI_ROOT){     
+            // calculate derived option variables
+            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;
+            
             cell_order_global = malloc(global_domain.ncells_active * 
                                          sizeof(*cell_order_global));
             check_alloc_status(cell_order_global, "Memory allocation error");   
 
             initialize_global_cell_order(cell_order_global);
+            
+            validate_ext_parameters();
         }  
     }
     

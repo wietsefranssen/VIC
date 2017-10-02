@@ -60,6 +60,7 @@ vic_init_output(dmy_struct *dmy_current)
 
     // initialize the output data structures
     set_output_met_data_info();
+    ext_set_output_met_data_info();
 
     // allocate out_data
     alloc_out_data(local_domain.ncells_active, out_data);
@@ -677,10 +678,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->d_fillvalue = NC_FILL_DOUBLE;
     nc_file->f_fillvalue = NC_FILL_FLOAT;
 
-    // set ids to MISSING
-    // Extension    
-    nc_file->wu_sectors_dimid = MISSING;
-    
+    // set ids to MISSING    
     nc_file->nc_id = MISSING;
     nc_file->band_dimid = MISSING;
     nc_file->front_dimid = MISSING;

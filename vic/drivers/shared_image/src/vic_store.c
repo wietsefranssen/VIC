@@ -26,6 +26,8 @@
 
 #include <vic_driver_shared_image.h>
 
+#include "ext_driver_shared_image.h"
+
 /******************************************************************************
  * @brief    Save model state.
  *****************************************************************************/
@@ -39,6 +41,8 @@ vic_store(dmy_struct *dmy_state,
     extern option_struct       options;
     extern veg_con_map_struct *veg_con_map;
     extern int                 mpi_rank;
+    extern ext_option_struct    ext_options;
+    extern ext_all_vars_struct  *ext_all_vars;
 
     int                        status;
     int                        v;
@@ -1268,6 +1272,24 @@ vic_store(dmy_struct *dmy_state,
             dvar[i] = nc_state_file.d_fillvalue;
         }
     }
+    
+    if(ext_options.ROUTING){
+        // discharge
+        nc_var = &(nc_state_file.nc_vars[STATE_DISCHARGE]);
+        for (j = 0; j < ext_options.uh_steps; j++) {
+            d3start[0] = j;
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                dvar[i] = (double) ext_all_vars[i].rout_var.discharge[j];
+            }
+            gather_put_nc_field_double(nc_state_file.nc_id,
+                                       nc_var->nc_varid,
+                                       nc_state_file.d_fillvalue,
+                                       d3start, nc_var->nc_counts, dvar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                dvar[i] = nc_state_file.d_fillvalue;
+            }
+        }        
+    }
 
     // close the netcdf file if it is still open
     if (mpi_rank == VIC_MPI_ROOT) {
@@ -1289,6 +1311,7 @@ void
 set_nc_state_file_info(nc_file_struct *nc_state_file)
 {
     extern option_struct options;
+    extern ext_option_struct    ext_options;
     extern domain_struct global_domain;
 
     // Set fill values
@@ -1311,6 +1334,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->root_zone_dimid = MISSING;
     nc_state_file->time_dimid = MISSING;
     nc_state_file->veg_dimid = MISSING;
+    nc_state_file->discharge_dimid = MISSING;
 
     // Set dimension sizes
     nc_state_file->band_size = options.SNOW_BAND;
@@ -1323,6 +1347,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->root_zone_size = options.ROOT_ZONES;
     nc_state_file->time_size = NC_UNLIMITED;
     nc_state_file->veg_size = options.NVEGTYPES;
+    nc_state_file->discharge_size = ext_options.uh_steps;
 
     // allocate memory for nc_vars
     nc_state_file->nc_vars =
@@ -1526,6 +1551,15 @@ set_nc_state_var_info(nc_file_struct *nc)
             nc->nc_vars[i].nc_counts[1] = nc->nj_size;
             nc->nc_vars[i].nc_counts[2] = nc->ni_size;
             break;
+        case STATE_DISCHARGE:            
+            nc->nc_vars[i].nc_dims = 3;
+            nc->nc_vars[i].nc_dimids[0] = nc->discharge_dimid;
+            nc->nc_vars[i].nc_dimids[1] = nc->nj_dimid;
+            nc->nc_vars[i].nc_dimids[2] = nc->ni_dimid;
+            nc->nc_vars[i].nc_counts[0] = 1;
+            nc->nc_vars[i].nc_counts[1] = nc->nj_size;
+            nc->nc_vars[i].nc_counts[2] = nc->ni_size;
+            break;
         default:
             log_err("state variable %zu not found when setting dimensions", i);
         }
@@ -1552,6 +1586,7 @@ initialize_state_file(char           *filename,
     extern metadata_struct     state_metadata[N_STATE_VARS];
     extern soil_con_struct    *soil_con;
     extern int                 mpi_rank;
+    extern ext_option_struct    ext_options;
 
     int                        status;
     int                        dimids[MAXDIMS];
@@ -1569,6 +1604,7 @@ initialize_state_file(char           *filename,
     int                        dz_node_var_id;
     int                        node_depth_var_id;
     int                        lake_node_var_id;
+    int                        discharge_var_id;
     char                       unit_str[MAXSTRING];
     char                       str[MAXSTRING];
     size_t                     ndims;
@@ -1672,7 +1708,14 @@ initialize_state_file(char           *filename,
                                 &(nc_state_file->lake_node_dimid));
             check_nc_status(status, "Error defining lake_node in %s", filename);
         }
-
+        
+        if(ext_options.ROUTING){
+            status = nc_def_dim(nc_state_file->nc_id, "discharge_steps",
+                                nc_state_file->discharge_size,
+                                &(nc_state_file->discharge_dimid));
+            check_nc_status(status, "Error defining discharge_steps in %s", filename);
+        }
+        
         set_nc_state_var_info(nc_state_file);
     }
 
@@ -1876,6 +1919,25 @@ initialize_state_file(char           *filename,
                                      "standard_name", strlen(
                                          "lake_node_number"),
                                      "lake_node_number");
+            check_nc_status(status, "Error adding attribute in %s", filename);
+            dimids[0] = -1;
+        }
+        
+        if (ext_options.ROUTING) {
+            // discharge steps
+            dimids[0] = nc_state_file->discharge_dimid;
+            status =
+                nc_def_var(nc_state_file->nc_id, "discharge_steps", NC_INT, 1, dimids,
+                           &(discharge_var_id));
+            check_nc_status(status, "Error defining discharge_steps variable in %s",
+                            filename);
+            status = nc_put_att_text(nc_state_file->nc_id, discharge_var_id,
+                                     "long_name",
+                                     strlen("discharge_steps"), "discharge_steps");
+            check_nc_status(status, "Error adding attribute in %s", filename);
+            status = nc_put_att_text(nc_state_file->nc_id, discharge_var_id,
+                                     "standard_name", strlen("discharge_step_number"),
+                                     "discharge_step_number");
             check_nc_status(status, "Error adding attribute in %s", filename);
             dimids[0] = -1;
         }
@@ -2093,7 +2155,29 @@ initialize_state_file(char           *filename,
             dimids[i] = -1;
             dcount[i] = 0;
         }
-        free(ivar);
+        free(ivar);        
+    
+        if(ext_options.ROUTING){
+            // discharge steps
+            dimids[0] = nc_state_file->discharge_dimid;
+            dcount[0] = nc_state_file->discharge_size;
+            ivar = malloc(nc_state_file->discharge_size * sizeof(*ivar));
+            check_alloc_status(ivar, "Memory allocation error");
+
+            for (j = 0; j < nc_state_file->discharge_size; j++) {
+                ivar[j] = (int) j;
+            }
+            status = nc_put_vara_int(nc_state_file->nc_id, discharge_var_id, dstart,
+                                     dcount,
+                                     ivar);
+            check_nc_status(status, "Error writing discharge id");
+
+            for (i = 0; i < ndims; i++) {
+                dimids[i] = -1;
+                dcount[i] = 0;
+            }
+            free(ivar);
+        }
     }
 
     // initialize dvar for soil thermal node deltas and depths
