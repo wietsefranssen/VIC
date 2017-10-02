@@ -289,15 +289,6 @@ enum
     // Extension variables
     // Routing terms
     OUT_DISCHARGE,      /**< Discharge [mm/s] */
-    // Water use terms
-    OUT_WU_DEMAND,
-    OUT_WU_WITHDRAWAL,
-    OUT_WU_COMPENSATED,
-    OUT_WU_SHORTAGE,
-    OUT_WU_CONSUMPTION,
-    OUT_WU_RETURN_FLOW,
-    OUT_WU_TO_COMPENSATE,
-    OUT_WU_TO_RETURN,
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */

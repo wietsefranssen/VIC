@@ -1486,70 +1486,6 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DISCHARGE].description,
            "discharge");
     
-    strcpy(out_metadata[OUT_WU_DEMAND].varname, "OUT_WU_DEMAND");
-    strcpy(out_metadata[OUT_WU_DEMAND].long_name, "water_use_demands");
-    strcpy(out_metadata[OUT_WU_DEMAND].standard_name,
-           "water_use_demands");
-    strcpy(out_metadata[OUT_WU_DEMAND].units, "m3");
-    strcpy(out_metadata[OUT_WU_DEMAND].description,
-           "water_use_demands");
-    
-    strcpy(out_metadata[OUT_WU_WITHDRAWAL].varname, "OUT_WU_WITHDRAWAL");
-    strcpy(out_metadata[OUT_WU_WITHDRAWAL].long_name, "water_use_withdrawals");
-    strcpy(out_metadata[OUT_WU_WITHDRAWAL].standard_name,
-           "water_use_withdrawals");
-    strcpy(out_metadata[OUT_WU_WITHDRAWAL].units, "m3");
-    strcpy(out_metadata[OUT_WU_WITHDRAWAL].description,
-           "water_use_withdrawals");
-    
-    strcpy(out_metadata[OUT_WU_SHORTAGE].varname, "OUT_WU_SHORTAGE");
-    strcpy(out_metadata[OUT_WU_SHORTAGE].long_name, "water_use_shortages");
-    strcpy(out_metadata[OUT_WU_SHORTAGE].standard_name,
-           "water_use_shortages");
-    strcpy(out_metadata[OUT_WU_SHORTAGE].units, "m3");
-    strcpy(out_metadata[OUT_WU_SHORTAGE].description,
-           "water_use_shortages");
-    
-    strcpy(out_metadata[OUT_WU_CONSUMPTION].varname, "OUT_WU_CONSUMPTION");
-    strcpy(out_metadata[OUT_WU_CONSUMPTION].long_name, "water_use_consumptions");
-    strcpy(out_metadata[OUT_WU_CONSUMPTION].standard_name,
-           "water_use_consumptions");
-    strcpy(out_metadata[OUT_WU_CONSUMPTION].units, "m3");
-    strcpy(out_metadata[OUT_WU_CONSUMPTION].description,
-           "water_use_consumptions");
-    
-    strcpy(out_metadata[OUT_WU_RETURN_FLOW].varname, "OUT_WU_RETURN_FLOW");
-    strcpy(out_metadata[OUT_WU_RETURN_FLOW].long_name, "water_use_return_flows");
-    strcpy(out_metadata[OUT_WU_RETURN_FLOW].standard_name,
-           "water_use_return_flows");
-    strcpy(out_metadata[OUT_WU_RETURN_FLOW].units, "m3");
-    strcpy(out_metadata[OUT_WU_RETURN_FLOW].description,
-           "water_use_return_flows");
-    
-    strcpy(out_metadata[OUT_WU_COMPENSATED].varname, "OUT_WU_COMPENSATED");
-    strcpy(out_metadata[OUT_WU_COMPENSATED].long_name, "water_use_compensated");
-    strcpy(out_metadata[OUT_WU_COMPENSATED].standard_name,
-           "water_use_compensated");
-    strcpy(out_metadata[OUT_WU_COMPENSATED].units, "m3");
-    strcpy(out_metadata[OUT_WU_COMPENSATED].description,
-           "water_use_compensated");
-    
-    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].varname, "OUT_WU_TO_COMPENSATE");
-    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].long_name, "water_use_shortage_to_compensate");
-    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].standard_name,
-           "water_use_shortage_to_compensate");
-    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].units, "m3");
-    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].description,
-           "water_use_shortage_to_compensate");
-    
-    strcpy(out_metadata[OUT_WU_TO_RETURN].varname, "OUT_WU_TO_RETURN");
-    strcpy(out_metadata[OUT_WU_TO_RETURN].long_name, "water_use_flow_to_return");
-    strcpy(out_metadata[OUT_WU_TO_RETURN].standard_name,
-           "water_use_flow_to_return");
-    strcpy(out_metadata[OUT_WU_TO_RETURN].units, "m3");
-    strcpy(out_metadata[OUT_WU_TO_RETURN].description,
-           "water_use_flow_to_return");
-    
     /* Wall time spent inside ext_run [seconds] */
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].varname, "OUT_TIME_EXTRUN_WALL");
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].long_name, "time_extrun_wall");
@@ -1604,14 +1540,4 @@ set_output_met_data_info()
     out_metadata[OUT_SNOW_PACKT_BAND].nelem = options.SNOW_BAND;
     out_metadata[OUT_SNOW_SURFT_BAND].nelem = options.SNOW_BAND;
     out_metadata[OUT_SWE_BAND].nelem = options.SNOW_BAND;
-    
-    // Extension
-    out_metadata[OUT_WU_DEMAND].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_WITHDRAWAL].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_SHORTAGE].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_CONSUMPTION].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_RETURN_FLOW].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_COMPENSATED].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_TO_COMPENSATE].nelem = WU_NSECTORS;
-    out_metadata[OUT_WU_TO_RETURN].nelem = WU_NSECTORS;
 }

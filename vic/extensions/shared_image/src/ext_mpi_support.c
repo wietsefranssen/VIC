@@ -643,7 +643,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 3;
+    nitems = 2;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -663,12 +663,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     
     //bool ROUTING;    
     offsets[i] = offsetof(ext_option_struct, ROUTING);
-    mpi_types[i++] = MPI_C_BOOL;
-    
-    //bool WATER_USE;
-    offsets[i] = offsetof(ext_option_struct, WATER_USE);
-    mpi_types[i++] = MPI_C_BOOL;
-    
+    mpi_types[i++] = MPI_C_BOOL;    
     //int UH_PARAMETERS;
     offsets[i] = offsetof(ext_option_struct, UH_PARAMETERS);
     mpi_types[i++] = MPI_INT;
@@ -701,7 +696,7 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 11;
+    nitems = 6;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -719,6 +714,12 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     //reset i
     i=0;
     
+    //double MPI_N_PROCESS_COST;
+    offsets[i] = offsetof(ext_parameters_struct, MPI_N_PROCESS_COST);
+    mpi_types[i++] = MPI_DOUBLE;
+    //double MPI_E_PROCESS_COST;
+    offsets[i] = offsetof(ext_parameters_struct, MPI_E_PROCESS_COST);
+    mpi_types[i++] = MPI_DOUBLE;
     //double UH_FLOW_VELOCITY;
     offsets[i] = offsetof(ext_parameters_struct, UH_FLOW_VELOCITY);
     mpi_types[i++] = MPI_DOUBLE;
@@ -731,32 +732,6 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     //int UH_PARTITIONS;
     offsets[i] = offsetof(ext_parameters_struct, UH_PARTITIONS);
     mpi_types[i++] = MPI_INT;    
-    //double MPI_N_PROCESS_COST;
-    offsets[i] = offsetof(ext_parameters_struct, MPI_N_PROCESS_COST);
-    mpi_types[i++] = MPI_DOUBLE;
-    //double MPI_E_PROCESS_COST;
-    offsets[i] = offsetof(ext_parameters_struct, MPI_E_PROCESS_COST);
-    mpi_types[i++] = MPI_DOUBLE;
-    
-    //unsigned short int RETURN_LOCATION[WU_NSECTORS];
-    offsets[i] = offsetof(ext_parameters_struct, RETURN_LOCATION);
-    blocklengths[i] = WU_NSECTORS;
-    mpi_types[i++] = MPI_UNSIGNED_SHORT;    
-    //unsigned short int RETURN_DELAY[WU_NSECTORS];
-    offsets[i] = offsetof(ext_parameters_struct, RETURN_DELAY);
-    blocklengths[i] = WU_NSECTORS;
-    mpi_types[i++] = MPI_UNSIGNED_SHORT;  
-    //unsigned short int COMPENSATION_DELAY[WU_NSECTORS];
-    offsets[i] = offsetof(ext_parameters_struct, COMPENSATION_DELAY);
-    blocklengths[i] = WU_NSECTORS;
-    mpi_types[i++] = MPI_UNSIGNED_SHORT;  
-        
-    //unsigned int forceoffset;
-    offsets[i] = offsetof(ext_parameters_struct, forceoffset);
-    mpi_types[i++] = MPI_UNSIGNED;
-    //unsigned short int wu_hist_offset;
-    offsets[i] = offsetof(ext_parameters_struct, wu_hist_offset);
-    mpi_types[i++] = MPI_UNSIGNED;
     
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {

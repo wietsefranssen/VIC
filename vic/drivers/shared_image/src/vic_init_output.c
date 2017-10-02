@@ -276,12 +276,6 @@ initialize_history_file(nc_file_struct *nc,
     check_nc_status(status, "Error defining snow_band dimension in %s",
                     stream->filename);
     
-    // Extension
-    status = nc_def_dim(nc->nc_id, "wu_sectors", WU_NSECTORS,
-                        &(nc->wu_sectors_dimid));
-    check_nc_status(status, "Error defining wu_sectors dimension in %s",
-                    stream->filename);
-
     status = nc_def_dim(nc->nc_id, "front", nc->front_size,
                         &(nc->front_dimid));
     check_nc_status(status, "Error defining front dimension in %s",
@@ -701,9 +695,6 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->veg_dimid = MISSING;
 
     // Set dimension sizes
-    // Extension    
-    nc_file->wu_sector_size = WU_NSECTORS;
-    
     nc_file->band_size = options.SNOW_BAND;
     nc_file->front_size = MAX_FRONTS;
     nc_file->frost_size = options.Nfrost;

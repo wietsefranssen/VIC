@@ -10,43 +10,6 @@ initialize_local_cell_order(size_t *cell_order){
 }
 
 /******************************************************************************
- * @brief    Initialize wu_con before they are called by the
- *           model.
- *****************************************************************************/
-void
-initialize_wu_con(wu_con_struct **wu_con){
-    extern ext_parameters_struct ext_param;
-    size_t i;
-    
-    for(i=0;i<WU_NSECTORS;i++){
-        (*wu_con)[i].consumption_factor = 0.0;
-        (*wu_con)[i].demand = 0.0;
-        (*wu_con)[i].return_delay = ext_param.RETURN_DELAY[i];
-        (*wu_con)[i].return_location = ext_param.RETURN_LOCATION[i];
-        (*wu_con)[i].compenstation_delay = ext_param.COMPENSATION_DELAY[i];
-    }
-}
-
-/******************************************************************************
- * @brief    Initialize wu_hist before they are called by the
- *           model.
- *****************************************************************************/
-void
-initialize_wu_hist(wu_hist_struct **wu_hist){
-    extern global_param_struct global_param;
-    
-    size_t i;
-    size_t j;
-    
-    for(i=0;i<WU_NSECTORS;i++){
-        for(j=0;j<global_param.model_steps_per_day;j++){
-            (*wu_hist)[i].demand[j] = 0.0;
-            (*wu_hist)[i].consumption_factor[j] = 0.0;
-        }
-    }
-}
-
-/******************************************************************************
  * @brief    Initialize rout_con before they are called by the
  *           model.
  *****************************************************************************/
@@ -76,29 +39,11 @@ initialize_ext_all_vars(ext_all_vars_struct *ext_all_vars)
     extern ext_parameters_struct ext_param;
     extern ext_option_struct ext_options;
     
-    size_t i;
     size_t j;
         
     if(ext_options.ROUTING){
         for(j=0;j<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;j++){
             ext_all_vars->rout_var.discharge[j] = 0.0;                
-        }
-    }
-
-    if(ext_options.WATER_USE){
-        for(i=0;i<WU_NSECTORS;i++){
-            ext_all_vars->wu_var[i].compensated = 0.0;
-            ext_all_vars->wu_var[i].consumed = 0.0;
-            ext_all_vars->wu_var[i].withdrawn = 0.0;
-            ext_all_vars->wu_var[i].returned = 0.0;
-            ext_all_vars->wu_var[i].to_return = 0.0;
-            ext_all_vars->wu_var[i].to_compensate = 0.0;
-            for(j=0;j< ext_param.RETURN_DELAY[i];j++){
-                ext_all_vars->wu_var[i].return_flow[j]=0.0;
-            }
-            for(j=0;j< ext_param.COMPENSATION_DELAY[i];j++){
-                ext_all_vars->wu_var[i].compensation[j]=0.0;
-            }
         }
     }
 }  
@@ -112,8 +57,6 @@ initialize_ext_local_structures(void)
     extern ext_option_struct ext_options;
     extern domain_struct local_domain;
     extern rout_con_struct *rout_con;
-    extern wu_con_struct **wu_con;
-    extern wu_hist_struct **wu_hist;
     extern ext_all_vars_struct *ext_all_vars;
     extern size_t *cell_order_local;
     
@@ -126,10 +69,6 @@ initialize_ext_local_structures(void)
             initialize_rout_con(&rout_con[i]);
             initialize_local_cell_order(&cell_order_local[i]);
         }
-        if(ext_options.WATER_USE){
-            initialize_wu_con(&wu_con[i]);
-            initialize_wu_hist(&wu_hist[i]);
-        }
     }    
 }
 
@@ -141,7 +80,6 @@ void
 initialize_ext_options(ext_option_struct *options)
 {    
     options->ROUTING = false;
-    options->WATER_USE = false;
     
     options->UH_PARAMETERS = CONSTANT_UH_PARAMETERS;
 }
@@ -164,7 +102,6 @@ void
 initialize_ext_filenames(ext_filenames_struct *filenames)
 {
     initialize_nameid(&filenames->routing);
-    initialize_nameid(&filenames->water_use);
     
     initialize_ext_info(&filenames->info);
 }
@@ -179,13 +116,6 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->velocity_var, "MISSING");
     strcpy(info->diffusion_var, "MISSING");
     strcpy(info->distance_var, "MISSING");
-    
-    strcpy(info->irr_demand_var, "MISSING");
-    strcpy(info->dom_demand_var, "MISSING");
-    strcpy(info->ind_demand_var, "MISSING");
-    strcpy(info->irr_cons_var, "MISSING");
-    strcpy(info->dom_cons_var, "MISSING");
-    strcpy(info->ind_cons_var, "MISSING");
 }
 
 /******************************************************************************
@@ -194,9 +124,7 @@ initialize_ext_info(ext_info_struct *info){
  *****************************************************************************/
 void
 initialize_ext_parameters(ext_parameters_struct *parameters)
-{      
-    size_t i;
-    
+{          
     // FOLLOWING PARAMETERS NEED TO BE ADJUSTED BASED ON EXPERIMENTATION
     parameters->MPI_N_PROCESS_COST=4;  
     parameters->MPI_E_PROCESS_COST=5; 
@@ -204,21 +132,7 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->UH_FLOW_DIFFUSION=800;
     parameters->UH_FLOW_VELOCITY=1.75;
     parameters->UH_MAX_LENGTH=2;
-    parameters->UH_PARTITIONS=20;      
-        
-    for(i=0;i<WU_NSECTORS;i++){
-        parameters->RETURN_DELAY[i] = 8;
-    }
-    parameters->RETURN_LOCATION[WU_IRRIGATION] = WU_RETURN_GROUNDWATER;
-    parameters->RETURN_LOCATION[WU_DOMESTIC] = WU_RETURN_SURFACEWATER;
-    parameters->RETURN_LOCATION[WU_INDUSTRIAL] = WU_RETURN_SURFACEWATER;
-    
-    parameters->COMPENSATION_DELAY[WU_IRRIGATION] = 7 * 8;
-    parameters->COMPENSATION_DELAY[WU_DOMESTIC] = 1 * 8;
-    parameters->COMPENSATION_DELAY[WU_INDUSTRIAL] = 2 * 8;    
-    
-    parameters->forceoffset = 0;
-    parameters->wu_hist_offset = 0;
+    parameters->UH_PARTITIONS=20;
 }
 
 /******************************************************************************

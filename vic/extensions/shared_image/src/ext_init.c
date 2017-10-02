@@ -11,9 +11,6 @@ ext_init(void){
     if(ext_options.ROUTING){
         routing_init();
     }
-    if(ext_options.WATER_USE){
-        water_use_init();     
-    }
     
     // close external parameter file
     if (mpi_rank == VIC_MPI_ROOT) {
