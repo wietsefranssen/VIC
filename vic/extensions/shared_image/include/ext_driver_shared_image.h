@@ -83,7 +83,7 @@ typedef struct {
 typedef struct{
     rout_var_struct rout_var;
     wu_var_struct *wu_var;
-    dam_var_struct dam_var;
+    dam_var_struct *dam_var;
 }ext_all_vars_struct;
 
 void initialize_ext_global_structures(void);

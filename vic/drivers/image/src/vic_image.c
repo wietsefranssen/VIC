@@ -82,6 +82,8 @@ size_t *cell_order_local = NULL;
 // Extension con & vars
 rout_con_struct *rout_con = NULL;
 wu_con_struct **wu_con = NULL;
+dam_con_struct **dam_con = NULL;
+dam_con_map_struct *dam_con_map=NULL;
 wu_hist_struct **wu_hist = NULL;
 ext_all_vars_struct *ext_all_vars = NULL;
 
