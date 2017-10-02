@@ -92,7 +92,7 @@ debug_downstream(){
     
     // Set local downstream
     for(i=0;i<local_domain.ncells_active;i++){
-        svar_local[i] = rout_con[i].downstream_global;
+        svar_local[i] = rout_con[i].downstream;
     }
     
     // Gather downstream to master node
@@ -105,7 +105,7 @@ debug_downstream(){
     
     // Set local downstream
     for(i=0;i<local_domain.ncells_active;i++){
-        svar_local[i] = rout_con[i].downstream_local;
+        svar_local[i] = rout_con[i].downstream;
     }
     
     // Gather downstream to master node
@@ -139,7 +139,7 @@ debug_nupstream(){
     check_alloc_status(ivar_local,"Memory allocation error");
     
     for(i=0;i<local_domain.ncells_active;i++){
-        ivar_local[i] = rout_con[i].Nupstream_global;
+        ivar_local[i] = rout_con[i].Nupstream;
     }
     gather_int(ivar_global,ivar_local);
     if(mpi_rank == VIC_MPI_ROOT){
@@ -147,7 +147,7 @@ debug_nupstream(){
     }
     
     for(i=0;i<local_domain.ncells_active;i++){
-        ivar_local[i] = rout_con[i].Nupstream_local;
+        ivar_local[i] = rout_con[i].Nupstream;
     }
     gather_int(ivar_global,ivar_local);
     if(mpi_rank == VIC_MPI_ROOT){

@@ -21,8 +21,7 @@ void ext_finalize()
     
     if(ext_options.ROUTING){
         for(i=0;i<local_domain.ncells_active;i++){
-            free(rout_con[i].upstream_global);
-            free(rout_con[i].upstream_local);
+            free(rout_con[i].upstream);
             free(rout_con[i].uh);
 
             free(ext_all_vars[i].rout_var.discharge);

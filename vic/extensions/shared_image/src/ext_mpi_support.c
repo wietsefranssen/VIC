@@ -643,7 +643,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 2;
+    nitems = 3;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -663,6 +663,10 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     
     //bool ROUTING;    
     offsets[i] = offsetof(ext_option_struct, ROUTING);
+    mpi_types[i++] = MPI_C_BOOL;
+    
+    //bool WATER_USE;
+    offsets[i] = offsetof(ext_option_struct, WATER_USE);
     mpi_types[i++] = MPI_C_BOOL;
     
     //int UH_PARAMETERS;
@@ -697,7 +701,7 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 6;
+    nitems = 11;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -707,7 +711,7 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     mpi_types = malloc(nitems * sizeof(*mpi_types));
     check_alloc_status(mpi_types, "Memory allocation error.");
       
-    // none of the elements in location_struct are arrays.
+    // most the elements in location_struct are not arrays.
     for(i=0; i< (size_t) nitems; i++){
         blocklengths[i]=1;
     }
@@ -733,6 +737,26 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     //double MPI_E_PROCESS_COST;
     offsets[i] = offsetof(ext_parameters_struct, MPI_E_PROCESS_COST);
     mpi_types[i++] = MPI_DOUBLE;
+    
+    //unsigned short int RETURN_LOCATION[WU_NSECTORS];
+    offsets[i] = offsetof(ext_parameters_struct, RETURN_LOCATION);
+    blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_UNSIGNED_SHORT;    
+    //unsigned short int RETURN_DELAY[WU_NSECTORS];
+    offsets[i] = offsetof(ext_parameters_struct, RETURN_DELAY);
+    blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_UNSIGNED_SHORT;  
+    //unsigned short int COMPENSATION_DELAY[WU_NSECTORS];
+    offsets[i] = offsetof(ext_parameters_struct, COMPENSATION_DELAY);
+    blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_UNSIGNED_SHORT;  
+        
+    //unsigned int forceoffset;
+    offsets[i] = offsetof(ext_parameters_struct, forceoffset);
+    mpi_types[i++] = MPI_UNSIGNED;
+    //unsigned short int wu_hist_offset;
+    offsets[i] = offsetof(ext_parameters_struct, wu_hist_offset);
+    mpi_types[i++] = MPI_UNSIGNED;
     
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {

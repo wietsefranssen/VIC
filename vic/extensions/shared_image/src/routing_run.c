@@ -11,8 +11,40 @@ rout(double **discharge, double *uh, double quantity, int uh_length){
     }    
 }
 
+void
+routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struct **rout_con_global, double **runoff_global){
+    
+    extern domain_struct global_domain;
+    extern global_param_struct global_param;
+    extern ext_parameters_struct ext_param;
+    extern int mpi_rank;
+    
+    size_t i;
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        (*ext_all_vars_global) = malloc(global_domain.ncells_active * sizeof(*(*ext_all_vars_global)));
+        check_alloc_status((*ext_all_vars_global),"Memory allocation error");
+        (*rout_con_global) = malloc(global_domain.ncells_active * sizeof(*(*rout_con_global)));
+        check_alloc_status((*rout_con_global),"Memory allocation error");
+        (*runoff_global) = malloc(global_domain.ncells_active * sizeof(*(*runoff_global)));
+        check_alloc_status((*runoff_global),"Memory allocation error");
+        for(i=0;i<global_domain.ncells_active;i++){
+            (*ext_all_vars_global)[i].rout_var.discharge = 
+                    malloc(global_param.model_steps_per_day * 
+                    ext_param.UH_MAX_LENGTH * 
+                    sizeof(*(*ext_all_vars_global)[i].rout_var.discharge));
+            check_alloc_status((*ext_all_vars_global)[i].rout_var.discharge,"Memory allocation error");
+            (*rout_con_global)[i].uh = 
+                    malloc(global_param.model_steps_per_day * 
+                    ext_param.UH_MAX_LENGTH * 
+                    sizeof(*(*rout_con_global)[i].uh));
+            check_alloc_status((*rout_con_global)[i].uh,"Memory allocation error");
+        }
+    }
+}
+
 void 
-routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_vars_global, double *runoff_global){  
+routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global){  
     extern domain_struct local_domain;
     extern domain_struct global_domain;
     extern rout_con_struct *rout_con;
@@ -61,14 +93,14 @@ routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_va
     
     // Get local nupstream
     for(i=0;i<local_domain.ncells_active;i++){
-        ivar_local[i] = rout_con[i].Nupstream_global;
+        ivar_local[i] = rout_con[i].Nupstream;
     }    
     // Gather nupstream
     gather_int(ivar_global,ivar_local); 
     // Set nupstream on master node
     if(mpi_rank == VIC_MPI_ROOT){        
         for(i=0;i<global_domain.ncells_active;i++){
-            rout_con_global[i].Nupstream_global = ivar_global[i];
+            rout_con_global[i].Nupstream = ivar_global[i];
         }
     }
     
@@ -82,10 +114,10 @@ routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_va
     
     // Initialize output structures    
     for(i=0;i<global_domain.ncells_active;i++){
-        rout_con_global[i].upstream_global = 
-                malloc(rout_con_global[i].Nupstream_global * 
-                sizeof(*rout_con_global[i].upstream_global));
-        check_alloc_status(rout_con_global[i].upstream_global,"Memory allocation error");
+        rout_con_global[i].upstream = 
+                malloc(rout_con_global[i].Nupstream * 
+                sizeof(*rout_con_global[i].upstream));
+        check_alloc_status(rout_con_global[i].upstream,"Memory allocation error");
     }
     
     // Alloc
@@ -154,8 +186,8 @@ routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_va
     
     // Get local upstream
     for(i=0;i<local_domain.ncells_active;i++){
-        for(j=0;j<rout_con[i].Nupstream_global;j++){
-            svar_local_2d[i][j] = rout_con[i].upstream_global[j];
+        for(j=0;j<rout_con[i].Nupstream;j++){
+            svar_local_2d[i][j] = rout_con[i].upstream[j];
         }
     } 
     // Gather upstream
@@ -163,8 +195,8 @@ routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_va
     // Set upstream on master node
     if(mpi_rank == VIC_MPI_ROOT){        
         for(i=0;i<global_domain.ncells_active;i++){
-            for(j=0;j<rout_con_global[i].Nupstream_global;j++){
-                rout_con_global[i].upstream_global[j] = svar_global_2d[i][j];
+            for(j=0;j<rout_con_global[i].Nupstream;j++){
+                rout_con_global[i].upstream[j] = svar_global_2d[i][j];
             }
         }
     }
@@ -187,7 +219,7 @@ routing_gather(rout_con_struct *rout_con_global, ext_all_vars_struct *ext_all_va
 }
 
 void
-routing_scatter(ext_all_vars_struct *ext_all_vars_global){
+routing_run_scatter(ext_all_vars_struct *ext_all_vars_global){
     extern domain_struct local_domain;
     extern domain_struct global_domain;
     extern global_param_struct global_param;
@@ -254,100 +286,40 @@ routing_scatter(ext_all_vars_struct *ext_all_vars_global){
 }
 
 void
-routing_run(){
-    extern domain_struct local_domain;
+routing_run_free(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global){
     extern domain_struct global_domain;
+    
+    size_t i;
+    
+    for(i=0;i<global_domain.ncells_active;i++){
+        free(ext_all_vars_global[i].rout_var.discharge);
+        free(rout_con_global[i].uh);
+    }
+    free(ext_all_vars_global);
+    free(rout_con_global);
+    free(runoff_global);
+}
+
+void
+routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, 
+                                ext_all_vars_struct *ext_all_vars, double runoff){
+    
     extern global_param_struct global_param;
     extern ext_parameters_struct ext_param;
     
-    extern ext_all_vars_struct *ext_all_vars;
-    extern rout_con_struct *rout_con;
-    extern double ***out_data;
-    
-    extern int mpi_rank;
-    extern int mpi_decomposition;  
-    
-    ext_all_vars_struct *ext_all_vars_global;
-    rout_con_struct *rout_con_global;
-    double *runoff_global;
-    
-    double runoff;
     double inflow;
     
     size_t i;
-    size_t j;
     
-    if(mpi_decomposition == BASIN_DECOMPOSITION){
-        // Rout on local nodes
-        for(i=0;i<local_domain.ncells_active;i++){
-            runoff = 0;
-            inflow = 0;
-            
-            // Gather runoff and inflow
-            runoff = (out_data[i][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) * local_domain.locations[i].area / (MM_PER_M * global_param.dt);            
-            for(j=0;j<rout_con[i].Nupstream_local;j++){
-                inflow += ext_all_vars[rout_con[i].upstream_local[j]].rout_var.discharge[0];
-            }            
-                    
-            rout(&ext_all_vars[i].rout_var.discharge, rout_con[i].uh, (runoff + inflow),
-                    (global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH));            
-        }
-    }    
-    else if(mpi_decomposition == RANDOM_DECOMPOSITION){
-        
-        // Alloc gather structures on master node  
-        if(mpi_rank == VIC_MPI_ROOT){
-            ext_all_vars_global = malloc(global_domain.ncells_active * sizeof(*ext_all_vars_global));
-            check_alloc_status(ext_all_vars_global,"Memory allocation error");
-            rout_con_global = malloc(global_domain.ncells_active * sizeof(*rout_con_global));
-            check_alloc_status(rout_con_global,"Memory allocation error");
-            runoff_global = malloc(global_domain.ncells_active * sizeof(*runoff_global));
-            check_alloc_status(runoff_global,"Memory allocation error");
-            for(i=0;i<global_domain.ncells_active;i++){
-                ext_all_vars_global[i].rout_var.discharge = 
-                        malloc(global_param.model_steps_per_day * 
-                        ext_param.UH_MAX_LENGTH * 
-                        sizeof(*ext_all_vars_global[i].rout_var.discharge));
-                check_alloc_status(ext_all_vars_global[i].rout_var.discharge,"Memory allocation error");
-                rout_con_global[i].uh = 
-                        malloc(global_param.model_steps_per_day * 
-                        ext_param.UH_MAX_LENGTH * 
-                        sizeof(*rout_con_global[i].uh));
-                check_alloc_status(rout_con_global[i].uh,"Memory allocation error");
-                
-                initialize_rout_con(&rout_con_global[i]);
-            }
-        }
-        
-        // Gather necessary data from local nodes        
-        routing_gather(rout_con_global, ext_all_vars_global, runoff_global);
-              
-        // Rout on master node
-        if(mpi_rank == VIC_MPI_ROOT){
-            for(i=0;i<global_domain.ncells_active;i++){
-                inflow = 0;
-                
-                // Gather inflow
-                for(j=0;j<rout_con_global[i].Nupstream_global;j++){
-                    inflow += ext_all_vars_global[rout_con_global[i].upstream_global[j]].rout_var.discharge[0];
-                }
-                
-                rout(&ext_all_vars_global[i].rout_var.discharge, rout_con_global[i].uh, (runoff_global[i] + inflow),
-                    (global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH)); 
-            }
-        }
-        
-        routing_scatter(ext_all_vars_global);        
-        
-        // Free        
-        if(mpi_rank == VIC_MPI_ROOT){
-            for(i=0;i<global_domain.ncells_active;i++){
-                free(ext_all_vars_global[i].rout_var.discharge);
-                free(rout_con_global[i].uh);
-            }
-            free(ext_all_vars_global);
-            free(rout_con_global);
-            free(runoff_global);
-        } 
-    }
+    rout_var_struct rout_var;
+    rout_var = (*ext_all_vars_this).rout_var;
+    
+    // Gather inflow
+    inflow = 0;
+    for(i=0;i<rout_con.Nupstream;i++){
+        inflow += ext_all_vars[rout_con.upstream[i]].rout_var.discharge[0];
+    }            
+
+    rout(&rout_var.discharge, rout_con.uh, (runoff + inflow),
+            (global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH));
 }

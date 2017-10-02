@@ -14,7 +14,7 @@ water_use_init(){
     
     for(i=0;i<local_domain.ncells_active;i++){
         for(j=0;j<WU_NSECTORS;j++){
-            wu_con[i][j].delay = ext_param.RETURN_DELAY[j];
+            wu_con[i][j].return_delay = ext_param.RETURN_DELAY[j];
             wu_con[i][j].return_location = ext_param.RETURN_LOCATION[j];
         }
     }

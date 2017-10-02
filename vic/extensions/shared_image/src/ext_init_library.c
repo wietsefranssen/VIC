@@ -21,8 +21,9 @@ initialize_wu_con(wu_con_struct **wu_con){
     for(i=0;i<WU_NSECTORS;i++){
         (*wu_con)[i].consumption_factor = 0.0;
         (*wu_con)[i].demand = 0.0;
-        (*wu_con)[i].delay = ext_param.RETURN_DELAY[i];
+        (*wu_con)[i].return_delay = ext_param.RETURN_DELAY[i];
         (*wu_con)[i].return_location = ext_param.RETURN_LOCATION[i];
+        (*wu_con)[i].compenstation_delay = ext_param.COMPENSATION_DELAY[i];
     }
 }
 
@@ -56,9 +57,8 @@ initialize_rout_con(rout_con_struct *rout_con)
     extern ext_parameters_struct ext_param;
     size_t i;
     
-    rout_con->Nupstream_global=0;
-    rout_con->downstream_global=MISSING_USI;
-    rout_con->downstream_local=MISSING_USI;
+    rout_con->Nupstream=0;
+    rout_con->downstream=MISSING_USI;
 
     for(i=0;i<global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;i++){
         rout_con->uh[i]=0.0;
@@ -87,12 +87,17 @@ initialize_ext_all_vars(ext_all_vars_struct *ext_all_vars)
 
     if(ext_options.WATER_USE){
         for(i=0;i<WU_NSECTORS;i++){
-            ext_all_vars->wu_var[i].shortage = 0.0;
+            ext_all_vars->wu_var[i].compensated = 0.0;
             ext_all_vars->wu_var[i].consumed = 0.0;
             ext_all_vars->wu_var[i].withdrawn = 0.0;
             ext_all_vars->wu_var[i].returned = 0.0;
+            ext_all_vars->wu_var[i].to_return = 0.0;
+            ext_all_vars->wu_var[i].to_compensate = 0.0;
             for(j=0;j< ext_param.RETURN_DELAY[i];j++){
                 ext_all_vars->wu_var[i].return_flow[j]=0.0;
+            }
+            for(j=0;j< ext_param.COMPENSATION_DELAY[i];j++){
+                ext_all_vars->wu_var[i].compensation[j]=0.0;
             }
         }
     }
@@ -202,10 +207,15 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->UH_PARTITIONS=20;      
         
     for(i=0;i<WU_NSECTORS;i++){
-        parameters->RETURN_DELAY[i]=8;
-        parameters->RETURN_LOCATION[i]=WU_RETURN_SURFACEWATER;
+        parameters->RETURN_DELAY[i] = 8;
     }
-    parameters->RETURN_LOCATION[WU_IRRIGATION]=WU_RETURN_GROUNDWATER;
+    parameters->RETURN_LOCATION[WU_IRRIGATION] = WU_RETURN_GROUNDWATER;
+    parameters->RETURN_LOCATION[WU_DOMESTIC] = WU_RETURN_SURFACEWATER;
+    parameters->RETURN_LOCATION[WU_INDUSTRIAL] = WU_RETURN_SURFACEWATER;
+    
+    parameters->COMPENSATION_DELAY[WU_IRRIGATION] = 7 * 8;
+    parameters->COMPENSATION_DELAY[WU_DOMESTIC] = 1 * 8;
+    parameters->COMPENSATION_DELAY[WU_INDUSTRIAL] = 2 * 8;    
     
     parameters->forceoffset = 0;
     parameters->wu_hist_offset = 0;

@@ -290,26 +290,14 @@ enum
     // Routing terms
     OUT_DISCHARGE,      /**< Discharge [mm/s] */
     // Water use terms
-    OUT_IRR_DEMAND,
-    OUT_DOM_DEMAND,
-    OUT_IND_DEMAND,
-    OUT_TOT_DEMAND,
-    OUT_IRR_WITHDRAWAL,
-    OUT_DOM_WITHDRAWAL,
-    OUT_IND_WITHDRAWAL,
-    OUT_TOT_WITHDRAWAL,
-    OUT_IRR_SHORTAGE,
-    OUT_DOM_SHORTAGE,
-    OUT_IND_SHORTAGE,
-    OUT_TOT_SHORTAGE,
-    OUT_IRR_CONSUMPTION,
-    OUT_DOM_CONSUMPTION,
-    OUT_IND_CONSUMPTION,
-    OUT_TOT_CONSUMPTION,
-    OUT_IRR_RETURN,
-    OUT_DOM_RETURN,
-    OUT_IND_RETURN,
-    OUT_TOT_RETURN,
+    OUT_WU_DEMAND,
+    OUT_WU_WITHDRAWAL,
+    OUT_WU_COMPENSATED,
+    OUT_WU_SHORTAGE,
+    OUT_WU_CONSUMPTION,
+    OUT_WU_RETURN_FLOW,
+    OUT_WU_TO_COMPENSATE,
+    OUT_WU_TO_RETURN,
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */

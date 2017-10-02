@@ -1,72 +1,136 @@
 #include <ext_driver_shared_image.h>
 
 void
-local_water_use_run(){    
-    extern domain_struct local_domain;
+water_use_run(ext_all_vars_struct *ext_all_vars, wu_con_struct *wu_con){
+    
     extern global_param_struct global_param;
-    extern ext_all_vars_struct *ext_all_vars;
-    extern wu_con_struct **wu_con;
     
     size_t i;
     size_t j;
     
-    double total_demand;
-    double total_withdrawn;
     double total_available;
+    double total_historical_demand;
+    double total_current_demand;
+    double historical_demand[WU_NSECTORS];
+    double current_demand[WU_NSECTORS];    
+    double compensation_storage;
     
-    for(i=0;i<local_domain.ncells_active;i++){
-        // Return flow
-        for(j=0;j<WU_NSECTORS;j++){            
-            if(wu_con[i][j].return_location == WU_RETURN_SURFACEWATER){
-                ext_all_vars[i].rout_var.discharge[0] += ext_all_vars[i].wu_var[j].return_flow[0] / global_param.dt;
-            }else if(wu_con[i][j].return_location == WU_RETURN_GROUNDWATER){
-                // TODO: implement flow to groundwater                
-                ext_all_vars[i].rout_var.discharge[0] += ext_all_vars[i].wu_var[j].return_flow[0] / global_param.dt;
-            }
-        }
-        total_available = ext_all_vars[i].rout_var.discharge[0] * global_param.dt;
-        
-        // Reset values and gather demand
-        total_demand = 0.0;
-        for(j=0;j<WU_NSECTORS;j++){
-            ext_all_vars[i].wu_var[j].shortage=0.0;
-            ext_all_vars[i].wu_var[j].consumed=0.0;
-            ext_all_vars[i].wu_var[j].withdrawn=0.0;
-            ext_all_vars[i].wu_var[j].returned=0.0;
+    wu_var_struct *wu_var;
+    rout_var_struct rout_var;
+    
+    wu_var = (*ext_all_vars).wu_var;
+    rout_var = (*ext_all_vars).rout_var;
             
-            total_demand += wu_con[i][j].demand;            
-        }
-        
-        // Calculate withdrawal, consumption and return flow
-        total_withdrawn = 0.0;
-        for(j=0;j<WU_NSECTORS;j++){
-            if(total_demand > 0 || total_available > 0){
-                if(total_demand>total_available){
-                    ext_all_vars[i].wu_var[j].withdrawn = (total_available / total_demand) * wu_con[i][j].demand;
-                }else{
-                    ext_all_vars[i].wu_var[j].withdrawn = wu_con[i][j].demand;
-                }       
-            }
+    // Reset values
+    total_available = 0.0;
+    total_historical_demand = 0.0;
+    total_current_demand = 0.0;
 
-            ext_all_vars[i].wu_var[j].shortage = wu_con[i][j].demand - ext_all_vars[i].wu_var[j].withdrawn;
-            ext_all_vars[i].wu_var[j].consumed = ext_all_vars[i].wu_var[j].withdrawn * wu_con[i][j].consumption_factor;
-            ext_all_vars[i].wu_var[j].returned = ext_all_vars[i].wu_var[j].withdrawn - ext_all_vars[i].wu_var[j].consumed;
+    for(i=0;i<WU_NSECTORS;i++){
+        historical_demand[i] = 0.0;
+        current_demand[i] = 0.0;
 
-            ext_all_vars[i].wu_var[j].return_flow[wu_con[i][j].delay - 1] = ext_all_vars[i].wu_var[j].returned;
-            total_withdrawn += ext_all_vars[i].wu_var[j].withdrawn;
-        }
-        
-        // Reduce outflow
-        ext_all_vars[i].rout_var.discharge[0] -= total_withdrawn / global_param.dt;
-        if(ext_all_vars[i].rout_var.discharge[0] < 0){
-            if(labs(ext_all_vars[i].rout_var.discharge[0]) < DBL_EPSILON){
-                ext_all_vars[i].rout_var.discharge[0]=0;
-            }else{
-                log_err("Too much water has been withdrawn (%lf m3/s) from the discharge, "
-                        "resulting in a negative discharge of %lf m3/s", 
-                        total_withdrawn / global_param.dt,
-                        ext_all_vars[i].rout_var.discharge[0]);
-            }
+        wu_var[i].consumed=0.0;
+        wu_var[i].compensated=0.0;
+        wu_var[i].withdrawn=0.0;
+        wu_var[i].returned=0.0;
+        wu_var[i].to_return=0.0;
+        wu_var[i].to_compensate=0.0;           
+    }
+
+    // Return flow
+    for(i=0;i<WU_NSECTORS;i++){            
+        if(wu_con[i].return_location == WU_RETURN_SURFACEWATER){
+            rout_var.discharge[0] += wu_var[i].return_flow[0] / global_param.dt;
+        }else if(wu_con[i].return_location == WU_RETURN_GROUNDWATER){
+            // TODO: implement flow to groundwater                
+            rout_var.discharge[0] += wu_var[i].return_flow[0] / global_param.dt;
         }
     }
+
+    // Gather availability
+    total_available = rout_var.discharge[0] * global_param.dt;
+
+    // Gather demand
+    for(i=0;i<WU_NSECTORS;i++){            
+        for(j=0;j<wu_con[i].compenstation_delay;j++){
+            historical_demand[i] += wu_var[i].compensation[j];
+        }         
+        current_demand[i] = wu_con[i].demand;
+
+        total_historical_demand += historical_demand[i];
+        total_current_demand += current_demand[i];   
+    }
+
+    // First handle compensations from historical shortages
+    for(i=0;i<WU_NSECTORS;i++){
+
+        // Calculate withdrawal
+        if(total_historical_demand > 0 && total_available > 0){
+            if(total_historical_demand>total_available){
+                wu_var[i].compensated += (total_available / total_historical_demand) * historical_demand[i];
+            }else{
+                wu_var[i].compensated += historical_demand[i];
+            }       
+        }
+
+        // Compensate for most historical shortage first
+        compensation_storage = wu_var[i].compensated;
+        for(j=0;j<wu_con[i].compenstation_delay;j++){
+            if(compensation_storage < wu_var[i].compensation[j]){
+                wu_var[i].compensation[j] -= compensation_storage;
+                compensation_storage = 0;
+            }else{
+                compensation_storage -= wu_var[i].compensation[j];
+                wu_var[i].compensation[j] = 0;
+            }
+        }
+
+        // Reduce availability
+        total_available -= wu_var[i].compensated;
+    }
+
+    // Then handle the current shortage
+    for(i=0;i<WU_NSECTORS;i++){
+
+        // Calculate withdrawal
+        if(total_current_demand > 0 && total_available > 0){
+            if(total_current_demand>total_available){
+                wu_var[i].withdrawn += (total_available / total_current_demand) * current_demand[i];
+            }else{
+                wu_var[i].withdrawn += current_demand[i];
+            }       
+        }
+
+        // Reduce availability
+        total_available -= wu_var[i].withdrawn;
+    }
+
+    for(i=0;i<WU_NSECTORS;i++){
+        wu_var[i].to_compensate = wu_con[i].demand - wu_var[i].withdrawn;       
+        wu_var[i].compensation[wu_con[i].compenstation_delay - 1] = wu_var[i].to_compensate;
+
+        // Withdrawn is all withdrawn water while compensated is 
+        // the part of the withdrawn water that is used for 
+        // historical compensation
+        wu_var[i].withdrawn += wu_var[i].compensated;
+
+        wu_var[i].consumed = wu_var[i].withdrawn * wu_con[i].consumption_factor;
+        wu_var[i].to_return = wu_var[i].withdrawn - wu_var[i].consumed;            
+        wu_var[i].return_flow[wu_con[i].return_delay - 1] = wu_var[i].to_return;
+    }
+
+    // Check results
+    if(total_available < 0){
+        if(labs(total_available) < DBL_EPSILON){
+            total_available=0;
+        }else{
+            log_err("Too much water has been withdrawn from the available, "
+                    "resulting in a negative availability of %lf m3",
+                    total_available);
+        }
+    }
+
+    // Reduce outflow
+    rout_var.discharge[0] = total_available / global_param.dt;
 }

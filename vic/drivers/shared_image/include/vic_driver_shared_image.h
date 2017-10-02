@@ -113,6 +113,10 @@ typedef struct {
     float f_fillvalue;
     short int s_fillvalue;
     int nc_id;
+    
+    // Extension
+    int wu_sectors_dimid;
+    
     int band_dimid;
     int front_dimid;
     int frost_dimid;
@@ -127,6 +131,10 @@ typedef struct {
     int veg_dimid;
     int time_varid;
     int time_bounds_varid;
+    
+    // Extension
+    size_t wu_sector_size;
+    
     size_t band_size;
     size_t front_size;
     size_t frost_size;

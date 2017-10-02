@@ -32,14 +32,20 @@ typedef struct{
     
     unsigned short int RETURN_LOCATION[WU_NSECTORS];
     unsigned short int RETURN_DELAY[WU_NSECTORS];
+    unsigned short int COMPENSATION_DELAY[WU_NSECTORS];
         
     unsigned int forceoffset;
     unsigned short int wu_hist_offset;
 }ext_parameters_struct;
 
 typedef struct{
+    
+}ext_global_param_struct;
+
+typedef struct{
     bool ROUTING;
     bool WATER_USE;
+    bool DAMS;
     
     int UH_PARAMETERS;
 }ext_option_struct;
@@ -56,11 +62,20 @@ typedef struct {
     char irr_cons_var[MAXSTRING];
     char dom_cons_var[MAXSTRING];
     char ind_cons_var[MAXSTRING];
+    
+    char dam_name_var[MAXSTRING];
+    char dam_year_var[MAXSTRING];
+    char dam_lat_var[MAXSTRING];
+    char dam_lon_var[MAXSTRING];
+    char dam_volume_var[MAXSTRING];
+    char dam_area_var[MAXSTRING];
+    char dam_height_var[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
     nameid_struct routing;
     nameid_struct water_use;
+    nameid_struct dams;
     
     ext_info_struct info;
 }ext_filenames_struct;
@@ -68,6 +83,7 @@ typedef struct {
 typedef struct{
     rout_var_struct rout_var;
     wu_var_struct *wu_var;
+    dam_var_struct dam_var;
 }ext_all_vars_struct;
 
 void initialize_ext_global_structures(void);
@@ -99,7 +115,13 @@ void ext_put_data(ext_all_vars_struct *ext_all_vars,
                 timer_struct *timer);
 void ext_finalize(void);
 
-void routing_gather(rout_con_struct *rout_con, ext_all_vars_struct *ext_all_vars, double *runoff);
+void routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struct **rout_con_global, double **runoff_global);
+void routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
+void routing_run_scatter(ext_all_vars_struct *ext_all_vars_global);
+void routing_run_free(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
+void routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, ext_all_vars_struct *ext_all_vars, double runoff);
+
+void water_use_run(ext_all_vars_struct *ext_all_vars, wu_con_struct *wu_con);
 
 void get_active_nc_field_double(nameid_struct   *nc_nameid,
                     char   *var_name,

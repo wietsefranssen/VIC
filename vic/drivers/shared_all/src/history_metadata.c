@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_all.h>
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief    Set output met data information
@@ -1485,173 +1486,69 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_DISCHARGE].description,
            "discharge");
     
-    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].varname, "OUT_IRR_WITHDRAWAL");
-    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].long_name, "irrigation_withdrawal");
-    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].standard_name,
-           "irrigation_withdrawal");
-    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].units, "m3");
-    strcpy(out_metadata[OUT_IRR_WITHDRAWAL].description,
-           "irrigation_withdrawal");
-        
-    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].varname, "OUT_DOM_WITHDRAWAL");
-    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].long_name, "domestic_withdrawal");
-    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].standard_name,
-           "domestic_withdrawal");
-    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].units, "m3");
-    strcpy(out_metadata[OUT_DOM_WITHDRAWAL].description,
-           "domestic_withdrawal");
-        
-    strcpy(out_metadata[OUT_IND_WITHDRAWAL].varname, "OUT_IND_WITHDRAWAL");
-    strcpy(out_metadata[OUT_IND_WITHDRAWAL].long_name, "industrial_withdrawal");
-    strcpy(out_metadata[OUT_IND_WITHDRAWAL].standard_name,
-           "industrial_withdrawal");
-    strcpy(out_metadata[OUT_IND_WITHDRAWAL].units, "m3");
-    strcpy(out_metadata[OUT_IND_WITHDRAWAL].description,
-           "industrial_withdrawal");
-        
-    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].varname, "OUT_TOT_WITHDRAWAL");
-    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].long_name, "total_withdrawal");
-    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].standard_name,
-           "total_withdrawal");
-    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].units, "m3");
-    strcpy(out_metadata[OUT_TOT_WITHDRAWAL].description,
-           "total_withdrawal");
-        
-    strcpy(out_metadata[OUT_IRR_CONSUMPTION].varname, "OUT_IRR_CONSUMPTION");
-    strcpy(out_metadata[OUT_IRR_CONSUMPTION].long_name, "irrigation_consumption");
-    strcpy(out_metadata[OUT_IRR_CONSUMPTION].standard_name,
-           "irrigation_consumption");
-    strcpy(out_metadata[OUT_IRR_CONSUMPTION].units, "m3");
-    strcpy(out_metadata[OUT_IRR_CONSUMPTION].description,
-           "irrigation_consumption");
+    strcpy(out_metadata[OUT_WU_DEMAND].varname, "OUT_WU_DEMAND");
+    strcpy(out_metadata[OUT_WU_DEMAND].long_name, "water_use_demands");
+    strcpy(out_metadata[OUT_WU_DEMAND].standard_name,
+           "water_use_demands");
+    strcpy(out_metadata[OUT_WU_DEMAND].units, "m3");
+    strcpy(out_metadata[OUT_WU_DEMAND].description,
+           "water_use_demands");
     
-    strcpy(out_metadata[OUT_DOM_CONSUMPTION].varname, "OUT_DOM_CONSUMPTION");
-    strcpy(out_metadata[OUT_DOM_CONSUMPTION].long_name, "domestic_consumption");
-    strcpy(out_metadata[OUT_DOM_CONSUMPTION].standard_name,
-           "domestic_consumption");
-    strcpy(out_metadata[OUT_DOM_CONSUMPTION].units, "m3");
-    strcpy(out_metadata[OUT_DOM_CONSUMPTION].description,
-           "domestic_consumption");
+    strcpy(out_metadata[OUT_WU_WITHDRAWAL].varname, "OUT_WU_WITHDRAWAL");
+    strcpy(out_metadata[OUT_WU_WITHDRAWAL].long_name, "water_use_withdrawals");
+    strcpy(out_metadata[OUT_WU_WITHDRAWAL].standard_name,
+           "water_use_withdrawals");
+    strcpy(out_metadata[OUT_WU_WITHDRAWAL].units, "m3");
+    strcpy(out_metadata[OUT_WU_WITHDRAWAL].description,
+           "water_use_withdrawals");
     
-    strcpy(out_metadata[OUT_IND_CONSUMPTION].varname, "OUT_IND_CONSUMPTION");
-    strcpy(out_metadata[OUT_IND_CONSUMPTION].long_name, "industrial_consumption");
-    strcpy(out_metadata[OUT_IND_CONSUMPTION].standard_name,
-           "industrial_consumption");
-    strcpy(out_metadata[OUT_IND_CONSUMPTION].units, "m3");
-    strcpy(out_metadata[OUT_IND_CONSUMPTION].description,
-           "industrial_consumption");
+    strcpy(out_metadata[OUT_WU_SHORTAGE].varname, "OUT_WU_SHORTAGE");
+    strcpy(out_metadata[OUT_WU_SHORTAGE].long_name, "water_use_shortages");
+    strcpy(out_metadata[OUT_WU_SHORTAGE].standard_name,
+           "water_use_shortages");
+    strcpy(out_metadata[OUT_WU_SHORTAGE].units, "m3");
+    strcpy(out_metadata[OUT_WU_SHORTAGE].description,
+           "water_use_shortages");
     
-    strcpy(out_metadata[OUT_TOT_CONSUMPTION].varname, "OUT_TOT_CONSUMPTION");
-    strcpy(out_metadata[OUT_TOT_CONSUMPTION].long_name, "total_consumption");
-    strcpy(out_metadata[OUT_TOT_CONSUMPTION].standard_name,
-           "total_consumption");
-    strcpy(out_metadata[OUT_TOT_CONSUMPTION].units, "m3");
-    strcpy(out_metadata[OUT_TOT_CONSUMPTION].description,
-           "total_consumption");
+    strcpy(out_metadata[OUT_WU_CONSUMPTION].varname, "OUT_WU_CONSUMPTION");
+    strcpy(out_metadata[OUT_WU_CONSUMPTION].long_name, "water_use_consumptions");
+    strcpy(out_metadata[OUT_WU_CONSUMPTION].standard_name,
+           "water_use_consumptions");
+    strcpy(out_metadata[OUT_WU_CONSUMPTION].units, "m3");
+    strcpy(out_metadata[OUT_WU_CONSUMPTION].description,
+           "water_use_consumptions");
     
-    strcpy(out_metadata[OUT_IRR_DEMAND].varname, "OUT_IRR_DEMAND");
-    strcpy(out_metadata[OUT_IRR_DEMAND].long_name, "irrigation_demand");
-    strcpy(out_metadata[OUT_IRR_DEMAND].standard_name,
-           "irrigation_demand");
-    strcpy(out_metadata[OUT_IRR_DEMAND].units, "m3");
-    strcpy(out_metadata[OUT_IRR_DEMAND].description,
-           "irrigation_demand");
+    strcpy(out_metadata[OUT_WU_RETURN_FLOW].varname, "OUT_WU_RETURN_FLOW");
+    strcpy(out_metadata[OUT_WU_RETURN_FLOW].long_name, "water_use_return_flows");
+    strcpy(out_metadata[OUT_WU_RETURN_FLOW].standard_name,
+           "water_use_return_flows");
+    strcpy(out_metadata[OUT_WU_RETURN_FLOW].units, "m3");
+    strcpy(out_metadata[OUT_WU_RETURN_FLOW].description,
+           "water_use_return_flows");
     
-    strcpy(out_metadata[OUT_DOM_DEMAND].varname, "OUT_DOM_DEMAND");
-    strcpy(out_metadata[OUT_DOM_DEMAND].long_name, "domestic_demand");
-    strcpy(out_metadata[OUT_DOM_DEMAND].standard_name,
-           "domestic_demand");
-    strcpy(out_metadata[OUT_DOM_DEMAND].units, "m3");
-    strcpy(out_metadata[OUT_DOM_DEMAND].description,
-           "domestic_demand");
+    strcpy(out_metadata[OUT_WU_COMPENSATED].varname, "OUT_WU_COMPENSATED");
+    strcpy(out_metadata[OUT_WU_COMPENSATED].long_name, "water_use_compensated");
+    strcpy(out_metadata[OUT_WU_COMPENSATED].standard_name,
+           "water_use_compensated");
+    strcpy(out_metadata[OUT_WU_COMPENSATED].units, "m3");
+    strcpy(out_metadata[OUT_WU_COMPENSATED].description,
+           "water_use_compensated");
     
-    strcpy(out_metadata[OUT_IND_DEMAND].varname, "OUT_IND_DEMAND");
-    strcpy(out_metadata[OUT_IND_DEMAND].long_name, "industrial_demand");
-    strcpy(out_metadata[OUT_IND_DEMAND].standard_name,
-           "industrial_demand");
-    strcpy(out_metadata[OUT_IND_DEMAND].units, "m3");
-    strcpy(out_metadata[OUT_IND_DEMAND].description,
-           "industrial_demand");
+    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].varname, "OUT_WU_TO_COMPENSATE");
+    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].long_name, "water_use_shortage_to_compensate");
+    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].standard_name,
+           "water_use_shortage_to_compensate");
+    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].units, "m3");
+    strcpy(out_metadata[OUT_WU_TO_COMPENSATE].description,
+           "water_use_shortage_to_compensate");
     
-    strcpy(out_metadata[OUT_TOT_DEMAND].varname, "OUT_TOT_DEMAND");
-    strcpy(out_metadata[OUT_TOT_DEMAND].long_name, "total_demand");
-    strcpy(out_metadata[OUT_TOT_DEMAND].standard_name,
-           "total_demand");
-    strcpy(out_metadata[OUT_TOT_DEMAND].units, "m3");
-    strcpy(out_metadata[OUT_TOT_DEMAND].description,
-           "total_demand");
-    
-    strcpy(out_metadata[OUT_IRR_SHORTAGE].varname, "OUT_IRR_SHORTAGE");
-    strcpy(out_metadata[OUT_IRR_SHORTAGE].long_name, "irrigation_shortage");
-    strcpy(out_metadata[OUT_IRR_SHORTAGE].standard_name,
-           "irrigation_shortage");
-    strcpy(out_metadata[OUT_IRR_SHORTAGE].units, "m3");
-    strcpy(out_metadata[OUT_IRR_SHORTAGE].description,
-           "irrigation_shortage");
-    
-    strcpy(out_metadata[OUT_DOM_SHORTAGE].varname, "OUT_DOM_SHORTAGE");
-    strcpy(out_metadata[OUT_DOM_SHORTAGE].long_name, "domestic_shortage");
-    strcpy(out_metadata[OUT_DOM_SHORTAGE].standard_name,
-           "domestic_shortage");
-    strcpy(out_metadata[OUT_DOM_SHORTAGE].units, "m3");
-    strcpy(out_metadata[OUT_DOM_SHORTAGE].description,
-           "domestic_shortage");
-    
-    strcpy(out_metadata[OUT_IND_SHORTAGE].varname, "OUT_IND_SHORTAGE");
-    strcpy(out_metadata[OUT_IND_SHORTAGE].long_name, "industrial_shortage");
-    strcpy(out_metadata[OUT_IND_SHORTAGE].standard_name,
-           "industrial_shortage");
-    strcpy(out_metadata[OUT_IND_SHORTAGE].units, "m3");
-    strcpy(out_metadata[OUT_IND_SHORTAGE].description,
-           "industrial_shortage");
-    
-    strcpy(out_metadata[OUT_TOT_SHORTAGE].varname, "OUT_TOT_SHORTAGE");
-    strcpy(out_metadata[OUT_TOT_SHORTAGE].long_name, "total_shortage");
-    strcpy(out_metadata[OUT_TOT_SHORTAGE].standard_name,
-           "total_shortage");
-    strcpy(out_metadata[OUT_TOT_SHORTAGE].units, "m3");
-    strcpy(out_metadata[OUT_TOT_SHORTAGE].description,
-           "total_shortage");
-    
-    strcpy(out_metadata[OUT_IRR_RETURN].varname, "OUT_IRR_RETURN");
-    strcpy(out_metadata[OUT_IRR_RETURN].long_name, "irrigation_return_flow");
-    strcpy(out_metadata[OUT_IRR_RETURN].standard_name,
-           "irrigation_return_flow");
-    strcpy(out_metadata[OUT_IRR_RETURN].units, "m3");
-    strcpy(out_metadata[OUT_IRR_RETURN].description,
-           "irrigation_return_flow");
-    
-    strcpy(out_metadata[OUT_DOM_RETURN].varname, "OUT_DOM_RETURN");
-    strcpy(out_metadata[OUT_DOM_RETURN].long_name, "domestic_return_flow");
-    strcpy(out_metadata[OUT_DOM_RETURN].standard_name,
-           "domestic_return_flow");
-    strcpy(out_metadata[OUT_DOM_RETURN].units, "m3");
-    strcpy(out_metadata[OUT_DOM_RETURN].description,
-           "domestic_return_flow");
-    
-    strcpy(out_metadata[OUT_IND_RETURN].varname, "OUT_IND_RETURN");
-    strcpy(out_metadata[OUT_IND_RETURN].long_name, "industrial_return_flow");
-    strcpy(out_metadata[OUT_IND_RETURN].standard_name,
-           "industrial_return_flow");
-    strcpy(out_metadata[OUT_IND_RETURN].units, "m3");
-    strcpy(out_metadata[OUT_IND_RETURN].description,
-           "industrial_return_flow");
-    
-    strcpy(out_metadata[OUT_TOT_RETURN].varname, "OUT_TOT_RETURN");
-    strcpy(out_metadata[OUT_TOT_RETURN].long_name, "total_return_flow");
-    strcpy(out_metadata[OUT_TOT_RETURN].standard_name,
-           "total_return_flow");
-    strcpy(out_metadata[OUT_TOT_RETURN].units, "m3");
-    strcpy(out_metadata[OUT_TOT_RETURN].description,
-           "total_return_flow");
-    
-    strcpy(out_metadata[OUT_TOT_RETURN].varname, "OUT_TOT_RETURN");
-    strcpy(out_metadata[OUT_TOT_RETURN].long_name, "total_return_flow");
-    strcpy(out_metadata[OUT_TOT_RETURN].standard_name,
-           "total_return_flow");
-    strcpy(out_metadata[OUT_TOT_RETURN].units, "m3");
-    strcpy(out_metadata[OUT_TOT_RETURN].description,
-           "total_return_flow");
+    strcpy(out_metadata[OUT_WU_TO_RETURN].varname, "OUT_WU_TO_RETURN");
+    strcpy(out_metadata[OUT_WU_TO_RETURN].long_name, "water_use_flow_to_return");
+    strcpy(out_metadata[OUT_WU_TO_RETURN].standard_name,
+           "water_use_flow_to_return");
+    strcpy(out_metadata[OUT_WU_TO_RETURN].units, "m3");
+    strcpy(out_metadata[OUT_WU_TO_RETURN].description,
+           "water_use_flow_to_return");
     
     /* Wall time spent inside ext_run [seconds] */
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].varname, "OUT_TIME_EXTRUN_WALL");
@@ -1707,4 +1604,14 @@ set_output_met_data_info()
     out_metadata[OUT_SNOW_PACKT_BAND].nelem = options.SNOW_BAND;
     out_metadata[OUT_SNOW_SURFT_BAND].nelem = options.SNOW_BAND;
     out_metadata[OUT_SWE_BAND].nelem = options.SNOW_BAND;
+    
+    // Extension
+    out_metadata[OUT_WU_DEMAND].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_WITHDRAWAL].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_SHORTAGE].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_CONSUMPTION].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_RETURN_FLOW].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_COMPENSATED].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_TO_COMPENSATE].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_TO_RETURN].nelem = WU_NSECTORS;
 }

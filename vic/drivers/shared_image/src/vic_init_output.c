@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_image.h>
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief    Initialzie output structures and determine which variables to
@@ -273,6 +274,12 @@ initialize_history_file(nc_file_struct *nc,
     status = nc_def_dim(nc->nc_id, "snow_band", nc->band_size,
                         &(nc->band_dimid));
     check_nc_status(status, "Error defining snow_band dimension in %s",
+                    stream->filename);
+    
+    // Extension
+    status = nc_def_dim(nc->nc_id, "wu_sectors", WU_NSECTORS,
+                        &(nc->wu_sectors_dimid));
+    check_nc_status(status, "Error defining wu_sectors dimension in %s",
                     stream->filename);
 
     status = nc_def_dim(nc->nc_id, "front", nc->front_size,
@@ -677,6 +684,9 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->f_fillvalue = NC_FILL_FLOAT;
 
     // set ids to MISSING
+    // Extension    
+    nc_file->wu_sectors_dimid = MISSING;
+    
     nc_file->nc_id = MISSING;
     nc_file->band_dimid = MISSING;
     nc_file->front_dimid = MISSING;
@@ -691,6 +701,9 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->veg_dimid = MISSING;
 
     // Set dimension sizes
+    // Extension    
+    nc_file->wu_sector_size = WU_NSECTORS;
+    
     nc_file->band_size = options.SNOW_BAND;
     nc_file->front_size = MAX_FRONTS;
     nc_file->frost_size = options.Nfrost;

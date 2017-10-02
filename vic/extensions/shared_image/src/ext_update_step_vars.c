@@ -21,6 +21,8 @@ water_use_update_step_vars(ext_all_vars_struct *ext_all_vars, wu_con_struct *wu_
         wu_con[i].consumption_factor = wu_hist[i].consumption_factor[ext_param.wu_hist_offset];
 
         ext_all_vars->wu_var[i].return_flow[0] = 0.0;
-        cshift(ext_all_vars->wu_var[i].return_flow, wu_con[i].delay, 1, 0, 1);
+        cshift(ext_all_vars->wu_var[i].return_flow, wu_con[i].return_delay, 1, 0, 1);
+        ext_all_vars->wu_var[i].compensation[0] = 0.0;
+        cshift(ext_all_vars->wu_var[i].compensation, wu_con[i].compenstation_delay, 1, 0, 1);
     }
 }

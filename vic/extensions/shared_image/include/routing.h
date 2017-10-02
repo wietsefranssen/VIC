@@ -10,13 +10,9 @@ enum{
 };
 
 typedef struct{
-    size_t downstream_global;
-    size_t downstream_local;
-    
-    short unsigned int Nupstream_global;
-    short unsigned int Nupstream_local;
-    size_t *upstream_global;
-    size_t *upstream_local;
+    size_t downstream;    
+    short unsigned int Nupstream;
+    size_t *upstream;
     
     double *uh;
 }rout_con_struct;
@@ -36,7 +32,6 @@ void set_upstream(size_t id, size_t Ncells);
 void set_uh(size_t id, double distance, double diffusion, double velocity);
 double uh(double time, double distance, double velocity, double diffusion);
 
-void routing_run();
 void rout(double **discharge, double *uh, double quantity, int uh_length);
 
 #endif

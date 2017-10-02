@@ -54,6 +54,9 @@ ext_alloc(void)
                 ext_all_vars[i].wu_var[j].return_flow = malloc(ext_param.RETURN_DELAY[j] * sizeof(*ext_all_vars[i].wu_var[j].return_flow));
                 check_alloc_status(ext_all_vars[i].wu_var[j].return_flow, "Memory allocation error");
                 
+                ext_all_vars[i].wu_var[j].compensation = malloc(ext_param.COMPENSATION_DELAY[j] * sizeof(*ext_all_vars[i].wu_var[j].compensation));
+                check_alloc_status(ext_all_vars[i].wu_var[j].compensation, "Memory allocation error");
+                
                 wu_hist[i][j].demand = malloc(global_param.model_steps_per_day * DAYS_PER_LYEAR * sizeof(*wu_hist[i][j].demand));
                 check_alloc_status(wu_hist[i][j].demand, "Memory allocation error");
                 
