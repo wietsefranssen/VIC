@@ -78,6 +78,7 @@ void
 initialize_ext_options(ext_option_struct *options)
 {    
     options->ROUTING = false;
+    options->DAMS = false;
     
     options->UH_PARAMETERS = CONSTANT_UH_PARAMETERS;
     
@@ -102,6 +103,7 @@ void
 initialize_ext_filenames(ext_filenames_struct *filenames)
 {
     initialize_nameid(&filenames->routing);
+    initialize_nameid(&filenames->dams);
     
     initialize_ext_info(&filenames->info);
 }
@@ -116,6 +118,14 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->velocity_var, "MISSING");
     strcpy(info->diffusion_var, "MISSING");
     strcpy(info->distance_var, "MISSING");
+    
+    strcpy(info->dam_name_var, "MISSING");
+    strcpy(info->dam_year_var, "MISSING");
+    strcpy(info->dam_lat_var, "MISSING");
+    strcpy(info->dam_lon_var, "MISSING");
+    strcpy(info->dam_volume_var, "MISSING");
+    strcpy(info->dam_area_var, "MISSING");
+    strcpy(info->dam_height_var, "MISSING");
 }
 
 /******************************************************************************
@@ -126,13 +136,15 @@ void
 initialize_ext_parameters(ext_parameters_struct *parameters)
 {          
     // FOLLOWING PARAMETERS NEED TO BE ADJUSTED BASED ON EXPERIMENTATION
-    parameters->MPI_N_PROCESS_COST=4;  
-    parameters->MPI_E_PROCESS_COST=5; 
+    parameters->MPI_N_PROCESS_COST = 4;  
+    parameters->MPI_E_PROCESS_COST = 5; 
     
-    parameters->UH_FLOW_DIFFUSION=800;
-    parameters->UH_FLOW_VELOCITY=1.75;
-    parameters->UH_MAX_LENGTH=2;
-    parameters->UH_PARTITIONS=20;
+    parameters->UH_FLOW_DIFFUSION = 800;
+    parameters->UH_FLOW_VELOCITY = 1.75;
+    parameters->UH_MAX_LENGTH = 2;
+    parameters->UH_PARTITIONS = 20;
+    
+    parameters->DAM_HISTORY = 3;
 }
 
 /******************************************************************************

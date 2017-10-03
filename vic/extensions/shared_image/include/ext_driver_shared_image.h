@@ -17,9 +17,11 @@
 #include <vic_driver_shared_image.h>
 #include <ext_driver_shared_all.h>
 #include <routing.h>
+#include <dam.h>
 #include <ext_mpi.h>
 #include <debug.h>
 
+// Remember to add variables to ext_mpi_support.c
 typedef struct{
     double MPI_N_PROCESS_COST;
     double MPI_E_PROCESS_COST;
@@ -28,10 +30,14 @@ typedef struct{
     double UH_FLOW_DIFFUSION;
     int UH_MAX_LENGTH;
     int UH_PARTITIONS;    
+    
+    int DAM_HISTORY;    
 }ext_parameters_struct;
 
+// Remember to add variables to ext_mpi_support.c
 typedef struct{
     bool ROUTING;
+    bool DAMS;
     
     int UH_PARAMETERS;
     
@@ -43,16 +49,26 @@ typedef struct {
     char velocity_var[MAXSTRING];
     char diffusion_var[MAXSTRING];
     char distance_var[MAXSTRING];
+    
+    char dam_name_var[MAXSTRING];
+    char dam_year_var[MAXSTRING];
+    char dam_lat_var[MAXSTRING];
+    char dam_lon_var[MAXSTRING];
+    char dam_volume_var[MAXSTRING];
+    char dam_area_var[MAXSTRING];
+    char dam_height_var[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
     nameid_struct routing;
+    nameid_struct dams;
     
     ext_info_struct info;
 }ext_filenames_struct;
 
 typedef struct{
     rout_var_struct rout_var;
+    dam_var_struct dam_var;
 }ext_all_vars_struct;
 
 // Master node initialization
