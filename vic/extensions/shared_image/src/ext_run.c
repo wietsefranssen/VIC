@@ -11,6 +11,8 @@ ext_run()
     extern ext_all_vars_struct *ext_all_vars;
     extern rout_con_struct *rout_con;
     extern double ***out_data;    
+    extern size_t *cell_order_local;
+    extern size_t *cell_order_global;
     
     extern int mpi_decomposition;
     
@@ -22,6 +24,7 @@ ext_run()
     
     timer_struct               timer;
     size_t i;
+    size_t cur_id;
         
     // Update variables locally
     for(i=0;i<local_domain.ncells_active;i++){
@@ -34,9 +37,12 @@ ext_run()
     timer_start(&timer);
     if(mpi_decomposition == BASIN_DECOMPOSITION){
         for(i=0;i<local_domain.ncells_active;i++){
+            cur_id = cell_order_local[i];
+            
             if(ext_options.ROUTING){
-                runoff = (out_data[i][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) * local_domain.locations[i].area / (MM_PER_M * global_param.dt);
-                routing_run(rout_con[i],&ext_all_vars[i],ext_all_vars, runoff); 
+                runoff = (out_data[cur_id][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) * 
+                        local_domain.locations[cur_id].area / (MM_PER_M * global_param.dt);
+                routing_run(rout_con[cur_id],&ext_all_vars[cur_id],ext_all_vars, runoff); 
             }
         }
     }
@@ -51,8 +57,10 @@ ext_run()
         }
         
         for(i=0;i<global_domain.ncells_active;i++){
+            cur_id = cell_order_global[i];
+            
             if(ext_options.ROUTING){
-                routing_run(rout_con_global[i],&ext_all_vars_global[i],ext_all_vars_global, runoff_global[i]); 
+                routing_run(rout_con_global[cur_id],&ext_all_vars_global[cur_id],ext_all_vars_global, runoff_global[cur_id]); 
             }
         }
         
