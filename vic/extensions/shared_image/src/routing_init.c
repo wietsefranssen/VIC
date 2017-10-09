@@ -560,20 +560,13 @@ routing_init_order(){
 
 void
 routing_init(){     
-    extern int mpi_rank;
-    debug("Node %d, start uh", mpi_rank);
     routing_init_uh();
-    debug("Node %d, start downstream", mpi_rank);
     routing_init_downstream();
-    debug("Node %d, start upstream", mpi_rank);
     routing_init_upstream();
-    debug("Node %d, start order", mpi_rank);
     routing_init_order();
-    debug("Node %d, start debug", mpi_rank);
     
     debug_nupstream();
     debug_downstream();
     debug_id();
-    debug("Node %d, finish init", mpi_rank);
 }
 
