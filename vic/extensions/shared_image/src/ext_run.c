@@ -63,7 +63,7 @@ ext_run()
             }
         }
         
-        // Scater everything to the local nodes
+        // Scatter everything to the local nodes
         if(ext_options.ROUTING){
             routing_run_scatter(ext_all_vars_global);
             routing_run_free(ext_all_vars_global,rout_con_global,runoff_global);
