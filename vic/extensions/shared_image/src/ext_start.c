@@ -6,6 +6,7 @@ ext_start(){
     extern global_param_struct global_param;
     extern ext_parameters_struct ext_param;
     extern ext_option_struct ext_options;
+    extern ext_filenames_struct ext_filenames;
     extern size_t *cell_order_global;
     extern MPI_Datatype mpi_ext_option_struct_type;
     extern MPI_Datatype mpi_ext_param_struct_type;
@@ -15,19 +16,35 @@ ext_start(){
     
     int status;
         
-    if(ext_options.ROUTING){
-        if(mpi_rank == VIC_MPI_ROOT){     
+    if(mpi_rank == VIC_MPI_ROOT){   
+        if(ext_options.ROUTING){ 
+            // open extension routing file
+            status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
+                             &(ext_filenames.routing.nc_id));
+            check_nc_status(status, "Error opening %s",
+                            ext_filenames.routing.nc_filename);
+            
             // calculate derived option variables
-            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;
+            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_LENGTH;
             
             cell_order_global = malloc(global_domain.ncells_active * 
                                          sizeof(*cell_order_global));
-            check_alloc_status(cell_order_global, "Memory allocation error");   
-
+            check_alloc_status(cell_order_global, "Memory allocation error");
             initialize_global_cell_order(cell_order_global);
             
             validate_ext_parameters();
-        }  
+        }
+        if(ext_options.DAMS){         
+            // open extension dam file
+            status = nc_open(ext_filenames.dams.nc_filename, NC_NOWRITE,
+                             &(ext_filenames.dams.nc_id));
+            check_nc_status(status, "Error opening %s",
+                            ext_filenames.dams.nc_filename);
+            
+            ext_options.history_steps = ceil((float)DAYS_PER_LYEAR / (float)ext_param.DAM_HISTORY_LENGTH) * ext_param.DAM_HISTORY;
+            ext_options.history_lsteps = ext_param.DAM_HISTORY_LENGTH * global_param.model_steps_per_day;
+            ext_options.ndams = get_nc_dimension(&ext_filenames.dams, "dams");
+        }
     }
     
     status = MPI_Bcast(&ext_param, 1, mpi_ext_param_struct_type,

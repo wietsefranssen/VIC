@@ -11,8 +11,11 @@ void ext_finalize()
     extern size_t *cell_order_local; 
     extern ext_all_vars_struct *ext_all_vars;
     extern rout_con_struct *rout_con;
+    extern dam_con_struct **dam_con;
+    extern dam_con_map_struct *dam_con_map;
     
     size_t i;
+    size_t j;
     
     if(ext_options.ROUTING){
         for(i=0;i<local_domain.ncells_active;i++){
@@ -22,6 +25,7 @@ void ext_finalize()
             free(ext_all_vars[i].rout_var.discharge);
         }    
         free(rout_con); 
+        
         free(cell_order_local);
         
         if(mpi_rank == VIC_MPI_ROOT){        
@@ -37,6 +41,19 @@ void ext_finalize()
                 free(basins.catchment);
             }  
         }
+    }
+    
+    if(ext_options.DAMS){
+        for(i=0;i<local_domain.ncells_active;i++){            
+            for(j=0;j<dam_con_map[i].Ndams;j++){
+                free(ext_all_vars[i].dam_var[j].inflow_history);
+            }
+            
+            free(dam_con[i]);
+            free(ext_all_vars[i].dam_var);
+        }
+        
+        free(dam_con);
     }
         
     free(ext_all_vars);

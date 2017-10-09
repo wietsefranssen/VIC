@@ -81,6 +81,8 @@ size_t *cell_order_local = NULL;
 
 // Extension con & vars
 rout_con_struct *rout_con = NULL;
+dam_con_struct **dam_con = NULL;
+dam_con_map_struct *dam_con_map = NULL;
 ext_all_vars_struct *ext_all_vars = NULL;
 
 /******************************************************************************
@@ -124,6 +126,7 @@ main(int    argc,
     }
 
     // read global parameters
+    initialize_ext_global_structures();
     vic_image_start();
     ext_start();
 
@@ -163,7 +166,7 @@ main(int    argc,
 
         // run vic over the domain
         vic_image_run(&(dmy[current]));
-        ext_run();
+        ext_run(dmy[current]);
         
         // Aggregate data
         vic_process_data(&(dmy[current]));

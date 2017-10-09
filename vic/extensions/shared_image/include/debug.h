@@ -22,6 +22,7 @@ void debug_nupstream();
 void debug_downstream();
 void debug_id();
 void debug_basins();
+void debug_ndams();
 
 #endif /* DEBUG_H */
 

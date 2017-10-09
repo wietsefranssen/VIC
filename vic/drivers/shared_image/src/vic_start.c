@@ -41,7 +41,6 @@ vic_start(void)
     extern size_t             *filter_active_cells;
     extern size_t             *mpi_map_mapping_array;
     extern filenames_struct    filenames;
-    extern ext_filenames_struct ext_filenames;
     extern filep_struct        filep;
     extern domain_struct       global_domain;
     extern domain_struct       local_domain;
@@ -92,12 +91,6 @@ vic_start(void)
         status = nc_close(filenames.domain.nc_id);
         check_nc_status(status, "Error closing %s",
                         filenames.domain.nc_filename);
-      
-        // open external parameter file
-        status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
-                         &(ext_filenames.routing.nc_id));
-        check_nc_status(status, "Error opening %s",
-                        ext_filenames.routing.nc_filename);
         
         // add the number of vegetation type to the location info in the
         // global domain struct. This just makes life easier

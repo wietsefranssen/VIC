@@ -11,13 +11,25 @@ ext_init(void){
     if(ext_options.ROUTING){
         routing_init();
     }
+    if(ext_options.DAMS){
+        dams_init();
+    }
     
     ext_set_state_meta_data_info();
     
     // close external parameter file
     if (mpi_rank == VIC_MPI_ROOT) {
-        status = nc_close(ext_filenames.routing.nc_id);
-        check_nc_status(status, "Error closing %s",
-                        ext_filenames.routing.nc_filename);
+        if(ext_options.ROUTING){
+            // close extension routing file
+            status = nc_close(ext_filenames.routing.nc_id);
+            check_nc_status(status, "Error closing %s",
+                            ext_filenames.routing.nc_filename);
+        }
+        if(ext_options.DAMS){
+            // close extension dam file
+            status = nc_close(ext_filenames.dams.nc_id);
+            check_nc_status(status, "Error closing %s",
+                            ext_filenames.dams.nc_filename);
+        }
     }
 }

@@ -42,6 +42,7 @@ void set_upstream(size_t id, size_t Ncells);
 void set_uh(size_t id, double distance, double diffusion, double velocity);
 double uh(double time, double distance, double velocity, double diffusion);
 
+void routing_update_step_vars(rout_var_struct *);
 void rout(double **discharge, double *uh, double quantity, int uh_length);
 
 #endif

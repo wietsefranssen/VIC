@@ -31,12 +31,24 @@ mpi_map_decomp_domain(size_t   ncells,
     extern int mpi_decomposition;
     
     size_t i;
+    int status;
     size_t node_ids[mpi_size];
     
     if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
             mpi_decomposition == BASIN_DECOMPOSITION){
+              
+        // open extension routing file
+        status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
+                         &(ext_filenames.routing.nc_id));
+        check_nc_status(status, "Error opening %s",
+                        ext_filenames.routing.nc_filename);
         
         get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
+        
+        // close extension routing file
+        status = nc_close(ext_filenames.routing.nc_id);
+        check_nc_status(status, "Error closing %s",
+                        ext_filenames.routing.nc_filename);
         
         // decompose the mask by basin
         mpi_map_decomp_domain_basin(ncells, mpi_size,
@@ -643,7 +655,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 3;
+    nitems = 7;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -663,13 +675,25 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     
     //bool ROUTING;    
     offsets[i] = offsetof(ext_option_struct, ROUTING);
+    mpi_types[i++] = MPI_C_BOOL;   
+    //bool DAMS;    
+    offsets[i] = offsetof(ext_option_struct, DAMS);
     mpi_types[i++] = MPI_C_BOOL;    
     //int UH_PARAMETERS;
     offsets[i] = offsetof(ext_option_struct, UH_PARAMETERS);
     mpi_types[i++] = MPI_INT;
     //int uh_steps;
     offsets[i] = offsetof(ext_option_struct, uh_steps);
-    mpi_types[i++] = MPI_INT;
+    mpi_types[i++] = MPI_AINT;
+    //int history_steps;
+    offsets[i] = offsetof(ext_option_struct, history_steps);
+    mpi_types[i++] = MPI_AINT;
+    //int history_lsteps;
+    offsets[i] = offsetof(ext_option_struct, history_lsteps);
+    mpi_types[i++] = MPI_AINT;
+    //int ndams;
+    offsets[i] = offsetof(ext_option_struct, ndams);
+    mpi_types[i++] = MPI_AINT;
         
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
@@ -699,7 +723,7 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 6;
+    nitems = 8;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -729,12 +753,18 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     //double UH_FLOW_DIFFUSION;
     offsets[i] = offsetof(ext_parameters_struct, UH_FLOW_DIFFUSION);
     mpi_types[i++] = MPI_DOUBLE;
-    //int UH_MAX_LENGTH;
-    offsets[i] = offsetof(ext_parameters_struct, UH_MAX_LENGTH);
+    //int UH_LENGTH;
+    offsets[i] = offsetof(ext_parameters_struct, UH_LENGTH);
     mpi_types[i++] = MPI_INT;
     //int UH_PARTITIONS;
     offsets[i] = offsetof(ext_parameters_struct, UH_PARTITIONS);
     mpi_types[i++] = MPI_INT;    
+    //int DAM_HISTORY;
+    offsets[i] = offsetof(ext_parameters_struct, DAM_HISTORY);
+    mpi_types[i++] = MPI_INT;  
+    //int DAM_HISTORY_LENGTH;
+    offsets[i] = offsetof(ext_parameters_struct, DAM_HISTORY_LENGTH);
+    mpi_types[i++] = MPI_INT;  
     
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {

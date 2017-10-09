@@ -285,11 +285,7 @@ get_global_param(FILE *gp)
             
             /*************************************
                Extension options
-            *************************************/            
-            else if (strcasecmp("ROUTING", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", flgstr);
-                ext_options.ROUTING = str_to_bool(flgstr);
-            }
+            *************************************/ 
             else if (strcasecmp("MPI_DECOMPOSITION", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("CALCULATE", flgstr) == 0) {
@@ -305,6 +301,14 @@ get_global_param(FILE *gp)
                     log_err("MPI_DECOMPOSITION must be either CALCULATE, "
                             "BASIN, or RANDOM.");
                 }
+            }
+            else if (strcasecmp("ROUTING", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                ext_options.ROUTING = str_to_bool(flgstr);
+            }
+            else if (strcasecmp("DAMS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                ext_options.DAMS = str_to_bool(flgstr);
             }
             else if (strcasecmp("ROUTING_UH_PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
@@ -430,6 +434,9 @@ get_global_param(FILE *gp)
             else if (strcasecmp("ROUTING_PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", ext_filenames.routing.nc_filename);
             }
+            else if (strcasecmp("DAM_PARAMETERS", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", ext_filenames.dams.nc_filename);
+            }
             
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
@@ -549,6 +556,9 @@ get_global_param(FILE *gp)
             *************************************/
             else if (strcasecmp("ROUTING_TYPE", optstr) == 0) {
                 get_routing_type(cmdstr);
+            }
+            else if (strcasecmp("DAM_TYPE", optstr) == 0) {
+                get_dam_type(cmdstr);
             }
             
             
@@ -1067,6 +1077,14 @@ get_global_param(FILE *gp)
     ******************************************/
     if(ext_options.ROUTING && strcmp(ext_filenames.routing.nc_filename, "MISSING") == 0){
         log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing.");
+    }
+    if(ext_options.DAMS){
+        if(!ext_options.ROUTING){
+            log_err("DAMS = TRUE but ROUTING = FALSE");
+        }
+        if(strcmp(ext_filenames.dams.nc_filename, "MISSING") == 0){
+            log_err("DAMS = TRUE but DAM_PARAMETERS is missing.");
+        }
     }
     
     /*********************************

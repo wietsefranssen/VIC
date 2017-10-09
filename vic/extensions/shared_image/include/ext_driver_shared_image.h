@@ -28,10 +28,11 @@ typedef struct{
     
     double UH_FLOW_VELOCITY;
     double UH_FLOW_DIFFUSION;
-    int UH_MAX_LENGTH;
+    int UH_LENGTH;
     int UH_PARTITIONS;    
     
     int DAM_HISTORY;    
+    int DAM_HISTORY_LENGTH;
 }ext_parameters_struct;
 
 // Remember to add variables to ext_mpi_support.c
@@ -42,6 +43,9 @@ typedef struct{
     int UH_PARAMETERS;
     
     size_t uh_steps;
+    size_t history_steps;
+    size_t history_lsteps;
+    size_t ndams;
 }ext_option_struct;
 
 typedef struct {
@@ -50,7 +54,7 @@ typedef struct {
     char diffusion_var[MAXSTRING];
     char distance_var[MAXSTRING];
     
-    char dam_name_var[MAXSTRING];
+    char ndam_var[MAXSTRING];
     char dam_year_var[MAXSTRING];
     char dam_lat_var[MAXSTRING];
     char dam_lon_var[MAXSTRING];
@@ -68,7 +72,7 @@ typedef struct {
 
 typedef struct{
     rout_var_struct rout_var;
-    dam_var_struct dam_var;
+    dam_var_struct *dam_var;
 }ext_all_vars_struct;
 
 // Master node initialization
@@ -82,7 +86,7 @@ void initialize_global_cell_order(size_t *);
 // Local node initialization
 void initialize_ext_local_structures(void);
 void initialize_rout_con(rout_con_struct *);
-void initialize_ext_all_vars(ext_all_vars_struct *);
+void initialize_ext_all_vars(ext_all_vars_struct *, dam_con_map_struct dam_con_map);
 void initialize_local_cell_order(size_t *);
 
 // Preperations
@@ -94,11 +98,11 @@ void ext_set_state_meta_data_info(void);
 void ext_set_output_met_data_info(void);
 void ext_populate_model_state(void);
 void generate_default_routing_state(ext_all_vars_struct *);
+void generate_default_dams_state(ext_all_vars_struct *, dam_con_struct *, dam_con_map_struct dam_con_map);
 void ext_restore(void);
 // Run
 void ext_force(void);
-void routing_update_step_vars(ext_all_vars_struct *);
-void ext_run(void);
+void ext_run(dmy_struct dmy);
 void ext_put_data(ext_all_vars_struct *, double **, timer_struct *);
 // Finalizations
 void ext_finalize(void);
