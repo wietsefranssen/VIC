@@ -60,7 +60,6 @@ ext_run(dmy_struct dmy)
         }
     }
     
-    //TODO: implement random decomposition support for dams
     else if(mpi_decomposition == RANDOM_DECOMPOSITION){
         
         // Gather everything to the master node
@@ -80,7 +79,7 @@ ext_run(dmy_struct dmy)
             }
         }
         
-        // Scater everything to the local nodes
+        // Scatter everything to the local nodes
         if(ext_options.ROUTING){
             routing_run_scatter(ext_all_vars_global);
             routing_run_free(ext_all_vars_global,rout_con_global,runoff_global);

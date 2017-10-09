@@ -141,7 +141,7 @@ main(int    argc,
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state(&(dmy[0]));
     ext_populate_model_state();
-
+    
     // initialize output structures
     vic_init_output(&(dmy[0]));
 
