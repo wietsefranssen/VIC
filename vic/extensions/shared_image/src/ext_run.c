@@ -47,7 +47,6 @@ ext_run()
         }
     }
     
-    //TODO: implement random decomposition support for water use
     else if(mpi_decomposition == RANDOM_DECOMPOSITION){
         
         // Gather everything to the master node

@@ -100,22 +100,9 @@ debug_downstream(){
     
     // Make debug file
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_sizet("./debug_output/global_downstream",svar_global);
+        debug_file_sizet("./debug_output/downstream",svar_global);
     }   
-    
-    // Set local downstream
-    for(i=0;i<local_domain.ncells_active;i++){
-        svar_local[i] = rout_con[i].downstream;
-    }
-    
-    // Gather downstream to master node
-    gather_sizet(svar_global,svar_local);
         
-    // Make debug file
-    if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_sizet("./debug_output/local_downstream",svar_global);
-    }   
-    
     // Free
     free(svar_global);
     free(svar_local);
@@ -143,17 +130,9 @@ debug_nupstream(){
     }
     gather_int(ivar_global,ivar_local);
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_int("./debug_output/global_nupstream",ivar_global);
+        debug_file_int("./debug_output/nupstream",ivar_global);
     }
-    
-    for(i=0;i<local_domain.ncells_active;i++){
-        ivar_local[i] = rout_con[i].Nupstream;
-    }
-    gather_int(ivar_global,ivar_local);
-    if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_int("./debug_output/local_nupstream",ivar_global);
-    }          
-    
+        
     free(ivar_global);
     free(ivar_local);        
 }
@@ -174,7 +153,7 @@ debug_id(){
         for(i=0;i<global_domain.ncells_active;i++){
             svar_global[i] = i;
         }
-        debug_file_sizet("./debug_output/global_id",svar_global);
+        debug_file_sizet("./debug_output/id",svar_global);
     }       
     
     free(svar_global);
