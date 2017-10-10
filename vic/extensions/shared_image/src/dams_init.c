@@ -10,7 +10,7 @@ dams_init(){
     extern dam_con_map_struct *dam_con_map;
     
     double *dvar = NULL;
-    double *ivar = NULL;
+    int *ivar = NULL;
     
     size_t i;
     size_t j;
@@ -57,7 +57,7 @@ dams_init(){
                          dvar);
         for(i=0;i<local_domain.ncells_active;i++){
             if(dam_con_map[i].Ndams>j){
-                dam_con[i][j].max_volume=dvar[i];
+                dam_con[i][j].max_volume=dvar[i] * pow(M_PER_KM, 2);
             }
         }
     }
@@ -68,7 +68,7 @@ dams_init(){
                          dvar);
         for(i=0;i<local_domain.ncells_active;i++){
             if(dam_con_map[i].Ndams>j){
-                dam_con[i][j].max_area=dvar[i];
+                dam_con[i][j].max_area=dvar[i] * pow(M_PER_KM, 2);
             }
         }
     }
@@ -86,7 +86,7 @@ dams_init(){
     
     for(j=0;j<ext_options.ndams;j++){
         d3start[0]=j;        
-        get_scatter_nc_field_double(&ext_filenames.dams, ext_filenames.info.dam_year_var, d3start, d3count,
+        get_scatter_nc_field_int(&ext_filenames.dams, ext_filenames.info.dam_year_var, d3start, d3count,
                          ivar);
         for(i=0;i<local_domain.ncells_active;i++){
             if(dam_con_map[i].Ndams>j){
@@ -94,6 +94,7 @@ dams_init(){
             }
         }
     }
+    
     
     free(dvar);
     free(ivar);

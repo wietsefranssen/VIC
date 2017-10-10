@@ -24,15 +24,13 @@ ext_start(){
             check_nc_status(status, "Error opening %s",
                             ext_filenames.routing.nc_filename);
             
-            // calculate derived option variables
-            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_LENGTH;
-            
             cell_order_global = malloc(global_domain.ncells_active * 
                                          sizeof(*cell_order_global));
             check_alloc_status(cell_order_global, "Memory allocation error");
             initialize_global_cell_order(cell_order_global);
             
-            validate_ext_parameters();
+            // calculate derived option variables
+            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_LENGTH;
         }
         if(ext_options.DAMS){         
             // open extension dam file
@@ -41,10 +39,14 @@ ext_start(){
             check_nc_status(status, "Error opening %s",
                             ext_filenames.dams.nc_filename);
             
-            ext_options.history_steps = ceil((float)DAYS_PER_LYEAR / (float)ext_param.DAM_HISTORY_LENGTH) * ext_param.DAM_HISTORY;
-            ext_options.history_lsteps = ext_param.DAM_HISTORY_LENGTH * global_param.model_steps_per_day;
+            // calculate derived option variables
+            ext_options.model_steps_per_history_step = ext_param.DAM_HISTORY_LENGTH * global_param.model_steps_per_day;
+            ext_options.history_steps_per_history_year = ceil((float)DAYS_PER_LYEAR / (float)ext_param.DAM_HISTORY_LENGTH);
+            ext_options.history_steps = ext_options.history_steps_per_history_year * ext_param.DAM_HISTORY;
             ext_options.ndams = get_nc_dimension(&ext_filenames.dams, "dams");
         }
+            
+        validate_ext_parameters();
     }
     
     status = MPI_Bcast(&ext_param, 1, mpi_ext_param_struct_type,

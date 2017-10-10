@@ -8,11 +8,14 @@ ext_put_data(ext_all_vars_struct *ext_all_vars,
     extern ext_option_struct ext_options;
     
     rout_var_struct rout_var;
+    efr_var_struct efr_var;
         
     rout_var = ext_all_vars->rout_var;
+    efr_var = ext_all_vars->efr_var;
     
     if(ext_options.ROUTING){
         out_data[OUT_DISCHARGE][0]=rout_var.discharge[0];
+        out_data[OUT_NAT_DISCHARGE][0]=efr_var.discharge[0];
     }
     
     out_data[OUT_TIME_EXTRUN_WALL][0] = timer->delta_wall;

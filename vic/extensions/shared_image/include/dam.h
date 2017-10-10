@@ -14,11 +14,15 @@
 #ifndef DAM_H
 #define DAM_H
 
-#define DAM_VSTEP 0.05
+#define DAM_ASTEP 0.05
 #define DAM_PVOLUME 0.85
+#define DAM_EFR_MINF 0.4
+#define DAM_EFR_MAXF 0.8
+#define DAM_EFR_MINR 0.6
+#define DAM_EFR_MAXR 0.3
 
 typedef struct{
-    double year;
+    int year;
     double max_volume;
     double max_area;
     double max_height;
@@ -39,31 +43,41 @@ typedef struct{
     double height;
     
     double annual_inflow;
-    double step_inflow;
-    
-    double outflow_variability;
-    double outflow_offset;    
-    
+    double step_inflow;   
+    double annual_nat_inflow;
+    double step_nat_inflow;    
+    double discharge_amplitude;
+    double discharge_offset;
     double discharge;
     
     double inflow_total;
-    double *inflow_history;    
-    size_t inflow_history_offset;
+    double nat_inflow_total;
+    double *inflow_history; 
+    double *nat_inflow_history;
+    size_t inflow_offset;
+    
+    dmy_struct op_year;
 }dam_var_struct;
 
 void get_dam_type(char *);
+
 void initialize_dam_con_map(dam_con_map_struct *);
+void initialize_dam_con(dam_con_struct *);
+void initialize_dam_var(dam_var_struct *dam_var);
 
 void dams_init();
 
 void calculate_dam_surface_area(dam_con_struct dam_con, dam_var_struct *);
 void calculate_dam_height(dam_var_struct *);
 void calculate_annual_inflow(dam_var_struct *);
+void calculate_annual_nat_inflow(dam_var_struct *);
 void calculate_step_inflow(dam_var_struct *);
-void calculate_outflow_variability(dam_var_struct *, dam_con_struct dam_con);
-double calculate_volume_needed(dam_var_struct dam_var, double *step_inflow);
+void calculate_step_nat_inflow(dam_var_struct *);
+void calculate_discharge_amplitude(dam_var_struct *, dam_con_struct dam_con);
+void calculate_discharge_offset(dam_var_struct *, dam_con_struct dam_con);
+double calculate_volume_needed(dam_var_struct dam_var, double *inflow, double *efr);
+double calculate_efr(double natural_inflow, double natural_annual_inflow);
 void dams_update_step_vars(dam_var_struct *, dam_con_struct dam_con);
-void dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_var, dmy_struct dmy);
 
 #endif /* DAM_H */
 

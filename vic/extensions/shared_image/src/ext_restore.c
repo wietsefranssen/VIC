@@ -51,6 +51,17 @@ ext_restore(){
                 ext_all_vars[i].rout_var.discharge[j] = dvar[i];
             }
         }
+        
+        // natural discharge
+        for (j = 0; j < ext_options.uh_steps; j++) {
+            d3start[0] = j;
+            get_scatter_nc_field_double(&(filenames.init_state),
+                                        state_metadata[STATE_NAT_DISCHARGE].varname,
+                                        d3start, d3count, dvar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                ext_all_vars[i].efr_var.discharge[j] = dvar[i];
+            }
+        }
     }
     
     free(dvar);

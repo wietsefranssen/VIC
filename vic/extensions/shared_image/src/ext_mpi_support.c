@@ -655,7 +655,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 7;
+    nitems = 8;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -688,8 +688,11 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     //int history_steps;
     offsets[i] = offsetof(ext_option_struct, history_steps);
     mpi_types[i++] = MPI_AINT;
-    //int history_lsteps;
-    offsets[i] = offsetof(ext_option_struct, history_lsteps);
+    //int model_steps_per_history_step;
+    offsets[i] = offsetof(ext_option_struct, model_steps_per_history_step);
+    mpi_types[i++] = MPI_AINT;
+    //int history_steps_per_history_year;
+    offsets[i] = offsetof(ext_option_struct, history_steps_per_history_year);
     mpi_types[i++] = MPI_AINT;
     //int ndams;
     offsets[i] = offsetof(ext_option_struct, ndams);

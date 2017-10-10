@@ -9,6 +9,21 @@ initialize_local_cell_order(size_t *cell_order){
     (*cell_order) = MISSING_USI;
 }
 
+
+/******************************************************************************
+ * @brief    Initialize dmy before they are called by the
+ *           model.
+ *****************************************************************************/
+void
+initialize_dmy(dmy_struct *dmy)
+{           
+    dmy->day = 0;
+    dmy->day_in_year = 0;
+    dmy->dayseconds = 0;
+    dmy->month = 0;
+    dmy->year = 0;
+}
+
 /******************************************************************************
  * @brief    Initialize rout_con before they are called by the
  *           model.
@@ -29,7 +44,7 @@ initialize_rout_con(rout_con_struct *rout_con)
 }
 
 /******************************************************************************
- * @brief    Initialize rout_con before they are called by the
+ * @brief    Initialize dam_con before they are called by the
  *           model.
  *****************************************************************************/
 void
@@ -44,40 +59,72 @@ initialize_dam_con(dam_con_struct *dam_con)
 }
 
 /******************************************************************************
- * @brief    Initialize ext_all_vars before they are called by the
+ * @brief    Initialize rout_var before they are called by the
  *           model.
  *****************************************************************************/
 void
-initialize_ext_all_vars(ext_all_vars_struct *ext_all_vars, dam_con_map_struct dam_con_map)
-{    
+initialize_rout_var(rout_var_struct *rout_var)
+{           
     extern ext_option_struct ext_options;
     
     size_t i;
-    size_t j;
-        
-    if(ext_options.ROUTING){
-        for(i=0;i<ext_options.uh_steps;i++){
-            ext_all_vars->rout_var.discharge[i] = 0.0;               
-        }
+    
+    for(i=0;i<ext_options.uh_steps;i++){
+        rout_var->discharge[i] = 0.0;            
     }
-    if(ext_options.DAMS){
-        for(i=0;i< (size_t) dam_con_map.Ndams;i++){
-            ext_all_vars->dam_var[i].area=0.0;
-            ext_all_vars->dam_var[i].height=0.0;
-            ext_all_vars->dam_var[i].volume=0.0;
-            ext_all_vars->dam_var[i].years_running=0;
-            ext_all_vars->dam_var[i].run=false;
-            ext_all_vars->dam_var[i].inflow_total=0.0;
-            ext_all_vars->dam_var[i].inflow_history_offset=0.0;
-            ext_all_vars->dam_var[i].discharge=0.0;
-            ext_all_vars->dam_var[i].outflow_variability=0.0;
-            ext_all_vars->dam_var[i].outflow_offset=0.0;
-            for(j=0;j<ext_options.history_steps;j++){
-                ext_all_vars->dam_var[i].inflow_history[j] = 0.0;
-            }
-        }
+}
+
+/******************************************************************************
+ * @brief    Initialize efr_var before they are called by the
+ *           model.
+ *****************************************************************************/
+void
+initialize_efr_var(efr_var_struct *efr_var)
+{           
+    extern ext_option_struct ext_options;
+    
+    size_t i;
+    
+    for(i=0;i<ext_options.uh_steps;i++){   
+        efr_var->discharge[i] = 0.0;               
     }
-}  
+}
+
+/******************************************************************************
+ * @brief    Initialize dam_var before they are called by the
+ *           model.
+ *****************************************************************************/
+void
+initialize_dam_var(dam_var_struct *dam_var)
+{           
+    extern ext_option_struct ext_options;
+    
+    size_t i;
+    
+    dam_var->area=0.0;
+    dam_var->height=0.0;
+    dam_var->volume=0.0;
+    dam_var->years_running=0;
+    dam_var->run=false;
+    
+    dam_var->annual_inflow=0.0;
+    dam_var->step_inflow=0.0;
+    dam_var->annual_nat_inflow=0.0;
+    dam_var->step_nat_inflow=0.0;
+    dam_var->discharge=0.0;
+    dam_var->discharge_amplitude=0.0;
+    dam_var->discharge_offset=0.0;
+    
+    dam_var->inflow_total=0.0;
+    dam_var->nat_inflow_total=0.0;
+    dam_var->inflow_offset=0.0;
+    for(i=0;i<ext_options.history_steps;i++){
+        dam_var->inflow_history[i] = 0.0;
+        dam_var->nat_inflow_history[i] = 0.0;
+    }
+    
+    initialize_dmy(&dam_var->op_year);
+}
 
 /******************************************************************************
  * @brief    Initialize local structures
@@ -96,16 +143,18 @@ initialize_ext_local_structures(void)
     size_t i;
     size_t j;
         
-    for(i=0;i<local_domain.ncells_active;i++){ 
-        initialize_ext_all_vars(&ext_all_vars[i], dam_con_map[i]); 
+    for(i=0;i<local_domain.ncells_active;i++){
         
         if(ext_options.ROUTING){
             initialize_rout_con(&rout_con[i]);
+            initialize_rout_var(&ext_all_vars[i].rout_var);
+            initialize_efr_var(&ext_all_vars[i].efr_var);
             initialize_local_cell_order(&cell_order_local[i]);
         }
         if(ext_options.DAMS){
             for(j=0;j<(size_t) dam_con_map[i].Ndams;j++){
                 initialize_dam_con(&dam_con[i][j]);
+                initialize_dam_var(&ext_all_vars[i].dam_var[j]);
             }
         }
     }    
@@ -124,8 +173,10 @@ initialize_ext_options(ext_option_struct *options)
     options->UH_PARAMETERS = CONSTANT_UH_PARAMETERS;
     
     options->uh_steps = 0;
+    
     options->history_steps = 0;
-    options->history_lsteps = 0;
+    options->model_steps_per_history_step = 0;
+    options->history_steps_per_history_year = 0;
     options->ndams = 0;
 }
 

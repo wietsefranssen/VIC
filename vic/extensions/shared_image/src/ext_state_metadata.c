@@ -14,5 +14,14 @@ ext_set_state_meta_data_info(){
         strcpy(state_metadata[STATE_DISCHARGE].units, "m3/s");
         strcpy(state_metadata[STATE_DISCHARGE].description,
                "discharge");
+        
+        // STATE_NAT_DISCHARGE
+        strcpy(state_metadata[STATE_NAT_DISCHARGE].varname, "STATE_NAT_DISCHARGE");
+        strcpy(state_metadata[STATE_NAT_DISCHARGE].long_name, "natural_discharge");
+        strcpy(state_metadata[STATE_NAT_DISCHARGE].standard_name,
+               "natural_discharge");
+        strcpy(state_metadata[STATE_NAT_DISCHARGE].units, "m3/s");
+        strcpy(state_metadata[STATE_NAT_DISCHARGE].description,
+               "natural_discharge");
     }
 }

@@ -288,7 +288,9 @@ enum
     
     // Extension variables
     // Routing terms
-    OUT_DISCHARGE,      /**< Discharge [mm/s] */
+    OUT_DISCHARGE,      /**< Discharge [m3/s] */
+    OUT_NAT_DISCHARGE,   /**< Natural discharge [m3/s] */
+            
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */
@@ -369,6 +371,7 @@ enum
     
     // Extensions
     STATE_DISCHARGE,
+    STATE_NAT_DISCHARGE,
     
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum

@@ -33,29 +33,40 @@ ext_populate_model_state(){
 void
 generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *dam_con, dam_con_map_struct dam_con_map){
     extern ext_option_struct ext_options;
+    extern global_param_struct global_param;
     
     size_t i;
     size_t j;
     
-    dam_var_struct dam_var;
+    dam_var_struct *dam_var;
         
     for(i=0;i<dam_con_map.Ndams;i++){
-        dam_var = ext_all_vars->dam_var[i];
+        dam_var = &ext_all_vars->dam_var[i];
         
-        dam_var.volume = 0.85 * dam_con[i].max_volume;
-        calculate_dam_surface_area(dam_con[i], &dam_var);
-        calculate_dam_height(&dam_var);
+        dam_var->volume = DAM_PVOLUME * dam_con[i].max_volume;
+        calculate_dam_surface_area(dam_con[i], dam_var);
+        calculate_dam_height(dam_var);
         
-        dam_var.inflow_total = 0.0;
-        dam_var.inflow_history_offset = 0.0;
-        dam_var.discharge = 0.0;
-        dam_var.outflow_offset = 0.0;
-        dam_var.outflow_variability = 0.5;
-        dam_var.run = false;
-        dam_var.years_running = 0;
+        dam_var->inflow_total = 0.0;
+        dam_var->nat_inflow_total = 0.0;
+        dam_var->inflow_offset = 0.0;
+        dam_var->discharge = 0.0;
+        dam_var->discharge_offset = 0.0;
+        dam_var->discharge_amplitude = 0.5;
+        dam_var->run = false;
+        dam_var->years_running = 0;
         for(j=0;j<ext_options.history_steps;j++){
-            dam_var.inflow_history[j] = 0.0;
+            dam_var->inflow_history[j] = 0.0;
+            dam_var->nat_inflow_history[j] = 0.0;
         }    
+        dam_var->annual_nat_inflow = 0.0;
+        dam_var->annual_inflow = 0.0;
+        dam_var->step_nat_inflow = 0.0;
+        dam_var->step_inflow = 0.0;
+        
+        dam_var->op_year.month = global_param.startmonth;
+        dam_var->op_year.day = global_param.startday;
+        dam_var->op_year.year = global_param.startyear;
     }
 }
 
@@ -66,10 +77,13 @@ generate_default_routing_state(ext_all_vars_struct *ext_all_vars){
     size_t i;
     
     rout_var_struct rout_var;
+    efr_var_struct efr_var;
     
     rout_var = ext_all_vars->rout_var;
+    efr_var = ext_all_vars->efr_var;
     
     for(i=0;i<ext_options.uh_steps;i++){
         rout_var.discharge[i] = 0.0;
+        efr_var.discharge[i] = 0.0;
     }
 }

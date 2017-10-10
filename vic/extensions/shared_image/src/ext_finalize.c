@@ -23,6 +23,7 @@ void ext_finalize()
             free(rout_con[i].uh);
 
             free(ext_all_vars[i].rout_var.discharge);
+            free(ext_all_vars[i].efr_var.discharge);
         }    
         free(rout_con); 
         
@@ -47,6 +48,7 @@ void ext_finalize()
         for(i=0;i<local_domain.ncells_active;i++){            
             for(j=0;j<dam_con_map[i].Ndams;j++){
                 free(ext_all_vars[i].dam_var[j].inflow_history);
+                free(ext_all_vars[i].dam_var[j].nat_inflow_history);
             }
             
             free(dam_con[i]);

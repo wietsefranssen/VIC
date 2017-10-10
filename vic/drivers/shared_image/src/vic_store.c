@@ -1288,7 +1288,22 @@ vic_store(dmy_struct *dmy_state,
             for (i = 0; i < local_domain.ncells_active; i++) {
                 dvar[i] = nc_state_file.d_fillvalue;
             }
-        }        
+        }    
+        // natural discharge
+        nc_var = &(nc_state_file.nc_vars[STATE_NAT_DISCHARGE]);
+        for (j = 0; j < ext_options.uh_steps; j++) {
+            d3start[0] = j;
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                dvar[i] = (double) ext_all_vars[i].efr_var.discharge[j];
+            }
+            gather_put_nc_field_double(nc_state_file.nc_id,
+                                       nc_var->nc_varid,
+                                       nc_state_file.d_fillvalue,
+                                       d3start, nc_var->nc_counts, dvar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                dvar[i] = nc_state_file.d_fillvalue;
+            }
+        }  
     }
 
     // close the netcdf file if it is still open
@@ -1334,6 +1349,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->root_zone_dimid = MISSING;
     nc_state_file->time_dimid = MISSING;
     nc_state_file->veg_dimid = MISSING;
+    // Extension
     nc_state_file->discharge_dimid = MISSING;
 
     // Set dimension sizes
@@ -1347,6 +1363,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->root_zone_size = options.ROOT_ZONES;
     nc_state_file->time_size = NC_UNLIMITED;
     nc_state_file->veg_size = options.NVEGTYPES;
+    // Extension
     nc_state_file->discharge_size = ext_options.uh_steps;
 
     // allocate memory for nc_vars
@@ -1551,6 +1568,7 @@ set_nc_state_var_info(nc_file_struct *nc)
             nc->nc_vars[i].nc_counts[1] = nc->nj_size;
             nc->nc_vars[i].nc_counts[2] = nc->ni_size;
             break;
+        case STATE_NAT_DISCHARGE:
         case STATE_DISCHARGE:            
             nc->nc_vars[i].nc_dims = 3;
             nc->nc_vars[i].nc_dimids[0] = nc->discharge_dimid;

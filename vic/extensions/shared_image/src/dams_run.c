@@ -23,19 +23,48 @@ calculate_annual_inflow(dam_var_struct *dam_var){
     size_t i;
     
     ainflow = 0.0;
-    if(dam_var->years_running < (size_t)ext_param.DAM_HISTORY){
-        for(i=0;i < dam_var->years_running * (DAYS_PER_LYEAR / ext_param.DAM_HISTORY_LENGTH); i++){
-            ainflow += dam_var->inflow_history[i];
+    if(dam_var->years_running > 0){
+        if(dam_var->years_running < (size_t)ext_param.DAM_HISTORY){
+            for(i=0;i < dam_var->years_running * ext_options.history_steps_per_history_year; i++){
+                ainflow += dam_var->inflow_history[i];
+            }
+            ainflow = ainflow / (dam_var->years_running * ext_options.history_steps_per_history_year);
+        }else{
+            for(i=0;i < ext_options.history_steps; i++){
+                ainflow += dam_var->inflow_history[i];
+            }
+            ainflow = ainflow / ext_options.history_steps;
         }
-        ainflow = ainflow / ext_options.history_steps;
-    }else{
-        for(i=0;i < ext_options.history_steps; i++){
-            ainflow += dam_var->inflow_history[i];
-        }
-        ainflow = ainflow / ext_options.history_steps;
     }
     
     dam_var->annual_inflow = ainflow;    
+}
+
+void 
+calculate_annual_nat_inflow(dam_var_struct *dam_var){
+    extern ext_option_struct ext_options;
+    extern ext_parameters_struct ext_param;
+    
+    double ainflow;
+    
+    size_t i;
+    
+    ainflow = 0.0;
+    if(dam_var->years_running > 0){
+        if(dam_var->years_running < (size_t)ext_param.DAM_HISTORY){
+            for(i=0;i < dam_var->years_running * ext_options.history_steps_per_history_year; i++){
+                ainflow += dam_var->nat_inflow_history[i];
+            }
+            ainflow = ainflow / (dam_var->years_running * ext_options.history_steps_per_history_year);
+        }else{
+            for(i=0;i < ext_options.history_steps; i++){
+                ainflow += dam_var->nat_inflow_history[i];
+            }
+            ainflow = ainflow / ext_options.history_steps;
+        }
+    }
+    
+    dam_var->annual_nat_inflow = ainflow;    
 }
 
 void
@@ -48,50 +77,133 @@ calculate_step_inflow(dam_var_struct *dam_var){
     size_t i;
     
     sinflow = 0.0;
-    if(dam_var->years_running < (size_t)ext_param.DAM_HISTORY){
-        for(i=0;i < dam_var->years_running; i++){
-            sinflow += dam_var->inflow_history[i * (int) ceil(DAYS_PER_LYEAR / ext_param.DAM_HISTORY_LENGTH)];
+    if(dam_var->years_running > 0){
+        if(dam_var->years_running < (size_t)ext_param.DAM_HISTORY){
+            for(i=0;i < dam_var->years_running; i++){
+                sinflow += dam_var->inflow_history[i * ext_options.history_steps_per_history_year];
+            }
+            sinflow = sinflow / dam_var->years_running;
+        }else{
+            for(i=0;i < (size_t) ext_param.DAM_HISTORY; i++){
+                sinflow += dam_var->inflow_history[i * ext_options.history_steps_per_history_year];
+            }
+            sinflow = sinflow / ext_param.DAM_HISTORY;
         }
-        sinflow = sinflow / dam_var->years_running;
-    }else{
-        for(i=0;i < (size_t) ext_param.DAM_HISTORY; i++){
-            sinflow += dam_var->inflow_history[i * (int) ceil(DAYS_PER_LYEAR / ext_param.DAM_HISTORY_LENGTH)];
-        }
-        sinflow = sinflow / ext_param.DAM_HISTORY;
     }
     
     dam_var->step_inflow = sinflow;    
 }
 
 void
-calculate_outflow_variability(dam_var_struct *dam_var, dam_con_struct dam_con){
-    extern ext_parameters_struct ext_param;
+calculate_step_nat_inflow(dam_var_struct *dam_var){
     extern ext_option_struct ext_options;
+    extern ext_parameters_struct ext_param;
     
-    double step_inflow[ext_options.history_steps];
+    double sinflow;
     
     size_t i;
-    float f;
     
-    for(i=0;i<ext_options.history_steps;i++){
-        step_inflow[i] = dam_var->step_inflow;
-        
-        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, 1);
-        calculate_step_inflow(dam_var);
+    sinflow = 0.0;
+    if(dam_var->years_running > 0){
+        if(dam_var->years_running < (size_t)ext_param.DAM_HISTORY){
+            for(i=0;i < dam_var->years_running; i++){
+                sinflow += dam_var->nat_inflow_history[i * ext_options.history_steps_per_history_year];
+            }
+            sinflow = sinflow / dam_var->years_running;
+        }else{
+            for(i=0;i < (size_t) ext_param.DAM_HISTORY; i++){
+                sinflow += dam_var->nat_inflow_history[i * ext_options.history_steps_per_history_year];
+            }
+            sinflow = sinflow / ext_param.DAM_HISTORY;
+        }
     }
     
-    for(f = 0; f <= 1; f += DAM_VSTEP){
-        dam_var->outflow_offset = f;
-        if(dam_con.max_volume <= DAM_PVOLUME * calculate_volume_needed((*dam_var),step_inflow)){
+    dam_var->step_nat_inflow = sinflow;    
+}
+
+double
+calculate_efr(double flow, double annual_flow){
+    return calculate_efr_fraction(flow,annual_flow) * flow;
+}
+
+double
+calculate_efr_fraction(double flow, double annual_flow){
+    if(flow < DAM_EFR_MINF * annual_flow){
+        return DAM_EFR_MINR;
+    }else if(flow > DAM_EFR_MAXF * annual_flow){        
+        return DAM_EFR_MAXR;
+    }else{
+        return linear_interp((flow / annual_flow),DAM_EFR_MINF,DAM_EFR_MAXF,DAM_EFR_MINR,DAM_EFR_MAXR);
+    }
+}
+
+void
+calculate_discharge_amplitude(dam_var_struct *dam_var, dam_con_struct dam_con){
+    extern ext_option_struct ext_options;
+    
+    double step_inflow[ext_options.history_steps_per_history_year];
+    double step_nat_inflow[ext_options.history_steps_per_history_year];
+    double efrf[ext_options.history_steps_per_history_year];
+    double calc_inflow[ext_options.history_steps_per_history_year];
+    
+    size_t i;
+        
+    for(i=0;i<ext_options.history_steps_per_history_year;i++){        
+        step_inflow[i] = -1.0;        
+        step_nat_inflow[i] = -1.0;        
+        efrf[i] = -1.0;        
+        calc_inflow[i] = -1.0;
+    }
+    
+    for(i=0;i<ext_options.history_steps_per_history_year;i++){
+        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, 1);
+        cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, 1);
+    }
+    
+    for(i=0;i<ext_options.history_steps_per_history_year;i++){
+        step_inflow[i] = dam_var->step_inflow;
+        step_nat_inflow[i] = dam_var->step_nat_inflow;
+        
+        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
+        cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
+        
+        calculate_step_inflow(dam_var);
+        calculate_step_nat_inflow(dam_var);
+    }
+    
+    debug("Calculated flows\n"
+            "ANN_INFLOW\n"
+            "%.2f",
+            dam_var->annual_nat_inflow);
+    for(i=0;i<ext_options.history_steps_per_history_year;i++){
+        efrf[i] = calculate_efr_fraction(step_nat_inflow[i],dam_var->annual_nat_inflow);
+        calc_inflow[i] = step_inflow[i] - (efrf[i] * step_nat_inflow[i]);
+        debug("%.2f\t%.2f",
+                step_nat_inflow[i],
+                efrf[i]);
+    }    
+    
+    for(dam_var->discharge_amplitude = 0; dam_var->discharge_amplitude <= 1; dam_var->discharge_amplitude += DAM_ASTEP){
+        if(dam_con.max_volume * DAM_PVOLUME >= calculate_volume_needed((*dam_var),calc_inflow,efrf)){
             break;
         }
     }
 }
 
-double
-calculate_volume_needed(dam_var_struct dam_var, double *step_inflow){
+void
+calculate_discharge_offset(dam_var_struct *dam_var, dam_con_struct dam_con){
     extern ext_option_struct ext_options;
     
+    double difference = dam_con.max_volume * DAM_PVOLUME - dam_var->volume;
+    dam_var->discharge_offset = difference / 
+            (ext_options.model_steps_per_history_step * ext_options.history_steps_per_history_year);
+}
+
+double
+calculate_volume_needed(dam_var_struct dam_var, double *inflow, double *efrf){
+    extern ext_option_struct ext_options;
+    
+    double nefrf;
     double discharge;
     double capacity_needed;
     
@@ -99,14 +211,17 @@ calculate_volume_needed(dam_var_struct dam_var, double *step_inflow){
     
     capacity_needed = 0.0;
     if(dam_var.annual_inflow > 0){
-        for(i=0; i<ext_options.history_steps;i++){
-            discharge = dam_var.annual_inflow * (1 - dam_var.outflow_variability) +
-                    dam_var.annual_inflow * dam_var.outflow_variability * 
-                    (step_inflow[i] / dam_var.annual_inflow) + 
-                    dam_var.outflow_offset;
+        for(i=0; i<ext_options.history_steps_per_history_year;i++){
+            nefrf = 1 - efrf;
+            discharge = (dam_var.annual_inflow * nefrf) * 
+                    (1 - dam_var.discharge_amplitude) +
+                    (dam_var.annual_inflow - efr[i]) * 
+                    dam_var.discharge_amplitude * 
+                    (inflow[i] / (dam_var.annual_inflow - efr[i])) + 
+                    efr[i];
             
-            if(discharge - dam_var.annual_inflow > 0){
-                capacity_needed += discharge;
+            if(discharge - (inflow[i] + efr[i]) < 0){
+                capacity_needed += discharge * ext_options.model_steps_per_history_step;
             }
         }
     }
@@ -115,13 +230,16 @@ calculate_volume_needed(dam_var_struct dam_var, double *step_inflow){
 }
 
 void
-dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_var, dmy_struct dmy){
+dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_var, efr_var_struct *efr_var, dmy_struct dmy){
     extern global_param_struct global_param;
-    
+                
+    // River discharge is saved for history
+    dam_var->inflow_total += rout_var->discharge[0] * global_param.dt;
+    dam_var->nat_inflow_total += efr_var->discharge[0] * global_param.dt;
     
     // Check if dam is run
     if(!dam_var->run){
-        if(dam_con.year >= dmy.year){
+        if(dam_con.year <= dmy.year){
             dam_var->run = true;
         }else{
             return;
@@ -129,32 +247,31 @@ dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_v
     }
     
     // River discharge adds to dam reservoir volume
-    dam_var->inflow_total += rout_var->discharge[0] * global_param.dt;
-    dam_var->volume += rout_var->discharge[0] * global_param.dt;
-    rout_var->discharge[0] = 0;
-    
-    // Recalculate dam water area and height
-    calculate_dam_surface_area(dam_con,dam_var);
-    calculate_dam_height(dam_var);
-    
-    // Calculate outflow
-    dam_var->discharge = 0.0;
-    if(dam_var->annual_inflow > 0){
-        dam_var->discharge = dam_var->annual_inflow * (1 - dam_var->outflow_variability) +
-                dam_var->annual_inflow * dam_var->outflow_variability * 
-                (dam_var->step_inflow / dam_var->annual_inflow) + 
-                dam_var->outflow_offset;
-    }
-    
-    // Remove outflow from dam reservoir volume and add to discharge
-    dam_var->volume -= dam_var->discharge;
-    if(dam_var->volume > dam_con.max_volume){
-        dam_var->discharge += dam_var->volume - dam_con.max_volume;
-        dam_var->volume = dam_con.max_volume;
-    }
-    rout_var->discharge[0] = dam_var->discharge / global_param.dt;
-    
-    // Recalculate dam water area and height
-    calculate_dam_surface_area(dam_con,dam_var);
-    calculate_dam_height(dam_var);
+//    dam_var->volume += rout_var->discharge[0] * global_param.dt;
+//    rout_var->discharge[0] = 0;
+//    
+//    // Recalculate dam water area and height
+//    calculate_dam_surface_area(dam_con,dam_var);
+//    calculate_dam_height(dam_var);
+//    
+//    // Calculate outflow
+//    dam_var->discharge = 0.0;
+//    if(dam_var->annual_inflow > 0){
+//        dam_var->discharge = dam_var->annual_inflow * (1 - dam_var->discharge_amplitude) +
+//                dam_var->annual_inflow * dam_var->discharge_amplitude * 
+//                (dam_var->step_inflow / dam_var->annual_inflow) + 
+//                dam_var->discharge_offset;
+//    }
+//    
+//    // Remove outflow from dam reservoir volume and add to discharge
+//    dam_var->volume -= dam_var->discharge;
+//    if(dam_var->volume > dam_con.max_volume){
+//        dam_var->discharge += dam_var->volume - dam_con.max_volume;
+//        dam_var->volume = dam_con.max_volume;
+//    }
+//    rout_var->discharge[0] = dam_var->discharge / global_param.dt;
+//    
+//    // Recalculate dam water area and height
+//    calculate_dam_surface_area(dam_con,dam_var);
+//    calculate_dam_height(dam_var);
 }

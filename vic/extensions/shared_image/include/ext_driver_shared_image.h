@@ -44,7 +44,8 @@ typedef struct{
     
     size_t uh_steps;
     size_t history_steps;
-    size_t history_lsteps;
+    size_t model_steps_per_history_step;
+    size_t history_steps_per_history_year;
     size_t ndams;
 }ext_option_struct;
 
@@ -72,6 +73,7 @@ typedef struct {
 
 typedef struct{
     rout_var_struct rout_var;
+    efr_var_struct efr_var;
     dam_var_struct *dam_var;
 }ext_all_vars_struct;
 
@@ -85,9 +87,6 @@ void initialize_ext_parameters(ext_parameters_struct *);
 void initialize_global_cell_order(size_t *);
 // Local node initialization
 void initialize_ext_local_structures(void);
-void initialize_rout_con(rout_con_struct *);
-void initialize_ext_all_vars(ext_all_vars_struct *, dam_con_map_struct dam_con_map);
-void initialize_local_cell_order(size_t *);
 
 // Preperations
 void ext_start(void);
@@ -111,7 +110,10 @@ void routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struc
 void routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
 void routing_run_scatter(ext_all_vars_struct *ext_all_vars_global);
 void routing_run_free(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
+
 void routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, ext_all_vars_struct *ext_all_vars, double runoff);
+void efr_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, ext_all_vars_struct *ext_all_vars, double runoff);
+void dam_run(dam_con_struct dam_con, dam_var_struct *, rout_var_struct *, efr_var_struct *, dmy_struct dmy);
 
 void get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
 void get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);
