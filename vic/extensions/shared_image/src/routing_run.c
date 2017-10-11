@@ -312,29 +312,18 @@ routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this,
     for(i=0;i<rout_con.Nupstream;i++){
         inflow += ext_all_vars[rout_con.upstream[i]].rout_var.discharge[0];
     }            
-
+    
+    // Rout inflow
     rout(&rout_var.discharge, rout_con.uh, (runoff + inflow),
             ext_options.uh_steps);
-}
-
-void
-efr_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, 
-                                ext_all_vars_struct *ext_all_vars, double runoff){
-    extern ext_option_struct ext_options;
     
-    double inflow;
-    
-    size_t i;
-    
-    efr_var_struct efr_var;
-    efr_var = (*ext_all_vars_this).efr_var;
-    
-    // Gather inflow
+    // Gather natural inflow
     inflow = 0;
     for(i=0;i<rout_con.Nupstream;i++){
-        inflow += ext_all_vars[rout_con.upstream[i]].efr_var.discharge[0];
+        inflow += ext_all_vars[rout_con.upstream[i]].rout_var.nat_discharge[0];
     }            
-
-    rout(&efr_var.discharge, rout_con.uh, (runoff + inflow),
+    
+    // Rout natural inflow
+    rout(&rout_var.nat_discharge, rout_con.uh, (runoff + inflow),
             ext_options.uh_steps);
 }

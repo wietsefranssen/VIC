@@ -98,7 +98,17 @@ mpi_map_decomp_domain(size_t   ncells,
             if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
                 log_err("BASIN_DECOMPOSITION is selected but there are more nodes than basins, exiting...");
             }            
+        }        
+        
+        // Free
+        for(i=0;i<basins.Nbasin;i++){
+            free(basins.catchment[i]);
         }
+        free(basins.basin_map);
+        free(basins.Ncells);
+        free(basins.sorted_basins);
+        free(basins.catchment);
+        
     }else{
         // decompose the mask at random
         mpi_map_decomp_domain_random(ncells, mpi_size,

@@ -23,24 +23,14 @@ void ext_finalize()
             free(rout_con[i].uh);
 
             free(ext_all_vars[i].rout_var.discharge);
-            free(ext_all_vars[i].efr_var.discharge);
+            free(ext_all_vars[i].rout_var.nat_discharge);
         }    
-        free(rout_con); 
         
+        free(rout_con);        
         free(cell_order_local);
         
         if(mpi_rank == VIC_MPI_ROOT){        
             free(cell_order_global);
-    
-            if(mpi_decomposition == BASIN_DECOMPOSITION){
-                for(i=0;i<basins.Nbasin;i++){
-                    free(basins.catchment[i]);
-                }
-                free(basins.basin_map);
-                free(basins.Ncells);
-                free(basins.sorted_basins);
-                free(basins.catchment);
-            }  
         }
     }
     
@@ -48,14 +38,18 @@ void ext_finalize()
         for(i=0;i<local_domain.ncells_active;i++){            
             for(j=0;j<dam_con_map[i].Ndams;j++){
                 free(ext_all_vars[i].dam_var[j].inflow_history);
+                free(ext_all_vars[i].dam_var[j].calc_discharge);
                 free(ext_all_vars[i].dam_var[j].nat_inflow_history);
             }
+        }
             
+        for(i=0;i<local_domain.ncells_active;i++){ 
             free(dam_con[i]);
             free(ext_all_vars[i].dam_var);
         }
         
         free(dam_con);
+        free(dam_con_map);
     }
         
     free(ext_all_vars);

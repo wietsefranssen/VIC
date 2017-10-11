@@ -70,23 +70,8 @@ initialize_rout_var(rout_var_struct *rout_var)
     size_t i;
     
     for(i=0;i<ext_options.uh_steps;i++){
-        rout_var->discharge[i] = 0.0;            
-    }
-}
-
-/******************************************************************************
- * @brief    Initialize efr_var before they are called by the
- *           model.
- *****************************************************************************/
-void
-initialize_efr_var(efr_var_struct *efr_var)
-{           
-    extern ext_option_struct ext_options;
-    
-    size_t i;
-    
-    for(i=0;i<ext_options.uh_steps;i++){   
-        efr_var->discharge[i] = 0.0;               
+        rout_var->discharge[i] = 0.0;   
+        rout_var->nat_discharge[i] = 0.0;            
     }
 }
 
@@ -101,25 +86,21 @@ initialize_dam_var(dam_var_struct *dam_var)
     
     size_t i;
     
-    dam_var->area=0.0;
-    dam_var->height=0.0;
-    dam_var->volume=0.0;
     dam_var->years_running=0;
     dam_var->run=false;
     
-    dam_var->annual_inflow=0.0;
-    dam_var->step_inflow=0.0;
-    dam_var->annual_nat_inflow=0.0;
-    dam_var->step_nat_inflow=0.0;
-    dam_var->discharge=0.0;
-    dam_var->discharge_amplitude=0.0;
-    dam_var->discharge_offset=0.0;
+    dam_var->area=0.0;
+    dam_var->height=0.0;
+    dam_var->volume=0.0;
+    
     
     dam_var->inflow_total=0.0;
     dam_var->nat_inflow_total=0.0;
     dam_var->inflow_offset=0.0;
+    dam_var->discharge=0.0;
     for(i=0;i<ext_options.history_steps;i++){
         dam_var->inflow_history[i] = 0.0;
+        dam_var->calc_discharge[i] = 0.0;
         dam_var->nat_inflow_history[i] = 0.0;
     }
     
@@ -148,7 +129,6 @@ initialize_ext_local_structures(void)
         if(ext_options.ROUTING){
             initialize_rout_con(&rout_con[i]);
             initialize_rout_var(&ext_all_vars[i].rout_var);
-            initialize_efr_var(&ext_all_vars[i].efr_var);
             initialize_local_cell_order(&cell_order_local[i]);
         }
         if(ext_options.DAMS){

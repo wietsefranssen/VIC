@@ -27,11 +27,8 @@ typedef struct{
 
 typedef struct{    
     double *discharge;
+    double *nat_discharge;
 }rout_var_struct;
-
-typedef struct{
-    double *discharge;
-}efr_var_struct;
 
 void get_routing_type(char *cmdstr);
 
@@ -39,7 +36,6 @@ void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *bas
 
 void initialize_rout_con(rout_con_struct *);
 void initialize_rout_var(rout_var_struct *);
-void initialize_efr_var(efr_var_struct *);
 void initialize_local_cell_order(size_t *);
 
 void routing_init();
@@ -50,7 +46,6 @@ void routing_init_order();
 void efr_init();
 
 void routing_update_step_vars(rout_var_struct *);
-void efr_update_step_vars(efr_var_struct *);
 
 void rout(double **discharge, double *uh, double quantity, int uh_length);
 void get_downstream(size_t id, int direction, size_t *downstream);

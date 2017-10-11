@@ -14,7 +14,7 @@
 #ifndef DAM_H
 #define DAM_H
 
-#define DAM_ASTEP 0.05
+#define DAM_ASTEP 0.01
 #define DAM_PVOLUME 0.85
 #define DAM_EFR_MINF 0.4
 #define DAM_EFR_MAXF 0.8
@@ -42,19 +42,15 @@ typedef struct{
     double area;
     double height;
     
-    double annual_inflow;
-    double step_inflow;   
-    double annual_nat_inflow;
-    double step_nat_inflow;    
-    double discharge_amplitude;
-    double discharge_offset;
-    double discharge;
-    
     double inflow_total;
     double nat_inflow_total;
-    double *inflow_history; 
-    double *nat_inflow_history;
     size_t inflow_offset;
+    double *inflow_history;
+    double *nat_inflow_history;
+    //double **demand;
+    
+    double *calc_discharge;
+    double discharge;    
     
     dmy_struct op_year;
 }dam_var_struct;
@@ -69,14 +65,15 @@ void dams_init();
 
 void calculate_dam_surface_area(dam_con_struct dam_con, dam_var_struct *);
 void calculate_dam_height(dam_var_struct *);
-void calculate_annual_inflow(dam_var_struct *);
-void calculate_annual_nat_inflow(dam_var_struct *);
-void calculate_step_inflow(dam_var_struct *);
-void calculate_step_nat_inflow(dam_var_struct *);
-void calculate_discharge_amplitude(dam_var_struct *, dam_con_struct dam_con);
-void calculate_discharge_offset(dam_var_struct *, dam_con_struct dam_con);
-double calculate_volume_needed(dam_var_struct dam_var, double *inflow, double *efr);
-double calculate_efr(double natural_inflow, double natural_annual_inflow);
+void calculate_multi_year_average(double *history, size_t repetitions, size_t length, size_t offset, size_t skip, double *average);
+void calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var, 
+        double my_inflow, double *ms_inflow, double *discharge);
+double calculate_volume_needed(double amplitude, double offset, double my_inflow, double *ms_inflow, 
+        size_t history_length, size_t model_steps_per_history);
+double get_amplitude_discharge(double my_inflow, double ms_inflow, double amplitude, double offset);
+double calculate_efr(double flow, double annual_flow);
+double calculate_efr_fraction(double flow, double annual_flow);
+void calculate_corrected_discharge(double *ucor_discharge, double *efr, double my_inflow, double *cor_discharge);
 void dams_update_step_vars(dam_var_struct *, dam_con_struct dam_con);
 
 #endif /* DAM_H */

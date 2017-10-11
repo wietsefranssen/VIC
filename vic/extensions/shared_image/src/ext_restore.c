@@ -59,7 +59,7 @@ ext_restore(){
                                         state_metadata[STATE_NAT_DISCHARGE].varname,
                                         d3start, d3count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
-                ext_all_vars[i].efr_var.discharge[j] = dvar[i];
+                ext_all_vars[i].rout_var.nat_discharge[j] = dvar[i];
             }
         }
     }

@@ -33,7 +33,6 @@ ext_run(dmy_struct dmy)
     for(i=0;i<local_domain.ncells_active;i++){
         if(ext_options.ROUTING){
             routing_update_step_vars(&ext_all_vars[i].rout_var);
-            efr_update_step_vars(&ext_all_vars[i].efr_var);
         }
         if(ext_options.DAMS){
             for(j=0;j<dam_con_map[i].Ndams;j++){
@@ -49,14 +48,13 @@ ext_run(dmy_struct dmy)
             cur_id = cell_order_local[i];
             
             if(ext_options.ROUTING){
-                runoff = (out_data[cur_id][OUT_RUNOFF][0] + out_data[cur_id][OUT_BASEFLOW][0]) * 
-                        local_domain.locations[cur_id].area / (MM_PER_M * global_param.dt);
+                runoff = ((out_data[cur_id][OUT_RUNOFF][0] + out_data[cur_id][OUT_BASEFLOW][0]) * 
+                        local_domain.locations[cur_id].area) / (MM_PER_M * global_param.dt);
                 routing_run(rout_con[cur_id], &ext_all_vars[cur_id], ext_all_vars, runoff);
-                efr_run(rout_con[cur_id], &ext_all_vars[cur_id], ext_all_vars, runoff);
             }
             if(ext_options.DAMS){
                 for(j=0;j<dam_con_map[cur_id].Ndams;j++){
-                    dam_run(dam_con[cur_id][j],&ext_all_vars[cur_id].dam_var[j], &ext_all_vars[cur_id].rout_var, &ext_all_vars[cur_id].efr_var, dmy);
+                    dam_run(dam_con[cur_id][j],&ext_all_vars[cur_id].dam_var[j], &ext_all_vars[cur_id].rout_var, dmy);
                 }                
             }
         }

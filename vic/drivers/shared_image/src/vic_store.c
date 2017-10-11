@@ -1294,7 +1294,7 @@ vic_store(dmy_struct *dmy_state,
         for (j = 0; j < ext_options.uh_steps; j++) {
             d3start[0] = j;
             for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = (double) ext_all_vars[i].efr_var.discharge[j];
+                dvar[i] = (double) ext_all_vars[i].rout_var.nat_discharge[j];
             }
             gather_put_nc_field_double(nc_state_file.nc_id,
                                        nc_var->nc_varid,

@@ -31,8 +31,8 @@ ext_alloc(void)
             ext_all_vars[i].rout_var.discharge = malloc(ext_options.uh_steps * sizeof(*ext_all_vars[i].rout_var.discharge));
             check_alloc_status(ext_all_vars[i].rout_var.discharge, "Memory allocation error");
             
-            ext_all_vars[i].efr_var.discharge = malloc(ext_options.uh_steps * sizeof(*ext_all_vars[i].efr_var.discharge));
-            check_alloc_status(ext_all_vars[i].efr_var.discharge, "Memory allocation error");
+            ext_all_vars[i].rout_var.nat_discharge = malloc(ext_options.uh_steps * sizeof(*ext_all_vars[i].rout_var.nat_discharge));
+            check_alloc_status(ext_all_vars[i].rout_var.nat_discharge, "Memory allocation error");
         }
     }
     if(ext_options.DAMS){        
@@ -58,6 +58,9 @@ ext_alloc(void)
                 
                 ext_all_vars[i].dam_var[j].nat_inflow_history = malloc(ext_options.history_steps * sizeof(*ext_all_vars[i].dam_var[j].nat_inflow_history));
                 check_alloc_status(ext_all_vars[i].dam_var[j].nat_inflow_history, "Memory allocation error");
+                
+                ext_all_vars[i].dam_var[j].calc_discharge = malloc(ext_options.history_steps * sizeof(*ext_all_vars[i].dam_var[j].calc_discharge));
+                check_alloc_status(ext_all_vars[i].dam_var[j].calc_discharge, "Memory allocation error");
             }
         }
     }
