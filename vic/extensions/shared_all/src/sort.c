@@ -11,7 +11,7 @@ void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending){
     if(acending){
         for(i=0;i<Nelements-1;i++){
             for(j=0;j<Nelements-i-1;j++){
-                if(cost[j]>cost[j+1]){
+                if(tmp_cost[j]>tmp_cost[j+1]){
                     sizet_swap(j,j+1,array);
                     sizet_swap(j,j+1,tmp_cost);
                 }
@@ -20,7 +20,7 @@ void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending){
     }else{
         for(i=0;i<Nelements-1;i++){
             for(j=0;j<Nelements-i-1;j++){
-                if(cost[j]<cost[j+1]){
+                if(tmp_cost[j]<tmp_cost[j+1]){
                     sizet_swap(j,j+1,array);
                     sizet_swap(j,j+1,tmp_cost);
                 }
@@ -40,7 +40,7 @@ void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending){
     if(acending){
         for(i=0;i<Nelements-1;i++){
             for(j=0;j<Nelements-i-1;j++){
-                if(cost[j]>cost[j+1]){
+                if(tmp_cost[j]>tmp_cost[j+1]){
                     sizet_swap(j,j+1,array);
                     int_swap(j,j+1,tmp_cost);
                 }
@@ -49,7 +49,7 @@ void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending){
     }else{
         for(i=0;i<Nelements-1;i++){
             for(j=0;j<Nelements-i-1;j++){
-                if(cost[j]<cost[j+1]){
+                if(tmp_cost[j]<tmp_cost[j+1]){
                     sizet_swap(j,j+1,array);
                     int_swap(j,j+1,tmp_cost);
                 }
@@ -67,7 +67,7 @@ void sizet_swap(size_t i, size_t j, size_t *array){
 }
 
 void int_swap(size_t i, size_t j, int *array){
-    size_t hold;
+    int hold;
     
     hold = array[i];
     array[i]=array[j];
