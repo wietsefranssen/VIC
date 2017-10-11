@@ -56,7 +56,7 @@ mpi_map_decomp_domain(size_t   ncells,
                           mpi_map_global_array_offsets,
                           mpi_map_mapping_array,
                           &basins);
-        
+                
         if(mpi_decomposition == CALCULATE_DECOMPOSITION){
 
             for(i=0;i<mpi_size;i++){
@@ -76,10 +76,28 @@ mpi_map_decomp_domain(size_t   ncells,
                                   mpi_map_mapping_array);
                 
                 mpi_decomposition=RANDOM_DECOMPOSITION;
-            }else{            
-                mpi_decomposition=BASIN_DECOMPOSITION;
+            }else if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
+                    
+                    // decompose the mask at random
+                mpi_map_decomp_domain_random(ncells, mpi_size,
+                                  mpi_map_local_array_sizes,
+                                  mpi_map_global_array_offsets,
+                                  mpi_map_mapping_array);
                 
+                mpi_decomposition=RANDOM_DECOMPOSITION;
+            }else{            
+                mpi_decomposition=BASIN_DECOMPOSITION;                
             }
+        }else{
+
+            for(i=0;i<mpi_size;i++){
+                node_ids[i]=i;
+            }
+            sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
+            
+            if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
+                log_err("BASIN_DECOMPOSITION is selected but there are more nodes than basins, exiting...");
+            }            
         }
     }else{
         // decompose the mask at random
@@ -154,7 +172,7 @@ mpi_map_decomp_domain_basin(size_t   ncells,
             node_ids[j]=j;
         }
         sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,true);   
-        
+                      
         // find node with lowest amount of cells and add the biggest basin
         (*mpi_map_local_array_sizes)[node_ids[0]] += basins->Ncells[basins->sorted_basins[i]];
         basin_to_node[i] = node_ids[0];
