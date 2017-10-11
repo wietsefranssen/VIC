@@ -64,10 +64,28 @@ mpi_map_decomp_domain(size_t   ncells,
                                   mpi_map_mapping_array);
                 
                 mpi_decomposition=RANDOM_DECOMPOSITION;
-            }else{            
-                mpi_decomposition=BASIN_DECOMPOSITION;
+            }else if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
+                    
+                    // decompose the mask at random
+                mpi_map_decomp_domain_random(ncells, mpi_size,
+                                  mpi_map_local_array_sizes,
+                                  mpi_map_global_array_offsets,
+                                  mpi_map_mapping_array);
                 
+                mpi_decomposition=RANDOM_DECOMPOSITION;
+            }else{            
+                mpi_decomposition=BASIN_DECOMPOSITION;                
             }
+        }else{
+
+            for(i=0;i<mpi_size;i++){
+                node_ids[i]=i;
+            }
+            sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
+            
+            if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
+                log_err("BASIN_DECOMPOSITION is selected but there are more nodes than basins, exiting...");
+            }            
         }
     }else{
         // decompose the mask at random

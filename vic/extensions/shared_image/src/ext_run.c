@@ -40,7 +40,7 @@ ext_run()
             cur_id = cell_order_local[i];
             
             if(ext_options.ROUTING){
-                runoff = (out_data[cur_id][OUT_RUNOFF][0] + out_data[i][OUT_BASEFLOW][0]) * 
+                runoff = (out_data[cur_id][OUT_RUNOFF][0] + out_data[cur_id][OUT_BASEFLOW][0]) * 
                         local_domain.locations[cur_id].area / (MM_PER_M * global_param.dt);
                 routing_run(rout_con[cur_id],&ext_all_vars[cur_id],ext_all_vars, runoff); 
             }
