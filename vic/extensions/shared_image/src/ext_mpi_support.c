@@ -185,7 +185,7 @@ mpi_map_decomp_domain_basin(size_t   ncells,
                       
         // find node with lowest amount of cells and add the biggest basin
         (*mpi_map_local_array_sizes)[node_ids[0]] += basins->Ncells[basins->sorted_basins[i]];
-        basin_to_node[i] = node_ids[0];
+        basin_to_node[basins->sorted_basins[i]] = node_ids[0];
     }
 
     // determine offsets to use for MPI_Scatterv and MPI_Gatherv

@@ -233,9 +233,10 @@ routing_init_downstream() {
     if(mpi_decomposition == RANDOM_DECOMPOSITION){ 
         for(i=0; i<local_domain.ncells_active; i++){
             rout_con[i].downstream = downstream_local[i];
-        }
-        
-    }else if(mpi_decomposition == BASIN_DECOMPOSITION){        
+        }        
+    }
+    
+    else if(mpi_decomposition == BASIN_DECOMPOSITION){        
         for(i=0; i<local_domain.ncells_active; i++){
             for(j=0;j<local_domain.ncells_active;j++){
                 if(local_domain.locations[j].global_idx == downstream_local[i]){
@@ -359,10 +360,10 @@ routing_init_upstream(){
         }
         free(upstream_local);
         free(nupstream_local);
-        free(downstream_local);     
-        
-        
-    }else if (mpi_decomposition == BASIN_DECOMPOSITION) { 
+        free(downstream_local); 
+    }
+    
+    else if (mpi_decomposition == BASIN_DECOMPOSITION) { 
         
         for(i=0;i<local_domain.ncells_active;i++){        
             rout_con[i].Nupstream = 0;

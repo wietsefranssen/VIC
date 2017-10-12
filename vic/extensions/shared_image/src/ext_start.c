@@ -60,4 +60,9 @@ ext_start(){
     status = MPI_Bcast(&mpi_decomposition, 1, MPI_INT,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
+            
+    if(ext_options.ROUTING){
+        debug_basins();
+        debug_node_domain();
+    }
 }

@@ -70,8 +70,6 @@ void get_basins(nameid_struct *nc_nameid, char *direction_var, basin_struct *bas
             cur_cell = next_cell;
         }
     }
-        
-    debug_basins();
     
     basins->Ncells = malloc(basins->Nbasin * sizeof(*basins->Ncells));
     check_alloc_status(basins->Ncells, "Memory allocation error.");
