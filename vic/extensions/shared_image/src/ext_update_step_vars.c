@@ -81,6 +81,9 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
                     &ms_nat_inflow[i]);
         }
         
+        // Calculate operational year
+        calculate_operational_year(dam_var,my_inflow,ms_inflow);
+        
         // Calculate optimal discharge
         calculate_optimal_discharge(dam_con, *dam_var, my_inflow, ms_inflow, discharge);
         
@@ -121,6 +124,46 @@ calculate_multi_year_average(double *history, size_t repetitions, size_t length,
             (*average) += history[(i * (offset+length+skip)) + offset + j] / (repetitions * length);
         }
     }    
+}
+
+void
+calculate_operational_year(dam_var_struct *dam_var, double my_inflow, double *ms_inflow){
+    extern global_param_struct global_param;
+    extern ext_option_struct ext_options;
+    extern ext_parameters_struct ext_param;
+    
+    size_t i;
+    size_t cur_step;
+    double op_inflow;
+    double max_op_inflow;
+    size_t add_step;
+    size_t old_jday;
+    size_t new_jday;
+            
+    op_inflow=0;
+    max_op_inflow=0;
+    
+    // Calculate the month with the most consecutive high inflows
+    for(i = 0; i < 2 * ext_options.history_steps_per_history_year; i++){
+        cur_step = i % ext_options.history_steps_per_history_year;
+
+        if(ms_inflow[cur_step] > my_inflow){
+            op_inflow += ms_inflow[cur_step];
+
+            if(op_inflow>max_op_inflow){
+                max_op_inflow=op_inflow;
+                add_step=cur_step;
+            }
+        }else{
+            op_inflow=0;
+        }
+    }
+    
+    // Change the operational year date
+    old_jday = julian_day_from_dmy(&dam_var->op_year, global_param.calendar);
+    new_jday = old_jday + (add_step + 1) * ext_param.DAM_HISTORY_LENGTH;
+    dmy_julian_day(new_jday, global_param.calendar, &dam_var->op_year);
+    dam_var->op_year.year = global_param.startyear;
 }
 
 double

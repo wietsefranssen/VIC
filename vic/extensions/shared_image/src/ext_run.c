@@ -28,7 +28,7 @@ ext_run(dmy_struct dmy)
     size_t i;
     size_t j;
     size_t cur_id;
-                    
+    
     // Update variables locally
     for(i=0;i<local_domain.ncells_active;i++){
         if(ext_options.ROUTING){

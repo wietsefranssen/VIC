@@ -66,6 +66,7 @@ void dams_init();
 void calculate_dam_surface_area(dam_con_struct dam_con, dam_var_struct *);
 void calculate_dam_height(dam_var_struct *);
 void calculate_multi_year_average(double *history, size_t repetitions, size_t length, size_t offset, size_t skip, double *average);
+void calculate_operational_year(dam_var_struct *dam_var, double my_inflow, double *ms_inflow);
 void calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var, 
         double my_inflow, double *ms_inflow, double *discharge);
 double calculate_volume_needed(double amplitude, double offset, double my_inflow, double *ms_inflow, 
