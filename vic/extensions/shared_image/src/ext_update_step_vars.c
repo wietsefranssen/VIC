@@ -30,20 +30,6 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
     
     size_t i;
     
-    if(dam_var->inflow_offset >= ext_options.model_steps_per_history_step){
-        // Model steps per history step has passed
-        
-        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->calc_discharge, ext_options.history_steps, 1, 0, -1);
-                
-        dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->inflow_offset;
-        dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->inflow_offset;
-        dam_var->inflow_total = 0.0;
-        dam_var->nat_inflow_total = 0.0;
-        dam_var->inflow_offset = 0;
-    }
-    
     if(current > 0 &&
             dmy[current].month == dam_var->op_year.month && 
             dmy[current].day == dam_var->op_year.day &&
@@ -54,7 +40,7 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         
         cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
         cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->calc_discharge, ext_options.history_steps, 1, 0, -1);
+        cshift(dam_var->calc_discharge, ext_options.history_steps_per_history_year, 1, 0, -1);
                 
         dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->inflow_offset;
         dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->inflow_offset;
@@ -105,6 +91,19 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         
         // Ensure efr is being met (when possible)
         calculate_corrected_discharge(discharge,efr,my_inflow,dam_var->calc_discharge);
+    } else 
+        if(dam_var->inflow_offset >= ext_options.model_steps_per_history_step){
+        // Model steps per history step has passed
+        
+        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
+        cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
+        cshift(dam_var->calc_discharge, ext_options.history_steps_per_history_year, 1, 0, -1);
+                
+        dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->inflow_offset;
+        dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->inflow_offset;
+        dam_var->inflow_total = 0.0;
+        dam_var->nat_inflow_total = 0.0;
+        dam_var->inflow_offset = 0;
     }
     
     dam_var->inflow_offset++;
@@ -143,7 +142,7 @@ calculate_efr_fraction(double flow, double annual_flow){
 void
 calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var, 
         double my_inflow, double *ms_inflow, double *discharge){
-    ext_option_struct ext_options;
+    extern ext_option_struct ext_options;
     
     double volume_needed;
     double amplitude;
@@ -159,8 +158,6 @@ calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var,
             break;
         }
     }
-    
-    debug("AMPLITUDE %.2f",amplitude);
     
     // Calculate offset
     offset = ((dam_con.max_volume * DAM_PVOLUME) - dam_var.volume) /

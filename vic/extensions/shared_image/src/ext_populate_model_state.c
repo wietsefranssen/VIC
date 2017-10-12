@@ -57,6 +57,8 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *d
         for(j=0;j<ext_options.history_steps;j++){
             dam_var->inflow_history[j] = 0.0;
             dam_var->nat_inflow_history[j] = 0.0;
+        }
+        for(j=0;j<ext_options.history_steps_per_history_year;j++){
             dam_var->calc_discharge[j] = 0.0;
         }
         

@@ -100,8 +100,10 @@ initialize_dam_var(dam_var_struct *dam_var)
     dam_var->discharge=0.0;
     for(i=0;i<ext_options.history_steps;i++){
         dam_var->inflow_history[i] = 0.0;
-        dam_var->calc_discharge[i] = 0.0;
         dam_var->nat_inflow_history[i] = 0.0;
+    }
+    for(i=0;i<ext_options.history_steps_per_history_year;i++){
+        dam_var->calc_discharge[i] = 0.0;        
     }
     
     initialize_dmy(&dam_var->op_year);

@@ -23,7 +23,7 @@ cshift(double *data,
     if (axis == 0 && direction == -1) {
         for (y = 0; y != ny; y++) {
             b = *(data + y + ny * (nx - 1));
-            for (x = nx - 1; x >= 0; x--) {
+            for (x = nx - 2; x >= 0; x--) {
                 *(data + y + ny * (x + 1)) = *(data + y + ny * x);
             }
             *(data + y) = b;
