@@ -126,13 +126,13 @@ void
 initialize_ext_parameters(ext_parameters_struct *parameters)
 {          
     // FOLLOWING PARAMETERS NEED TO BE ADJUSTED BASED ON EXPERIMENTATION
-    parameters->MPI_N_PROCESS_COST=4;  
-    parameters->MPI_E_PROCESS_COST=5; 
+    parameters->MPI_N_PROCESS_COST = 4;  
+    parameters->MPI_E_PROCESS_COST = 5; 
     
-    parameters->UH_FLOW_DIFFUSION=800;
-    parameters->UH_FLOW_VELOCITY=1.75;
-    parameters->UH_MAX_LENGTH=2;
-    parameters->UH_PARTITIONS=20;
+    parameters->UH_FLOW_DIFFUSION = 800;
+    parameters->UH_FLOW_VELOCITY = 1.5;
+    parameters->UH_LENGTH = 5;
+    parameters->UH_PARTITIONS = 20;
 }
 
 /******************************************************************************

@@ -26,7 +26,7 @@ typedef struct{
     
     double UH_FLOW_VELOCITY;
     double UH_FLOW_DIFFUSION;
-    int UH_MAX_LENGTH;
+    int UH_LENGTH;
     int UH_PARTITIONS;    
 }ext_parameters_struct;
 

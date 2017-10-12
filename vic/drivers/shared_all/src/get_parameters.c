@@ -538,7 +538,7 @@ get_parameters(FILE *paramfile)
                 sscanf(cmdstr, "%*s %lf", &ext_param.UH_FLOW_VELOCITY);
             }
             else if (strcasecmp("UH_MAX_LENGTH", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &ext_param.UH_MAX_LENGTH);
+                sscanf(cmdstr, "%*s %d", &ext_param.UH_LENGTH);
             }
             else if (strcasecmp("UH_PARTITIONS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %d", &ext_param.UH_PARTITIONS);

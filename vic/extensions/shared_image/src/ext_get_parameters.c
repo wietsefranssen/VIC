@@ -20,7 +20,7 @@ validate_ext_parameters(){
     if(!(ext_param.UH_PARTITIONS >= 0)) {
         log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
     }
-    if(!(ext_param.UH_MAX_LENGTH >= 0)) {
+    if(!(ext_param.UH_LENGTH >= 0)) {
         log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
     }
 }

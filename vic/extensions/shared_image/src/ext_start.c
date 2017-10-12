@@ -14,21 +14,21 @@ ext_start(){
     extern int mpi_rank;
     
     int status;
-        
-    if(ext_options.ROUTING){
-        if(mpi_rank == VIC_MPI_ROOT){     
+    
+    if(mpi_rank == VIC_MPI_ROOT){     
+        if(ext_options.ROUTING){
             // calculate derived option variables
-            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_MAX_LENGTH;
-            
+            ext_options.uh_steps = global_param.model_steps_per_day * ext_param.UH_LENGTH;
+
             cell_order_global = malloc(global_domain.ncells_active * 
                                          sizeof(*cell_order_global));
             check_alloc_status(cell_order_global, "Memory allocation error");   
 
             initialize_global_cell_order(cell_order_global);
-            
+
             validate_ext_parameters();
-        }  
-    }
+        }
+    }  
     
     status = MPI_Bcast(&ext_param, 1, mpi_ext_param_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
@@ -41,4 +41,9 @@ ext_start(){
     status = MPI_Bcast(&mpi_decomposition, 1, MPI_INT,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
+            
+    if(ext_options.ROUTING){
+        debug_basins();
+        debug_node_domain();
+    }
 }

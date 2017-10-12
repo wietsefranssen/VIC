@@ -163,7 +163,7 @@ mpi_map_decomp_domain_basin(size_t   ncells,
                       
         // find node with lowest amount of cells and add the biggest basin
         (*mpi_map_local_array_sizes)[node_ids[0]] += basins->Ncells[basins->sorted_basins[i]];
-        basin_to_node[i] = node_ids[0];
+        basin_to_node[basins->sorted_basins[i]] = node_ids[0];
     }
 
     // determine offsets to use for MPI_Scatterv and MPI_Gatherv
@@ -747,8 +747,8 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     //double UH_FLOW_DIFFUSION;
     offsets[i] = offsetof(ext_parameters_struct, UH_FLOW_DIFFUSION);
     mpi_types[i++] = MPI_DOUBLE;
-    //int UH_MAX_LENGTH;
-    offsets[i] = offsetof(ext_parameters_struct, UH_MAX_LENGTH);
+    //int UH_LENGTH;
+    offsets[i] = offsetof(ext_parameters_struct, UH_LENGTH);
     mpi_types[i++] = MPI_INT;
     //int UH_PARTITIONS;
     offsets[i] = offsetof(ext_parameters_struct, UH_PARTITIONS);

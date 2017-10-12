@@ -10,7 +10,7 @@ ext_alloc(void)
     extern size_t *cell_order_local;
     
     size_t i;
-    
+        
     ext_all_vars = malloc(local_domain.ncells_active * sizeof(*ext_all_vars));
     check_alloc_status(ext_all_vars, "Memory allocation error");   
     
