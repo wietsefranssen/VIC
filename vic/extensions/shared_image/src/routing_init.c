@@ -33,6 +33,12 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     uh_cumulative[0] = uh_precise[0];
     for(i = 1;i < ext_options.uh_steps * ext_param.UH_PARTITIONS - 1; i++){
         uh_cumulative[i] = uh_cumulative[i-1] + uh_precise[i];
+        
+        if(uh_cumulative[i] > 1.0){
+            uh_cumulative[i] = 1.0;
+        }else if(uh_cumulative[i] < 0.0){
+            uh_cumulative[i] = 0.0;
+        }
     }
     uh_cumulative[i]=1.0;
     
@@ -566,6 +572,7 @@ routing_init(){
     routing_init_upstream();
     routing_init_order();
     
+    debug_uh();
     debug_nupstream();
     debug_downstream();
     debug_id();

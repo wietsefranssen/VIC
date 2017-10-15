@@ -1,7 +1,7 @@
 #include <ext_driver_shared_image.h>
 
 void
-debug_nc_sizet(char *path, size_t *data, size_t fill_value){    
+debug_map_nc_sizet(char *path, size_t *data, size_t fill_value){    
     extern domain_struct global_domain;
     
     int new_data[global_domain.ncells_active];
@@ -12,11 +12,11 @@ debug_nc_sizet(char *path, size_t *data, size_t fill_value){
         new_data[i]=(int)data[i];
     }
     
-    debug_nc_int(path,new_data,(int)fill_value);
+    debug_map_nc_int(path,new_data,(int)fill_value);
 }
 
 void
-debug_nc_int(char *path, int *data, int fill_value){
+debug_map_nc_int(char *path, int *data, int fill_value){
     extern domain_struct global_domain;
     
     int status;
@@ -105,7 +105,7 @@ debug_nc_int(char *path, int *data, int fill_value){
 }
 
 void
-debug_file_sizet(char *path, size_t *data){
+debug_map_file_sizet(char *path, size_t *data){
     extern domain_struct global_domain;
     
     FILE *file;
@@ -140,7 +140,7 @@ debug_file_sizet(char *path, size_t *data){
 }
 
 void
-debug_file_int(char *path, int *data){
+debug_map_file_int(char *path, int *data){
     extern domain_struct global_domain;
     
     FILE *file;
@@ -204,7 +204,7 @@ debug_downstream(){
     
     // Make debug file
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_sizet("./debug_output/downstream",svar_global);
+        debug_map_file_sizet("./debug_output/downstream",svar_global);
     }   
         
     // Free
@@ -234,7 +234,7 @@ debug_nupstream(){
     }
     gather_int(ivar_global,ivar_local);
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_int("./debug_output/nupstream",ivar_global);
+        debug_map_file_int("./debug_output/nupstream",ivar_global);
     }
         
     free(ivar_global);
@@ -257,8 +257,8 @@ debug_id(){
         for(i=0;i<global_domain.ncells_active;i++){
             svar_global[i] = i;
         }
-        debug_file_sizet("./debug_output/id",svar_global);
-        debug_nc_sizet("./debug_output/id.nc",svar_global,NODATA_BASIN);
+        debug_map_file_sizet("./debug_output/id",svar_global);
+        debug_map_nc_sizet("./debug_output/id.nc",svar_global,NODATA_BASIN);
     }       
     
     free(svar_global);
@@ -270,8 +270,8 @@ debug_basins(){
     extern int mpi_rank;
     
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_sizet("./debug_output/basins",basins.basin_map);
-        debug_nc_sizet("./debug_output/basins.nc",basins.basin_map,NODATA_BASIN);
+        debug_map_file_sizet("./debug_output/basins",basins.basin_map);
+        debug_map_nc_sizet("./debug_output/basins.nc",basins.basin_map,NODATA_BASIN);
     }    
 }
 
@@ -300,7 +300,7 @@ debug_node_domain(){
     }
     gather_int(ivar_global,ivar_local);
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_nc_int("./debug_output/node_domain.nc",ivar_global,-1);
+        debug_map_nc_int("./debug_output/node_domain.nc",ivar_global,-1);
     }
         
     free(ivar_global);
@@ -308,63 +308,63 @@ debug_node_domain(){
 }
 
 void
-debug_basins2(){
+debug_uh(){
     extern domain_struct local_domain;
     extern domain_struct global_domain;
     extern rout_con_struct *rout_con;
+    extern ext_option_struct ext_options;
     extern int mpi_rank;
     
-    size_t *svar_global = NULL;
-    size_t *svar_local = NULL;
+    double **uh_local;
+    double **uh_global;
     
-    size_t nbasins;
-    size_t basin[local_domain.ncells_active];
+    FILE *file;
+    
+    double uh_sum;
     
     size_t i;
+    size_t j;
     
-    for(i=0;i<local_domain.ncells_active;i++){
-        basin[i] = MISSING_USI;
-    }
-    
-    nbasins=0;
-    for(i=0;i<local_domain.ncells_active;i++){
-        if(rout_con[i].downstream==i){
-            basin[i]=nbasins;
-            nbasins++;
-        }
-    }
-    
-    size_t current;
-    
-    for(i=0;i<local_domain.ncells_active;i++){        
-        if(rout_con[i].downstream!=i){
-            current = rout_con[i].downstream;
-            
-            while(true){
-                if(basin[current]!=MISSING_USI){
-                    basin[i] = basin[current];
-                    break;
-                }
-                
-                current = rout_con[current].downstream;
-            }
-        }
-    }
-    
-    svar_global = malloc(global_domain.ncells_active * sizeof(*svar_global));
-    check_alloc_status(svar_global,"Memory allocation error");
-    svar_local = malloc(local_domain.ncells_active * sizeof(*svar_local));
-    check_alloc_status(svar_local,"Memory allocation error");
-    
-    for(i=0;i<local_domain.ncells_active;i++){
-        svar_local[i] = basin[i];
-    }
-    gather_sizet(svar_global,svar_local);
+    // Alloc
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_sizet("./debug_output/basins2",svar_global);
+        uh_global = malloc(global_domain.ncells_active * sizeof(*uh_global));
+        check_alloc_status(uh_global,"Memory allocation error");
+        for(i=0;i<global_domain.ncells_active;i++){
+            uh_global[i] = malloc(ext_options.uh_steps * sizeof(*uh_global[i]));
+            check_alloc_status(uh_global[i],"Memory allocation error");
+        }
     }
-        
-    free(svar_global);
-    free(svar_local);    
+    uh_local = malloc(local_domain.ncells_active * sizeof(*uh_local));
+    check_alloc_status(uh_local,"Memory allocation error");
+    for(i=0;i<local_domain.ncells_active;i++){
+        uh_local[i] = malloc(ext_options.uh_steps * sizeof(*uh_local[i]));
+        check_alloc_status(uh_local[i],"Memory allocation error");
+    }
     
+    for(i=0;i<local_domain.ncells_active;i++){
+        for(j=0;j<ext_options.uh_steps;j++){
+            uh_local[i][j] = rout_con[i].uh[j];
+        }
+    }
+    gather_double_2d(uh_global,uh_local,ext_options.uh_steps);    
+    if(mpi_rank == VIC_MPI_ROOT){    
+        if((file = fopen("./debug_output/uh", "w"))!=NULL){
+            for(i=0;i<global_domain.ncells_active;i++){
+                uh_sum = 0.0;
+                for(j=0;j<ext_options.uh_steps;j++){
+                    fprintf(file,"%.2f; ",uh_global[i][j]);
+                    uh_sum += uh_global[i][j];
+                }
+                fprintf(file,"SUM = %.2f; ",uh_sum);
+                fprintf(file,"\n");
+            }
+            fclose(file);
+        }
+    }
+    
+        
+    if(mpi_rank == VIC_MPI_ROOT){
+        free(uh_global);
+    }
+    free(uh_local);
 }
