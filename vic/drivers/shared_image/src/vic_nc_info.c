@@ -101,6 +101,26 @@ set_nc_var_info(unsigned int       varid,
         nc_var->nc_counts[2] = nc_hist_file->nj_size;
         nc_var->nc_counts[3] = nc_hist_file->ni_size;
         break;
+    case OUT_DAM_VOLUME:
+    case OUT_DAM_MAX_VOLUME:
+    case OUT_DAM_FRAC_VOLUME:
+    case OUT_DAM_AREA:
+    case OUT_DAM_MAX_AREA:
+    case OUT_DAM_FRAC_AREA:
+    case OUT_DAM_HEIGHT:
+    case OUT_DAM_MAX_HEIGHT:
+    case OUT_DAM_FRAC_HEIGHT:
+    case OUT_DAM_DISCHARGE:
+    case OUT_DAM_CALC_DISCHARGE:
+    case OUT_DAM_INFLOW:
+    case OUT_DAM_CALC_INFLOW:
+    case OUT_DAM_NAT_INFLOW:
+    case OUT_DAM_CALC_NAT_INFLOW:
+        nc_var->nc_dims = 4;
+        nc_var->nc_counts[1] = nc_hist_file->ndams_size;
+        nc_var->nc_counts[2] = nc_hist_file->nj_size;
+        nc_var->nc_counts[3] = nc_hist_file->ni_size;
+        break;
     default:
         nc_var->nc_dims = 3;
         nc_var->nc_counts[1] = nc_hist_file->nj_size;
@@ -175,6 +195,26 @@ set_nc_var_dimids(unsigned int    varid,
     case OUT_SWE_BAND:
         nc_var->nc_dimids[0] = nc_hist_file->time_dimid;
         nc_var->nc_dimids[1] = nc_hist_file->band_dimid;
+        nc_var->nc_dimids[2] = nc_hist_file->nj_dimid;
+        nc_var->nc_dimids[3] = nc_hist_file->ni_dimid;
+        break;
+    case OUT_DAM_VOLUME:
+    case OUT_DAM_MAX_VOLUME:
+    case OUT_DAM_FRAC_VOLUME:
+    case OUT_DAM_AREA:
+    case OUT_DAM_MAX_AREA:
+    case OUT_DAM_FRAC_AREA:
+    case OUT_DAM_HEIGHT:
+    case OUT_DAM_MAX_HEIGHT:
+    case OUT_DAM_FRAC_HEIGHT:
+    case OUT_DAM_DISCHARGE:
+    case OUT_DAM_CALC_DISCHARGE:
+    case OUT_DAM_INFLOW:
+    case OUT_DAM_CALC_INFLOW:
+    case OUT_DAM_NAT_INFLOW:
+    case OUT_DAM_CALC_NAT_INFLOW:
+        nc_var->nc_dimids[0] = nc_hist_file->time_dimid;
+        nc_var->nc_dimids[1] = nc_hist_file->ndams_dimid;
         nc_var->nc_dimids[2] = nc_hist_file->nj_dimid;
         nc_var->nc_dimids[3] = nc_hist_file->ni_dimid;
         break;

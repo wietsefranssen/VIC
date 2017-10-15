@@ -3,6 +3,7 @@
 void
 ext_set_output_met_data_info(){    
     extern metadata_struct out_metadata[N_OUTVAR_TYPES];
+    extern ext_option_struct ext_options;
     
     // Extensions
     /* Discharge [m3/s] */
@@ -23,6 +24,123 @@ ext_set_output_met_data_info(){
     strcpy(out_metadata[OUT_NAT_DISCHARGE].description,
            "natural_discharge");
     
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_VOLUME].varname, "OUT_DAM_VOLUME");
+    strcpy(out_metadata[OUT_DAM_VOLUME].long_name, "dam_current_volume");
+    strcpy(out_metadata[OUT_DAM_VOLUME].standard_name,
+           "dam_current_volume");
+    strcpy(out_metadata[OUT_DAM_VOLUME].units, "m3");
+    strcpy(out_metadata[OUT_DAM_VOLUME].description,
+           "dam_current_volume");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_MAX_VOLUME].varname, "OUT_DAM_MAX_VOLUME");
+    strcpy(out_metadata[OUT_DAM_MAX_VOLUME].long_name, "dam_maximum_volume");
+    strcpy(out_metadata[OUT_DAM_MAX_VOLUME].standard_name,
+           "dam_maximum_volume");
+    strcpy(out_metadata[OUT_DAM_MAX_VOLUME].units, "m3");
+    strcpy(out_metadata[OUT_DAM_MAX_VOLUME].description,
+           "dam_maximum_volume");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_FRAC_VOLUME].varname, "OUT_DAM_FRAC_VOLUME");
+    strcpy(out_metadata[OUT_DAM_FRAC_VOLUME].long_name, "dam_fractional_volume");
+    strcpy(out_metadata[OUT_DAM_FRAC_VOLUME].standard_name,
+           "dam_fractional_volume");
+    strcpy(out_metadata[OUT_DAM_FRAC_VOLUME].units, "m3");
+    strcpy(out_metadata[OUT_DAM_FRAC_VOLUME].description,
+           "dam_fractional_volume");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_AREA].varname, "OUT_DAM_AREA");
+    strcpy(out_metadata[OUT_DAM_AREA].long_name, "dam_current_area");
+    strcpy(out_metadata[OUT_DAM_AREA].standard_name,
+           "dam_current_area");
+    strcpy(out_metadata[OUT_DAM_AREA].units, "m2");
+    strcpy(out_metadata[OUT_DAM_AREA].description,
+           "dam_current_area");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_MAX_AREA].varname, "OUT_DAM_MAX_AREA");
+    strcpy(out_metadata[OUT_DAM_MAX_AREA].long_name, "dam_maximum_area");
+    strcpy(out_metadata[OUT_DAM_MAX_AREA].standard_name,
+           "dam_maximum_area");
+    strcpy(out_metadata[OUT_DAM_MAX_AREA].units, "m2");
+    strcpy(out_metadata[OUT_DAM_MAX_AREA].description,
+           "dam_maximum_area");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_FRAC_AREA].varname, "OUT_DAM_FRAC_AREA");
+    strcpy(out_metadata[OUT_DAM_FRAC_AREA].long_name, "dam_fractional_area");
+    strcpy(out_metadata[OUT_DAM_FRAC_AREA].standard_name,
+           "dam_fractional_area");
+    strcpy(out_metadata[OUT_DAM_FRAC_AREA].units, "m3/s");
+    strcpy(out_metadata[OUT_DAM_FRAC_AREA].description,
+           "dam_fractional_area");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_HEIGHT].varname, "OUT_DAM_HEIGHT");
+    strcpy(out_metadata[OUT_DAM_HEIGHT].long_name, "dam_current_height");
+    strcpy(out_metadata[OUT_DAM_HEIGHT].standard_name,
+           "dam_current_height");
+    strcpy(out_metadata[OUT_DAM_HEIGHT].units, "m");
+    strcpy(out_metadata[OUT_DAM_HEIGHT].description,
+           "dam_current_height");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_MAX_HEIGHT].varname, "OUT_DAM_MAX_HEIGHT");
+    strcpy(out_metadata[OUT_DAM_MAX_HEIGHT].long_name, "dam_max_height");
+    strcpy(out_metadata[OUT_DAM_MAX_HEIGHT].standard_name,
+           "dam_max_height");
+    strcpy(out_metadata[OUT_DAM_MAX_HEIGHT].units, "m");
+    strcpy(out_metadata[OUT_DAM_MAX_HEIGHT].description,
+           "dam_max_height");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_FRAC_HEIGHT].varname, "OUT_DAM_FRAC_HEIGHT");
+    strcpy(out_metadata[OUT_DAM_FRAC_HEIGHT].long_name, "dam_fractional_height");
+    strcpy(out_metadata[OUT_DAM_FRAC_HEIGHT].standard_name,
+           "dam_fractional_height");
+    strcpy(out_metadata[OUT_DAM_FRAC_HEIGHT].units, "m");
+    strcpy(out_metadata[OUT_DAM_FRAC_HEIGHT].description,
+           "dam_fractional_height");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_DISCHARGE].varname, "OUT_DAM_DISCHARGE");
+    strcpy(out_metadata[OUT_DAM_DISCHARGE].long_name, "dam_discharge");
+    strcpy(out_metadata[OUT_DAM_DISCHARGE].standard_name,
+           "dam_discharge");
+    strcpy(out_metadata[OUT_DAM_DISCHARGE].units, "m3/s");
+    strcpy(out_metadata[OUT_DAM_DISCHARGE].description,
+           "dam_discharge");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_CALC_DISCHARGE].varname, "OUT_DAM_CALC_DISCHARGE");
+    strcpy(out_metadata[OUT_DAM_CALC_DISCHARGE].long_name, "dam_calculated_discharge");
+    strcpy(out_metadata[OUT_DAM_CALC_DISCHARGE].standard_name,
+           "dam_calculated_discharge");
+    strcpy(out_metadata[OUT_DAM_CALC_DISCHARGE].units, "m3/s");
+    strcpy(out_metadata[OUT_DAM_CALC_DISCHARGE].description,
+           "dam_calculated_discharge");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_CALC_INFLOW].varname, "OUT_DAM_CALC_INFLOW");
+    strcpy(out_metadata[OUT_DAM_CALC_INFLOW].long_name, "dam_calculated_inflow");
+    strcpy(out_metadata[OUT_DAM_CALC_INFLOW].standard_name,
+           "dam_calculated_inflow");
+    strcpy(out_metadata[OUT_DAM_CALC_INFLOW].units, "m3/ts");
+    strcpy(out_metadata[OUT_DAM_CALC_INFLOW].description,
+           "dam_calculated_inflow");
+    
+    /* Natural discharge [m3/s] */
+    strcpy(out_metadata[OUT_DAM_CALC_NAT_INFLOW].varname, "OUT_DAM_CALC_NAT_INFLOW");
+    strcpy(out_metadata[OUT_DAM_CALC_NAT_INFLOW].long_name, "dam_calculated_natural_inflow");
+    strcpy(out_metadata[OUT_DAM_CALC_NAT_INFLOW].standard_name,
+           "dam_calculated_natural_inflow");
+    strcpy(out_metadata[OUT_DAM_CALC_NAT_INFLOW].units, "m3/ts");
+    strcpy(out_metadata[OUT_DAM_CALC_NAT_INFLOW].description,
+           "dam_calculated_natural_inflow");
+    
     /* Wall time spent inside ext_run [seconds] */
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].varname, "OUT_TIME_EXTRUN_WALL");
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].long_name, "time_extrun_wall");
@@ -39,4 +157,20 @@ ext_set_output_met_data_info(){
     strcpy(out_metadata[OUT_TIME_EXTRUN_CPU].units, "seconds");
     strcpy(out_metadata[OUT_TIME_EXTRUN_CPU].description,
            "CPU time spent inside ext_run");
+    
+    out_metadata[OUT_DAM_VOLUME].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_MAX_VOLUME].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_FRAC_VOLUME].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_AREA].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_MAX_AREA].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_FRAC_AREA].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_HEIGHT].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_MAX_HEIGHT].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_FRAC_HEIGHT].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_DISCHARGE].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_CALC_DISCHARGE].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_INFLOW].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_CALC_INFLOW].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_NAT_INFLOW].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_CALC_NAT_INFLOW].nelem = ext_options.ndams;
 }

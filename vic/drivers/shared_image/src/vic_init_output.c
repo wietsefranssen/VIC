@@ -326,6 +326,10 @@ initialize_history_file(nc_file_struct *nc,
     check_nc_status(status, "Error defining time bounds dimension in %s",
                     stream->filename);
 
+    status = nc_def_dim(nc->nc_id, "ndams", nc->ndams_size, &(nc->ndams_dimid));
+    check_nc_status(status, "Error defining ndams dimension in %s",
+                    stream->filename);
+
     // define the netcdf variable time
     status = nc_def_var(nc->nc_id, "time", NC_DOUBLE, 1,
                         &(nc->time_dimid), &(nc->time_varid));

@@ -130,6 +130,7 @@ typedef struct {
     int time_bounds_varid;    
     // Extension
     int discharge_dimid;
+    int ndams_dimid;
         
     size_t band_size;
     size_t front_size;
@@ -144,6 +145,7 @@ typedef struct {
     size_t veg_size;
     // Extension
     size_t discharge_size;
+    size_t ndams_size;
     
     bool open;
     nc_var_struct *nc_vars;

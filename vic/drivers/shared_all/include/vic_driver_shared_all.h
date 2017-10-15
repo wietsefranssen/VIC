@@ -288,8 +288,25 @@ enum
     
     // Extension variables
     // Routing terms
-    OUT_DISCHARGE,      /**< Discharge [m3/s] */
-    OUT_NAT_DISCHARGE,   /**< Natural discharge [m3/s] */
+    OUT_DISCHARGE,          /**< Discharge [m3/s] */
+    OUT_NAT_DISCHARGE,      /**< Natural discharge [m3/s] */
+    
+    // Dam terms
+    OUT_DAM_VOLUME,
+    OUT_DAM_MAX_VOLUME,
+    OUT_DAM_FRAC_VOLUME,
+    OUT_DAM_AREA,
+    OUT_DAM_MAX_AREA,
+    OUT_DAM_FRAC_AREA,
+    OUT_DAM_HEIGHT,
+    OUT_DAM_MAX_HEIGHT,
+    OUT_DAM_FRAC_HEIGHT,
+    OUT_DAM_DISCHARGE,
+    OUT_DAM_CALC_DISCHARGE,
+    OUT_DAM_INFLOW,
+    OUT_DAM_CALC_INFLOW,
+    OUT_DAM_NAT_INFLOW,
+    OUT_DAM_CALC_NAT_INFLOW,
             
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */

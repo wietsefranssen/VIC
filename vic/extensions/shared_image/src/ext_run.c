@@ -90,6 +90,6 @@ ext_run(dmy_struct dmy)
     
     // Save the output
     for(i=0;i<local_domain.ncells_active;i++){
-        ext_put_data(&ext_all_vars[i], out_data[i], &timer);            
+        ext_put_data(&ext_all_vars[i], dam_con[i], dam_con_map[i], out_data[i], &timer);            
     }
 }

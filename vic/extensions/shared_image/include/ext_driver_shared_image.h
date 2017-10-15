@@ -101,7 +101,7 @@ void ext_restore(void);
 // Run
 void ext_force(void);
 void ext_run(dmy_struct dmy);
-void ext_put_data(ext_all_vars_struct *, double **, timer_struct *);
+void ext_put_data(ext_all_vars_struct *, dam_con_struct *dam_con, dam_con_map_struct dam_con_map, double **, timer_struct *);
 // Finalizations
 void ext_finalize(void);
 
