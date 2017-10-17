@@ -18,8 +18,8 @@ dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_v
     extern global_param_struct global_param;
                 
     // River discharge is saved for history
-    dam_var->inflow_total += rout_var->discharge[0] * global_param.dt;
-    dam_var->nat_inflow_total += rout_var->nat_discharge[0] * global_param.dt;
+    dam_var->inflow_total += rout_var->discharge[0];
+    dam_var->nat_inflow_total += rout_var->nat_discharge[0];
     
     // Check if dam is run
     if(!dam_var->run){
@@ -30,28 +30,33 @@ dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_v
         }
     }
     
+    // Store for output    
+    dam_var->inflow = rout_var->discharge[0];
+    dam_var->nat_inflow = rout_var->nat_discharge[0];
+    
     // River discharge adds to dam reservoir volume
-    dam_var->volume += rout_var->discharge[0] * global_param.dt;
+    dam_var->volume += dam_var->inflow * global_param.dt;
     rout_var->discharge[0] = 0;
     
     // Recalculate dam water area and height
     calculate_dam_surface_area(dam_con,dam_var);
     calculate_dam_height(dam_var);
     
-    // Calculate outflow
-    if(dam_var->calc_discharge[0] > dam_var->volume){
-        dam_var->discharge = dam_var->volume;
-    }else{
-        dam_var->discharge = dam_var->calc_discharge[0];
+    // Reduce discharge if not available
+    dam_var->discharge = dam_var->calc_discharge[0]; 
+    if(dam_var->discharge * global_param.dt  > dam_var->volume){
+        dam_var->discharge = dam_var->volume / global_param.dt;
     }
+    dam_var->volume -= dam_var->discharge * global_param.dt;
     
-    // Remove outflow from dam reservoir volume and add to discharge
-    dam_var->volume -= dam_var->discharge;
+    // Increase discharge with overflow
     if(dam_var->volume > dam_con.max_volume){
-        dam_var->discharge += dam_var->volume - dam_con.max_volume;
+        dam_var->discharge += (dam_var->volume - dam_con.max_volume) / global_param.dt;
         dam_var->volume = dam_con.max_volume;
     }
-    rout_var->discharge[0] = dam_var->discharge / global_param.dt;
+    
+    // Discharge
+    rout_var->discharge[0] = dam_var->discharge;
     
     // Recalculate dam water area and height
     calculate_dam_surface_area(dam_con,dam_var);

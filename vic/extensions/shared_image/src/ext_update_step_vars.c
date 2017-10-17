@@ -30,23 +30,27 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
     
     size_t i;
     
+    dam_var->inflow=0.0;
+    dam_var->discharge=0.0;
+    dam_var->nat_inflow=0.0;
+    
     if(current > 0 &&
             dmy[current].month == dam_var->op_year.month && 
             dmy[current].day == dam_var->op_year.day &&
             dmy[current].dayseconds == dam_var->op_year.dayseconds){
         // Operational year has passed
         
-        dam_var->years_running ++;  
+        dam_var->years_running ++;
         
         cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
         cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
         cshift(dam_var->calc_discharge, ext_options.history_steps_per_history_year, 1, 0, -1);
                 
-        dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->inflow_offset;
-        dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->inflow_offset;
+        dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->history_offset;
+        dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->history_offset;
         dam_var->inflow_total = 0.0;
         dam_var->nat_inflow_total = 0.0;
-        dam_var->inflow_offset = 0;
+        dam_var->history_offset = 0;
         
         if(dam_var->years_running < (size_t) ext_param.DAM_HISTORY){
             years = dam_var->years_running;
@@ -57,13 +61,13 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         // Calculate multi-year averages
         calculate_multi_year_average(dam_var->inflow_history, 
                 years, 
-                years * ext_options.history_steps_per_history_year,
+                ext_options.history_steps_per_history_year,
                 0,
                 0,
                 &my_inflow);
         calculate_multi_year_average(dam_var->nat_inflow_history, 
                 years, 
-                years * ext_options.history_steps_per_history_year,
+                ext_options.history_steps_per_history_year,
                 0,
                 0,
                 &my_nat_inflow);
@@ -87,6 +91,7 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         // Calculate optimal discharge
         calculate_optimal_discharge(dam_con, *dam_var, my_inflow, ms_inflow, discharge);
         
+//        
         // Calculate efr        
         for(i=0;i<ext_options.history_steps_per_history_year;i++){
             efr[i] = calculate_efr(ms_nat_inflow[i],my_nat_inflow);
@@ -95,21 +100,21 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         // Ensure efr is being met (when possible)
         calculate_corrected_discharge(discharge,efr,my_inflow,dam_var->calc_discharge);
     } else 
-        if(dam_var->inflow_offset >= ext_options.model_steps_per_history_step){
+        if(dam_var->history_offset >= ext_options.model_steps_per_history_step){
         // Model steps per history step has passed
         
         cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
         cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
         cshift(dam_var->calc_discharge, ext_options.history_steps_per_history_year, 1, 0, -1);
                 
-        dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->inflow_offset;
-        dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->inflow_offset;
+        dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->history_offset;
+        dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->history_offset;
         dam_var->inflow_total = 0.0;
         dam_var->nat_inflow_total = 0.0;
-        dam_var->inflow_offset = 0;
+        dam_var->history_offset = 0;
     }
     
-    dam_var->inflow_offset++;
+    dam_var->history_offset++;
 }
 
 void 
@@ -139,7 +144,14 @@ calculate_operational_year(dam_var_struct *dam_var, double my_inflow, double *ms
     size_t add_step;
     size_t old_jday;
     size_t new_jday;
+    double ms_inflow_cor[ext_options.history_steps_per_history_year];
             
+    // Flip the inflow array
+    for(i = 0; i < ext_options.history_steps_per_history_year; i++){
+        ms_inflow_cor[i] = ms_inflow[i];
+    }
+    double_flip(ms_inflow_cor,ext_options.history_steps_per_history_year);
+    
     op_inflow=0;
     max_op_inflow=0;
     
@@ -147,8 +159,8 @@ calculate_operational_year(dam_var_struct *dam_var, double my_inflow, double *ms
     for(i = 0; i < 2 * ext_options.history_steps_per_history_year; i++){
         cur_step = i % ext_options.history_steps_per_history_year;
 
-        if(ms_inflow[cur_step] > my_inflow){
-            op_inflow += ms_inflow[cur_step];
+        if(ms_inflow_cor[cur_step] > my_inflow){
+            op_inflow += ms_inflow_cor[cur_step];
 
             if(op_inflow>max_op_inflow){
                 max_op_inflow=op_inflow;
@@ -186,6 +198,7 @@ void
 calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var, 
         double my_inflow, double *ms_inflow, double *discharge){
     extern ext_option_struct ext_options;
+    extern global_param_struct global_param;
     
     double volume_needed;
     double amplitude;
@@ -195,27 +208,32 @@ calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var,
     
     // Calculate amplitude
     for(amplitude = 0; amplitude <= 1; amplitude += DAM_ASTEP){
-        volume_needed = calculate_volume_needed(amplitude, 0, my_inflow, ms_inflow,
-                ext_options.history_steps_per_history_year, ext_options.model_steps_per_history_step);
-        if(dam_con.max_volume * DAM_PVOLUME >= volume_needed){
+        volume_needed = calculate_volume_needed(amplitude, 
+                0, 
+                my_inflow, 
+                ms_inflow,
+                ext_options.history_steps_per_history_year, 
+                ext_options.model_steps_per_history_step * global_param.dt);
+        if(dam_con.max_volume * DAM_MAX_PVOLUME >= volume_needed){
             break;
         }
     }
     
     // Calculate offset
-    offset = ((dam_con.max_volume * DAM_PVOLUME) - dam_var.volume) /
-            (ext_options.history_steps_per_history_year * ext_options.model_steps_per_history_step);
+    offset = ((dam_con.max_volume * DAM_MAX_PVOLUME) - dam_var.volume) /
+            (ext_options.history_steps_per_history_year * 
+            ext_options.model_steps_per_history_step * 
+            global_param.dt);
     
     // Calculate discharge;
     for(i=0;i<ext_options.history_steps_per_history_year;i++){
-        discharge[i] = calculate_volume_needed(amplitude, offset, my_inflow, ms_inflow,
-                ext_options.history_steps_per_history_year, ext_options.model_steps_per_history_step);
+        discharge[i] = get_amplitude_discharge(my_inflow, ms_inflow[i], amplitude, offset);
     }
 }
 
 double
 calculate_volume_needed(double amplitude, double offset, double my_inflow, double *ms_inflow, 
-        size_t history_length, size_t model_steps_per_history){
+        size_t history_length, size_t time_per_history_step){
     
     double discharge;
     double capacity_needed;
@@ -228,7 +246,7 @@ calculate_volume_needed(double amplitude, double offset, double my_inflow, doubl
             discharge = get_amplitude_discharge(my_inflow, ms_inflow[i], amplitude, offset);
             
             if(discharge < ms_inflow[i]){
-                capacity_needed += (ms_inflow[i] - discharge) * model_steps_per_history;
+                capacity_needed += (ms_inflow[i] - discharge) * time_per_history_step;
             }
         }
     }
@@ -238,8 +256,8 @@ calculate_volume_needed(double amplitude, double offset, double my_inflow, doubl
 
 double 
 get_amplitude_discharge(double my_inflow, double ms_inflow, double amplitude, double offset){
-    return my_inflow * (1-amplitude) +
-            my_inflow * amplitude * (ms_inflow / my_inflow) + 
+    return my_inflow +
+            ((ms_inflow - my_inflow) * amplitude) + 
             offset;
 }
 
@@ -259,7 +277,7 @@ calculate_corrected_discharge(double *ucor_discharge, double *efr, double my_inf
     for(i = 0; i < ext_options.history_steps_per_history_year; i++){
         if(ucor_discharge[i] < efr[i]){
             // Dam needs to discharge more
-            cor_needed += ucor_discharge[i] - efr[i];
+            cor_needed += abs(ucor_discharge[i] - efr[i]);
         }else if(ucor_discharge[i] > my_inflow){
             // Dam is storing water
         }else{
@@ -273,24 +291,26 @@ calculate_corrected_discharge(double *ucor_discharge, double *efr, double my_inf
         cor_discharge[i] = ucor_discharge[i];
     }
     
-    for(i=0;i<ext_options.history_steps_per_history_year;i++){
-        if(ucor_discharge[i] < efr[i]){
-            // Dam needs to discharge more
-            cor_discharge[i] = efr[i];
-        }else if(ucor_discharge[i] > my_inflow){
-            // Dam is storing water
-            cor_discharge[i] = ucor_discharge[i];
-        }else{
-            // Can reduce discharge this month
-            if(cor_needed<cor_available){
-                // Cannot correct for all efr, do as much as possible
+    if(cor_available > 0.0 && cor_needed > 0.0){
+        for(i=0;i<ext_options.history_steps_per_history_year;i++){
+            if(ucor_discharge[i] < efr[i]){
+                // Dam needs to discharge more
                 cor_discharge[i] = efr[i];
+            }else if(ucor_discharge[i] > my_inflow){
+                // Dam is storing water
+                cor_discharge[i] = ucor_discharge[i];
             }else{
-                // Reduce discharge in months where correction is possible
-                cor_discharge[i] = ucor_discharge[i] - 
-                        ((ucor_discharge[i] - efr[i]) *
-                        (cor_needed / cor_available));
-            }
-        }        
+                // Can reduce discharge this month
+                if(cor_needed > cor_available){
+                    // Cannot correct for all efr, do as much as possible
+                    cor_discharge[i] = efr[i];
+                }else{
+                    // Reduce discharge in months where correction is possible
+                    cor_discharge[i] = ucor_discharge[i] - 
+                            ((ucor_discharge[i] - efr[i]) *
+                            (cor_needed / cor_available));
+                }
+            }        
+        }
     }
 }

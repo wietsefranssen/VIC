@@ -15,7 +15,8 @@
 #define DAM_H
 
 #define DAM_ASTEP 0.01
-#define DAM_PVOLUME 0.85
+#define DAM_MIN_PVOLUME 0.15
+#define DAM_MAX_PVOLUME 0.85
 #define DAM_EFR_MINF 0.4
 #define DAM_EFR_MAXF 0.8
 #define DAM_EFR_MINR 0.6
@@ -44,13 +45,20 @@ typedef struct{
     
     double inflow_total;
     double nat_inflow_total;
-    size_t inflow_offset;
+    // double demand_total;
+    
     double *inflow_history;
     double *nat_inflow_history;
     //double **demand;
     
+    size_t history_offset;
+        
     double *calc_discharge;
+    
     double discharge;    
+    double inflow;
+    double nat_inflow;
+    // double demand;
     
     dmy_struct op_year;
 }dam_var_struct;

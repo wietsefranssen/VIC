@@ -390,6 +390,17 @@ enum
     STATE_DISCHARGE,
     STATE_NAT_DISCHARGE,
     
+    STATE_DAM_VOLUME,
+    STATE_DAM_INFLOW_HIS,
+    STATE_DAM_NAT_INFLOW_HIS,
+    STATE_DAM_CALC_DISCHARGE,
+    STATE_DAM_YEARS_RUNNING,
+    STATE_DAM_OY_DAY,
+    STATE_DAM_OY_MONTH,
+    STATE_DAM_INFLOW_TOTAL,
+    STATE_DAM_NAT_INFLOW_TOTAL,
+    STATE_DAM_HIS_OFFSET,
+    
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum
     N_STATE_VARS                       /**< used as a loop counter*/

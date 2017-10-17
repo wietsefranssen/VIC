@@ -131,6 +131,8 @@ typedef struct {
     // Extension
     int discharge_dimid;
     int ndams_dimid;
+    int dam_his_dimid;
+    int dam_yhis_dimid;
         
     size_t band_size;
     size_t front_size;
@@ -146,6 +148,8 @@ typedef struct {
     // Extension
     size_t discharge_size;
     size_t ndams_size;
+    size_t dam_his_size;
+    size_t dam_yhis_size;
     
     bool open;
     nc_var_struct *nc_vars;

@@ -58,6 +58,16 @@ void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending){
     }
 }
 
+void double_flip(double *array, size_t Nelements){
+    size_t i,end;
+    
+    end = Nelements -1;
+    for(i=0;i<Nelements/2;i++){
+        double_swap(i,end,array);
+        end--;
+    }    
+}
+
 void sizet_swap(size_t i, size_t j, size_t *array){
     size_t hold;
     
@@ -68,6 +78,14 @@ void sizet_swap(size_t i, size_t j, size_t *array){
 
 void int_swap(size_t i, size_t j, int *array){
     int hold;
+    
+    hold = array[i];
+    array[i]=array[j];
+    array[j]=hold;
+}
+
+void double_swap(size_t i, size_t j, double *array){
+    double hold;
     
     hold = array[i];
     array[i]=array[j];

@@ -96,8 +96,10 @@ initialize_dam_var(dam_var_struct *dam_var)
     
     dam_var->inflow_total=0.0;
     dam_var->nat_inflow_total=0.0;
-    dam_var->inflow_offset=0.0;
+    dam_var->history_offset=0.0;
     dam_var->discharge=0.0;
+    dam_var->inflow = 0.0;
+    dam_var->nat_inflow = 0.0;
     for(i=0;i<ext_options.history_steps;i++){
         dam_var->inflow_history[i] = 0.0;
         dam_var->nat_inflow_history[i] = 0.0;
@@ -212,7 +214,7 @@ initialize_ext_info(ext_info_struct *info){
 void
 initialize_ext_parameters(ext_parameters_struct *parameters)
 {          
-    // FOLLOWING PARAMETERS NEED TO BE ADJUSTED BASED ON EXPERIMENTATION
+    // MPI PARAMETERS NEED TO BE ADJUSTED BASED ON EXPERIMENTATION
     parameters->MPI_N_PROCESS_COST = 4;  
     parameters->MPI_E_PROCESS_COST = 5; 
     
@@ -221,8 +223,8 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->UH_LENGTH = 2;
     parameters->UH_PARTITIONS = 20;
     
-    parameters->DAM_HISTORY = 3;
-    parameters->DAM_HISTORY_LENGTH = 10;
+    parameters->DAM_HISTORY = 2;
+    parameters->DAM_HISTORY_LENGTH = 20;
 }
 
 /******************************************************************************
