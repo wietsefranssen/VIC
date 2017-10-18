@@ -666,6 +666,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
 {
     extern option_struct options;
     extern domain_struct global_domain;
+    extern ext_option_struct ext_options;
 
     size_t               i;
 
@@ -691,6 +692,8 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->root_zone_dimid = MISSING;
     nc_file->time_dimid = MISSING;
     nc_file->veg_dimid = MISSING;
+    
+    nc_file->discharge_dimid = MISSING;
 
     // Set dimension sizes
     nc_file->band_size = options.SNOW_BAND;
@@ -703,6 +706,8 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->root_zone_size = options.ROOT_ZONES;
     nc_file->time_size = NC_UNLIMITED;
     nc_file->veg_size = options.NVEGTYPES;
+    
+    nc_file->discharge_size = ext_options.uh_steps;
 
     // allocate memory for nc_vars
     nc_file->nc_vars = calloc(nvars, sizeof(*(nc_file->nc_vars)));
