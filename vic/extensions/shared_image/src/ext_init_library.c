@@ -92,6 +92,7 @@ initialize_dam_var(dam_var_struct *dam_var)
     dam_var->area=0.0;
     dam_var->height=0.0;
     dam_var->volume=0.0;
+    dam_var->Cd = 0.0;
     
     
     dam_var->inflow_total=0.0;
@@ -106,6 +107,9 @@ initialize_dam_var(dam_var_struct *dam_var)
     }
     for(i=0;i<ext_options.history_steps_per_history_year;i++){
         dam_var->calc_discharge[i] = 0.0;        
+    }
+    for(i=0;i<DAM_NNODES;i++){
+        dam_var->temperature[i] = 0.0;
     }
     
     initialize_dmy(&dam_var->op_year);

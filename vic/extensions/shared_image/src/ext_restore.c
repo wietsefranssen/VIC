@@ -12,6 +12,8 @@ ext_restore(){
     extern metadata_struct     state_metadata[N_STATE_VARS];
     extern dam_con_struct       **dam_con;
     extern dam_con_map_struct  *dam_con_map;
+    extern veg_con_struct       **veg_con;
+    extern veg_con_map_struct  *veg_con_map;
 
     size_t                     i;
     size_t                     j;
@@ -208,7 +210,8 @@ ext_restore(){
         for (i = 0; i < local_domain.ncells_active; i++) {
             for(j=0;j<dam_con_map[i].Ndams;j++){
                 calculate_dam_surface_area(dam_con[i][j], &ext_all_vars[i].dam_var[j]);
-                calculate_dam_height(&ext_all_vars[i].dam_var[j]);
+                calculate_dam_height(dam_con[i][j],&ext_all_vars[i].dam_var[j]);
+                adapt_cv(&ext_all_vars[i].dam_var[j],veg_con_map[i],veg_con[i],local_domain.locations[i]);
                 
                 ext_all_vars[i].dam_var[j].op_year.year = global_param.startyear;
                 ext_all_vars[i].dam_var[j].op_year.day_in_year = 

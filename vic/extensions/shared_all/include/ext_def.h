@@ -16,6 +16,7 @@
 
 #include <vic_def.h>
 #include <mpi.h>
+#include <ext_physical_constants.h>
 
 #define VIC_RESOLUTION 0.5
 

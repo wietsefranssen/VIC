@@ -96,7 +96,12 @@ void ext_set_state_meta_data_info(void);
 void ext_set_output_met_data_info(void);
 void ext_populate_model_state(void);
 void generate_default_routing_state(ext_all_vars_struct *);
-void generate_default_dams_state(ext_all_vars_struct *, dam_con_struct *, dam_con_map_struct dam_con_map);
+void generate_default_dams_state(ext_all_vars_struct *ext_all_vars, 
+        dam_con_struct *dam_con, 
+        dam_con_map_struct dam_con_map,
+        veg_con_map_struct veg_con_map, 
+        veg_con_struct *veg_con, 
+        location_struct location);
 void ext_restore(void);
 // Run
 void ext_force(void);
@@ -110,8 +115,17 @@ void routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struc
 void routing_run_scatter(ext_all_vars_struct *ext_all_vars_global);
 void routing_run_free(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
 
-void routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, ext_all_vars_struct *ext_all_vars, double runoff);
-void dam_run(dam_con_struct dam_con, dam_var_struct *, rout_var_struct *, dmy_struct dmy);
+void routing_run(rout_con_struct rout_con, 
+        ext_all_vars_struct *ext_all_vars_this, 
+        ext_all_vars_struct *ext_all_vars, 
+        double runoff);
+void dam_run(dam_con_struct dam_con, 
+        dam_var_struct *dam_var, 
+        rout_var_struct *rout_var,
+        veg_con_struct *veg_con, 
+        veg_con_map_struct veg_con_map,
+        location_struct location, 
+        dmy_struct dmy);
 
 void get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
 void get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);

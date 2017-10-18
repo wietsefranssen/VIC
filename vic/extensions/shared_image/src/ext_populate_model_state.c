@@ -11,6 +11,10 @@ ext_populate_model_state(){
     extern ext_all_vars_struct *ext_all_vars;
     extern dam_con_struct **dam_con;
     extern dam_con_map_struct *dam_con_map;
+    extern veg_con_struct **veg_con;
+    extern veg_con_map_struct *veg_con_map;
+    extern force_data_struct *force;
+    extern int NR;
     
     size_t i;
     
@@ -24,14 +28,21 @@ ext_populate_model_state(){
                 generate_default_routing_state(&ext_all_vars[i]);
             }
             if(ext_options.DAMS){
-                generate_default_dams_state(&ext_all_vars[i],dam_con[i],dam_con_map[i]);
+                generate_default_dams_state(&ext_all_vars[i],
+                        dam_con[i],
+                        dam_con_map[i],
+                        veg_con_map[i],
+                        veg_con[i],
+                        force[i].air_temp[NR],
+                        local_domain.locations[i]);
             }
         }
     }
 }
 
 void
-generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *dam_con, dam_con_map_struct dam_con_map){
+generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *dam_con, dam_con_map_struct dam_con_map,
+        veg_con_map_struct veg_con_map, veg_con_struct *veg_con, double tair, location_struct location){
     extern ext_option_struct ext_options;
     extern global_param_struct global_param;
     
@@ -48,7 +59,8 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *d
         
         dam_var->volume = DAM_MAX_PVOLUME * dam_con[i].max_volume;
         calculate_dam_surface_area(dam_con[i], dam_var);
-        calculate_dam_height(dam_var);
+        calculate_dam_height(dam_con[i],dam_var);        
+        adapt_cv(dam_var,veg_con_map,veg_con,location);
         
         dam_var->inflow_total = 0.0;
         dam_var->nat_inflow_total = 0.0;
@@ -62,6 +74,9 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *d
         }
         for(j=0;j<ext_options.history_steps_per_history_year;j++){
             dam_var->calc_discharge[j] = 0.0;
+        }
+        for(i=0;i<DAM_NNODES;i++){
+            dam_var->temperature[i] = tair;
         }
         
         dam_var->op_year.month = global_param.startmonth;

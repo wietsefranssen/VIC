@@ -21,6 +21,10 @@
 #define DAM_EFR_MAXF 0.8
 #define DAM_EFR_MINR 0.6
 #define DAM_EFR_MAXR 0.3
+#define DAM_NNODES 10
+
+#define DAM_ZWATER 0.0045
+#define DAM_MAX_ITER 50
 
 typedef struct{
     int year;
@@ -42,6 +46,9 @@ typedef struct{
     double volume;
     double area;
     double height;
+    double Cd;
+    
+    double temperature[DAM_NNODES];
     
     double inflow_total;
     double nat_inflow_total;
@@ -72,7 +79,8 @@ void initialize_dam_var(dam_var_struct *dam_var);
 void dams_init();
 
 void calculate_dam_surface_area(dam_con_struct dam_con, dam_var_struct *);
-void calculate_dam_height(dam_var_struct *);
+void calculate_dam_height(dam_con_struct dam_con, dam_var_struct *);
+void adapt_cv(dam_var_struct *dam_var, veg_con_map_struct veg_con_map, veg_con_struct *veg_con, location_struct location);
 void calculate_multi_year_average(double *history, size_t repetitions, size_t length, size_t offset, size_t skip, double *average);
 void calculate_operational_year(dam_var_struct *dam_var, double my_inflow, double *ms_inflow);
 void calculate_optimal_discharge(dam_con_struct dam_con, dam_var_struct dam_var, 
