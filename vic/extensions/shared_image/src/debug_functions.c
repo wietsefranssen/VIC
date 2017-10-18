@@ -592,7 +592,7 @@ debug_ndams(){
     }
     gather_sizet(svar_global,svar_local);
     if(mpi_rank == VIC_MPI_ROOT){
-        debug_file_sizet("./debug_output/ndams",svar_global);
+        debug_map_nc_sizet("./debug_output/ndams","ndams",svar_global,-1);
     }
     
     if(mpi_rank == VIC_MPI_ROOT){
