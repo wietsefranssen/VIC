@@ -9,8 +9,8 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     
     double *uh_precise = NULL;
     double *uh_cumulative = NULL;
-    double uh_sum = 0;
-    double time = 0;
+    double uh_sum;
+    double time;
     
     size_t i;
         
@@ -19,7 +19,11 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     uh_cumulative = malloc((ext_options.uh_steps * ext_param.UH_PARTITIONS) * sizeof(*uh_cumulative));
     check_alloc_status(uh_cumulative,"Memory allocation error.");
     
-    for(i = 0;i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){         
+    uh_sum = 0.0;
+    time = 0.0;
+    
+    uh_precise[0] = 0.0;
+    for(i = 1; i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){         
         time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * ext_param.UH_PARTITIONS);
         
         uh_precise[i] = uh(time, distance, velocity, diffusion);
@@ -33,13 +37,19 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     uh_cumulative[0] = uh_precise[0];
     for(i = 1;i < ext_options.uh_steps * ext_param.UH_PARTITIONS - 1; i++){
         uh_cumulative[i] = uh_cumulative[i-1] + uh_precise[i];
+        
+        if(uh_cumulative[i] > 1.0){
+            uh_cumulative[i] = 1.0;
+        }else if(uh_cumulative[i] < 0.0){
+            uh_cumulative[i] = 0.0;
+        }
     }
     uh_cumulative[i]=1.0;
     
-    rout_con[id].uh[0] = uh_cumulative[ext_param.UH_PARTITIONS - 1];
-    for(i = 1; i < ext_options.uh_steps; i++){
-        rout_con[id].uh[i] = uh_cumulative[(i+1) * ext_param.UH_PARTITIONS - 1] - uh_cumulative[i * ext_param.UH_PARTITIONS - 1];
+    for(i = 0; i < ext_options.uh_steps - 1; i++){
+        rout_con[id].uh[i] = uh_cumulative[(i+1) * ext_param.UH_PARTITIONS] - uh_cumulative[i * ext_param.UH_PARTITIONS];
     }  
+    rout_con[id].uh[i] = uh_cumulative[(i+1) * ext_param.UH_PARTITIONS - 1] - uh_cumulative[i * ext_param.UH_PARTITIONS];
     
     free(uh_precise);
     free(uh_cumulative);
@@ -47,9 +57,10 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
 
 double
 uh(double time, double distance, double velocity, double diffusion){
-    return (distance/(2*time*sqrt(M_PI * time * diffusion))) * 
-                exp( -(pow(velocity * time - distance, 2) ) /
-                (4*diffusion * time));
+    // Based on Lohmann et al. 1996
+    return (distance / (2 * time * sqrt(M_PI * time * diffusion))) * 
+                exp( -pow(velocity * time - distance, 2) /
+                (4 * diffusion * time));
 }
 
 void
@@ -566,6 +577,8 @@ routing_init(){
     routing_init_upstream();
     routing_init_order();
     
+    debug_uh_file();
+    debug_uh();
     debug_nupstream();
     debug_downstream();
     debug_id();
