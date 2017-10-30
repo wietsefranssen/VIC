@@ -24,16 +24,13 @@ void ext_finalize()
         free(cell_order);
         
         if(mpi_rank == VIC_MPI_ROOT){
-    
-            if(mpi_decomposition == BASIN_DECOMPOSITION){
-                for(i=0;i<basins.Nbasin;i++){
-                    free(basins.catchment[i]);
-                }
-                free(basins.basin_map);
-                free(basins.Ncells);
-                free(basins.sorted_basins);
-                free(basins.catchment);
-            }  
+            for(i=0;i<basins.Nbasin;i++){
+                free(basins.catchment[i]);
+            }
+            free(basins.basin_map);
+            free(basins.Ncells);
+            free(basins.sorted_basins);
+            free(basins.catchment);
         }
     }
         

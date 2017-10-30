@@ -32,11 +32,11 @@ mpi_map_decomp_domain(size_t   ncells,
     
     size_t i;
     size_t node_ids[mpi_size];
-    
+            
+    get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
+        
     if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
             mpi_decomposition == BASIN_DECOMPOSITION){
-        
-        get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
         
         // decompose the mask by basin
         mpi_map_decomp_domain_basin(ncells, mpi_size,
