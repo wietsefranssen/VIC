@@ -6,9 +6,8 @@ void ext_finalize()
     extern domain_struct local_domain;    
     extern int mpi_decomposition;
     extern int mpi_rank;    
-    extern size_t *cell_order_global; 
-    extern basin_struct basins;    
-    extern size_t *cell_order_local; 
+    extern size_t *cell_order; 
+    extern basin_struct basins;
     extern ext_all_vars_struct *ext_all_vars;
     extern rout_con_struct *rout_con;
     
@@ -22,10 +21,9 @@ void ext_finalize()
             free(ext_all_vars[i].rout_var.discharge);
         }    
         free(rout_con); 
-        free(cell_order_local);
+        free(cell_order);
         
-        if(mpi_rank == VIC_MPI_ROOT){        
-            free(cell_order_global);
+        if(mpi_rank == VIC_MPI_ROOT){
     
             if(mpi_decomposition == BASIN_DECOMPOSITION){
                 for(i=0;i<basins.Nbasin;i++){

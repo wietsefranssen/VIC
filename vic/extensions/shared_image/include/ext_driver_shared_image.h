@@ -62,12 +62,10 @@ void initialize_ext_info(ext_info_struct *);
 void initialize_nameid(nameid_struct *);
 void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);
-void initialize_global_cell_order(size_t *);
 // Local node initialization
 void initialize_ext_local_structures(void);
 void initialize_rout_con(rout_con_struct *);
 void initialize_ext_all_vars(ext_all_vars_struct *);
-void initialize_local_cell_order(size_t *);
 
 // Preperations
 void ext_start(void);

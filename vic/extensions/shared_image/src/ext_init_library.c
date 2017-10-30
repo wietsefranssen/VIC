@@ -1,15 +1,6 @@
 #include "ext_driver_shared_image.h"
 
 /******************************************************************************
- * @brief    Initialize local cell order before it is called by the
- *           model.
- *****************************************************************************/
-void
-initialize_local_cell_order(size_t *cell_order){    
-    (*cell_order) = MISSING_USI;
-}
-
-/******************************************************************************
  * @brief    Initialize rout_con before they are called by the
  *           model.
  *****************************************************************************/
@@ -56,7 +47,6 @@ initialize_ext_local_structures(void)
     extern domain_struct local_domain;
     extern rout_con_struct *rout_con;
     extern ext_all_vars_struct *ext_all_vars;
-    extern size_t *cell_order_local;
     
     size_t i;
         
@@ -65,7 +55,6 @@ initialize_ext_local_structures(void)
         
         if(ext_options.ROUTING){
             initialize_rout_con(&rout_con[i]);
-            initialize_local_cell_order(&cell_order_local[i]);
         }
     }    
 }
@@ -150,20 +139,5 @@ initialize_ext_global_structures(void)
         initialize_ext_options(&ext_options);
         initialize_ext_filenames(&ext_filenames);
         initialize_ext_parameters(&ext_param);
-    }
-}
-
-/******************************************************************************
- * @brief    Initialize global cell order before it is called by the
- *           model.
- *****************************************************************************/
-void
-initialize_global_cell_order(size_t *cell_order){
-    extern domain_struct global_domain;
-    
-    size_t i;
-    
-    for(i=0;i<global_domain.ncells_active;i++){
-        cell_order[i] = MISSING_USI;
     }
 }

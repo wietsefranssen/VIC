@@ -312,7 +312,8 @@ routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this,
     for(i=0;i<rout_con.Nupstream;i++){
         inflow += ext_all_vars[rout_con.upstream[i]].rout_var.discharge[0];
     }            
-
+    
+    // Do convolution
     rout(&rout_var.discharge, rout_con.uh, (runoff + inflow),
             ext_options.uh_steps);
 }
