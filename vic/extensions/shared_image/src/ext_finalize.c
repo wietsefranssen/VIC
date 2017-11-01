@@ -5,9 +5,9 @@ void ext_finalize()
     extern ext_option_struct ext_options;
     extern domain_struct local_domain;
     extern int mpi_rank;    
-    extern size_t *cell_order_global;
-    extern size_t *cell_order_local; 
+    extern size_t *cell_order;
     extern ext_all_vars_struct *ext_all_vars;
+    extern basin_struct basins;
     extern rout_con_struct *rout_con;
     extern dam_con_struct **dam_con;
     extern dam_con_map_struct *dam_con_map;

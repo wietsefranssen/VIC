@@ -5,6 +5,7 @@ ext_start(){
     extern domain_struct global_domain;
     extern global_param_struct global_param;
     extern ext_parameters_struct ext_param;
+    extern ext_filenames_struct ext_filenames;
     extern ext_option_struct ext_options;
     extern MPI_Datatype mpi_ext_option_struct_type;
     extern MPI_Datatype mpi_ext_param_struct_type;
