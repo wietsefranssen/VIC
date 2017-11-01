@@ -8,59 +8,62 @@ set_uh(size_t id, double distance, double velocity, double diffusion){
     extern ext_option_struct ext_options;
     
     double *uh_precise = NULL;
-    double *uh_cumulative = NULL;
     double uh_sum;
+    double uh_agg;
     double time;
     
     size_t i;
+    size_t j;
         
     uh_precise = malloc((ext_options.uh_steps * ext_param.UH_PARTITIONS) * sizeof(*uh_precise));
-    check_alloc_status(uh_precise,"Memory allocation error.");    
-    uh_cumulative = malloc((ext_options.uh_steps * ext_param.UH_PARTITIONS) * sizeof(*uh_cumulative));
-    check_alloc_status(uh_cumulative,"Memory allocation error.");
-    
-    uh_sum = 0.0;
-    time = 0.0;
-    
-    uh_precise[0] = 0.0;
-    for(i = 1; i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){         
-        time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * ext_param.UH_PARTITIONS);
+    check_alloc_status(uh_precise,"Memory allocation error.");   
         
+    // Calculate precise unit hydrograph
+    time = 0.0;
+    uh_sum = 0.0;
+    for(i = 0; i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){ 
         uh_precise[i] = uh(time, distance, velocity, diffusion);
         uh_sum += uh_precise[i];
+        
+        time += (SEC_PER_HOUR * HOURS_PER_DAY) / (global_param.model_steps_per_day * ext_param.UH_PARTITIONS);
     }
     
-    for(i = 0;i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){ 
+    // Normalizing
+    for(i = 0; i < ext_options.uh_steps * ext_param.UH_PARTITIONS; i++){ 
         uh_precise[i] = uh_precise[i] / uh_sum;
     }
     
-    uh_cumulative[0] = uh_precise[0];
-    for(i = 1;i < ext_options.uh_steps * ext_param.UH_PARTITIONS - 1; i++){
-        uh_cumulative[i] = uh_cumulative[i-1] + uh_precise[i];
+    // Aggregate unit hydrograph to model timestep
+    uh_sum = 0.0;
+    for(i = 0; i < ext_options.uh_steps; i++){
+        uh_agg = 0;
         
-        if(uh_cumulative[i] > 1.0){
-            uh_cumulative[i] = 1.0;
-        }else if(uh_cumulative[i] < 0.0){
-            uh_cumulative[i] = 0.0;
+        for(j=0; j < (size_t) ext_param.UH_PARTITIONS; j++){
+            uh_agg += uh_precise[i * ext_param.UH_PARTITIONS + j];
         }
-    }
-    uh_cumulative[i]=1.0;
-    
-    for(i = 0; i < ext_options.uh_steps - 1; i++){
-        rout_con[id].uh[i] = uh_cumulative[(i+1) * ext_param.UH_PARTITIONS] - uh_cumulative[i * ext_param.UH_PARTITIONS];
+        
+        rout_con[id].uh[i] = uh_agg;
+        uh_sum += rout_con[id].uh[i];
     }  
-    rout_con[id].uh[i] = uh_cumulative[(i+1) * ext_param.UH_PARTITIONS - 1] - uh_cumulative[i * ext_param.UH_PARTITIONS];
+    
+    // Normalizing
+    for(i = 0; i < ext_options.uh_steps; i++){ 
+        rout_con[id].uh[i] = rout_con[id].uh[i] / uh_sum;
+    }
     
     free(uh_precise);
-    free(uh_cumulative);
 }
 
 double
 uh(double time, double distance, double velocity, double diffusion){
-    // Based on Lohmann et al. 1996
-    return (distance / (2 * time * sqrt(M_PI * time * diffusion))) * 
-                exp( -pow(velocity * time - distance, 2) /
-                (4 * diffusion * time));
+    if(time == 0){
+        return 0;
+    }else{
+        // Based on Lohmann et al. 1996
+        return (distance / (2 * time * sqrt(M_PI * time * diffusion))) * 
+                    exp( -pow(velocity * time - distance, 2) /
+                    (4 * diffusion * time));
+    }
 }
 
 void
@@ -103,19 +106,17 @@ routing_init_uh(){
                          velocity_array);
         get_scatter_nc_field_double(&ext_filenames.routing, ext_filenames.info.diffusion_var, d2start, d2count,
                          diffusion_array);        
+    }else{        
+        for(i=0;i<local_domain.ncells_active;i++){  
+            velocity_array[i] = ext_param.UH_FLOW_VELOCITY;
+            diffusion_array[i] = ext_param.UH_FLOW_DIFFUSION;
+        }
     }
     
     for(i=0;i<local_domain.ncells_active;i++){       
         distance = distance_array[i];
-        
-        if(ext_options.UH_PARAMETERS == FILE_UH_PARAMETERS){
-            velocity = velocity_array[i];
-            diffusion = diffusion_array[i];            
-        }
-        else if(ext_options.UH_PARAMETERS == CONSTANT_UH_PARAMETERS){
-            velocity = ext_param.UH_FLOW_VELOCITY;
-            diffusion = ext_param.UH_FLOW_DIFFUSION;   
-        }
+        velocity = velocity_array[i];
+        diffusion = diffusion_array[i];
         
         set_uh(i,distance,velocity,diffusion);
     }
@@ -400,8 +401,7 @@ routing_init_order(){
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern rout_con_struct *rout_con;
-    extern size_t *cell_order_global;
-    extern size_t *cell_order_local;
+    extern size_t *cell_order;
     extern int mpi_rank;
     extern int mpi_decomposition;
     
@@ -486,7 +486,7 @@ routing_init_order(){
                     }                    
                     
                     // if no upstream, add as next order
-                    cell_order_global[rank]=i;
+                    cell_order[rank]=i;
                     done_map[i]=true;                                
                     rank++;
 
@@ -552,7 +552,7 @@ routing_init_order(){
                 } 
                 
                 // if no upstream, add as next order
-                cell_order_local[rank]=i;
+                cell_order[rank]=i;
                 done_map[i]=true;                                
                 rank++;
 
@@ -577,10 +577,11 @@ routing_init(){
     routing_init_upstream();
     routing_init_order();
     
-    debug_uh_file();
+    debug_id();
     debug_uh();
     debug_nupstream();
     debug_downstream();
-    debug_id();
+    debug_upstream();
+    debug_order();
 }
 

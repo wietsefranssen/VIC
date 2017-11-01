@@ -1,6 +1,17 @@
 #include "ext_driver_shared_image.h"
 
 /******************************************************************************
+<<<<<<< HEAD
+ * @brief    Initialize local cell order before it is called by the
+ *           model.
+ *****************************************************************************/
+void
+initialize_local_cell_order(size_t *cell_order){    
+    (*cell_order) = MISSING_USI;
+}
+
+
+/******************************************************************************
  * @brief    Initialize dmy before they are called by the
  *           model.
  *****************************************************************************/
@@ -15,6 +26,8 @@ initialize_dmy(dmy_struct *dmy)
 }
 
 /******************************************************************************
+=======
+>>>>>>> feature/ext_rout
  * @brief    Initialize rout_con before they are called by the
  *           model.
  *****************************************************************************/
@@ -121,7 +134,11 @@ initialize_ext_local_structures(void)
         
         if(ext_options.ROUTING){
             initialize_rout_con(&rout_con[i]);
+<<<<<<< HEAD
             initialize_rout_var(&ext_all_vars[i].rout_var);
+            initialize_local_cell_order(&cell_order_local[i]);
+=======
+>>>>>>> feature/ext_rout
         }
         if(ext_options.DAMS){
             for(j=0;j<(size_t) dam_con_map[i].Ndams;j++){
@@ -207,8 +224,8 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->MPI_E_PROCESS_COST = 5; 
     
     parameters->UH_FLOW_DIFFUSION = 800;
-    parameters->UH_FLOW_VELOCITY = 1.5;
-    parameters->UH_LENGTH = 5;
+    parameters->UH_FLOW_VELOCITY = 1.75;
+    parameters->UH_LENGTH = 2;
     parameters->UH_PARTITIONS = 20;
     
     parameters->DAM_HISTORY = 2;

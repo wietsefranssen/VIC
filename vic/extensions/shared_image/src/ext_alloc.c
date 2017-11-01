@@ -9,7 +9,8 @@ ext_alloc(void)
     extern dam_con_struct **dam_con;
     extern dam_con_map_struct *dam_con_map;
     extern ext_all_vars_struct *ext_all_vars;
-    extern size_t *cell_order_local;
+    extern size_t *cell_order;
+    extern int mpi_decomposition;
     
     size_t i;
     size_t j;
@@ -17,9 +18,7 @@ ext_alloc(void)
     ext_all_vars = malloc(local_domain.ncells_active * sizeof(*ext_all_vars));
     check_alloc_status(ext_all_vars, "Memory allocation error");   
     
-    if(ext_options.ROUTING){
-        cell_order_local = malloc(local_domain.ncells_active * sizeof(*cell_order_local));
-        check_alloc_status(cell_order_local, "Memory allocation error");     
+    if(ext_options.ROUTING){  
         
         rout_con = malloc(local_domain.ncells_active * sizeof(*rout_con));
         check_alloc_status(rout_con, "Memory allocation error");
@@ -61,6 +60,15 @@ ext_alloc(void)
                 
                 ext_all_vars[i].dam_var[j].calc_discharge = malloc(ext_options.history_steps_per_history_year * sizeof(*ext_all_vars[i].dam_var[j].calc_discharge));
                 check_alloc_status(ext_all_vars[i].dam_var[j].calc_discharge, "Memory allocation error");
+            }
+        }
+        
+        if(mpi_decomposition == BASIN_DECOMPOSITION){
+            cell_order = malloc(local_domain.ncells_active * sizeof(*cell_order));
+            check_alloc_status(cell_order, "Memory allocation error");
+                
+            for(i=0;i<local_domain.ncells_active;i++){
+                cell_order[i] = MISSING_USI;
             }
         }
     }

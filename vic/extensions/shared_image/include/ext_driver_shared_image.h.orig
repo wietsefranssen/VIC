@@ -85,8 +85,11 @@ void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);
 // Local node initialization
 void initialize_ext_local_structures(void);
+<<<<<<< HEAD
+=======
 void initialize_rout_con(rout_con_struct *);
 void initialize_ext_all_vars(ext_all_vars_struct *);
+>>>>>>> feature/ext_rout
 
 // Preperations
 void ext_start(void);

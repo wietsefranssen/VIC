@@ -33,6 +33,11 @@ mpi_map_decomp_domain(size_t   ncells,
     size_t i;
     int status;
     size_t node_ids[mpi_size];
+            
+    get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
+        
+    if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
+            mpi_decomposition == BASIN_DECOMPOSITION){
               
         // open extension routing file
         status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
@@ -40,16 +45,16 @@ mpi_map_decomp_domain(size_t   ncells,
         check_nc_status(status, "Error opening %s",
                         ext_filenames.routing.nc_filename);
         
+<<<<<<< HEAD
         get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
         
         // close extension routing file
         status = nc_close(ext_filenames.routing.nc_id);
         check_nc_status(status, "Error closing %s",
                         ext_filenames.routing.nc_filename);
-    
-    if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
-            mpi_decomposition == BASIN_DECOMPOSITION){
         
+=======
+>>>>>>> feature/ext_rout
         // decompose the mask by basin
         mpi_map_decomp_domain_basin(ncells, mpi_size,
                           mpi_map_local_array_sizes,
@@ -98,7 +103,17 @@ mpi_map_decomp_domain(size_t   ncells,
             if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
                 log_err("BASIN_DECOMPOSITION is selected but there are more nodes than basins, exiting...");
             }            
+        }        
+        
+        // Free
+        for(i=0;i<basins.Nbasin;i++){
+            free(basins.catchment[i]);
         }
+        free(basins.basin_map);
+        free(basins.Ncells);
+        free(basins.sorted_basins);
+        free(basins.catchment);
+        
     }else{
         // decompose the mask at random
         mpi_map_decomp_domain_random(ncells, mpi_size,

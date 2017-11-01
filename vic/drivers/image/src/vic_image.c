@@ -76,8 +76,7 @@ basin_struct        basins;
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
-size_t *cell_order_global = NULL;
-size_t *cell_order_local = NULL;
+size_t *cell_order = NULL;
 
 // Extension con & vars
 rout_con_struct *rout_con = NULL;
