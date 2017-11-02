@@ -47,11 +47,11 @@ ext_put_data(ext_all_vars_struct *ext_all_vars,
             out_data[OUT_DAM_INFLOW][i] = dam_var[i].inflow;
             out_data[OUT_DAM_NAT_INFLOW][i] = dam_var[i].nat_inflow;
             
-            if(dam_var->years_running < (size_t) ext_param.DAM_HISTORY){
-                years = dam_var->years_running;
-            }else{
+            years = dam_var->years_running;
+            if(years > (size_t) ext_param.DAM_HISTORY){
                 years = ext_param.DAM_HISTORY;
             }
+            
             calculate_multi_year_average(dam_var->inflow_history,
                     years,
                     1,

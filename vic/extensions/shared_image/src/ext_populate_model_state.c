@@ -64,10 +64,11 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *d
             dam_var->calc_discharge[j] = 0.0;
         }
         
+        dam_var->op_year.year = global_param.startyear;
         dam_var->op_year.month = global_param.startmonth;
         dam_var->op_year.day = global_param.startday;
-        dam_var->op_year.year = global_param.startyear;
-        dam_var->op_year.day_in_year = julian_day_from_dmy(&dam_var->op_year, global_param.calendar);
+        dam_var->op_year.dayseconds = global_param.startsec;
+        dam_var->op_year.day_in_year = (int) no_leap_day_in_year_from_dmy(dam_var->op_year);
     }
 }
 

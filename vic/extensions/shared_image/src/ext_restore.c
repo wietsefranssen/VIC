@@ -4,7 +4,6 @@ void
 ext_restore(){
     extern int                 mpi_rank;
     extern domain_struct       global_domain;
-    extern global_param_struct global_param;
     extern domain_struct       local_domain;
     extern ext_option_struct    ext_options;
     extern ext_all_vars_struct  *ext_all_vars;
@@ -108,6 +107,17 @@ ext_restore(){
         for (j = 0; j < ext_options.ndams; j++) {
             d3start[0] = j;
             get_scatter_nc_field_int(&(filenames.init_state),
+                                        state_metadata[STATE_DAM_OY_SEC].varname,
+                                        d3start, d3count, ivar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                if(dam_con_map[i].Ndams>j){
+                    ext_all_vars[i].dam_var[j].op_year.dayseconds = ivar[i];
+                }
+            }
+        } 
+        for (j = 0; j < ext_options.ndams; j++) {
+            d3start[0] = j;
+            get_scatter_nc_field_int(&(filenames.init_state),
                                         state_metadata[STATE_DAM_OY_DAY].varname,
                                         d3start, d3count, ivar);
             for (i = 0; i < local_domain.ncells_active; i++) {
@@ -124,6 +134,17 @@ ext_restore(){
             for (i = 0; i < local_domain.ncells_active; i++) {
                 if(dam_con_map[i].Ndams>j){
                     ext_all_vars[i].dam_var[j].op_year.month = ivar[i];
+                }
+            }
+        } 
+        for (j = 0; j < ext_options.ndams; j++) {
+            d3start[0] = j;
+            get_scatter_nc_field_int(&(filenames.init_state),
+                                        state_metadata[STATE_DAM_OY_YEAR].varname,
+                                        d3start, d3count, ivar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                if(dam_con_map[i].Ndams>j){
+                    ext_all_vars[i].dam_var[j].op_year.year = ivar[i];
                 }
             }
         } 
@@ -210,9 +231,8 @@ ext_restore(){
                 calculate_dam_surface_area(dam_con[i][j], &ext_all_vars[i].dam_var[j]);
                 calculate_dam_height(&ext_all_vars[i].dam_var[j]);
                 
-                ext_all_vars[i].dam_var[j].op_year.year = global_param.startyear;
                 ext_all_vars[i].dam_var[j].op_year.day_in_year = 
-                        julian_day_from_dmy(&ext_all_vars[i].dam_var[j].op_year, global_param.calendar);
+                        (int) no_leap_day_in_year_from_dmy(ext_all_vars[i].dam_var[j].op_year);
             }
         }        
     }

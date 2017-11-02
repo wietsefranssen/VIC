@@ -7,16 +7,17 @@ routing_update_step_vars(rout_var_struct *rout_var){
     
     rout_var->discharge[0] = 0.0;
     rout_var->nat_discharge[0] = 0.0;
-    cshift(rout_var->discharge, ext_options.uh_steps, 1, 0, 1);
-    cshift(rout_var->nat_discharge, ext_options.uh_steps, 1, 0, 1);
+    cshift(rout_var->discharge, 1, ext_options.uh_steps, 1, 1);
+    cshift(rout_var->nat_discharge, 1, ext_options.uh_steps, 1, 1);
 }
 
 void
 dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
+    extern global_param_struct global_param;
     extern ext_option_struct ext_options;
     extern ext_parameters_struct ext_param;
-    extern dmy_struct *dmy;
     extern size_t current;
+    extern dmy_struct *dmy;
     
     double my_nat_inflow;
     double my_inflow;
@@ -32,19 +33,23 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
     
     dam_var->inflow=0.0;
     dam_var->discharge=0.0;
-    dam_var->nat_inflow=0.0;
+    dam_var->nat_inflow=0.0;    
+    dam_var->history_offset++;
     
+    // Simulation year has passed
+    if(current > 0 && 
+            dmy[current].month == global_param.startmonth &&
+            dmy[current].day == global_param.startday &&
+            dmy[current].dayseconds == global_param.startsec){
+        
+        dam_var->years_running ++;
+    }
+    
+    // Operational year has passed
     if(current > 0 &&
             dmy[current].month == dam_var->op_year.month && 
             dmy[current].day == dam_var->op_year.day &&
             dmy[current].dayseconds == dam_var->op_year.dayseconds){
-        // Operational year has passed
-        
-        dam_var->years_running ++;
-        
-        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->calc_discharge, ext_options.history_steps_per_history_year, 1, 0, -1);
                 
         dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->history_offset;
         dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->history_offset;
@@ -52,9 +57,12 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         dam_var->nat_inflow_total = 0.0;
         dam_var->history_offset = 0;
         
-        if(dam_var->years_running < (size_t) ext_param.DAM_HISTORY){
-            years = dam_var->years_running;
-        }else{
+        cshift(dam_var->inflow_history, 1, ext_options.history_steps, 1, -1);
+        cshift(dam_var->nat_inflow_history, 1, ext_options.history_steps, 1, -1);
+        cshift(dam_var->calc_discharge, 1, ext_options.history_steps_per_history_year, 1, -1);
+        
+        years = dam_var->years_running;
+        if(years > (size_t) ext_param.DAM_HISTORY){
             years = ext_param.DAM_HISTORY;
         }
         
@@ -91,7 +99,6 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         // Calculate optimal discharge
         calculate_optimal_discharge(dam_con, *dam_var, my_inflow, ms_inflow, discharge);
         
-//        
         // Calculate efr        
         for(i=0;i<ext_options.history_steps_per_history_year;i++){
             efr[i] = calculate_efr(ms_nat_inflow[i],my_nat_inflow);
@@ -99,22 +106,21 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         
         // Ensure efr is being met (when possible)
         calculate_corrected_discharge(discharge,efr,my_inflow,dam_var->calc_discharge);
-    } else 
-        if(dam_var->history_offset >= ext_options.model_steps_per_history_step){
-        // Model steps per history step has passed
+    }        
         
-        cshift(dam_var->inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->nat_inflow_history, ext_options.history_steps, 1, 0, -1);
-        cshift(dam_var->calc_discharge, ext_options.history_steps_per_history_year, 1, 0, -1);
+    // Operational step has passed
+    else if(dam_var->history_offset >= ext_options.model_steps_per_history_step){
                 
         dam_var->inflow_history[0] = dam_var->inflow_total / dam_var->history_offset;
         dam_var->nat_inflow_history[0] = dam_var->nat_inflow_total / dam_var->history_offset;
         dam_var->inflow_total = 0.0;
         dam_var->nat_inflow_total = 0.0;
         dam_var->history_offset = 0;
+        
+        cshift(dam_var->inflow_history, 1, ext_options.history_steps, 1, -1);
+        cshift(dam_var->nat_inflow_history, 1, ext_options.history_steps, 1, -1);
+        cshift(dam_var->calc_discharge, 1, ext_options.history_steps_per_history_year, 1, -1);
     }
-    
-    dam_var->history_offset++;
 }
 
 void 
@@ -124,7 +130,7 @@ calculate_multi_year_average(double *history, size_t repetitions, size_t length,
     size_t j;
     
     (*average) = 0.0;
-    for(i=0;i<repetitions;i++){
+    for(i=0;i<=repetitions;i++){
         for(j=0;j<length;j++){
             (*average) += history[(i * (offset+length+skip)) + offset + j] / (repetitions * length);
         }
@@ -133,49 +139,53 @@ calculate_multi_year_average(double *history, size_t repetitions, size_t length,
 
 void
 calculate_operational_year(dam_var_struct *dam_var, double my_inflow, double *ms_inflow){
-    extern global_param_struct global_param;
     extern ext_option_struct ext_options;
     extern ext_parameters_struct ext_param;
+    extern dmy_struct *dmy;
+    extern size_t current;
     
     size_t i;
-    size_t cur_step;
     double op_inflow;
     double max_op_inflow;
     size_t add_step;
-    size_t old_jday;
-    size_t new_jday;
-    double ms_inflow_cor[ext_options.history_steps_per_history_year];
+    size_t new_day_in_year;
+    double ms_inflow_tmp[ext_options.history_steps_per_history_year];
             
     // Flip the inflow array
     for(i = 0; i < ext_options.history_steps_per_history_year; i++){
-        ms_inflow_cor[i] = ms_inflow[i];
+        ms_inflow_tmp[i] = ms_inflow[i];
     }
-    double_flip(ms_inflow_cor,ext_options.history_steps_per_history_year);
     
     op_inflow=0;
     max_op_inflow=0;
+    add_step=0;
     
     // Calculate the month with the most consecutive high inflows
     for(i = 0; i < 2 * ext_options.history_steps_per_history_year; i++){
-        cur_step = i % ext_options.history_steps_per_history_year;
 
-        if(ms_inflow_cor[cur_step] > my_inflow){
-            op_inflow += ms_inflow_cor[cur_step];
+        if(ms_inflow_tmp[0] > my_inflow){
+            op_inflow += ms_inflow_tmp[0];
 
             if(op_inflow>max_op_inflow){
                 max_op_inflow=op_inflow;
-                add_step=cur_step;
+                add_step=i;
             }
         }else{
             op_inflow=0;
         }
+        
+        cshift(ms_inflow_tmp, 1, ext_options.history_steps_per_history_year, 1, -1);
     }
     
-    // Change the operational year date
-    old_jday = julian_day_from_dmy(&dam_var->op_year, global_param.calendar);
-    new_jday = old_jday + (add_step + 1) * ext_param.DAM_HISTORY_LENGTH;
-    dmy_julian_day(new_jday, global_param.calendar, &dam_var->op_year);
-    dam_var->op_year.year = global_param.startyear;
+    // Change operational year
+    add_step = (add_step + 1) % ext_options.history_steps_per_history_year;
+    
+    new_day_in_year = dam_var->op_year.day_in_year + add_step * ext_param.DAM_HISTORY_LENGTH;
+    if(new_day_in_year > DAYS_PER_YEAR){
+        new_day_in_year = dam_var->op_year.day_in_year + (add_step - ext_options.history_steps_per_history_year) * ext_param.DAM_HISTORY_LENGTH;
+    }    
+    
+    dmy_from_day_in_year(new_day_in_year, dmy[current].year, &dam_var->op_year);
 }
 
 double

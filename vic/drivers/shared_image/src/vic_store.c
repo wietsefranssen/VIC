@@ -1343,6 +1343,23 @@ vic_store(dmy_struct *dmy_state,
                 ivar[i] = nc_state_file.d_fillvalue;
             }
         } 
+        // STATE_DAM_OY_SEC
+        nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_SEC]);
+        for (j = 0; j < ext_options.ndams; j++) {
+            d3start[0] = j;
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                if(dam_con_map[i].Ndams>j){
+                    ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.dayseconds;
+                }
+            }
+            gather_put_nc_field_int(nc_state_file.nc_id,
+                                       nc_var->nc_varid,
+                                       nc_state_file.d_fillvalue,
+                                       d3start, nc_var->nc_counts, ivar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                ivar[i] = nc_state_file.d_fillvalue;
+            }
+        } 
         // STATE_DAM_OY_DAY
         nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_DAY]);
         for (j = 0; j < ext_options.ndams; j++) {
@@ -1367,6 +1384,23 @@ vic_store(dmy_struct *dmy_state,
             for (i = 0; i < local_domain.ncells_active; i++) {
                 if(dam_con_map[i].Ndams>j){
                     ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.month;
+                }
+            }
+            gather_put_nc_field_int(nc_state_file.nc_id,
+                                       nc_var->nc_varid,
+                                       nc_state_file.d_fillvalue,
+                                       d3start, nc_var->nc_counts, ivar);
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                ivar[i] = nc_state_file.d_fillvalue;
+            }
+        } 
+        // STATE_DAM_OY_YEAR
+        nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_YEAR]);
+        for (j = 0; j < ext_options.ndams; j++) {
+            d3start[0] = j;
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                if(dam_con_map[i].Ndams>j){
+                    ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.year;
                 }
             }
             gather_put_nc_field_int(nc_state_file.nc_id,
@@ -1586,8 +1620,10 @@ set_nc_state_var_info(nc_file_struct *nc)
         case STATE_LAKE_SNOW_AGE:
         case STATE_LAKE_SNOW_MELT_STATE:
         case STATE_LAKE_ACTIVE_LAYERS:
+        case STATE_DAM_OY_SEC:
         case STATE_DAM_OY_DAY:
         case STATE_DAM_OY_MONTH:
+        case STATE_DAM_OY_YEAR:
         case STATE_DAM_YEARS_RUNNING:
         case STATE_DAM_HIS_OFFSET:
             nc->nc_vars[i].nc_type = NC_INT;
@@ -1774,8 +1810,10 @@ set_nc_state_var_info(nc_file_struct *nc)
             nc->nc_vars[i].nc_counts[2] = nc->ni_size;
             break;            
         case STATE_DAM_VOLUME:
+        case STATE_DAM_OY_SEC:
         case STATE_DAM_OY_DAY:
         case STATE_DAM_OY_MONTH:
+        case STATE_DAM_OY_YEAR:
         case STATE_DAM_YEARS_RUNNING:
         case STATE_DAM_INFLOW_TOTAL:
         case STATE_DAM_NAT_INFLOW_TOTAL:

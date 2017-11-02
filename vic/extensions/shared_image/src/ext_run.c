@@ -4,7 +4,6 @@ void
 ext_run(dmy_struct dmy)
 {
     extern domain_struct local_domain;
-    extern domain_struct global_domain;
     extern global_param_struct global_param;
     extern ext_option_struct ext_options;
     
@@ -16,10 +15,6 @@ ext_run(dmy_struct dmy)
     extern size_t *cell_order;
     
     extern int mpi_decomposition;
-    
-    ext_all_vars_struct *ext_all_vars_global=NULL;
-    rout_con_struct *rout_con_global=NULL;
-    double *runoff_global=NULL;
     
     double runoff;
     
@@ -60,30 +55,7 @@ ext_run(dmy_struct dmy)
     }
     
     else if(mpi_decomposition == RANDOM_DECOMPOSITION){
-        
-        // Gather everything to the master node
-        if(ext_options.ROUTING){
-            routing_run_alloc(&ext_all_vars_global,&rout_con_global,&runoff_global);
-            routing_run_gather(ext_all_vars_global,rout_con_global,runoff_global);
-        }
-        
-        for(i=0;i<global_domain.ncells_active;i++){
-            cur_id = cell_order[i];
-            
-            if(ext_options.ROUTING){
-                routing_run(rout_con_global[cur_id],&ext_all_vars_global[cur_id],ext_all_vars_global, runoff_global[cur_id]); 
-                log_warn("MPI decomposition not implemented for natural discharge");
-            }
-            if(ext_options.DAMS){
-                log_err("MPI decomposition not implemented for dams");
-            }
-        }
-        
-        // Scatter everything to the local nodes
-        if(ext_options.ROUTING){
-            routing_run_scatter(ext_all_vars_global);
-            routing_run_free(ext_all_vars_global,rout_con_global,runoff_global);
-        }
+        log_err("Random MPI decomposition not implemented");
     }
     timer_stop(&timer);
     

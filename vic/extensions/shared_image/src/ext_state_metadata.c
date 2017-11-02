@@ -64,12 +64,20 @@ ext_set_state_meta_data_info(){
         strcpy(state_metadata[STATE_DAM_YEARS_RUNNING].description,
                "dam_years_running");
         
+        strcpy(state_metadata[STATE_DAM_OY_SEC].varname, "STATE_DAM_OY_SEC");
+        strcpy(state_metadata[STATE_DAM_OY_SEC].long_name, "dam_op_year_sec");
+        strcpy(state_metadata[STATE_DAM_OY_SEC].standard_name,
+               "dam_op_year_sec");
+        strcpy(state_metadata[STATE_DAM_OY_SEC].units, "sec");
+        strcpy(state_metadata[STATE_DAM_OY_SEC].description,
+               "dam_op_year_sec");
+        
         strcpy(state_metadata[STATE_DAM_OY_DAY].varname, "STATE_DAM_OY_DAY");
         strcpy(state_metadata[STATE_DAM_OY_DAY].long_name, "dam_op_year_day");
         strcpy(state_metadata[STATE_DAM_OY_DAY].standard_name,
                "dam_op_year_day");
         strcpy(state_metadata[STATE_DAM_OY_DAY].units, "day");
-        strcpy(state_metadata[STATE_DAM_CALC_DISCHARGE].description,
+        strcpy(state_metadata[STATE_DAM_OY_DAY].description,
                "dam_op_year_day");
         
         strcpy(state_metadata[STATE_DAM_OY_MONTH].varname, "STATE_DAM_OY_MONTH");
@@ -79,6 +87,14 @@ ext_set_state_meta_data_info(){
         strcpy(state_metadata[STATE_DAM_OY_MONTH].units, "month");
         strcpy(state_metadata[STATE_DAM_OY_MONTH].description,
                "dam_op_year_month");
+        
+        strcpy(state_metadata[STATE_DAM_OY_YEAR].varname, "STATE_DAM_OY_YEAR");
+        strcpy(state_metadata[STATE_DAM_OY_YEAR].long_name, "dam_op_year_year");
+        strcpy(state_metadata[STATE_DAM_OY_YEAR].standard_name,
+               "dam_op_year_year");
+        strcpy(state_metadata[STATE_DAM_OY_YEAR].units, "year");
+        strcpy(state_metadata[STATE_DAM_OY_YEAR].description,
+               "dam_op_year_year");
         
         strcpy(state_metadata[STATE_DAM_INFLOW_TOTAL].varname, "STATE_DAM_INFLOW_TOTAL");
         strcpy(state_metadata[STATE_DAM_INFLOW_TOTAL].long_name, "dam_total_inflow");

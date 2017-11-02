@@ -13,5 +13,9 @@ void double_swap(size_t i, size_t j, double *array);
 
 void cshift(double *data, int nx, int ny, int axis, int direction);
 
+double no_leap_day_in_year_from_dmy(dmy_struct dmy);
+double day_in_year_from_dmy(dmy_struct dmy);
+void dmy_from_day_in_year(double day_in_year, int year, dmy_struct *dmy);
+
 #endif
 
