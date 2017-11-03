@@ -24,14 +24,18 @@ ext_populate_model_state(){
                 generate_default_routing_state(&ext_all_vars[i]);
             }
             if(ext_options.DAMS){
-                generate_default_dams_state(&ext_all_vars[i],dam_con[i],dam_con_map[i]);
+                generate_default_dams_state(&ext_all_vars[i],
+                        dam_con[i],
+                        dam_con_map[i]);
             }
         }
     }
 }
 
 void
-generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *dam_con, dam_con_map_struct dam_con_map){
+generate_default_dams_state(ext_all_vars_struct *ext_all_vars, 
+        dam_con_struct *dam_con, 
+        dam_con_map_struct dam_con_map){
     extern ext_option_struct ext_options;
     extern global_param_struct global_param;
     
@@ -48,7 +52,7 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *d
         
         dam_var->volume = DAM_MAX_PVOLUME * dam_con[i].max_volume;
         calculate_dam_surface_area(dam_con[i], dam_var);
-        calculate_dam_height(dam_var);
+        calculate_dam_height(dam_con[i],dam_var);       
         
         dam_var->inflow_total = 0.0;
         dam_var->nat_inflow_total = 0.0;

@@ -232,7 +232,7 @@ ext_restore(){
         for (i = 0; i < local_domain.ncells_active; i++) {
             for(j=0;j<dam_con_map[i].Ndams;j++){
                 calculate_dam_surface_area(dam_con[i][j], &ext_all_vars[i].dam_var[j]);
-                calculate_dam_height(&ext_all_vars[i].dam_var[j]);
+                calculate_dam_height(dam_con[i][j],&ext_all_vars[i].dam_var[j]);
                 
                 ext_all_vars[i].dam_var[j].op_year.day_in_year = 
                         (int) no_leap_day_in_year_from_dmy(ext_all_vars[i].dam_var[j].op_year);

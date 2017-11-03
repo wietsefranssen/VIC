@@ -165,7 +165,7 @@ main(int    argc,
 
         // run vic over the domain
         vic_image_run(&(dmy[current]));
-        ext_run(dmy[current]);
+        ext_run();
         
         // Aggregate data
         vic_process_data(&(dmy[current]));

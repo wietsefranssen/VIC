@@ -8,9 +8,12 @@ calculate_dam_surface_area(dam_con_struct dam_con, dam_var_struct *dam_var){
 }
 
 void
-calculate_dam_height(dam_var_struct *dam_var){
+calculate_dam_height(dam_con_struct dam_con, dam_var_struct *dam_var){
     // Calculate dam height based on Liebe et al 2005
     dam_var->height = sqrt(dam_var->area) * (1 / 19.45);
+    if(dam_var->height > dam_con.max_height){
+        dam_var->height = dam_con.max_height;
+    }
 }
 
 void
@@ -63,5 +66,5 @@ dam_run(dam_con_struct dam_con,
     
     // Recalculate dam water area and height
     calculate_dam_surface_area(dam_con,dam_var);
-    calculate_dam_height(dam_var);
+    calculate_dam_height(dam_con, dam_var);
 }

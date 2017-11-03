@@ -97,11 +97,13 @@ void ext_set_state_meta_data_info(void);
 void ext_set_output_met_data_info(void);
 void ext_populate_model_state(void);
 void generate_default_routing_state(ext_all_vars_struct *);
-void generate_default_dams_state(ext_all_vars_struct *, dam_con_struct *, dam_con_map_struct dam_con_map);
+void generate_default_dams_state(ext_all_vars_struct *, 
+        dam_con_struct *, 
+        dam_con_map_struct dam_con_map);
 void ext_restore(void);
 // Run
 void ext_force(void);
-void ext_run(dmy_struct dmy);
+void ext_run();
 void ext_put_data(ext_all_vars_struct *, dam_con_struct *dam_con, dam_con_map_struct dam_con_map, double **, timer_struct *);
 // Finalizations
 void ext_finalize(void);

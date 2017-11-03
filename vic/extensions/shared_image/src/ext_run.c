@@ -1,7 +1,7 @@
 #include <ext_driver_shared_image.h>
 
 void
-ext_run(dmy_struct dmy)
+ext_run()
 {
     extern domain_struct local_domain;
     extern global_param_struct global_param;

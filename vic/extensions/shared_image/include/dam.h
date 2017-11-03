@@ -77,7 +77,7 @@ void initialize_dam_var(dam_var_struct *dam_var);
 void dams_init();
 
 void calculate_dam_surface_area(dam_con_struct dam_con, dam_var_struct *);
-void calculate_dam_height(dam_var_struct *);
+void calculate_dam_height(dam_con_struct dam_con, dam_var_struct *dam_var);
 void calculate_multi_year_average(double *history, 
         size_t repetitions, 
         size_t length, 
