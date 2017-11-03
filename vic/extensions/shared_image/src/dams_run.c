@@ -46,7 +46,7 @@ dam_run(dam_con_struct dam_con,
     rout_var->discharge[0] = 0;
     
     if(dam_var->calc_discharge[0] > 0){
-        dam_var->discharge = dam_var->calc_discharge[0];        
+        dam_var->discharge = dam_var->calc_discharge[0];      
         
         // Reduce discharge if not available 
         if(dam_var->discharge > dam_var->volume / global_param.dt ){

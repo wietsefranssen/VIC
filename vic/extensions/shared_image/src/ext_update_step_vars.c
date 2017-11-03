@@ -39,6 +39,7 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
     
     // Operational year has passed
     if(current > 0 &&
+            dmy[current].year == dam_var->op_year.year && 
             dmy[current].month == dam_var->op_year.month && 
             dmy[current].day == dam_var->op_year.day &&
             dmy[current].dayseconds == dam_var->op_year.dayseconds){
@@ -48,7 +49,6 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
         dam_var->inflow_total = 0.0;
         dam_var->nat_inflow_total = 0.0;
         dam_var->history_offset = 0;
-        dam_var->discharge_cor = 0.0;
         
         years = dam_var->years_running;
         if(years > (size_t) ext_param.DAM_HISTORY){
@@ -98,7 +98,8 @@ dams_update_step_vars(dam_var_struct *dam_var, dam_con_struct dam_con){
                 &dam_var->op_year);
         
         // Calculate optimal discharge
-        calculate_optimal_discharge(dam_con.max_volume * DAM_MAX_PVOLUME, 
+        calculate_optimal_discharge(dam_con.max_volume * DAM_MAX_PVOLUME,
+                dam_con.max_volume * DAM_MIN_PVOLUME,
                 dam_var->volume, 
                 dam_var->calc_my_inflow, 
                 dam_var->calc_inflow, 
@@ -220,7 +221,7 @@ calculate_operational_year(double my_inflow,
         new_day_in_year = op_dmy->day_in_year + (add_step - nsteps) * days_per_step;
     }
     
-    dmy_from_day_in_year(new_day_in_year, op_dmy->year, op_dmy);
+    dmy_from_day_in_year(new_day_in_year, op_dmy->year + 1, op_dmy);
 }
 
 void
@@ -252,6 +253,7 @@ calculate_efr_fraction(double flow,
 
 void
 calculate_optimal_discharge(double max_volume, 
+        double min_volume,
         double cur_volume, 
         double my_inflow, 
         double *ms_inflow, 
@@ -264,27 +266,27 @@ calculate_optimal_discharge(double max_volume,
     double volume_needed;
     
     size_t i;
-    
-    // Calculate amplitude
-    for((*amplitude) = 0; *amplitude <= 1; (*amplitude) += DAM_ASTEP){
-        volume_needed = calculate_volume_needed(*amplitude, 
-                0, 
-                my_inflow, 
-                ms_inflow,
-                ext_options.history_steps_per_history_year, 
-                ext_options.model_steps_per_history_step * global_param.dt);
-        if(max_volume >= volume_needed){
-            break;
-        }
-    }
-    
-    // Calculate offset
-    (*offset) = (max_volume - cur_volume) /
+        
+    // Calculate offset for inter-annual variations
+    (*offset) = (cur_volume - max_volume) /
             (ext_options.history_steps_per_history_year * 
             ext_options.model_steps_per_history_step * 
             global_param.dt);
     
-    // Calculate discharge;
+    // Calculate amplitude for annual variations
+    for((*amplitude) = 0; *amplitude <= 1; (*amplitude) += DAM_ASTEP){
+        volume_needed = calculate_volume_needed(*amplitude, 
+                *offset, 
+                my_inflow, 
+                ms_inflow,
+                ext_options.history_steps_per_history_year, 
+                ext_options.model_steps_per_history_step * global_param.dt);
+        if((max_volume - min_volume) >= volume_needed){
+            break;
+        }
+    }
+    
+    // Calculate discharge
     for(i=0;i<ext_options.history_steps_per_history_year;i++){
         discharge[i] = get_amplitude_discharge(my_inflow, ms_inflow[i], *amplitude, *offset);
     }

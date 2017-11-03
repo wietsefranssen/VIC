@@ -103,8 +103,6 @@ initialize_dam_var(dam_var_struct *dam_var)
         dam_var->calc_efr[i] = 0.0;      
     }
     
-    dam_var->discharge_cor = 0.0;
-    
     dam_var->discharge=0.0;
     dam_var->inflow = 0.0;
     dam_var->nat_inflow = 0.0;

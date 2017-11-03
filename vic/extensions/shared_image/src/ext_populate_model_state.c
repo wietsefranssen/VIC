@@ -71,7 +71,7 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars,
             dam_var->calc_efr[j] = 0.0;
         }
         
-        dam_var->op_year.year = global_param.startyear;
+        dam_var->op_year.year = global_param.startyear + 1;
         dam_var->op_year.month = global_param.startmonth;
         dam_var->op_year.day = global_param.startday;
         dam_var->op_year.dayseconds = global_param.startsec;

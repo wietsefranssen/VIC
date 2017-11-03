@@ -15,7 +15,7 @@
 #define DAM_H
 
 #define DAM_ASTEP 0.01
-#define DAM_MIN_PVOLUME 0.15
+#define DAM_MIN_PVOLUME 0.1
 #define DAM_MAX_PVOLUME 0.85
 #define DAM_EFR_MINF 0.4
 #define DAM_EFR_MAXF 0.8
@@ -59,8 +59,6 @@ typedef struct{
     double *calc_discharge;
     double *calc_efr;
     
-    double discharge_cor;
-    
     double discharge;    
     double inflow;
     double nat_inflow;
@@ -90,6 +88,7 @@ void calculate_operational_year(double my_inflow,
         size_t days_per_step, 
         dmy_struct *op_dmy);
 void calculate_optimal_discharge(double max_volume, 
+        double min_volume,
         double cur_volume, 
         double my_inflow, 
         double *ms_inflow, 
