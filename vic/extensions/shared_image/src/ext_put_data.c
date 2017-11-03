@@ -8,14 +8,9 @@ ext_put_data(ext_all_vars_struct *ext_all_vars,
                 timer_struct *timer){
     
     extern ext_option_struct ext_options;
-    extern ext_parameters_struct ext_param;
     
     rout_var_struct rout_var;
     dam_var_struct *dam_var;
-    
-    size_t years;
-    double ms_inflow;
-    double ms_nat_inflow;
     
     size_t i;
         
@@ -43,30 +38,14 @@ ext_put_data(ext_all_vars_struct *ext_all_vars,
             
             out_data[OUT_DAM_DISCHARGE][i] = dam_var[i].discharge;
             out_data[OUT_DAM_CALC_DISCHARGE][i] = dam_var[i].calc_discharge[0];
+            out_data[OUT_DAM_CALC_INFLOW][i] = dam_var->calc_inflow[0];
+            out_data[OUT_DAM_CALC_NAT_INFLOW][i] = dam_var->calc_nat_inflow[0]; 
         
             out_data[OUT_DAM_INFLOW][i] = dam_var[i].inflow;
             out_data[OUT_DAM_NAT_INFLOW][i] = dam_var[i].nat_inflow;
             
-            years = dam_var->years_running;
-            if(years > (size_t) ext_param.DAM_HISTORY){
-                years = ext_param.DAM_HISTORY;
-            }
-            
-            calculate_multi_year_average(dam_var->inflow_history,
-                    years,
-                    1,
-                    0,
-                    ext_options.history_steps_per_history_year - 1,
-                    &ms_inflow);
-            calculate_multi_year_average(dam_var->nat_inflow_history,
-                    years,
-                    1,
-                    0,
-                    ext_options.history_steps_per_history_year - 1,
-                    &ms_nat_inflow);
-            
-            out_data[OUT_DAM_CALC_INFLOW][i] = ms_inflow;
-            out_data[OUT_DAM_CALC_NAT_INFLOW][i] = ms_nat_inflow;            
+            out_data[OUT_DAM_AMPLITUDE][i] = dam_var->amplitude;
+            out_data[OUT_DAM_OFFSET][i] = dam_var->offset;                       
         }
     }
     

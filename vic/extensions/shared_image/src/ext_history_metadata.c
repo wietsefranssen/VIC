@@ -144,6 +144,23 @@ ext_set_output_met_data_info(){
         strcpy(out_metadata[OUT_DAM_NAT_INFLOW].units, "m3/s");
         strcpy(out_metadata[OUT_DAM_NAT_INFLOW].description,
                "dam_natural_inflow");
+        
+        strcpy(out_metadata[OUT_DAM_AMPLITUDE].varname, "OUT_DAM_AMPLITUDE");
+        strcpy(out_metadata[OUT_DAM_AMPLITUDE].long_name, "dam_amplitude");
+        strcpy(out_metadata[OUT_DAM_AMPLITUDE].standard_name,
+               "dam_amplitude");
+        strcpy(out_metadata[OUT_DAM_AMPLITUDE].units, "-");
+        strcpy(out_metadata[OUT_DAM_AMPLITUDE].description,
+               "dam_amplitude");
+    
+        strcpy(out_metadata[OUT_DAM_OFFSET].varname, "OUT_DAM_OFFSET");
+        strcpy(out_metadata[OUT_DAM_OFFSET].long_name, "dam_offset");
+        strcpy(out_metadata[OUT_DAM_OFFSET].standard_name,
+               "dam_offset");
+        strcpy(out_metadata[OUT_DAM_OFFSET].units, "m3/s");
+        strcpy(out_metadata[OUT_DAM_OFFSET].description,
+               "dam_offset");
+    
     }
     
     strcpy(out_metadata[OUT_TIME_EXTRUN_WALL].varname, "OUT_TIME_EXTRUN_WALL");
@@ -176,4 +193,6 @@ ext_set_output_met_data_info(){
     out_metadata[OUT_DAM_CALC_INFLOW].nelem = ext_options.ndams;
     out_metadata[OUT_DAM_NAT_INFLOW].nelem = ext_options.ndams;
     out_metadata[OUT_DAM_CALC_NAT_INFLOW].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_AMPLITUDE].nelem = ext_options.ndams;
+    out_metadata[OUT_DAM_OFFSET].nelem = ext_options.ndams;
 }

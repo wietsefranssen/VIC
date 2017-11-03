@@ -61,7 +61,10 @@ generate_default_dams_state(ext_all_vars_struct *ext_all_vars, dam_con_struct *d
             dam_var->nat_inflow_history[j] = 0.0;
         }
         for(j=0;j<ext_options.history_steps_per_history_year;j++){
+            dam_var->calc_inflow[j] = 0.0;
+            dam_var->calc_nat_inflow[j] = 0.0;
             dam_var->calc_discharge[j] = 0.0;
+            dam_var->calc_efr[j] = 0.0;
         }
         
         dam_var->op_year.year = global_param.startyear;

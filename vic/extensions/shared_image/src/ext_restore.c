@@ -7,6 +7,7 @@ ext_restore(){
     extern domain_struct       local_domain;
     extern ext_option_struct    ext_options;
     extern ext_all_vars_struct  *ext_all_vars;
+    extern ext_parameters_struct ext_param;
     extern filenames_struct    filenames;
     extern metadata_struct     state_metadata[N_STATE_VARS];
     extern dam_con_struct       **dam_con;
@@ -22,6 +23,8 @@ ext_restore(){
     size_t                     d3start[3];
     size_t                     d4count[4];
     size_t                     d4start[4];
+    
+    size_t years;
     
     d3start[0] = 0;
     d3start[1] = 0;
@@ -233,6 +236,39 @@ ext_restore(){
                 
                 ext_all_vars[i].dam_var[j].op_year.day_in_year = 
                         (int) no_leap_day_in_year_from_dmy(ext_all_vars[i].dam_var[j].op_year);
+                
+                years = ext_all_vars[i].dam_var[j].years_running;
+                if(years > (size_t) ext_param.DAM_HISTORY){
+                    years = ext_param.DAM_HISTORY;
+                }
+
+                // Calculate multi-year averages
+                calculate_multi_year_average(ext_all_vars[i].dam_var[j].inflow_history, 
+                        years, 
+                        ext_options.history_steps_per_history_year,
+                        0,
+                        0,
+                        &ext_all_vars[i].dam_var[j].calc_my_inflow);
+                calculate_multi_year_average(ext_all_vars[i].dam_var[j].nat_inflow_history, 
+                        years, 
+                        ext_options.history_steps_per_history_year,
+                        0,
+                        0,
+                        &ext_all_vars[i].dam_var[j].calc_my_nat_inflow);
+                for(i=0;i<ext_options.history_steps_per_history_year;i++){
+                    calculate_multi_year_average(ext_all_vars[i].dam_var[j].inflow_history,
+                            years,
+                            1,
+                            i,
+                            ext_options.history_steps_per_history_year - i - 1,
+                            &ext_all_vars[i].dam_var[j].calc_inflow[i]);
+                    calculate_multi_year_average(ext_all_vars[i].dam_var[j].nat_inflow_history,
+                            years,
+                            1,
+                            i,
+                            ext_options.history_steps_per_history_year - i - 1,
+                            &ext_all_vars[i].dam_var[j].calc_nat_inflow[i]);
+                }
             }
         }        
     }

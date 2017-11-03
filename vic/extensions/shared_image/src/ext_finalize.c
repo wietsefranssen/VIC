@@ -42,8 +42,11 @@ void ext_finalize()
         for(i=0;i<local_domain.ncells_active;i++){            
             for(j=0;j<dam_con_map[i].Ndams;j++){
                 free(ext_all_vars[i].dam_var[j].inflow_history);
-                free(ext_all_vars[i].dam_var[j].calc_discharge);
                 free(ext_all_vars[i].dam_var[j].nat_inflow_history);
+                free(ext_all_vars[i].dam_var[j].calc_inflow);
+                free(ext_all_vars[i].dam_var[j].calc_nat_inflow);
+                free(ext_all_vars[i].dam_var[j].calc_discharge);
+                free(ext_all_vars[i].dam_var[j].calc_efr);
             }
         }
             

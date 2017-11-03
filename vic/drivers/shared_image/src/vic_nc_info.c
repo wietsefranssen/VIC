@@ -115,6 +115,8 @@ set_nc_var_info(unsigned int       varid,
     case OUT_DAM_INFLOW:
     case OUT_DAM_CALC_INFLOW:
     case OUT_DAM_NAT_INFLOW:
+    case OUT_DAM_AMPLITUDE:
+    case OUT_DAM_OFFSET:
     case OUT_DAM_CALC_NAT_INFLOW:
         nc_var->nc_dims = 4;
         nc_var->nc_counts[1] = nc_hist_file->ndams_size;
@@ -212,6 +214,8 @@ set_nc_var_dimids(unsigned int    varid,
     case OUT_DAM_INFLOW:
     case OUT_DAM_CALC_INFLOW:
     case OUT_DAM_NAT_INFLOW:
+    case OUT_DAM_AMPLITUDE:
+    case OUT_DAM_OFFSET:
     case OUT_DAM_CALC_NAT_INFLOW:
         nc_var->nc_dimids[0] = nc_hist_file->time_dimid;
         nc_var->nc_dimids[1] = nc_hist_file->ndams_dimid;

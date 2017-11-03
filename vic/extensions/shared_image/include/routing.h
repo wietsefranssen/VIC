@@ -52,8 +52,6 @@ void get_downstream(size_t id, int direction, size_t *downstream);
 void set_upstream(size_t id, size_t Ncells);
 void set_uh(size_t id, double distance, double diffusion, double velocity);
 double uh(double time, double distance, double velocity, double diffusion);
-double calculate_efr_fraction(double flow, double annual_flow);
-double calculate_efr(double flow, double annual_flow);
 
 #endif
 

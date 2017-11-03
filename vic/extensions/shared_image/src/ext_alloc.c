@@ -58,8 +58,17 @@ ext_alloc(void)
                 ext_all_vars[i].dam_var[j].nat_inflow_history = malloc(ext_options.history_steps * sizeof(*ext_all_vars[i].dam_var[j].nat_inflow_history));
                 check_alloc_status(ext_all_vars[i].dam_var[j].nat_inflow_history, "Memory allocation error");
                 
+                ext_all_vars[i].dam_var[j].calc_inflow = malloc(ext_options.history_steps_per_history_year * sizeof(*ext_all_vars[i].dam_var[j].calc_inflow));
+                check_alloc_status(ext_all_vars[i].dam_var[j].calc_inflow, "Memory allocation error");
+                
+                ext_all_vars[i].dam_var[j].calc_nat_inflow = malloc(ext_options.history_steps_per_history_year * sizeof(*ext_all_vars[i].dam_var[j].calc_nat_inflow));
+                check_alloc_status(ext_all_vars[i].dam_var[j].calc_nat_inflow, "Memory allocation error");
+                
                 ext_all_vars[i].dam_var[j].calc_discharge = malloc(ext_options.history_steps_per_history_year * sizeof(*ext_all_vars[i].dam_var[j].calc_discharge));
                 check_alloc_status(ext_all_vars[i].dam_var[j].calc_discharge, "Memory allocation error");
+                
+                ext_all_vars[i].dam_var[j].calc_efr = malloc(ext_options.history_steps_per_history_year * sizeof(*ext_all_vars[i].dam_var[j].calc_efr));
+                check_alloc_status(ext_all_vars[i].dam_var[j].calc_efr, "Memory allocation error");
             }
         }
         

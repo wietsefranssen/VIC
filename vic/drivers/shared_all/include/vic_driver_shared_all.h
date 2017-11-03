@@ -306,6 +306,8 @@ enum
     OUT_DAM_INFLOW,
     OUT_DAM_CALC_INFLOW,
     OUT_DAM_NAT_INFLOW,
+    OUT_DAM_AMPLITUDE,
+    OUT_DAM_OFFSET,
     OUT_DAM_CALC_NAT_INFLOW,
             
     // Timing and Profiling Terms

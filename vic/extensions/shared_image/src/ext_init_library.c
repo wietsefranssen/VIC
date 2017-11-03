@@ -87,16 +87,27 @@ initialize_dam_var(dam_var_struct *dam_var)
     dam_var->inflow_total=0.0;
     dam_var->nat_inflow_total=0.0;
     dam_var->history_offset=0.0;
-    dam_var->discharge=0.0;
-    dam_var->inflow = 0.0;
-    dam_var->nat_inflow = 0.0;
     for(i=0;i<ext_options.history_steps;i++){
         dam_var->inflow_history[i] = 0.0;
         dam_var->nat_inflow_history[i] = 0.0;
     }
+    
+    dam_var->amplitude = 0.0;
+    dam_var->offset = 0.0;
+    dam_var->calc_my_inflow = 0.0;
+    dam_var->calc_my_nat_inflow = 0.0;
     for(i=0;i<ext_options.history_steps_per_history_year;i++){
-        dam_var->calc_discharge[i] = 0.0;        
+        dam_var->calc_inflow[i] = 0.0;
+        dam_var->calc_nat_inflow[i] = 0.0;
+        dam_var->calc_discharge[i] = 0.0; 
+        dam_var->calc_efr[i] = 0.0;      
     }
+    
+    dam_var->discharge_cor = 0.0;
+    
+    dam_var->discharge=0.0;
+    dam_var->inflow = 0.0;
+    dam_var->nat_inflow = 0.0;
     
     initialize_dmy(&dam_var->op_year);
 }
@@ -211,7 +222,7 @@ initialize_ext_parameters(ext_parameters_struct *parameters)
     parameters->UH_LENGTH = 5;
     parameters->UH_PARTITIONS = 20;
     
-    parameters->DAM_HISTORY = 2;
+    parameters->DAM_HISTORY = 3;
     parameters->DAM_HISTORY_LENGTH = 20;
 }
 

@@ -14,40 +14,43 @@ calculate_dam_height(dam_var_struct *dam_var){
 }
 
 void
-dam_run(dam_con_struct dam_con, dam_var_struct *dam_var, rout_var_struct *rout_var, dmy_struct dmy){
+dam_run(dam_con_struct dam_con, 
+        dam_var_struct *dam_var, 
+        rout_var_struct *rout_var){
     extern global_param_struct global_param;
-                
+    extern dmy_struct *dmy;
+    extern size_t current;
+    
     // River discharge is saved for history
     dam_var->inflow_total += rout_var->discharge[0];
     dam_var->nat_inflow_total += rout_var->nat_discharge[0];
     
+    // Store for output    
+    dam_var->inflow = rout_var->discharge[0];
+    dam_var->nat_inflow = rout_var->nat_discharge[0];
+    
     // Check if dam is run
     if(!dam_var->run){
-        if(dam_con.year <= dmy.year){
+        if(dam_con.year <= dmy[current].year){
             dam_var->run = true;
         }else{
             return;
         }
     }
     
-    // Store for output    
-    dam_var->inflow = rout_var->discharge[0];
-    dam_var->nat_inflow = rout_var->nat_discharge[0];
-    
     // River discharge adds to dam reservoir volume
     dam_var->volume += dam_var->inflow * global_param.dt;
     rout_var->discharge[0] = 0;
     
-    // Recalculate dam water area and height
-    calculate_dam_surface_area(dam_con,dam_var);
-    calculate_dam_height(dam_var);
-    
-    // Reduce discharge if not available
-    dam_var->discharge = dam_var->calc_discharge[0]; 
-    if(dam_var->discharge * global_param.dt  > dam_var->volume){
-        dam_var->discharge = dam_var->volume / global_param.dt;
+    if(dam_var->calc_discharge[0] > 0){
+        dam_var->discharge = dam_var->calc_discharge[0];        
+        
+        // Reduce discharge if not available 
+        if(dam_var->discharge > dam_var->volume / global_param.dt ){
+            dam_var->discharge = dam_var->volume / global_param.dt;
+        }
+        dam_var->volume -= dam_var->discharge * global_param.dt;
     }
-    dam_var->volume -= dam_var->discharge * global_param.dt;
     
     // Increase discharge with overflow
     if(dam_var->volume > dam_con.max_volume){

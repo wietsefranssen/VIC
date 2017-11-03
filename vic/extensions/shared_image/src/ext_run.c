@@ -48,7 +48,7 @@ ext_run(dmy_struct dmy)
             }
             if(ext_options.DAMS){
                 for(j=0;j<dam_con_map[cur_id].Ndams;j++){
-                    dam_run(dam_con[cur_id][j],&ext_all_vars[cur_id].dam_var[j], &ext_all_vars[cur_id].rout_var, dmy);
+                    dam_run(dam_con[cur_id][j],&ext_all_vars[cur_id].dam_var[j], &ext_all_vars[cur_id].rout_var);
                 }                
             }
         }
