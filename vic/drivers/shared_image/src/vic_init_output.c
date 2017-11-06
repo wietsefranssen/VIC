@@ -276,7 +276,7 @@ initialize_history_file(nc_file_struct *nc,
                         &(nc->band_dimid));
     check_nc_status(status, "Error defining snow_band dimension in %s",
                     stream->filename);
-    
+
     status = nc_def_dim(nc->nc_id, "front", nc->front_size,
                         &(nc->front_dimid));
     check_nc_status(status, "Error defining front dimension in %s",
@@ -679,7 +679,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->d_fillvalue = NC_FILL_DOUBLE;
     nc_file->f_fillvalue = NC_FILL_FLOAT;
 
-    // set ids to MISSING    
+    // set ids to MISSING
     nc_file->nc_id = MISSING;
     nc_file->band_dimid = MISSING;
     nc_file->front_dimid = MISSING;

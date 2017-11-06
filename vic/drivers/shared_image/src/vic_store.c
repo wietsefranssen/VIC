@@ -25,7 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_image.h>
-
+#include <rout.h>
 #include "ext_driver_shared_image.h"
 
 /******************************************************************************
@@ -1291,6 +1291,9 @@ vic_store(dmy_struct *dmy_state,
         }        
     }
 
+    // store extension variables
+    vic_store_rout_extension(&nc_state_file);
+
     // close the netcdf file if it is still open
     if (mpi_rank == VIC_MPI_ROOT) {
         if (nc_state_file.open == true) {
@@ -1314,7 +1317,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     extern ext_option_struct    ext_options;
     extern domain_struct global_domain;
 
-    // Set fill values
+    // set fill values
     nc_state_file->c_fillvalue = NC_FILL_CHAR;
     nc_state_file->s_fillvalue = NC_FILL_SHORT;
     nc_state_file->i_fillvalue = NC_FILL_INT;
@@ -1336,7 +1339,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->veg_dimid = MISSING;
     nc_state_file->discharge_dimid = MISSING;
 
-    // Set dimension sizes
+    // set dimension sizes
     nc_state_file->band_size = options.SNOW_BAND;
     nc_state_file->front_size = MAX_FRONTS;
     nc_state_file->frost_size = options.Nfrost;
@@ -1349,9 +1352,13 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->veg_size = options.NVEGTYPES;
     nc_state_file->discharge_size = ext_options.uh_steps;
 
+    // set ids and dimension sizes of the extension variables
+    set_nc_state_file_info_rout_extension(nc_state_file);
+
     // allocate memory for nc_vars
     nc_state_file->nc_vars =
-        calloc(N_STATE_VARS, sizeof(*(nc_state_file->nc_vars)));
+        calloc(N_STATE_VARS + N_STATE_VARS_EXT,
+               sizeof(*(nc_state_file->nc_vars)));
     check_alloc_status(nc_state_file->nc_vars, "Memory allocation error");
 }
 
@@ -1568,6 +1575,7 @@ set_nc_state_var_info(nc_file_struct *nc)
             log_err("Too many dimensions specified in variable %zu", i);
         }
     }
+    set_nc_state_var_info_rout_extension(nc);
 }
 
 /******************************************************************************
@@ -1583,7 +1591,7 @@ initialize_state_file(char           *filename,
     extern domain_struct       global_domain;
     extern domain_struct       local_domain;
     extern global_param_struct global_param;
-    extern metadata_struct     state_metadata[N_STATE_VARS];
+    extern metadata_struct     state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
     extern soil_con_struct    *soil_con;
     extern int                 mpi_rank;
     extern ext_option_struct    ext_options;
@@ -1702,6 +1710,7 @@ initialize_state_file(char           *filename,
                             &(nc_state_file->node_dimid));
         check_nc_status(status, "Error defining soil_node in %s", filename);
 
+
         if (options.LAKES) {
             status = nc_def_dim(nc_state_file->nc_id, "lake_node",
                                 nc_state_file->lake_node_size,
@@ -1715,7 +1724,10 @@ initialize_state_file(char           *filename,
                                 &(nc_state_file->discharge_dimid));
             check_nc_status(status, "Error defining discharge_steps in %s", filename);
         }
-        
+
+        // add extension dimensions
+        initialize_state_file_rout_extension(filename, nc_state_file);
+
         set_nc_state_var_info(nc_state_file);
     }
 
@@ -1945,7 +1957,7 @@ initialize_state_file(char           *filename,
 
     // Define state variables
     if (mpi_rank == VIC_MPI_ROOT) {
-        for (i = 0; i < N_STATE_VARS; i++) {
+        for (i = 0; i < (N_STATE_VARS + N_STATE_VARS_EXT); i++) {
             if (strcasecmp(state_metadata[i].varname, MISSING_S) == 0) {
                 // skip variables not set in set_state_meta_data_info
                 continue;
@@ -2155,7 +2167,7 @@ initialize_state_file(char           *filename,
             dimids[i] = -1;
             dcount[i] = 0;
         }
-        free(ivar);        
+        free(ivar);
     
         if(ext_options.ROUTING){
             // discharge steps

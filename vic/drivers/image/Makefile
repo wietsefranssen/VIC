@@ -42,6 +42,18 @@ EXTSHAREDIMAGEPATH = ../../extensions/shared_image
 # VIC RUN PATH
 VICPATH = ../../vic_run
 
+# VIC EXTENTIONS PATH
+EXTPATH = ../../extensions
+
+# Set the routing model extension
+# | Level      | Value                              |
+# |----------  |---------------------------------   |
+# | rout_stub  | Stub routing model (no routing)    |
+# | rout_rvic  | Use RVIC routing scheme            |
+ROUT=rout_stub
+
+include ${EXTPATH}/${ROUT}/rout.mk
+
 ifndef NC_LIBS
 NC_LIBS = $(shell nc-config --libs)
 endif
@@ -76,6 +88,7 @@ INCLUDES = -I ${DRIVERPATH}/include \
 		   -I ${VICPATH}/include \
 		   -I ${SHAREDPATH}/include \
 		   -I ${SHAREDIMAGEPATH}/include \
+		   -I ${EXTPATH}/${ROUT}/include \
 		   -I ${EXTSHAREDPATH}/include \
 		   -I ${EXTSHAREDIMAGEPATH}/include
 
@@ -106,6 +119,7 @@ HDRS = \
 	$(wildcard ${DRIVERPATH}/include/*.h) \
 	$(wildcard ${SHAREDPATH}/include/*.h) \
 	$(wildcard ${SHAREDIMAGEPATH}/include/*.h) \
+	$(wildcard ${EXTPATH}/${ROUT}/include/*.h) \
 	$(wildcard ${EXTSHAREDPATH}/include/*.h) \
 	$(wildcard ${EXTSHAREDIMAGEPATH}/include/*.h)
 
@@ -114,6 +128,7 @@ SRCS = \
 	$(wildcard ${DRIVERPATH}/src/*.c) \
 	$(wildcard ${SHAREDPATH}/src/*.c) \
 	$(wildcard ${SHAREDIMAGEPATH}/src/*.c) \
+	$(wildcard ${EXTPATH}/${ROUT}/src/*.c) \
 	$(wildcard ${EXTSHAREDPATH}/src/*.c) \
 	$(wildcard ${EXTSHAREDIMAGEPATH}/src/*.c)
 

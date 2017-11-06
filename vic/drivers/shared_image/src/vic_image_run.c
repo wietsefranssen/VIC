@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_image.h>
+#include <rout.h>
 
 /******************************************************************************
  * @brief    Run VIC for one timestep and store output data
@@ -36,9 +37,11 @@ vic_image_run(dmy_struct *dmy_current)
     extern all_vars_struct    *all_vars;
     extern force_data_struct  *force;
     extern domain_struct       local_domain;
+    extern option_struct       options;
     extern global_param_struct global_param;
     extern lake_con_struct     lake_con;
     extern double           ***out_data;
+    extern stream_struct      *output_streams;
     extern save_data_struct   *save_data;
     extern soil_con_struct    *soil_con;
     extern veg_con_struct    **veg_con;
@@ -81,6 +84,9 @@ vic_process_data(dmy_struct *dmy_current){
     
     size_t i;
     
+    // run routing over the domain
+    rout_run();     // Routing routine (extension)
+
     for (i = 0; i < options.Noutstreams; i++) {
         agg_stream_data(&(output_streams[i]), dmy_current, out_data);
     }

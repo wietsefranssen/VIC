@@ -559,7 +559,7 @@ void
 validate_parameters()
 {
     extern parameters_struct param;
-    
+
     // Validate Parameters
     // Lapse Rate
     if (!(param.LAPSE_RATE >= -1 && param.LAPSE_RATE <= 0)) {

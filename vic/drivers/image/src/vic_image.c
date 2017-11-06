@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_image.h>
+#include <rout.h>   // Routing routine (extension)
 
 size_t              NF, NR;
 size_t              current;
@@ -59,12 +60,15 @@ veg_con_map_struct *veg_con_map = NULL;
 veg_con_struct    **veg_con = NULL;
 veg_hist_struct   **veg_hist = NULL;
 veg_lib_struct    **veg_lib = NULL;
-metadata_struct     state_metadata[N_STATE_VARS];
+metadata_struct     state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
 metadata_struct     out_metadata[N_OUTVAR_TYPES];
 save_data_struct   *save_data;  // [ncells]
 double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
+
+// Extensions
+rout_struct         rout; // Routing routine (extension)
 
 // Extension MPI
 int                 mpi_decomposition;
@@ -116,7 +120,7 @@ main(int    argc,
     // initialize mpi
     initialize_mpi();
     initialize_ext_mpi();
-    
+
     // process command line arguments
     if (mpi_rank == VIC_MPI_ROOT) {
         cmd_proc(argc, argv, filenames.global);
@@ -129,15 +133,21 @@ main(int    argc,
     // allocate memory
     vic_alloc();
     ext_alloc();
-        
+
+    // allocate memory for routing
+    rout_alloc();   // Routing routine (extension)
+
     // initialize model parameters from parameter files
-    vic_image_init();    
+    vic_image_init();
     ext_init();
+
+    // initialize routing parameters from parameter files
+    rout_init();    // Routing routine (extension)
 
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state(&(dmy[0]));
     ext_populate_model_state();
-    
+
     // initialize output structures
     vic_init_output(&(dmy[0]));
 
@@ -163,7 +173,7 @@ main(int    argc,
         // run vic over the domain
         vic_image_run(&(dmy[current]));
         ext_run();
-        
+
         // Aggregate data
         vic_process_data(&(dmy[current]));
         // Write history files
@@ -185,6 +195,9 @@ main(int    argc,
     // clean up
     ext_finalize();
     vic_image_finalize();
+
+    // clean up routing
+    rout_finalize();    // Routing routine (extension)
 
     // finalize MPI
     status = MPI_Finalize();

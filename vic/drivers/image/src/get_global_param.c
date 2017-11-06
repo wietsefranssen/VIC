@@ -423,7 +423,9 @@ get_global_param(FILE *gp)
             else if (strcasecmp("PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.params.nc_filename);
             }
-            
+            else if (strcasecmp("ROUT_PARAM", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", filenames.rout_params.nc_filename);
+            }
             /*************************************
                Define extension parameter files
             *************************************/
@@ -550,7 +552,6 @@ get_global_param(FILE *gp)
             else if (strcasecmp("ROUTING_TYPE", optstr) == 0) {
                 get_routing_type(cmdstr);
             }
-            
             
             /*************************************
                Define output files

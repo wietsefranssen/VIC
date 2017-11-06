@@ -138,7 +138,7 @@ vic_start(void)
         // Check that model parameters are valid
         validate_parameters();
     }
-        
+
     // broadcast global, option, param structures as well as global valies
     // such as NF and NR
     status = MPI_Bcast(&NF, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);

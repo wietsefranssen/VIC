@@ -1,7 +1,7 @@
 #include <ext_driver_shared_image.h>
 
 void
-rout(double **discharge, double *uh, double quantity, int uh_length){
+routing(double **discharge, double *uh, double quantity, int uh_length){
     
     int i;
     
@@ -314,6 +314,6 @@ routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this,
     }            
     
     // Do convolution
-    rout(&rout_var.discharge, rout_con.uh, (runoff + inflow),
+    routing(&rout_var.discharge, rout_con.uh, (runoff + inflow),
             ext_options.uh_steps);
 }
