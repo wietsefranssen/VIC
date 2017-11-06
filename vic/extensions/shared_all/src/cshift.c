@@ -1,4 +1,5 @@
 #include <ext_driver_shared_all.h>
+#include <rout.h>
 
 void
 cshift(double *data,
