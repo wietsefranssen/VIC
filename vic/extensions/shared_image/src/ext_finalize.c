@@ -4,7 +4,6 @@ void ext_finalize()
 {
     extern ext_option_struct ext_options;
     extern domain_struct local_domain;    
-    extern int mpi_decomposition;
     extern int mpi_rank;    
     extern size_t *cell_order; 
     extern basin_struct basins;
