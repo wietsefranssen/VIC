@@ -89,7 +89,7 @@ rout_run(void)
 
     // Write to output struct
     for (i = 0; i < local_domain.ncells_active; i++) {
-        out_data[i][OUT_DISCHARGE][0] = var_local_discharge[i];
+        out_data[i][OUT_DISCHARGE_RVIC][0] = var_local_discharge[i];
     }
 
     // Free variables on the local nodes
