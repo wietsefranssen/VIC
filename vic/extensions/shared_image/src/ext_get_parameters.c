@@ -1,32 +1,16 @@
 #include <ext_driver_shared_image.h>
 
+bool
+ext_get_parameters(char *optstr)
+{
+    return false;
+}
+
 void
 validate_ext_parameters(){
-    extern ext_parameters_struct ext_param;
+    extern ext_option_struct ext_options;
     
-    // Validate extension parameters
-    if(!(ext_param.MPI_E_PROCESS_COST >= 0)) {
-        log_err("MPI_E_PROCESS_COST must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.MPI_N_PROCESS_COST >= 0)) {
-        log_err("MPI_N_PROCESS_COST must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.UH_FLOW_DIFFUSION >= 0)) {
-        log_err("UH_FLOW_DIFFUSION must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.UH_FLOW_VELOCITY >= 0)) {
-        log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.UH_PARTITIONS >= 0)) {
-        log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.UH_LENGTH >= 0)) {
-        log_err("UH_FLOW_VELOCITY must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.DAM_HISTORY >= 0)) {
-        log_err("DAM_HISTORY must be defined on the interval [0, inf)");
-    }
-    if(!(ext_param.DAM_HISTORY_LENGTH >= 0)) {
-        log_err("DAM_HISTORY_LENGTH must be defined on the interval [0, inf)");
+    if(ext_options.GROUNDWATER){
+        validate_gw_parameters();
     }
 }

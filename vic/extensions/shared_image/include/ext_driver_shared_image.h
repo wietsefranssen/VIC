@@ -16,107 +16,85 @@
 
 #include <vic_driver_shared_image.h>
 #include <ext_driver_shared_all.h>
-#include <routing.h>
-#include <dam.h>
+#include <groundwater.h>
+#include <ext_debug.h>
 #include <ext_mpi.h>
-#include <debug.h>
 
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
-    double MPI_N_PROCESS_COST;
-    double MPI_E_PROCESS_COST;
-    
-    double UH_FLOW_VELOCITY;
-    double UH_FLOW_DIFFUSION;
-    int UH_LENGTH;
-    int UH_PARTITIONS;    
-    
-    int DAM_HISTORY;    
-    int DAM_HISTORY_LENGTH;
 }ext_parameters_struct;
 
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
-    bool ROUTING;
-    bool DAMS;
-    
-    int UH_PARAMETERS;
-    
-    size_t uh_steps;
-    size_t history_steps;
-    size_t model_steps_per_history_step;
-    size_t history_steps_per_history_year;
-    size_t ndams;
+    bool GROUNDWATER;
 }ext_option_struct;
 
 typedef struct {
-    char direction_var[MAXSTRING];
-    char velocity_var[MAXSTRING];
-    char diffusion_var[MAXSTRING];
-    char distance_var[MAXSTRING];
-    
-    char ndam_var[MAXSTRING];
-    char dam_year_var[MAXSTRING];
-    char dam_lat_var[MAXSTRING];
-    char dam_lon_var[MAXSTRING];
-    char dam_volume_var[MAXSTRING];
-    char dam_area_var[MAXSTRING];
-    char dam_height_var[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
-    nameid_struct routing;
-    nameid_struct dams;
+    nameid_struct groundwater;
     
     ext_info_struct info;
 }ext_filenames_struct;
 
 typedef struct{
-    rout_var_struct rout_var;
-    dam_var_struct *dam_var;
+    gw_var_struct *groundwater;
 }ext_all_vars_struct;
 
-// Master node initialization
+void initialize_ext_mpi();
 void initialize_ext_global_structures(void);
 void initialize_ext_options(ext_option_struct *);
 void initialize_ext_info(ext_info_struct *);
 void initialize_nameid(nameid_struct *);
 void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);
-// Local node initialization
 void initialize_ext_local_structures(void);
-void initialize_rout_con(rout_con_struct *);
 void initialize_ext_all_vars(ext_all_vars_struct *);
 
-// Preperations
-void ext_start(void);
+void initialize_gw_parameters(ext_parameters_struct *parameters);
+void initialize_gw_info(ext_info_struct *info);
+void initialize_gw_filenames(ext_filenames_struct *filenames);
+void initialize_gw_options(ext_option_struct *options);
+
+bool ext_get_global_param(char *opstr);
+void ext_check_global_param(void);
+
+bool ext_get_parameters(char *optstr);
 void validate_ext_parameters(void);
+void ext_start(void);
 void ext_alloc(void);
 void ext_init(void);
+
 void ext_set_state_meta_data_info(void);
 void ext_set_output_met_data_info(void);
+
 void ext_populate_model_state(void);
-void generate_default_routing_state(ext_all_vars_struct *);
-void generate_default_dams_state(ext_all_vars_struct *, 
-        dam_con_struct *, 
-        dam_con_map_struct dam_con_map);
+void ext_generate_default_state(void);
 void ext_restore(void);
-// Run
+
 void ext_force(void);
-void ext_run();
-void ext_put_data(ext_all_vars_struct *, dam_con_struct *dam_con, dam_con_map_struct dam_con_map, double **, timer_struct *);
-// Finalizations
+void ext_update_step_vars(void);
+void ext_run(void);
+void ext_put_data(timer_struct timer);
+
+bool ext_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
+bool ext_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
+
+void ext_write(void);
+void ext_set_nc_output_file_info(nc_file_struct *nc_output_file);
+void ext_write_def_dim(void);
+void ext_write_def_dimvar(void);
+void ext_write_put_dimvar(void);
+
+void ext_store(void);
+void ext_set_nc_state_file_info(nc_file_struct *nc_state_file);
+bool ext_set_nc_state_var_info(int statevar);
+void ext_store_def_dim(void);
+void ext_store_def_dimvar(void);
+void ext_store_put_dimvar(void);
+
 void ext_finalize(void);
-
-void routing_run_alloc(ext_all_vars_struct **ext_all_vars_global, rout_con_struct **rout_con_global, double **runoff_global);
-void routing_run_gather(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
-void routing_run_scatter(ext_all_vars_struct *ext_all_vars_global);
-void routing_run_free(ext_all_vars_struct *ext_all_vars_global, rout_con_struct *rout_con_global, double *runoff_global);
-
-void routing_run(rout_con_struct rout_con, ext_all_vars_struct *ext_all_vars_this, ext_all_vars_struct *ext_all_vars, double runoff);
-void dam_run(dam_con_struct dam_con, 
-        dam_var_struct *dam_var, 
-        rout_var_struct *rout_var);
 
 void get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
 void get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);

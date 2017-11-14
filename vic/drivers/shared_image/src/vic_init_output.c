@@ -327,11 +327,7 @@ initialize_history_file(nc_file_struct *nc,
     check_nc_status(status, "Error defining time bounds dimension in %s",
                     stream->filename);
     
-    if(ext_options.DAMS){
-        status = nc_def_dim(nc->nc_id, "ndams", nc->ndams_size, &(nc->ndams_dimid));
-        check_nc_status(status, "Error defining ndams dimension in %s",
-                        stream->filename);
-    }
+    ext_write_def_dim();
 
     // define the netcdf variable time
     status = nc_def_var(nc->nc_id, "time", NC_DOUBLE, 1,
@@ -672,7 +668,6 @@ initialize_nc_file(nc_file_struct     *nc_file,
                    unsigned short int *dtypes)
 {
     extern option_struct options;
-    extern ext_option_struct ext_options;
     extern domain_struct global_domain;
 
     size_t               i;
@@ -699,12 +694,6 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->root_zone_dimid = MISSING;
     nc_file->time_dimid = MISSING;
     nc_file->veg_dimid = MISSING;
-    
-    // Extension
-    nc_file->discharge_dimid = MISSING;
-    nc_file->ndams_dimid = MISSING;
-    nc_file->dam_his_dimid = MISSING;
-    nc_file->dam_yhis_dimid = MISSING;
 
     // Set dimension sizes
     nc_file->band_size = options.SNOW_BAND;
@@ -718,11 +707,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->time_size = NC_UNLIMITED;
     nc_file->veg_size = options.NVEGTYPES;
     
-    // Extension
-    nc_file->discharge_size = ext_options.uh_steps;
-    nc_file->ndams_size = ext_options.ndams;
-    nc_file->dam_his_size = ext_options.history_steps;
-    nc_file->dam_yhis_size = ext_options.history_steps_per_history_year;    
+    ext_set_nc_output_file_info(nc_file);
 
     // allocate memory for nc_vars
     nc_file->nc_vars = calloc(nvars, sizeof(*(nc_file->nc_vars)));

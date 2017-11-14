@@ -37,7 +37,6 @@ get_parameters(FILE *paramfile)
     char                     optstr[MAXSTRING];
 
     extern parameters_struct param;
-    extern ext_parameters_struct ext_param;
 
     /** Read through parameter file to find parameters **/
 
@@ -524,34 +523,11 @@ get_parameters(FILE *paramfile)
             else if (strcasecmp("ROOT_BRENT_T", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &param.ROOT_BRENT_T);
             }
-            // Extension parameters
-            else if (strcasecmp("MPI_N_PROCESS_COST", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &ext_param.MPI_N_PROCESS_COST);
-            }
-            else if (strcasecmp("MPI_E_PROCESS_COST", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &ext_param.MPI_N_PROCESS_COST);
-            }
-            else if (strcasecmp("UH_FLOW_DIFFUSION", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &ext_param.UH_FLOW_DIFFUSION);
-            }
-            else if (strcasecmp("UH_FLOW_VELOCITY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %lf", &ext_param.UH_FLOW_VELOCITY);
-            }
-            else if (strcasecmp("UH_MAX_LENGTH", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &ext_param.UH_LENGTH);
-            }
-            else if (strcasecmp("UH_PARTITIONS", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &ext_param.UH_PARTITIONS);
-            }
-            else if (strcasecmp("DAM_HISTORY", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &ext_param.DAM_HISTORY);
-            }
-            else if (strcasecmp("DAM_HISTORY_LENGTH", optstr) == 0) {
-                sscanf(cmdstr, "%*s %d", &ext_param.DAM_HISTORY_LENGTH);
-            }
             else {
-                log_warn("Unrecognized option in the parameter file:  %s "
-                         "- check your spelling", optstr);
+                if (!ext_get_parameters(optstr)){
+                    log_warn("Unrecognized option in the parameter file:  %s "
+                             "- check your spelling", optstr);
+                }
             }
         }
         fgets(cmdstr, MAXSTRING, paramfile);

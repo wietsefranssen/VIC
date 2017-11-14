@@ -287,28 +287,6 @@ enum
     OUT_TIME_VICRUN_CPU,  /**< Wall time spent inside vic_run [seconds] */
     
     // Extension variables
-    // Routing terms
-    OUT_DISCHARGE,          /**< Discharge [m3/s] */
-    OUT_NAT_DISCHARGE,      /**< Natural discharge [m3/s] */
-    
-    // Dam terms
-    OUT_DAM_VOLUME,
-    OUT_DAM_MAX_VOLUME,
-    OUT_DAM_FRAC_VOLUME,
-    OUT_DAM_AREA,
-    OUT_DAM_MAX_AREA,
-    OUT_DAM_FRAC_AREA,
-    OUT_DAM_HEIGHT,
-    OUT_DAM_MAX_HEIGHT,
-    OUT_DAM_FRAC_HEIGHT,
-    OUT_DAM_DISCHARGE,
-    OUT_DAM_CALC_DISCHARGE,
-    OUT_DAM_INFLOW,
-    OUT_DAM_CALC_INFLOW,
-    OUT_DAM_NAT_INFLOW,
-    OUT_DAM_AMPLITUDE,
-    OUT_DAM_OFFSET,
-    OUT_DAM_CALC_NAT_INFLOW,
             
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
@@ -387,24 +365,7 @@ enum
     STATE_LAKE_ICE_SNOW_ALBEDO,        /**<  lake ice snow albedo: lake_var.SAlbedo */
     STATE_LAKE_ICE_SNOW_DEPTH,         /**<  lake ice snow depth: lake_var.sdepth */
     STATE_AVG_ALBEDO,                  /**<  gridcell-averaged albedo: gridcell_avg.avg_albedo */
-    
-    // Extensions
-    STATE_DISCHARGE,
-    STATE_NAT_DISCHARGE,
-    
-    STATE_DAM_VOLUME,
-    STATE_DAM_INFLOW_HIS,
-    STATE_DAM_NAT_INFLOW_HIS,
-    STATE_DAM_CALC_DISCHARGE,
-    STATE_DAM_YEARS_RUNNING,
-    STATE_DAM_OY_SEC,
-    STATE_DAM_OY_DAY,
-    STATE_DAM_OY_MONTH,
-    STATE_DAM_OY_YEAR,
-    STATE_DAM_INFLOW_TOTAL,
-    STATE_DAM_NAT_INFLOW_TOTAL,
-    STATE_DAM_HIS_OFFSET,
-    
+        
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum
     N_STATE_VARS                       /**< used as a loop counter*/

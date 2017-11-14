@@ -1618,6 +1618,68 @@ map(size_t  size,
     }
 }
 
+
+/******************************************************************************
+ * @brief   Decompose the domain for MPI operations
+ * @details This function sets up the arrays needed to scatter and gather
+ *          data from and to the master process to the individual mpi
+ *          processes.
+ *
+ * @param ncells total number of cells
+ * @param mpi_size number of mpi processes
+ * @param mpi_map_local_array_sizes address of integer array with number of
+ *        cells assigned to each node (MPI_Scatterv:sendcounts and
+ *        MPI_Gatherv:recvcounts)
+ * @param mpi_map_global_array_offsets address of integer array with offsets
+ *        for sending and receiving data (MPI_Scatterv:displs and
+ *        MPI_Gatherv:displs)
+ * @param mpi_map_mapping_array address of size_t array with indices to prepare
+ *        an array on the master process for MPI_Scatterv or map back after
+ *        MPI_Gatherv
+ *****************************************************************************/
+void
+mpi_map_decomp_domain(size_t   ncells,
+                      size_t   mpi_size,
+                      int    **mpi_map_local_array_sizes,
+                      int    **mpi_map_global_array_offsets,
+                      size_t **mpi_map_mapping_array)
+{
+    size_t i;
+    size_t j;
+    size_t k;
+    size_t n;
+
+    *mpi_map_local_array_sizes = calloc(mpi_size,
+                                        sizeof(*(*mpi_map_local_array_sizes)));
+    *mpi_map_global_array_offsets = calloc(mpi_size,
+                                           sizeof(*(*
+                                                    mpi_map_global_array_offsets)));
+    *mpi_map_mapping_array = calloc(ncells, sizeof(*(*mpi_map_mapping_array)));
+
+    // determine number of cells per node
+    for (n = ncells, i = 0; n > 0; n--, i++) {
+        if (i >= mpi_size) {
+            i = 0;
+        }
+        (*mpi_map_local_array_sizes)[i] += 1;
+    }
+
+    // determine offsets to use for MPI_Scatterv and MPI_Gatherv
+    for (i = 1; i < mpi_size; i++) {
+        for (j = 0; j < i; j++) {
+            (*mpi_map_global_array_offsets)[i] +=
+                (*mpi_map_local_array_sizes)[j];
+        }
+    }
+
+    // set mapping array
+    for (i = 0, k = 0; i < (size_t) mpi_size; i++) {
+        for (j = 0; j < (size_t) (*mpi_map_local_array_sizes)[i]; j++) {
+            (*mpi_map_mapping_array)[k++] = (size_t) (i + j * mpi_size);
+        }
+    }
+}
+
 /******************************************************************************
  * @brief   Gather and write double precision NetCDF field
  * @details Values are gathered to the master node and then written from the

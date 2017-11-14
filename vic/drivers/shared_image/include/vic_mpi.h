@@ -51,6 +51,9 @@ void create_MPI_location_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_alarm_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_option_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_param_struct_type(MPI_Datatype *mpi_type);
+void mpi_map_decomp_domain(size_t ncells, size_t mpi_size, 
+        int **mpi_map_local_array_sizes, int **mpi_map_global_array_offsets,
+        size_t **mpi_map_mapping_array);
 void gather_put_nc_field_double(int nc_id, int var_id, double fillval,
                                 size_t *start, size_t *count, double *var);
 void gather_put_nc_field_float(int nc_id, int var_id, float fillval,

@@ -66,23 +66,15 @@ double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
-// Extension MPI
-int                 mpi_decomposition;
-MPI_Datatype        mpi_ext_option_struct_type;
-MPI_Datatype        mpi_ext_param_struct_type;
-basin_struct        basins;
-
-// Extension global
+// Extension
+MPI_Datatype mpi_ext_option_struct_type;
+MPI_Datatype mpi_ext_param_struct_type;
+    
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
-size_t *cell_order = NULL;
-
-// Extension con & vars
-rout_con_struct *rout_con = NULL;
-dam_con_struct **dam_con = NULL;
-dam_con_map_struct *dam_con_map = NULL;
 ext_all_vars_struct *ext_all_vars = NULL;
+gw_con_struct **gw_con = NULL;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model

@@ -1,32 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   ext_mpi.h
+ * Author: bram
+ *
+ * Created on November 14, 2017, 12:19 PM
+ */
+
 #ifndef EXT_MPI_H
 #define EXT_MPI_H
 
 #include <vic_mpi.h>
 #include <ext_driver_shared_image.h>
 
-enum{
-    CALCULATE_DECOMPOSITION,
-    BASIN_DECOMPOSITION,
-    RANDOM_DECOMPOSITION
-};
-
-void initialize_ext_mpi();
 void create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type);
-
-void mpi_map_decomp_domain(size_t ncells, size_t mpi_size,
-                           int **mpi_map_local_array_sizes,
-                           int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array);
-void mpi_map_decomp_domain_random(size_t ncells, size_t mpi_size,
-                           int **mpi_map_local_array_sizes,
-                           int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array);
-void mpi_map_decomp_domain_basin(size_t ncells, size_t mpi_size,
-                           int **mpi_map_local_array_sizes,
-                           int **mpi_map_global_array_offsets,
-                           size_t **mpi_map_mapping_array,
-                           basin_struct *basins);
 
 void gather_double(double *dvar, double *var_local);
 void gather_double_2d(double **dvar, double **var_local, int depth);
@@ -41,5 +33,5 @@ void scatter_int_2d(int **ivar, int **var_local, int depth);
 void scatter_sizet(size_t *svar, size_t *var_local);
 void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth);
 
-#endif /* EXT_MPI_H */
+#endif
 

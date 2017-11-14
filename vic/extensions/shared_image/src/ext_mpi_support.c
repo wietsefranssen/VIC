@@ -1,263 +1,4 @@
-#include <ext_mpi.h>
-
-/******************************************************************************
- * @brief   Decompose the domain for MPI operations
- * @details This function sets up the arrays needed to scatter and gather
- *          data from and to the master process to the individual mpi
- *          processes.
- *
- * @param ncells total number of cells
- * @param mpi_size number of mpi processes
- * @param mpi_map_local_array_sizes address of integer array with number of
- *        cells assigned to each node (MPI_Scatterv:sendcounts and
- *        MPI_Gatherv:recvcounts)
- * @param mpi_map_global_array_offsets address of integer array with offsets
- *        for sending and receiving data (MPI_Scatterv:displs and
- *        MPI_Gatherv:displs)
- * @param mpi_map_mapping_array address of size_t array with indices to prepare
- *        an array on the master process for MPI_Scatterv or map back after
- *        MPI_Gatherv
- *****************************************************************************/
-void
-mpi_map_decomp_domain(size_t   ncells,
-                      size_t   mpi_size,
-                      int    **mpi_map_local_array_sizes,
-                      int    **mpi_map_global_array_offsets,
-                      size_t **mpi_map_mapping_array)
-{
-    extern ext_parameters_struct ext_param;
-    extern ext_filenames_struct ext_filenames;
-    extern basin_struct  basins;
-    extern int mpi_decomposition;
-    
-    size_t i;
-    int status;
-    size_t node_ids[mpi_size];
-              
-        // open extension routing file
-        status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
-                         &(ext_filenames.routing.nc_id));
-        check_nc_status(status, "Error opening %s",
-                        ext_filenames.routing.nc_filename);
-        
-        get_basins(&ext_filenames.routing, ext_filenames.info.direction_var, &basins);
-        
-        // close extension routing file
-        status = nc_close(ext_filenames.routing.nc_id);
-        check_nc_status(status, "Error closing %s",
-                        ext_filenames.routing.nc_filename);
-    
-    if(mpi_decomposition == CALCULATE_DECOMPOSITION ||
-            mpi_decomposition == BASIN_DECOMPOSITION){
-        
-        // decompose the mask by basin
-        mpi_map_decomp_domain_basin(ncells, mpi_size,
-                          mpi_map_local_array_sizes,
-                          mpi_map_global_array_offsets,
-                          mpi_map_mapping_array,
-                          &basins);
-                
-        if(mpi_decomposition == CALCULATE_DECOMPOSITION){
-
-            for(i=0;i<mpi_size;i++){
-                node_ids[i]=i;
-            }
-            sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
-            
-            // check if basin decomposition is effective
-            if((*mpi_map_local_array_sizes)[node_ids[0]] * 
-            ext_param.MPI_N_PROCESS_COST > ncells / mpi_size * 
-            ext_param.MPI_E_PROCESS_COST){
-                
-                // decompose the mask at random
-                mpi_map_decomp_domain_random(ncells, mpi_size,
-                                  mpi_map_local_array_sizes,
-                                  mpi_map_global_array_offsets,
-                                  mpi_map_mapping_array);
-                
-                mpi_decomposition=RANDOM_DECOMPOSITION;
-            }else if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
-                    
-                    // decompose the mask at random
-                mpi_map_decomp_domain_random(ncells, mpi_size,
-                                  mpi_map_local_array_sizes,
-                                  mpi_map_global_array_offsets,
-                                  mpi_map_mapping_array);
-                
-                mpi_decomposition=RANDOM_DECOMPOSITION;
-            }else{            
-                mpi_decomposition=BASIN_DECOMPOSITION;                
-            }
-        }else{
-
-            for(i=0;i<mpi_size;i++){
-                node_ids[i]=i;
-            }
-            sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,false); 
-            
-            if((*mpi_map_local_array_sizes)[node_ids[mpi_size-1]] == 0){
-                log_err("BASIN_DECOMPOSITION is selected but there are more nodes than basins, exiting...");
-            }            
-        }
-    }else{
-        // decompose the mask at random
-        mpi_map_decomp_domain_random(ncells, mpi_size,
-                          mpi_map_local_array_sizes,
-                          mpi_map_global_array_offsets,
-                          mpi_map_mapping_array);
-        
-        mpi_decomposition=RANDOM_DECOMPOSITION;
-    }
-    
-    if(mpi_decomposition == BASIN_DECOMPOSITION){
-        debug("Basin mask decomposition for MPI");
-    }else if(mpi_decomposition == RANDOM_DECOMPOSITION){    
-        debug("Random mask decomposition for MPI");
-    }
-}
-
-/******************************************************************************
- * @brief   Decompose the domain for MPI operations
- * @details This function sets up the arrays needed to scatter and gather
- *          data from and to the master process to the individual mpi
- *          processes.
- *
- * @param ncells total number of cells
- * @param mpi_size number of mpi processes
- * @param mpi_map_local_array_sizes address of integer array with number of
- *        cells assigned to each node (MPI_Scatterv:sendcounts and
- *        MPI_Gatherv:recvcounts)
- * @param mpi_map_global_array_offsets address of integer array with offsets
- *        for sending and receiving data (MPI_Scatterv:displs and
- *        MPI_Gatherv:displs)
- * @param mpi_map_mapping_array address of size_t array with indices to prepare
- *        an array on the master process for MPI_Scatterv or map back after
- *        MPI_Gatherv
- *****************************************************************************/
-void
-mpi_map_decomp_domain_basin(size_t   ncells,
-                      size_t   mpi_size,
-                      int    **mpi_map_local_array_sizes,
-                      int    **mpi_map_global_array_offsets,
-                      size_t **mpi_map_mapping_array,
-                      basin_struct *basins)
-{
-    size_t i;
-    size_t j;
-    size_t k;
-    size_t l;
-    
-    size_t node_ids[mpi_size];
-    size_t basin_to_node[basins->Nbasin];
-    
-    *mpi_map_local_array_sizes = calloc(mpi_size,
-                                        sizeof(*(*mpi_map_local_array_sizes)));
-    *mpi_map_global_array_offsets = calloc(mpi_size,
-                                           sizeof(*(*
-                                                    mpi_map_global_array_offsets)));
-    *mpi_map_mapping_array = calloc(ncells, sizeof(*(*mpi_map_mapping_array)));
-    
-    for(i=0;i<mpi_size;i++){
-        (*mpi_map_local_array_sizes)[i]=0;
-        (*mpi_map_global_array_offsets)[i]=0;
-    }
-    for(i=0;i<ncells;i++){
-        (*mpi_map_mapping_array)[i]=0;
-    }
-    
-    // determine number of cells per node
-    for(i=0;i<basins->Nbasin;i++){        
-        //sort nodes by size
-        for(j=0;j<mpi_size;j++){
-            node_ids[j]=j;
-        }
-        sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,true);   
-                      
-        // find node with lowest amount of cells and add the biggest basin
-        (*mpi_map_local_array_sizes)[node_ids[0]] += basins->Ncells[basins->sorted_basins[i]];
-        basin_to_node[basins->sorted_basins[i]] = node_ids[0];
-    }
-
-    // determine offsets to use for MPI_Scatterv and MPI_Gatherv
-    for (i = 1; i < mpi_size; i++) {
-        for (j = 0; j < i; j++) {
-            (*mpi_map_global_array_offsets)[i] +=
-                (*mpi_map_local_array_sizes)[j];
-        }
-    }
-
-    // set mapping array
-    for (i = 0, l = 0; i < (size_t) mpi_size; i++) {
-        for(j=0;j<basins->Nbasin;j++){
-            if(basin_to_node[j]==i){
-                for(k=0;k<basins->Ncells[j];k++){
-                    (*mpi_map_mapping_array)[l++] = basins->catchment[j][k];
-                }
-            }
-        }
-    }
-}
-
-/******************************************************************************
- * @brief   Decompose the domain for MPI operations
- * @details This function sets up the arrays needed to scatter and gather
- *          data from and to the master process to the individual mpi
- *          processes.
- *
- * @param ncells total number of cells
- * @param mpi_size number of mpi processes
- * @param mpi_map_local_array_sizes address of integer array with number of
- *        cells assigned to each node (MPI_Scatterv:sendcounts and
- *        MPI_Gatherv:recvcounts)
- * @param mpi_map_global_array_offsets address of integer array with offsets
- *        for sending and receiving data (MPI_Scatterv:displs and
- *        MPI_Gatherv:displs)
- * @param mpi_map_mapping_array address of size_t array with indices to prepare
- *        an array on the master process for MPI_Scatterv or map back after
- *        MPI_Gatherv
- *****************************************************************************/
-void
-mpi_map_decomp_domain_random(size_t   ncells,
-                      size_t   mpi_size,
-                      int    **mpi_map_local_array_sizes,
-                      int    **mpi_map_global_array_offsets,
-                      size_t **mpi_map_mapping_array)
-{
-    size_t i;
-    size_t j;
-    size_t k;
-    size_t n;
-
-    *mpi_map_local_array_sizes = calloc(mpi_size,
-                                        sizeof(*(*mpi_map_local_array_sizes)));
-    *mpi_map_global_array_offsets = calloc(mpi_size,
-                                           sizeof(*(*
-                                                    mpi_map_global_array_offsets)));
-    *mpi_map_mapping_array = calloc(ncells, sizeof(*(*mpi_map_mapping_array)));
-
-    // determine number of cells per node
-    for (n = ncells, i = 0; n > 0; n--, i++) {
-        if (i >= mpi_size) {
-            i = 0;
-        }
-        (*mpi_map_local_array_sizes)[i] += 1;
-    }
-
-    // determine offsets to use for MPI_Scatterv and MPI_Gatherv
-    for (i = 1; i < mpi_size; i++) {
-        for (j = 0; j < i; j++) {
-            (*mpi_map_global_array_offsets)[i] +=
-                (*mpi_map_local_array_sizes)[j];
-        }
-    }
-
-    // set mapping array
-    for (i = 0, k = 0; i < (size_t) mpi_size; i++) {
-        for (j = 0; j < (size_t) (*mpi_map_local_array_sizes)[i]; j++) {
-            (*mpi_map_mapping_array)[k++] = (size_t) (i + j * mpi_size);
-        }
-    }
-}
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief   Gather double precision variable
@@ -673,7 +414,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 8;
+    nitems = 1;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -691,30 +432,9 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     //reset i
     i=0;
     
-    //bool ROUTING;    
-    offsets[i] = offsetof(ext_option_struct, ROUTING);
-    mpi_types[i++] = MPI_C_BOOL;   
-    //bool DAMS;    
-    offsets[i] = offsetof(ext_option_struct, DAMS);
-    mpi_types[i++] = MPI_C_BOOL;    
-    //int UH_PARAMETERS;
-    offsets[i] = offsetof(ext_option_struct, UH_PARAMETERS);
-    mpi_types[i++] = MPI_INT;
-    //int uh_steps;
-    offsets[i] = offsetof(ext_option_struct, uh_steps);
-    mpi_types[i++] = MPI_AINT;
-    //int history_steps;
-    offsets[i] = offsetof(ext_option_struct, history_steps);
-    mpi_types[i++] = MPI_AINT;
-    //int model_steps_per_history_step;
-    offsets[i] = offsetof(ext_option_struct, model_steps_per_history_step);
-    mpi_types[i++] = MPI_AINT;
-    //int history_steps_per_history_year;
-    offsets[i] = offsetof(ext_option_struct, history_steps_per_history_year);
-    mpi_types[i++] = MPI_AINT;
-    //int ndams;
-    offsets[i] = offsetof(ext_option_struct, ndams);
-    mpi_types[i++] = MPI_AINT;
+    //bool GROUNDWATER;    
+    offsets[i] = offsetof(ext_option_struct, GROUNDWATER);
+    mpi_types[i++] = MPI_C_BOOL;
         
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
@@ -744,7 +464,7 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 8;
+    nitems = 0;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -761,32 +481,7 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     
     //reset i
     i=0;
-    
-    //double MPI_N_PROCESS_COST;
-    offsets[i] = offsetof(ext_parameters_struct, MPI_N_PROCESS_COST);
-    mpi_types[i++] = MPI_DOUBLE;
-    //double MPI_E_PROCESS_COST;
-    offsets[i] = offsetof(ext_parameters_struct, MPI_E_PROCESS_COST);
-    mpi_types[i++] = MPI_DOUBLE;
-    //double UH_FLOW_VELOCITY;
-    offsets[i] = offsetof(ext_parameters_struct, UH_FLOW_VELOCITY);
-    mpi_types[i++] = MPI_DOUBLE;
-    //double UH_FLOW_DIFFUSION;
-    offsets[i] = offsetof(ext_parameters_struct, UH_FLOW_DIFFUSION);
-    mpi_types[i++] = MPI_DOUBLE;
-    //int UH_LENGTH;
-    offsets[i] = offsetof(ext_parameters_struct, UH_LENGTH);
-    mpi_types[i++] = MPI_INT;
-    //int UH_PARTITIONS;
-    offsets[i] = offsetof(ext_parameters_struct, UH_PARTITIONS);
-    mpi_types[i++] = MPI_INT;    
-    //int DAM_HISTORY;
-    offsets[i] = offsetof(ext_parameters_struct, DAM_HISTORY);
-    mpi_types[i++] = MPI_INT;  
-    //int DAM_HISTORY_LENGTH;
-    offsets[i] = offsetof(ext_parameters_struct, DAM_HISTORY_LENGTH);
-    mpi_types[i++] = MPI_INT;  
-    
+        
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);
@@ -803,17 +498,4 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     free(blocklengths);
     free(offsets);
     free(mpi_types);
-}
-
-void
-initialize_ext_mpi(){    
-    extern int mpi_decomposition;
-    
-    extern MPI_Datatype mpi_ext_option_struct_type;
-    extern MPI_Datatype mpi_ext_param_struct_type;
-    
-    create_MPI_ext_option_struct_type(&mpi_ext_option_struct_type);
-    create_MPI_ext_parameters_struct_type(&mpi_ext_param_struct_type);
-    
-    mpi_decomposition = RANDOM_DECOMPOSITION;    
 }

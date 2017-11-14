@@ -115,7 +115,8 @@ SRCS = \
 	$(wildcard ${SHAREDPATH}/src/*.c) \
 	$(wildcard ${SHAREDIMAGEPATH}/src/*.c) \
 	$(wildcard ${EXTSHAREDPATH}/src/*.c) \
-	$(wildcard ${EXTSHAREDIMAGEPATH}/src/*.c)
+	$(wildcard ${EXTSHAREDIMAGEPATH}/src/*.c) \
+	$(wildcard ${EXTSHAREDIMAGEPATH}/src/*/*.c)
 
 OBJS = $(SRCS:%.o=%.c)
 

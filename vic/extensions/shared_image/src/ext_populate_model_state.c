@@ -4,93 +4,62 @@
  * @brief    This function handles tasks related to populating model state.
  *****************************************************************************/
 void
-ext_populate_model_state(){    
+ext_populate_model_state()
+{    
     extern option_struct    options;
-    extern domain_struct local_domain;
-    extern ext_option_struct    ext_options;
-    extern ext_all_vars_struct *ext_all_vars;
-    extern dam_con_struct **dam_con;
-    extern dam_con_map_struct *dam_con_map;
-    
-    size_t i;
     
     // read the model state from the netcdf file if there is one
     if (options.INIT_STATE) {
         ext_restore();
     }
     else{
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            if(ext_options.ROUTING){
-                generate_default_routing_state(&ext_all_vars[i]);
-            }
-            if(ext_options.DAMS){
-                generate_default_dams_state(&ext_all_vars[i],
-                        dam_con[i],
-                        dam_con_map[i]);
-            }
-        }
+        ext_generate_default_state();
     }
 }
 
+/******************************************************************************
+ * @brief    Populate model state with default values
+ *****************************************************************************/
 void
-generate_default_dams_state(ext_all_vars_struct *ext_all_vars, 
-        dam_con_struct *dam_con, 
-        dam_con_map_struct dam_con_map){
-    extern ext_option_struct ext_options;
-    extern global_param_struct global_param;
+ext_generate_default_state(void)
+{
+    extern ext_option_struct    ext_options;
     
-    size_t i;
-    size_t j;
-    
-    dam_var_struct *dam_var;
-        
-    for(i=0;i<dam_con_map.Ndams;i++){
-        dam_var = &ext_all_vars->dam_var[i];
-                
-        dam_var->run = false;
-        dam_var->years_running = 0;
-        
-        dam_var->volume = DAM_MAX_PVOLUME * dam_con[i].max_volume;
-        calculate_dam_surface_area(dam_con[i], dam_var);
-        calculate_dam_height(dam_con[i],dam_var);       
-        
-        dam_var->inflow_total = 0.0;
-        dam_var->nat_inflow_total = 0.0;
-        dam_var->history_offset = 0;
-        dam_var->discharge = 0.0;
-        dam_var->inflow=0.0;
-        dam_var->nat_inflow=0.0;
-        for(j=0;j<ext_options.history_steps;j++){
-            dam_var->inflow_history[j] = 0.0;
-            dam_var->nat_inflow_history[j] = 0.0;
-        }
-        for(j=0;j<ext_options.history_steps_per_history_year;j++){
-            dam_var->calc_inflow[j] = 0.0;
-            dam_var->calc_nat_inflow[j] = 0.0;
-            dam_var->calc_discharge[j] = 0.0;
-            dam_var->calc_efr[j] = 0.0;
-        }
-        
-        dam_var->op_year.year = global_param.startyear + 1;
-        dam_var->op_year.month = global_param.startmonth;
-        dam_var->op_year.day = global_param.startday;
-        dam_var->op_year.dayseconds = global_param.startsec;
-        dam_var->op_year.day_in_year = (int) no_leap_day_in_year_from_dmy(dam_var->op_year);
+    if(ext_options.GROUNDWATER){
+        gw_generate_default_state();
     }
 }
 
+/******************************************************************************
+ * @brief    Populate model state from state file
+ *****************************************************************************/
 void
-generate_default_routing_state(ext_all_vars_struct *ext_all_vars){
-    extern ext_option_struct ext_options;
+ext_restore(){
+    extern int                 mpi_rank;
+    extern ext_option_struct    ext_options;
+    extern filenames_struct    filenames;
+
+    int                        status;    
     
-    size_t i;
-    
-    rout_var_struct rout_var;
-    
-    rout_var = ext_all_vars->rout_var;
-    
-    for(i=0;i<ext_options.uh_steps;i++){
-        rout_var.discharge[i] = 0.0;
-        rout_var.nat_discharge[i] = 0.0;
+    // open initial state file
+    if (mpi_rank == VIC_MPI_ROOT) {
+        status = nc_open(filenames.init_state.nc_filename, NC_NOWRITE,
+                         &(filenames.init_state.nc_id));
+        check_nc_status(status, "Error opening %s",
+                        filenames.init_state.nc_filename);
+    }
+
+    // validate state file dimensions and coordinate variables
+    check_init_state_file();
+        
+    if(ext_options.GROUNDWATER){
+        gw_restore();
+    }
+
+    // close initial state file
+    if (mpi_rank == VIC_MPI_ROOT) {
+        status = nc_close(filenames.init_state.nc_id);
+        check_nc_status(status, "Error closing %s",
+                        filenames.init_state.nc_filename);
     }
 }

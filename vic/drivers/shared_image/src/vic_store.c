@@ -41,9 +41,6 @@ vic_store(dmy_struct *dmy_state,
     extern option_struct       options;
     extern veg_con_map_struct *veg_con_map;
     extern int                 mpi_rank;
-    extern ext_option_struct    ext_options;
-    extern ext_all_vars_struct  *ext_all_vars;
-    extern dam_con_map_struct  *dam_con_map;
 
     int                        status;
     int                        v;
@@ -1274,256 +1271,7 @@ vic_store(dmy_struct *dmy_state,
         }
     }
     
-    if(ext_options.ROUTING){
-        // discharge
-        nc_var = &(nc_state_file.nc_vars[STATE_DISCHARGE]);
-        for (j = 0; j < ext_options.uh_steps; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = (double) ext_all_vars[i].rout_var.discharge[j];
-            }
-            gather_put_nc_field_double(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = nc_state_file.d_fillvalue;
-            }
-        }    
-        
-        // natural discharge
-        nc_var = &(nc_state_file.nc_vars[STATE_NAT_DISCHARGE]);
-        for (j = 0; j < ext_options.uh_steps; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = (double) ext_all_vars[i].rout_var.nat_discharge[j];
-            }
-            gather_put_nc_field_double(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = nc_state_file.d_fillvalue;
-            }
-        }  
-    }
-    
-    if(ext_options.DAMS){
-        // STATE_DAM_VOLUME
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_VOLUME]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    dvar[i] = (double) ext_all_vars[i].dam_var[j].volume;
-                }
-            }
-            gather_put_nc_field_double(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = nc_state_file.d_fillvalue;
-            }
-        }  
-        // STATE_DAM_YEARS_RUNNING
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_YEARS_RUNNING]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    ivar[i] = (double) ext_all_vars[i].dam_var[j].years_running;
-                }
-            }
-            gather_put_nc_field_int(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, ivar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                ivar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_OY_SEC
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_SEC]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.dayseconds;
-                }
-            }
-            gather_put_nc_field_int(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, ivar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                ivar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_OY_DAY
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_DAY]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.day;
-                }
-            }
-            gather_put_nc_field_int(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, ivar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                ivar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_OY_MONTH
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_MONTH]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.month;
-                }
-            }
-            gather_put_nc_field_int(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, ivar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                ivar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_OY_YEAR
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_OY_YEAR]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    ivar[i] = (double) ext_all_vars[i].dam_var[j].op_year.year;
-                }
-            }
-            gather_put_nc_field_int(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, ivar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                ivar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_INFLOW_TOTAL
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_INFLOW_TOTAL]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    dvar[i] = (double) ext_all_vars[i].dam_var[j].inflow_total;
-                }
-            }
-            gather_put_nc_field_double(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_NAT_INFLOW_TOTAL
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_NAT_INFLOW_TOTAL]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    dvar[i] = (double) ext_all_vars[i].dam_var[j].nat_inflow_total;
-                }
-            }
-            gather_put_nc_field_double(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                dvar[i] = nc_state_file.d_fillvalue;
-            }
-        } 
-        // STATE_DAM_HIS_OFFSET
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_HIS_OFFSET]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d3start[0] = j;
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                if(dam_con_map[i].Ndams>j){
-                    ivar[i] = (double) ext_all_vars[i].dam_var[j].history_offset;
-                }
-            }
-            gather_put_nc_field_int(nc_state_file.nc_id,
-                                       nc_var->nc_varid,
-                                       nc_state_file.d_fillvalue,
-                                       d3start, nc_var->nc_counts, ivar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                ivar[i] = nc_state_file.d_fillvalue;
-            }
-        }
-        
-        // STATE_DAM_INFLOW_HIS
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_INFLOW_HIS]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d4start[0] = j;
-            for (p = 0; p < ext_options.history_steps; p++) {
-                d4start[1] = p;
-                for (i = 0; i < local_domain.ncells_active; i++) {
-                    if(dam_con_map[i].Ndams>j){
-                        dvar[i] = (double) ext_all_vars[i].dam_var[j].inflow_history[p];
-                    }
-                }
-                gather_put_nc_field_double(nc_state_file.nc_id,
-                                           nc_var->nc_varid,
-                                           nc_state_file.d_fillvalue,
-                                           d4start, nc_var->nc_counts, dvar);
-                for (i = 0; i < local_domain.ncells_active; i++) {
-                    dvar[i] = nc_state_file.d_fillvalue;
-                }
-            }
-        }
-        // STATE_DAM_NAT_INFLOW_HIS
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_NAT_INFLOW_HIS]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d4start[0] = j;
-            for (p = 0; p < ext_options.history_steps; p++) {
-                d4start[1] = p;
-                for (i = 0; i < local_domain.ncells_active; i++) {
-                    if(dam_con_map[i].Ndams>j){
-                        dvar[i] = (double) ext_all_vars[i].dam_var[j].nat_inflow_history[p];
-                    }
-                }
-                gather_put_nc_field_double(nc_state_file.nc_id,
-                                           nc_var->nc_varid,
-                                           nc_state_file.d_fillvalue,
-                                           d4start, nc_var->nc_counts, dvar);
-                for (i = 0; i < local_domain.ncells_active; i++) {
-                    dvar[i] = nc_state_file.d_fillvalue;
-                }
-            }
-        }
-        // STATE_DAM_CALC_DISCHARGE
-        nc_var = &(nc_state_file.nc_vars[STATE_DAM_CALC_DISCHARGE]);
-        for (j = 0; j < ext_options.ndams; j++) {
-            d4start[0] = j;
-            for (p = 0; p < ext_options.history_steps_per_history_year; p++) {
-                d4start[1] = p;
-                for (i = 0; i < local_domain.ncells_active; i++) {
-                    if(dam_con_map[i].Ndams>j){
-                        dvar[i] = (double) ext_all_vars[i].dam_var[j].calc_discharge[p];
-                    }
-                }
-                gather_put_nc_field_double(nc_state_file.nc_id,
-                                           nc_var->nc_varid,
-                                           nc_state_file.d_fillvalue,
-                                           d4start, nc_var->nc_counts, dvar);
-                for (i = 0; i < local_domain.ncells_active; i++) {
-                    dvar[i] = nc_state_file.d_fillvalue;
-                }
-            }
-        }
-    }
+    ext_store();
 
     // close the netcdf file if it is still open
     if (mpi_rank == VIC_MPI_ROOT) {
@@ -1568,12 +1316,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->root_zone_dimid = MISSING;
     nc_state_file->time_dimid = MISSING;
     nc_state_file->veg_dimid = MISSING;
-    // Extension
-    nc_state_file->discharge_dimid = MISSING;
-    nc_state_file->ndams_dimid = MISSING;
-    nc_state_file->dam_his_dimid = MISSING;
-    nc_state_file->dam_yhis_dimid = MISSING;
-
+    
     // Set dimension sizes
     nc_state_file->band_size = options.SNOW_BAND;
     nc_state_file->front_size = MAX_FRONTS;
@@ -1585,12 +1328,9 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->root_zone_size = options.ROOT_ZONES;
     nc_state_file->time_size = NC_UNLIMITED;
     nc_state_file->veg_size = options.NVEGTYPES;
-    // Extension
-    nc_state_file->discharge_size = ext_options.uh_steps;
-    nc_state_file->ndams_size = ext_options.ndams;
-    nc_state_file->dam_his_size = ext_options.history_steps;
-    nc_state_file->dam_yhis_size = ext_options.history_steps_per_history_year;
-
+    
+    ext_set_nc_state_file_info(nc_state_file);
+    
     // allocate memory for nc_vars
     nc_state_file->nc_vars =
         calloc(N_STATE_VARS, sizeof(*(nc_state_file->nc_vars)));
@@ -1620,12 +1360,6 @@ set_nc_state_var_info(nc_file_struct *nc)
         case STATE_LAKE_SNOW_AGE:
         case STATE_LAKE_SNOW_MELT_STATE:
         case STATE_LAKE_ACTIVE_LAYERS:
-        case STATE_DAM_OY_SEC:
-        case STATE_DAM_OY_DAY:
-        case STATE_DAM_OY_MONTH:
-        case STATE_DAM_OY_YEAR:
-        case STATE_DAM_YEARS_RUNNING:
-        case STATE_DAM_HIS_OFFSET:
             nc->nc_vars[i].nc_type = NC_INT;
             break;
         default:
@@ -1799,58 +1533,10 @@ set_nc_state_var_info(nc_file_struct *nc)
             nc->nc_vars[i].nc_counts[1] = nc->nj_size;
             nc->nc_vars[i].nc_counts[2] = nc->ni_size;
             break;
-        case STATE_NAT_DISCHARGE:
-        case STATE_DISCHARGE:            
-            nc->nc_vars[i].nc_dims = 3;
-            nc->nc_vars[i].nc_dimids[0] = nc->discharge_dimid;
-            nc->nc_vars[i].nc_dimids[1] = nc->nj_dimid;
-            nc->nc_vars[i].nc_dimids[2] = nc->ni_dimid;
-            nc->nc_vars[i].nc_counts[0] = 1;
-            nc->nc_vars[i].nc_counts[1] = nc->nj_size;
-            nc->nc_vars[i].nc_counts[2] = nc->ni_size;
-            break;            
-        case STATE_DAM_VOLUME:
-        case STATE_DAM_OY_SEC:
-        case STATE_DAM_OY_DAY:
-        case STATE_DAM_OY_MONTH:
-        case STATE_DAM_OY_YEAR:
-        case STATE_DAM_YEARS_RUNNING:
-        case STATE_DAM_INFLOW_TOTAL:
-        case STATE_DAM_NAT_INFLOW_TOTAL:
-        case STATE_DAM_HIS_OFFSET:
-            nc->nc_vars[i].nc_dims = 3;
-            nc->nc_vars[i].nc_dimids[0] = nc->ndams_dimid;
-            nc->nc_vars[i].nc_dimids[1] = nc->nj_dimid;
-            nc->nc_vars[i].nc_dimids[2] = nc->ni_dimid;
-            nc->nc_vars[i].nc_counts[0] = 1;
-            nc->nc_vars[i].nc_counts[1] = nc->nj_size;
-            nc->nc_vars[i].nc_counts[2] = nc->ni_size;
-            break;
-        case STATE_DAM_INFLOW_HIS:
-        case STATE_DAM_NAT_INFLOW_HIS:
-            nc->nc_vars[i].nc_dims = 4;
-            nc->nc_vars[i].nc_dimids[0] = nc->ndams_dimid;
-            nc->nc_vars[i].nc_dimids[1] = nc->dam_his_dimid;
-            nc->nc_vars[i].nc_dimids[2] = nc->nj_dimid;
-            nc->nc_vars[i].nc_dimids[3] = nc->ni_dimid;
-            nc->nc_vars[i].nc_counts[0] = 1;
-            nc->nc_vars[i].nc_counts[1] = 1;
-            nc->nc_vars[i].nc_counts[2] = nc->nj_size;
-            nc->nc_vars[i].nc_counts[3] = nc->ni_size;
-            break;
-        case STATE_DAM_CALC_DISCHARGE:
-            nc->nc_vars[i].nc_dims = 4;
-            nc->nc_vars[i].nc_dimids[0] = nc->ndams_dimid;
-            nc->nc_vars[i].nc_dimids[1] = nc->dam_yhis_dimid;
-            nc->nc_vars[i].nc_dimids[2] = nc->nj_dimid;
-            nc->nc_vars[i].nc_dimids[3] = nc->ni_dimid;
-            nc->nc_vars[i].nc_counts[0] = 1;
-            nc->nc_vars[i].nc_counts[1] = 1;
-            nc->nc_vars[i].nc_counts[2] = nc->nj_size;
-            nc->nc_vars[i].nc_counts[3] = nc->ni_size;
-            break;
         default:
-            log_err("state variable %zu not found when setting dimensions", i);
+            if(!ext_set_nc_state_var_info(i)){
+                log_err("state variable %zu not found when setting dimensions", i);
+            }
         }
 
         if (nc->nc_vars[i].nc_dims > MAXDIMS) {
@@ -1893,10 +1579,6 @@ initialize_state_file(char           *filename,
     int                        dz_node_var_id;
     int                        node_depth_var_id;
     int                        lake_node_var_id;
-    int                        discharge_var_id;
-    int                        ndams_var_id;
-    int                        dam_his_var_id;
-    int                        dam_yhis_var_id;
     char                       unit_str[MAXSTRING];
     char                       str[MAXSTRING];
     size_t                     ndims;
@@ -2001,28 +1683,7 @@ initialize_state_file(char           *filename,
             check_nc_status(status, "Error defining lake_node in %s", filename);
         }
         
-        if(ext_options.ROUTING){
-            status = nc_def_dim(nc_state_file->nc_id, "discharge_steps",
-                                nc_state_file->discharge_size,
-                                &(nc_state_file->discharge_dimid));
-            check_nc_status(status, "Error defining discharge_steps in %s", filename);
-        }
-        if(ext_options.DAMS){
-            status = nc_def_dim(nc_state_file->nc_id, "ndams",
-                                nc_state_file->ndams_size,
-                                &(nc_state_file->ndams_dimid));
-            check_nc_status(status, "Error defining discharge_steps in %s", filename);
-            
-            status = nc_def_dim(nc_state_file->nc_id, "dam_his",
-                                nc_state_file->dam_his_size,
-                                &(nc_state_file->dam_his_dimid));
-            check_nc_status(status, "Error defining discharge_steps in %s", filename);
-            
-            status = nc_def_dim(nc_state_file->nc_id, "dam_yhis",
-                                nc_state_file->dam_yhis_size,
-                                &(nc_state_file->dam_yhis_dimid));
-            check_nc_status(status, "Error defining discharge_steps in %s", filename);
-        }
+        ext_store_def_dim();
         
         set_nc_state_var_info(nc_state_file);
     }
@@ -2231,77 +1892,7 @@ initialize_state_file(char           *filename,
             dimids[0] = -1;
         }
         
-        if (ext_options.ROUTING) {
-            // discharge steps
-            dimids[0] = nc_state_file->discharge_dimid;
-            status =
-                nc_def_var(nc_state_file->nc_id, "discharge_steps", NC_INT, 1, dimids,
-                           &(discharge_var_id));
-            check_nc_status(status, "Error defining discharge_steps variable in %s",
-                            filename);
-            status = nc_put_att_text(nc_state_file->nc_id, discharge_var_id,
-                                     "long_name",
-                                     strlen("discharge_steps"), "discharge_steps");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            status = nc_put_att_text(nc_state_file->nc_id, discharge_var_id,
-                                     "standard_name", strlen("discharge_step_number"),
-                                     "discharge_step_number");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            dimids[0] = -1;
-        }
-        
-        if(ext_options.DAMS){
-            // ndams
-            dimids[0] = nc_state_file->ndams_dimid;
-            status =
-                nc_def_var(nc_state_file->nc_id, "ndams", NC_INT, 1, dimids,
-                           &(ndams_var_id));
-            check_nc_status(status, "Error defining ndams variable in %s",
-                            filename);
-            status = nc_put_att_text(nc_state_file->nc_id, ndams_var_id,
-                                     "long_name",
-                                     strlen("ndams"), "ndams");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            status = nc_put_att_text(nc_state_file->nc_id, ndams_var_id,
-                                     "standard_name", strlen("ndams"),
-                                     "ndams");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            dimids[0] = -1;
-            
-            // dam_his
-            dimids[0] = nc_state_file->dam_his_dimid;
-            status =
-                nc_def_var(nc_state_file->nc_id, "dam_his", NC_INT, 1, dimids,
-                           &(dam_his_var_id));
-            check_nc_status(status, "Error defining dam_his variable in %s",
-                            filename);
-            status = nc_put_att_text(nc_state_file->nc_id, dam_his_var_id,
-                                     "long_name",
-                                     strlen("dam_his"), "dam_his");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            status = nc_put_att_text(nc_state_file->nc_id, dam_his_var_id,
-                                     "standard_name", strlen("dam_his"),
-                                     "dam_his");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            dimids[0] = -1;
-            
-            // dam_yhis
-            dimids[0] = nc_state_file->dam_yhis_dimid;
-            status =
-                nc_def_var(nc_state_file->nc_id, "dam_yhis", NC_INT, 1, dimids,
-                           &(dam_yhis_var_id));
-            check_nc_status(status, "Error defining dam_yhis variable in %s",
-                            filename);
-            status = nc_put_att_text(nc_state_file->nc_id, dam_yhis_var_id,
-                                     "long_name",
-                                     strlen("dam_yhis"), "dam_yhis");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            status = nc_put_att_text(nc_state_file->nc_id, dam_yhis_var_id,
-                                     "standard_name", strlen("dam_yhis"),
-                                     "dam_yhis");
-            check_nc_status(status, "Error adding attribute in %s", filename);
-            dimids[0] = -1;
-        }
+        ext_store_def_dimvar();
     }
 
     // Define state variables
@@ -2518,89 +2109,7 @@ initialize_state_file(char           *filename,
         }
         free(ivar);        
     
-        if(ext_options.ROUTING){
-            // discharge steps
-            dimids[0] = nc_state_file->discharge_dimid;
-            dcount[0] = nc_state_file->discharge_size;
-            ivar = malloc(nc_state_file->discharge_size * sizeof(*ivar));
-            check_alloc_status(ivar, "Memory allocation error");
-
-            for (j = 0; j < nc_state_file->discharge_size; j++) {
-                ivar[j] = (int) j;
-            }
-            status = nc_put_vara_int(nc_state_file->nc_id, discharge_var_id, dstart,
-                                     dcount,
-                                     ivar);
-            check_nc_status(status, "Error writing discharge id");
-
-            for (i = 0; i < ndims; i++) {
-                dimids[i] = -1;
-                dcount[i] = 0;
-            }
-            free(ivar);
-        }
-        
-        if(ext_options.DAMS){
-            // ndams
-            dimids[0] = nc_state_file->ndams_dimid;
-            dcount[0] = nc_state_file->ndams_size;
-            ivar = malloc(nc_state_file->ndams_size * sizeof(*ivar));
-            check_alloc_status(ivar, "Memory allocation error");
-
-            for (j = 0; j < nc_state_file->ndams_size; j++) {
-                ivar[j] = (int) j;
-            }
-            status = nc_put_vara_int(nc_state_file->nc_id, ndams_var_id, dstart,
-                                     dcount,
-                                     ivar);
-            check_nc_status(status, "Error writing discharge id");
-
-            for (i = 0; i < ndims; i++) {
-                dimids[i] = -1;
-                dcount[i] = 0;
-            }
-            free(ivar);
-            
-            // dam_his
-            dimids[0] = nc_state_file->dam_his_dimid;
-            dcount[0] = nc_state_file->dam_his_size;
-            ivar = malloc(nc_state_file->dam_his_size * sizeof(*ivar));
-            check_alloc_status(ivar, "Memory allocation error");
-
-            for (j = 0; j < nc_state_file->dam_his_size; j++) {
-                ivar[j] = (int) j;
-            }
-            status = nc_put_vara_int(nc_state_file->nc_id, dam_his_var_id, dstart,
-                                     dcount,
-                                     ivar);
-            check_nc_status(status, "Error writing discharge id");
-
-            for (i = 0; i < ndims; i++) {
-                dimids[i] = -1;
-                dcount[i] = 0;
-            }
-            free(ivar);
-            
-            // dam_yhis
-            dimids[0] = nc_state_file->dam_yhis_dimid;
-            dcount[0] = nc_state_file->dam_yhis_size;
-            ivar = malloc(nc_state_file->dam_yhis_size * sizeof(*ivar));
-            check_alloc_status(ivar, "Memory allocation error");
-
-            for (j = 0; j < nc_state_file->dam_yhis_size; j++) {
-                ivar[j] = (int) j;
-            }
-            status = nc_put_vara_int(nc_state_file->nc_id, dam_yhis_var_id, dstart,
-                                     dcount,
-                                     ivar);
-            check_nc_status(status, "Error writing discharge id");
-
-            for (i = 0; i < ndims; i++) {
-                dimids[i] = -1;
-                dcount[i] = 0;
-            }
-            free(ivar);
-        }
+        ext_store_put_dimvar();
     }
 
     // initialize dvar for soil thermal node deltas and depths
