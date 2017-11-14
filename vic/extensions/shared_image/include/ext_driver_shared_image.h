@@ -14,9 +14,9 @@
 #ifndef EXT_DRIVER_SHARED_IMAGE_H
 #define EXT_DRIVER_SHARED_IMAGE_H
 
+#include <groundwater.h>
 #include <vic_driver_shared_image.h>
 #include <ext_driver_shared_all.h>
-#include <groundwater.h>
 #include <ext_debug.h>
 #include <ext_mpi.h>
 
@@ -39,7 +39,7 @@ typedef struct {
 }ext_filenames_struct;
 
 typedef struct{
-    gw_var_struct *groundwater;
+//    gw_var_struct *groundwater;
 }ext_all_vars_struct;
 
 void initialize_ext_mpi();

@@ -26,6 +26,7 @@
 ******************************************************************************/
 
 #include <vic_run.h>
+#include <groundwater.h>
 
 /******************************************************************************
 * @brief    Calculate infiltration and runoff from the surface, gravity driven
@@ -190,16 +191,42 @@ runoff(cell_data_struct  *cell,
             /*************************************
                Compute Drainage between Sublayers
             *************************************/
+            double matric_pot[options.Nlayer];
+            double lamda[options.Nlayer];
+            double matric_avg = 0.0;
+            
+            for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
+                lamda[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
+                tmp_liq = liq[lindex] - evap[lindex][fidx];                
+                
+                if(tmp_liq > resid_moist[lindex]){
+                    matric_pot[lindex] = soil_con->bubble[lindex] * 
+                            pow((tmp_liq - resid_moist[lindex]) /
+                            (soil_con->max_moist[lindex] - resid_moist[lindex]), 
+                            -lamda[lindex]);
+                }else{
+                    matric_pot[lindex] = DRY_RESIST;
+                }
+            }
 
             for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
                 /** Brooks & Corey relation for hydraulic conductivity **/
-
-                if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
-                    resid_moist[lindex]) {
-                    tmp_liq = resid_moist[lindex];
-                }
-
+                
+                tmp_liq = liq[lindex] - evap[lindex][fidx];     
+                
                 if (tmp_liq > resid_moist[lindex]) {
+                    
+                    matric_avg = pow( 10, (soil_con->depth[lindex+1] 
+				     * log10(fabs(matric_pot[lindex]))
+				     + soil_con->depth[lindex]
+				     * log10(fabs(matric_pot[lindex+1])))
+				    / (soil_con->depth[lindex] 
+				       + soil_con->depth[lindex+1]) );
+                    
+                    tmp_liq = resid_moist[lindex]
+                      + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
+                      * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/lamda[lindex] );
+                    
                     Q12[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
                                            resid_moist[lindex],
                                            soil_con->max_moist[lindex],

@@ -3,6 +3,8 @@
 
 #include <ext_driver_shared_image.h>
 
+#define DRY_RESIST 1.e20
+
 typedef struct{
     
 }gw_var_struct;
@@ -29,6 +31,7 @@ void gw_run(void);
 void gw_put_data(void);
 void gw_finalize(void);
 
+void calculate_matric_potential();
 
 #endif
 
