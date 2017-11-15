@@ -192,11 +192,11 @@ runoff(cell_data_struct  *cell,
                Compute Drainage between Sublayers
             *************************************/
             double matric_pot[options.Nlayer];
-            double lamda[options.Nlayer];
+            double lambda[options.Nlayer];
             double matric_avg = 0.0;
             
             for (lindex = 0; lindex < options.Nlayer; lindex++) {
-                lamda[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0; 
+                lambda[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0; 
                 
                 if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
                     resid_moist[lindex]) {
@@ -207,7 +207,7 @@ runoff(cell_data_struct  *cell,
                     matric_pot[lindex] = soil_con->bubble[lindex] * 
                             pow((tmp_liq - resid_moist[lindex]) /
                             (soil_con->max_moist[lindex] - resid_moist[lindex]), 
-                            -lamda[lindex]);
+                            -lambda[lindex]);
                 }else{
                     matric_pot[lindex] = DRY_RESIST;
                 }
@@ -232,7 +232,7 @@ runoff(cell_data_struct  *cell,
                     
                     tmp_liq = resid_moist[lindex]
                       + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
-                      * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/lamda[lindex] );
+                      * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/lambda[lindex] );
                     
                     Q12[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
                                            resid_moist[lindex],
