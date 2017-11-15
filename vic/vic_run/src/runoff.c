@@ -61,7 +61,9 @@ runoff(cell_data_struct  *cell,
     double                     moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
     double                     max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
     double                     Ksat[MAX_LAYERS];
-    double                     Q12[MAX_LAYERS - 1];
+    double                     Q12[MAX_LAYERS - 1];    
+    double                     matric_pot[MAX_LAYERS];
+    double                     matric_avg;
     double                     Dsmax;
     double                     tmp_inflow;
     double                     tmp_moist;
@@ -190,14 +192,8 @@ runoff(cell_data_struct  *cell,
 
             /*************************************
                Compute Drainage between Sublayers
-            *************************************/
-            double matric_pot[options.Nlayer];
-            double lambda[options.Nlayer];
-            double matric_avg = 0.0;
-            
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {
-                lambda[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0; 
-                
+            *************************************/            
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {                
                 if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
                     resid_moist[lindex]) {
                     tmp_liq = resid_moist[lindex];
@@ -207,7 +203,7 @@ runoff(cell_data_struct  *cell,
                     matric_pot[lindex] = soil_con->bubble[lindex] * 
                             pow((tmp_liq - resid_moist[lindex]) /
                             (soil_con->max_moist[lindex] - resid_moist[lindex]), 
-                            -lambda[lindex]);
+                            -((soil_con->expt[lindex] - 3.0) / 2.0));
                 }else{
                     matric_pot[lindex] = DRY_RESIST;
                 }
@@ -232,7 +228,7 @@ runoff(cell_data_struct  *cell,
                     
                     tmp_liq = resid_moist[lindex]
                       + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
-                      * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/lambda[lindex] );
+                      * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/((soil_con->expt[lindex] - 3.0) / 2.0) );
                     
                     Q12[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
                                            resid_moist[lindex],
