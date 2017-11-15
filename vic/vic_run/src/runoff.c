@@ -195,9 +195,13 @@ runoff(cell_data_struct  *cell,
             double lamda[options.Nlayer];
             double matric_avg = 0.0;
             
-            for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
-                lamda[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
-                tmp_liq = liq[lindex] - evap[lindex][fidx];                
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {
+                lamda[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0; 
+                
+                if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
+                    resid_moist[lindex]) {
+                    tmp_liq = resid_moist[lindex];
+                }    
                 
                 if(tmp_liq > resid_moist[lindex]){
                     matric_pot[lindex] = soil_con->bubble[lindex] * 
@@ -212,7 +216,10 @@ runoff(cell_data_struct  *cell,
             for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
                 /** Brooks & Corey relation for hydraulic conductivity **/
                 
-                tmp_liq = liq[lindex] - evap[lindex][fidx];     
+                if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
+                    resid_moist[lindex]) {
+                    tmp_liq = resid_moist[lindex];
+                }         
                 
                 if (tmp_liq > resid_moist[lindex]) {
                     
