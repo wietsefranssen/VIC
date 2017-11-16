@@ -74,7 +74,7 @@ ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
 ext_all_vars_struct *ext_all_vars = NULL;
-gw_con_struct **gw_con = NULL;
+gw_con_struct *gw_con = NULL;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model

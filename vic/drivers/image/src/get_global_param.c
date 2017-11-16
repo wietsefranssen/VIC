@@ -554,7 +554,7 @@ get_global_param(FILE *gp)
                Unrecognized Global Parameter Flag
             ***********************************/
             else {
-                if(!ext_get_global_param(optstr)){
+                if(!ext_get_global_param(cmdstr)){
                     log_warn("Unrecognized option in the global parameter file: %s"
                              "\n - check your spelling", optstr);
                 }

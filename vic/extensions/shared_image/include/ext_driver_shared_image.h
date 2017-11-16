@@ -20,6 +20,8 @@
 #include <ext_debug.h>
 #include <ext_mpi.h>
 
+#define GW_DEFAULT_ZWT 50
+
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
 }ext_parameters_struct;
@@ -30,6 +32,10 @@ typedef struct{
 }ext_option_struct;
 
 typedef struct {
+    char Qb_max[MAXSTRING];
+    char Qb_expt[MAXSTRING];
+    char Ka_expt[MAXSTRING];
+    char Sa[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
@@ -39,7 +45,7 @@ typedef struct {
 }ext_filenames_struct;
 
 typedef struct{
-//    gw_var_struct *groundwater;
+    gw_var_struct **groundwater;
 }ext_all_vars_struct;
 
 void initialize_ext_mpi();

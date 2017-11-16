@@ -36,7 +36,9 @@
 int
 runoff(cell_data_struct  *cell,
        energy_bal_struct *energy,
+       gw_var_struct     *gw_var,
        soil_con_struct   *soil_con,
+       gw_con_struct     *gw_con,
        double             ppt,
        double            *frost_fract,
        int                Nnodes)
@@ -182,7 +184,6 @@ runoff(cell_data_struct  *cell,
         /**************************************************
            Compute Flow Between Soil Layers ()
         **************************************************/
-
         dt_inflow = inflow / (double) runoff_steps_per_dt;
 
         Dsmax = soil_con->Dsmax / global_param.runoff_steps_per_day;
@@ -321,39 +322,42 @@ runoff(cell_data_struct  *cell,
             } /* end loop through soil layers */
 
             /**************************************************
-               Compute Baseflow
+               Compute Baseflow & Groundwater
             **************************************************/
 
-            /** ARNO model for the bottom soil layer (based on bottom
-                soil layer moisture from previous time step) **/
-
-            lindex = options.Nlayer - 1;
-
-            /** Compute relative moisture **/
-            rel_moist =
-                (liq[lindex] -
-                 resid_moist[lindex]) /
-                (soil_con->max_moist[lindex] - resid_moist[lindex]);
-
-            /** Compute baseflow as function of relative moisture **/
-            frac = Dsmax * soil_con->Ds / soil_con->Ws;
-            dt_baseflow = frac * rel_moist;
-            if (rel_moist > soil_con->Ws) {
-                frac = (rel_moist - soil_con->Ws) / (1 - soil_con->Ws);
-                dt_baseflow += Dsmax * (1 - soil_con->Ds / soil_con->Ws) * pow(
-                    frac, soil_con->c);
-            }
-
-            /** Make sure baseflow isn't negative **/
-            if (dt_baseflow < 0) {
-                dt_baseflow = 0;
-            }
-
-            /** Extract baseflow from the bottom soil layer **/
-
-            liq[lindex] +=
-                Q12[lindex - 1] - (evap[lindex][fidx] + dt_baseflow);
-
+            groundwater();
+            
+            
+//            /** ARNO model for the bottom soil layer (based on bottom
+//                soil layer moisture from previous time step) **/
+//
+//            lindex = options.Nlayer - 1;
+//
+//            /** Compute relative moisture **/
+//            rel_moist =
+//                (liq[lindex] -
+//                 resid_moist[lindex]) /
+//                (soil_con->max_moist[lindex] - resid_moist[lindex]);
+//
+//            /** Compute baseflow as function of relative moisture **/
+//            frac = Dsmax * soil_con->Ds / soil_con->Ws;
+//            dt_baseflow = frac * rel_moist;
+//            if (rel_moist > soil_con->Ws) {
+//                frac = (rel_moist - soil_con->Ws) / (1 - soil_con->Ws);
+//                dt_baseflow += Dsmax * (1 - soil_con->Ds / soil_con->Ws) * pow(
+//                    frac, soil_con->c);
+//            }
+//
+//            /** Make sure baseflow isn't negative **/
+//            if (dt_baseflow < 0) {
+//                dt_baseflow = 0;
+//            }
+//
+//            /** Extract baseflow from the bottom soil layer **/
+//
+//            liq[lindex] +=
+//                Q12[lindex - 1] - (evap[lindex][fidx] + dt_baseflow);
+//
             /** Check Lower Sub-Layer Moistures **/
             tmp_moist = 0;
 

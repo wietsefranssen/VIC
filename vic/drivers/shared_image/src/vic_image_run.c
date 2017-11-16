@@ -44,6 +44,8 @@ vic_image_run(dmy_struct *dmy_current)
     extern veg_con_struct    **veg_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
+    extern ext_all_vars_struct *ext_all_vars;
+    extern gw_con_struct *gw_con;
 
     char                       dmy_str[MAXSTRING];
     size_t                     i;
@@ -63,8 +65,8 @@ vic_image_run(dmy_struct *dmy_current)
         update_step_vars(&(all_vars[i]), veg_con[i], veg_hist[i]);
 
         timer_start(&timer);
-        vic_run(&(force[i]), &(all_vars[i]), dmy_current, &global_param,
-                &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
+        vic_run(&(force[i]), &(all_vars[i]), &(ext_all_vars[i]) dmy_current, &global_param,
+                &lake_con, &(soil_con[i]), veg_con[i], &(gw_con) veg_lib[i]);
         timer_stop(&timer);
 
         put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
