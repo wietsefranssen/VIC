@@ -30,7 +30,7 @@ initialize_gw_var(gw_var_struct *gw_var)
     gw_var->Qr = 0.0;
     gw_var->Qb = 0.0;
     gw_var->Wa = 0.0;
-    gw_var->Ws = 0.0;
+    gw_var->Wt = 0.0;
     gw_var->zwt = 0.0;
 }
 
@@ -40,7 +40,7 @@ initialize_gw_con(gw_con_struct *gw_con)
     gw_con->Ka_expt = 0.0;
     gw_con->Qb_max = 0.0;
     gw_con->Qb_expt = 0.0;
-    gw_con->Sa = 0.0;
+    gw_con->Sy = 0.0;
 }
 
 void
