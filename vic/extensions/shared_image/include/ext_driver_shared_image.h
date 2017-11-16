@@ -24,6 +24,7 @@
 
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
+    
 }ext_parameters_struct;
 
 // Remember to add variables to ext_mpi_support.c

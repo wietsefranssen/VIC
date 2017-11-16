@@ -5,17 +5,21 @@ initialize_gw_local_structures(void)
 {
     extern domain_struct local_domain;
     extern veg_con_map_struct *veg_con_map;
+    extern option_struct options;
     extern ext_all_vars_struct *ext_all_vars;
     extern gw_con_struct *gw_con;
     
     size_t i;
     size_t j;
+    size_t k;
     
     for(i=0; i < local_domain.ncells_active; i++){
         initialize_gw_con(&gw_con[i]);
         
         for(j=0; j < veg_con_map[i].nv_active; j++){
-            initialize_gw_var(&ext_all_vars[i].groundwater[j]);
+            for(k=0; k < options.SNOW_BAND; k++){
+                initialize_gw_var(&ext_all_vars[i].groundwater[j][k]);
+            }
         }
     }
 }

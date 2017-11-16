@@ -609,6 +609,7 @@ typedef struct {
     double aspect;
     double ehoriz;
     double whoriz;
+    double Fp_expt;
 } soil_con_struct;
 
 /******************************************************************************

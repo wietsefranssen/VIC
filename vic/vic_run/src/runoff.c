@@ -36,9 +36,7 @@
 int
 runoff(cell_data_struct  *cell,
        energy_bal_struct *energy,
-       gw_var_struct     *gw_var,
        soil_con_struct   *soil_con,
-       gw_con_struct     *gw_con,
        double             ppt,
        double            *frost_fract,
        int                Nnodes)
@@ -65,7 +63,8 @@ runoff(cell_data_struct  *cell,
     double                     Ksat[MAX_LAYERS];
     double                     Q12[MAX_LAYERS - 1];    
     double                     matric_pot[MAX_LAYERS];
-    double                     matric_avg;
+    double                     matric_avg;        
+    double                     Fp[MAX_LAYERS];
     double                     Dsmax;
     double                     tmp_inflow;
     double                     tmp_moist;
@@ -164,6 +163,12 @@ runoff(cell_data_struct  *cell,
 
             /** Set Layer Maximum Moisture Content **/
             max_moist[lindex] = soil_con->max_moist[lindex];
+                        
+            /** Set fraction of permeable/non-frozen area **/
+            soil_con->Fp_expt = 3.0;
+            Fp[lindex] = 1 - (exp(-soil_con->Fp_expt * 
+                    (1 - ice[lindex] / max_moist[lindex])) - 
+                    exp(-soil_con->Fp_expt));
         }
 
         /******************************************************
@@ -193,17 +198,18 @@ runoff(cell_data_struct  *cell,
 
             /*************************************
                Compute Drainage between Sublayers
-            *************************************/            
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {                
-                if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
-                    resid_moist[lindex]) {
-                    tmp_liq = resid_moist[lindex];
-                }    
+            *************************************/    
+            
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {    
                 
+                // Set matric potential (based on moisture content and soil texture)
+                tmp_liq = liq[lindex] - evap[lindex][fidx];
                 if(tmp_liq > resid_moist[lindex]){
+                    
+                    /** Clapp and Hornberger (1978) relation for matric potential **/
                     matric_pot[lindex] = soil_con->bubble[lindex] * 
                             pow((tmp_liq - resid_moist[lindex]) /
-                            (soil_con->max_moist[lindex] - resid_moist[lindex]), 
+                            (max_moist[lindex] - resid_moist[lindex]), 
                             -((soil_con->expt[lindex] - 3.0) / 2.0));
                 }else{
                     matric_pot[lindex] = DRY_RESIST;
@@ -211,13 +217,8 @@ runoff(cell_data_struct  *cell,
             }
 
             for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
-                /** Brooks & Corey relation for hydraulic conductivity **/
                 
-                if ((tmp_liq = liq[lindex] - evap[lindex][fidx]) <
-                    resid_moist[lindex]) {
-                    tmp_liq = resid_moist[lindex];
-                }         
-                
+                tmp_liq = liq[lindex] - evap[lindex][fidx];
                 if (tmp_liq > resid_moist[lindex]) {
                     
                     matric_avg = pow( 10, (soil_con->depth[lindex+1] 
@@ -231,10 +232,11 @@ runoff(cell_data_struct  *cell,
                       + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
                       * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/((soil_con->expt[lindex] - 3.0) / 2.0) );
                     
-                    Q12[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
-                                           resid_moist[lindex],
-                                           soil_con->max_moist[lindex],
-                                           soil_con->expt[lindex]);
+                    /** Brooks & Corey relation for hydraulic conductivity **/
+                    Q12[lindex] = Fp[lindex] * calc_Q12(Ksat[lindex], tmp_liq,
+                                                    resid_moist[lindex],
+                                                    soil_con->max_moist[lindex],
+                                                    soil_con->expt[lindex]);
                 }
                 else {
                     Q12[lindex] = 0.;
@@ -325,38 +327,35 @@ runoff(cell_data_struct  *cell,
                Compute Baseflow & Groundwater
             **************************************************/
 
-            groundwater();
-            
-            
-//            /** ARNO model for the bottom soil layer (based on bottom
-//                soil layer moisture from previous time step) **/
-//
-//            lindex = options.Nlayer - 1;
-//
-//            /** Compute relative moisture **/
-//            rel_moist =
-//                (liq[lindex] -
-//                 resid_moist[lindex]) /
-//                (soil_con->max_moist[lindex] - resid_moist[lindex]);
-//
-//            /** Compute baseflow as function of relative moisture **/
-//            frac = Dsmax * soil_con->Ds / soil_con->Ws;
-//            dt_baseflow = frac * rel_moist;
-//            if (rel_moist > soil_con->Ws) {
-//                frac = (rel_moist - soil_con->Ws) / (1 - soil_con->Ws);
-//                dt_baseflow += Dsmax * (1 - soil_con->Ds / soil_con->Ws) * pow(
-//                    frac, soil_con->c);
-//            }
-//
-//            /** Make sure baseflow isn't negative **/
-//            if (dt_baseflow < 0) {
-//                dt_baseflow = 0;
-//            }
-//
-//            /** Extract baseflow from the bottom soil layer **/
-//
-//            liq[lindex] +=
-//                Q12[lindex - 1] - (evap[lindex][fidx] + dt_baseflow);
+            /** ARNO model for the bottom soil layer (based on bottom
+                soil layer moisture from previous time step) **/
+
+            lindex = options.Nlayer - 1;
+
+            /** Compute relative moisture **/
+            rel_moist =
+                (liq[lindex] -
+                 resid_moist[lindex]) /
+                (soil_con->max_moist[lindex] - resid_moist[lindex]);
+
+            /** Compute baseflow as function of relative moisture **/
+            frac = Dsmax * soil_con->Ds / soil_con->Ws;
+            dt_baseflow = frac * rel_moist;
+            if (rel_moist > soil_con->Ws) {
+                frac = (rel_moist - soil_con->Ws) / (1 - soil_con->Ws);
+                dt_baseflow += Dsmax * (1 - soil_con->Ds / soil_con->Ws) * pow(
+                    frac, soil_con->c);
+            }
+
+            /** Make sure baseflow isn't negative **/
+            if (dt_baseflow < 0) {
+                dt_baseflow = 0;
+            }
+
+            /** Extract baseflow from the bottom soil layer **/
+
+            liq[lindex] +=
+                Q12[lindex - 1] - (evap[lindex][fidx] + dt_baseflow);
 //
             /** Check Lower Sub-Layer Moistures **/
             tmp_moist = 0;
