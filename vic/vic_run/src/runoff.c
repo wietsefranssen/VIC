@@ -164,8 +164,7 @@ runoff(cell_data_struct  *cell,
             /** Set Layer Maximum Moisture Content **/
             max_moist[lindex] = soil_con->max_moist[lindex];
                         
-            /** Set fraction of permeable/non-frozen area **/
-            soil_con->Fp_expt = 3.0;
+            /** Set fraction of permeable/non-frozen area (Nui & Yang 2006)**/
             Fp[lindex] = 1 - (exp(-soil_con->Fp_expt * 
                     (1 - ice[lindex] / max_moist[lindex])) - 
                     exp(-soil_con->Fp_expt));

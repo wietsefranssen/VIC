@@ -464,6 +464,16 @@ vic_init(void)
     for (i = 0; i < local_domain.ncells_active; i++) {
         soil_con[i].c = (double) dvar[i];
     }
+    
+    // Fp_expt
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        soil_con[i].Fp_expt = 3.0;
+    }
+//    get_scatter_nc_field_double(&(filenames.params), "Fp_expt",
+//                                d2start, d2count, dvar);
+//    for (i = 0; i < local_domain.ncells_active; i++) {
+//        soil_con[i].Fp_expt = (double) dvar[i];
+//    }
 
     // expt: unsaturated hydraulic conductivity exponent for each layer
     for (j = 0; j < options.Nlayer; j++) {
