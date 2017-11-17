@@ -101,6 +101,7 @@ runoff(cell_data_struct  *cell,
     double K1, K2, Ka;
     double K_avg;
     double dt_recharge;
+    double Ws;      
     
     /** Set Residual Moisture **/
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
@@ -116,7 +117,6 @@ runoff(cell_data_struct  *cell,
     cell->asat = 0.0;
     gw_var->Qb = 0.0;
     gw_var->Qr = 0.0;
-    gw_var->zwt = 5;
 
     runoff_steps_per_dt = global_param.runoff_steps_per_day /
                           global_param.model_steps_per_day;
@@ -128,6 +128,9 @@ runoff(cell_data_struct  *cell,
         Wa[fidx] = gw_var->Wa;
         Wt[fidx] = gw_var->Wt;
     }
+    gw_var->zwt = 0.0;
+    gw_var->Wa = 0.0;
+    gw_var->Wt = 0.0;
 
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
@@ -501,13 +504,12 @@ runoff(cell_data_struct  *cell,
             
             /**************************************************
                Compute Groundwater
-            **************************************************/   
-            double Ws;            
+            **************************************************/         
             Wt[fidx] += dt_recharge - dt_baseflow;
             
-            if(Wt[fidx] / gw_con->Sy < GW_REF_DEPTH){
+            if(Wt[fidx] / gw_con->Sy / MM_PER_M < GW_REF_DEPTH){
                 Wa[fidx] = Wt[fidx];
-                zwt[fidx] = GW_REF_DEPTH -Wt[fidx] / gw_con->Sy;
+                zwt[fidx] = GW_REF_DEPTH - Wt[fidx] / gw_con->Sy / MM_PER_M;
             }else{
                 Wa[fidx] = GW_REF_DEPTH * gw_con->Sy;
                 Ws = (Wt[fidx] - Wa[fidx]) * MM_PER_M;

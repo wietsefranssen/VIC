@@ -83,7 +83,7 @@ gw_init(void)
         gw_con[i].Ka_expt = 3.0;
         gw_con[i].Qb_expt = 0.3;
         gw_con[i].Qb_max = 5.0;
-        gw_con[i].Sy = 2.0;
+        gw_con[i].Sy = 0.5;
     }
     
     free(dvar);

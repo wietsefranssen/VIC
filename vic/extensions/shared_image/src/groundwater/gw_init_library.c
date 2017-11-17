@@ -29,9 +29,9 @@ initialize_gw_var(gw_var_struct *gw_var)
 {
     gw_var->Qr = 0.0;
     gw_var->Qb = 0.0;
-    gw_var->Wa = 0.0;
-    gw_var->Wt = 0.0;
-    gw_var->zwt = 0.0;
+    gw_var->zwt = 5.0;
+    gw_var->Wa = (GW_REF_DEPTH - 5) * 0.5 * MM_PER_M;
+    gw_var->Wt = gw_var->Wa;
 }
 
 void
