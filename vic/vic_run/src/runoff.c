@@ -326,11 +326,12 @@ runoff(cell_data_struct  *cell,
                Compute Baseflow & Groundwater
             **************************************************/
 
-            /** ARNO model for the bottom soil layer (based on bottom
-                soil layer moisture from previous time step) **/
-
             lindex = options.Nlayer - 1;
-
+            liq[lindex] += Q12[lindex - 1] - evap[lindex][fidx];
+            
+            
+            
+            
             /** Compute relative moisture **/
             rel_moist =
                 (liq[lindex] -
