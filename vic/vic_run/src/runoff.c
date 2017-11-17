@@ -61,10 +61,7 @@ runoff(cell_data_struct  *cell,
     double                     moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
     double                     max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
     double                     Ksat[MAX_LAYERS];
-    double                     Q12[MAX_LAYERS - 1];    
-    double                     matric_pot[MAX_LAYERS];
-    double                     matric_avg;        
-    double                     Fp[MAX_LAYERS];
+    double                     Q12[MAX_LAYERS - 1];   
     double                     Dsmax;
     double                     tmp_inflow;
     double                     tmp_moist;
@@ -85,6 +82,15 @@ runoff(cell_data_struct  *cell,
     layer_data_struct          tmp_layer;
     unsigned short             runoff_steps_per_dt;
 
+     
+    double                     matric_pot[MAX_LAYERS];
+    double                     Fp[MAX_LAYERS];
+    double z[MAX_LAYERS];
+    double z_node[MAX_LAYERS];
+    double eff_porosity[MAX_LAYERS];
+    double                     matric_avg;        
+    double z_tmp;
+    
     /** Set Residual Moisture **/
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         resid_moist[lindex] = soil_con->resid_moist[lindex] *
@@ -168,6 +174,16 @@ runoff(cell_data_struct  *cell,
             Fp[lindex] = 1 - (exp(-soil_con->Fp_expt * 
                     (1 - ice[lindex] / max_moist[lindex])) - 
                     exp(-soil_con->Fp_expt));
+            
+            /** Set Depth of Layers and Nodes **/
+            z_tmp += soil_con.depth[lindex];
+            z[lindex] = z_tmp;
+            z_node[lindex] = z_tmp - 0.5 * soil_con.depth[lindex];
+            
+            /** Set Effective Porosity **/
+            eff_porosity[lindex] = ((soil_con.depth[lindex] * 
+                    soil_con.porosity[lindex]) - ice[lindex]) /
+                    soil_con.depth[lindex];
         }
 
         /******************************************************
@@ -199,7 +215,7 @@ runoff(cell_data_struct  *cell,
                Compute Drainage between Sublayers
             *************************************/    
             
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {    
+            for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {    
                 
                 // Set matric potential (based on moisture content and soil texture)
                 tmp_liq = liq[lindex] - evap[lindex][fidx];
@@ -329,7 +345,13 @@ runoff(cell_data_struct  *cell,
             lindex = options.Nlayer - 1;
             liq[lindex] += Q12[lindex - 1] - evap[lindex][fidx];
             
+            gw_var_struct gw_var;
+            gw_con_struct gw_con;
+            int lwt;
             
+            
+            
+            gw_var->Qb = 
             
             
             /** Compute relative moisture **/
