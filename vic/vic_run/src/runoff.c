@@ -349,30 +349,77 @@ runoff(cell_data_struct  *cell,
             gw_con_struct gw_con;
             int lwt;
             int lbot;
+            double dt_baseflow;
+            double dt_recharge;
             
             // Find layer with phreatic water level
             lwt = -1;
+            lbot = options.Nlayer - 1;
             for (lindex = 0; lindex < options.Nlayer; lindex++) {
                 if(gw_var->zwt >= z[lindex]){
                     lwt=lindex;
+                    if(lindex == 0){
+                        lbot = lwt;
+                    }else{
+                        lbot = lwt - 1;
+                    }
                     break;
                 }
             }
             
-            // Set bottom layer (before phreatic water level)
-            if(lwt == -1){
-                // phreatic water level is below soil column
-                lbot = options.Nlayer - 1;
-            }else if(lwt == 0){
-                // phreatic water level is in top layer
-                lbot = lwt;
+            /** Calculate baseflow **/
+            if(lwt == -1){                        
+                dt_baseflow = gw_con->Qb_max * exp(gw_con->Qb_expt * gw_var->zwt);
             }else{
-                // phreatic water level is in soil column (not the top layer)
-                lbot = lwt - 1;
+                dt_baseflow = Fp[lwt] * gw_con->Qb_max * exp(gw_con->Qb_expt * gw_var->zwt);
             }
-                        
-            gw_var->Qb = 
             
+            /** Calculate recharge **/            
+            double K1, K2, Ka;
+            // Conductivity in bottom layer
+            tmp_liq = liq[lbot] - evap[lbot][fidx];
+            K1 = Fp[lbot] * calc_Q12(Ksat[lbot], tmp_liq,
+                                        resid_moist[lbot],
+                                        soil_con->max_moist[lbot],
+                                        soil_con->expt[lbot]);
+            
+            if (lwt == -1) {          
+                // Conductivity in aquifer (exponentially decrease conductivity below soil column)
+                K2 = K1 * (1 - exp(-gw_con.Ka_expt * (gw_var->zwt - z[lbot]))) / 
+                        gw_con.Ka_expt * (gw_var->zwt - z[lbot]);
+            } else {           
+                // Conductivity in water table layer
+                tmp_liq = liq[lwt] - evap[lwt][fidx];
+                K2 = Fp[lwt] * calc_Q12(Ksat[lwt], tmp_liq,
+                                            resid_moist[lwt],
+                                            soil_con->max_moist[lwt],
+                                            soil_con->expt[lwt]);
+            }
+                
+            // Depth weighted average of conductivity
+            Ka = ((z[lbot] - z_node[lbot]) * K1 +
+                    (gw_var->zwt - z[lbot]) * K2) /
+                    (gw_var->zwt - z_node[lbot]);
+        
+            if (lwt == -1) {   
+                // Ignore matric potential of groundwater
+                dt_recharge = -Ka * 
+                        (-gw_var->zwt - (matric_pot[lbot] - z_node[lbot])) / 
+                        (gw_var->zwt - z_node[lbot]);  
+            } else {
+                // Include (saturated) matric potential of groundwater
+                dt_recharge = -Ka * 
+                        ((soil_con->bubble[lbot] - gw_var->zwt) - 
+                        (matric_pot[lbot] - z_node[lbot])) / 
+                        (gw_var->zwt - z_node[lbot]);
+            }
+            
+            /** Calculate water table change **/   
+            double old_wt = gw_var->Wt;
+            double old_wa = gw_var->Wa;
+            double old_zwt = gw_var->zwt;
+            
+            gw_var->Wt += dt_recharge - dt_baseflow;
             
             /** Compute relative moisture **/
             rel_moist =
