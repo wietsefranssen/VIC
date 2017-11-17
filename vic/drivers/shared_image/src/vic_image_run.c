@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_image.h>
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief    Run VIC for one timestep and store output data
@@ -34,6 +35,7 @@ vic_image_run(dmy_struct *dmy_current)
 {
     extern size_t              current;
     extern all_vars_struct    *all_vars;
+    extern ext_all_vars_struct *ext_all_vars;
     extern force_data_struct  *force;
     extern domain_struct       local_domain;
     extern global_param_struct global_param;
@@ -42,6 +44,7 @@ vic_image_run(dmy_struct *dmy_current)
     extern save_data_struct   *save_data;
     extern soil_con_struct    *soil_con;
     extern veg_con_struct    **veg_con;
+    extern gw_con_struct      *gw_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
 
@@ -63,8 +66,10 @@ vic_image_run(dmy_struct *dmy_current)
         update_step_vars(&(all_vars[i]), veg_con[i], veg_hist[i]);
 
         timer_start(&timer);
-        vic_run(&(force[i]), &(all_vars[i]), dmy_current, &global_param,
-                &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
+        vic_run(&(force[i]), &(all_vars[i]), &(ext_all_vars[i]), 
+                dmy_current, &global_param,
+                &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
+                &(gw_con[i]));
         timer_stop(&timer);
 
         put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],

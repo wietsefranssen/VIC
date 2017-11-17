@@ -56,7 +56,7 @@ gw_check_global_param(void)
     extern ext_filenames_struct ext_filenames;
     
     if(ext_options.GROUNDWATER){
-        if(ext_filenames.groundwater.nc_filename == MISSING_S){
+        if(strcasecmp(ext_filenames.groundwater.nc_filename, MISSING_S) == 0){
             log_err("GROUNDWATER = TRUE but GROUNDWATER_PARAMETERS is missing");
         }
     }

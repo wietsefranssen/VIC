@@ -1293,7 +1293,6 @@ void
 set_nc_state_file_info(nc_file_struct *nc_state_file)
 {
     extern option_struct options;
-    extern ext_option_struct    ext_options;
     extern domain_struct global_domain;
 
     // Set fill values
@@ -1561,7 +1560,6 @@ initialize_state_file(char           *filename,
     extern metadata_struct     state_metadata[N_STATE_VARS];
     extern soil_con_struct    *soil_con;
     extern int                 mpi_rank;
-    extern ext_option_struct    ext_options;
 
     int                        status;
     int                        dimids[MAXDIMS];

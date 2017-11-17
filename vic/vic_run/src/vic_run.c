@@ -26,8 +26,7 @@
 ******************************************************************************/
 
 #include <vic_run.h>
-
-#include "ext_driver_shared_image.h"
+#include <ext_driver_shared_image.h>
 
 veg_lib_struct *vic_run_veg_lib;
 
@@ -38,12 +37,14 @@ veg_lib_struct *vic_run_veg_lib;
 int
 vic_run(force_data_struct   *force,
         all_vars_struct     *all_vars,
+        ext_all_vars_struct *ext_all_vars,
         dmy_struct          *dmy,
         global_param_struct *gp,
         lake_con_struct     *lake_con,
         soil_con_struct     *soil_con,
         veg_con_struct      *veg_con,
-        veg_lib_struct      *veg_lib)
+        veg_lib_struct      *veg_lib,
+        gw_con_struct       *gw_con)
 {
     extern option_struct     options;
     extern parameters_struct param;
@@ -95,6 +96,7 @@ vic_run(force_data_struct   *force,
     veg_var_struct         **veg_var;
     energy_bal_struct      **energy;
     snow_data_struct       **snow;
+    gw_var_struct          **gw_var;
 
     // assign vic_run_veg_lib to veg_lib, so that the veg_lib for the correct
     // grid cell is used within vic_run. For simplicity sake, use vic_run_veg_lib
@@ -107,6 +109,7 @@ vic_run(force_data_struct   *force,
     lake_var = &all_vars->lake_var;
     snow = all_vars->snow;
     veg_var = all_vars->veg_var;
+    gw_var = ext_all_vars->groundwater;
 
     Nbands = options.SNOW_BAND;
 
@@ -339,7 +342,8 @@ vic_run(force_data_struct   *force,
                                                &(energy[iveg][band]), gp,
                                                &(cell[iveg][band]),
                                                &(snow[iveg][band]),
-                                               soil_con, &(veg_var[iveg][band]),
+                                               &(gw_var[iveg][band]),
+                                               soil_con, gw_con, &(veg_var[iveg][band]),
                                                lag_one, sigma_slope, fetch,
                                                veg_con[iveg].CanopLayerBnd);
 

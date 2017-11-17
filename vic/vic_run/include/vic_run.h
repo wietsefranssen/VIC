@@ -28,6 +28,7 @@
 #define VIC_RUN_H
 
 #include <vic_def.h>
+#include <ext_def.h>
 
 void advect_carbon_storage(double, double, lake_var_struct *,
                            cell_data_struct *);
@@ -230,7 +231,7 @@ void rescale_soil_veg_fluxes(double, double, cell_data_struct *,
 void rhoinit(double *, double);
 double root_brent(double, double, double (*Function)(double, va_list), ...);
 double rtnewt(double x1, double x2, double xacc, double Ur, double Zr);
-int runoff(cell_data_struct *, energy_bal_struct *, soil_con_struct *, double,
+int runoff(cell_data_struct *, energy_bal_struct *, gw_var_struct *, soil_con_struct *, gw_con_struct *, double,
            double *, int);
 void set_node_parameters(double *, double *, double *, double *, double *,
                          double *, double *, double *, double *, double *,
@@ -298,7 +299,8 @@ int surface_fluxes(bool, double, double, double, double, double *, double *,
                    size_t, unsigned short int, double, unsigned short int,
                    unsigned short int, force_data_struct *, dmy_struct *,
                    energy_bal_struct *, global_param_struct *,
-                   cell_data_struct *, snow_data_struct *, soil_con_struct *,
+                   cell_data_struct *, snow_data_struct *, gw_var_struct *,
+                   soil_con_struct *, gw_con_struct *,
                    veg_var_struct *, double, double, double, double *);
 double svp(double);
 double svp_slope(double);
@@ -318,9 +320,10 @@ double trapzd(
     int n);
 void tridia(int, double *, double *, double *, double *, double *);
 void tridiag(double *, double *, double *, double *, unsigned int);
-int vic_run(force_data_struct *, all_vars_struct *, dmy_struct *,
+int vic_run(force_data_struct *, all_vars_struct *, ext_all_vars_struct *,
+        dmy_struct *,
             global_param_struct *, lake_con_struct *, soil_con_struct *,
-            veg_con_struct *, veg_lib_struct *);
+            veg_con_struct *, veg_lib_struct *, gw_con_struct *);
 double volumetric_heat_capacity(double, double, double, double);
 int water_balance(lake_var_struct *, lake_con_struct, double, all_vars_struct *,
                   int, int, double, soil_con_struct, veg_con_struct);

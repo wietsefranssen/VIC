@@ -18,7 +18,7 @@ initialize_gw_local_structures(void)
         
         for(j=0; j < veg_con_map[i].nv_active; j++){
             for(k=0; k < options.SNOW_BAND; k++){
-                initialize_gw_var(&ext_all_vars[i].groundwater[j][k]);
+                initialize_gw_var(&(ext_all_vars[i].groundwater[j][k]));
             }
         }
     }
@@ -30,7 +30,7 @@ initialize_gw_var(gw_var_struct *gw_var)
     gw_var->Qr = 0.0;
     gw_var->Qb = 0.0;
     gw_var->Wa = 0.0;
-    gw_var->Ws = 0.0;
+    gw_var->Wt = 0.0;
     gw_var->zwt = 0.0;
 }
 
@@ -40,7 +40,7 @@ initialize_gw_con(gw_con_struct *gw_con)
     gw_con->Ka_expt = 0.0;
     gw_con->Qb_max = 0.0;
     gw_con->Qb_expt = 0.0;
-    gw_con->Sa = 0.0;
+    gw_con->Sy = 0.0;
 }
 
 void

@@ -1,20 +1,21 @@
 #ifndef GROUNDWATER_H
 #define GROUNDWATER_H
 
-#include <vic_driver_shared_image.h>
+#include <stdbool.h>
 
 #define DRY_RESIST 1.e20
+#define GW_REF_DEPTH 50
 
 typedef struct{
     double Qr;
     double Qb;
     double Wa;
-    double Ws;
+    double Wt;
     double zwt;
 }gw_var_struct;
 
 typedef struct{
-    double Sa;
+    double Sy;
     double Qb_max;
     double Qb_expt;
     double Ka_expt;
@@ -27,6 +28,8 @@ void initialize_gw_con(gw_con_struct *gw_con);
 
 void gw_alloc(void);
 void gw_start(void);
+bool gw_get_global_param(char *cmdstr);
+void gw_check_global_param(void);
 void validate_gw_parameters(void);
 void get_groundwater_type(char *cmdstr);
 void gw_set_output_meta_data_info(void);

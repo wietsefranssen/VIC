@@ -35,12 +35,9 @@ void
 get_global_param(FILE *gp)
 {
     extern option_struct       options;
-    extern ext_option_struct   ext_options;
     extern global_param_struct global_param;
     extern param_set_struct    param_set;
     extern filenames_struct    filenames;
-    extern ext_filenames_struct    ext_filenames;
-    extern int                  mpi_decomposition;
     extern size_t              NF, NR;
 
     char                       cmdstr[MAXSTRING];
