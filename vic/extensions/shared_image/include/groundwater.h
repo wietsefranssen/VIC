@@ -4,18 +4,17 @@
 #include <vic_driver_shared_image.h>
 
 #define DRY_RESIST 1.e20
-#define REF_ZWT 50
 
 typedef struct{
     double Qr;
     double Qb;
     double Wa;
-    double Wt;
+    double Ws;
     double zwt;
 }gw_var_struct;
 
 typedef struct{
-    double Sy;
+    double Sa;
     double Qb_max;
     double Qb_expt;
     double Ka_expt;
