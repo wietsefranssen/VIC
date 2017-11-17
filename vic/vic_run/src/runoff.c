@@ -348,9 +348,29 @@ runoff(cell_data_struct  *cell,
             gw_var_struct gw_var;
             gw_con_struct gw_con;
             int lwt;
+            int lbot;
             
+            // Find layer with phreatic water level
+            lwt = -1;
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {
+                if(gw_var->zwt >= z[lindex]){
+                    lwt=lindex;
+                    break;
+                }
+            }
             
-            
+            // Set bottom layer (before phreatic water level)
+            if(lwt == -1){
+                // phreatic water level is below soil column
+                lbot = options.Nlayer - 1;
+            }else if(lwt == 0){
+                // phreatic water level is in top layer
+                lbot = lwt;
+            }else{
+                // phreatic water level is in soil column (not the top layer)
+                lbot = lwt - 1;
+            }
+                        
             gw_var->Qb = 
             
             
