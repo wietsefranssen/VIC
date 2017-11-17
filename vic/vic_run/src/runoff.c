@@ -286,16 +286,6 @@ runoff(cell_data_struct  *cell,
                 Q12[lindex] = Kl[lindex];
             }
             
-            
-            debug("DRAINAGE");
-            debug("inflow %.2f\trunoff %.2f",
-                    inflow,dt_runoff);
-            for(lindex = 0; lindex < options.Nlayer; lindex ++){
-                debug("liq %.2f\tice %.2f\tmin %.2f\tmax %.2f\tQ12 %.2f\tevap %.2f",
-                        liq[lindex],ice[lindex],resid_moist[lindex],
-                        max_moist[lindex],Q12[lindex], evap[lindex][fidx]);
-            }
-            
             /**************************************************
                Solve for Current Soil Layer Moisture, and
                Check Versus Maximum and Minimum Moisture Contents.
@@ -316,17 +306,7 @@ runoff(cell_data_struct  *cell,
                 /** Update soil layer moisture content **/
                 liq[lindex] = liq[lindex] +
                               (inflow - dt_runoff) -
-                              (Q12[lindex] + evap[lindex][fidx]);
-                
-                if(liq[lindex] < 0){
-                    debug("E");
-                }      
-                if((liq[lindex] + ice[lindex]) > max_moist[lindex]){
-                    debug("E");
-                }  
-                if((liq[lindex] + ice[lindex]) < resid_moist[lindex]){
-                    debug("E");
-                }            
+                              (Q12[lindex] + evap[lindex][fidx]);   
                 
                 /** Verify that soil layer moisture is less than maximum **/
                 if ((liq[lindex] + ice[lindex]) > max_moist[lindex]) {
@@ -384,19 +364,6 @@ runoff(cell_data_struct  *cell,
 
                 last_index++;
             } /* end loop through soil layers */
-
-            debug("AFTER CORRECTION");
-            for(lindex = 0; lindex < options.Nlayer; lindex ++){
-                debug("liq %.2f\tice %.2f\tmin %.2f\tmax %.2f\tQ12 %.2f\tevap %.2f",
-                        liq[lindex],ice[lindex],resid_moist[lindex],
-                        max_moist[lindex],Q12[lindex], evap[lindex][fidx]);
-            }
-            
-            lindex = options.Nlayer - 1;
-            liq[lindex] += Q12[lindex - 1] - evap[lindex][fidx];
-            if(liq[lindex] < 0){
-                debug("E");
-            }
             
             /**************************************************
                Compute Baseflow
@@ -481,11 +448,15 @@ runoff(cell_data_struct  *cell,
                     }
                 }   
             }
+            
             /**************************************************
                Solve for Current Soil Layer Moisture, and
                Check Versus Maximum and Minimum Moisture Contents.
             **************************************************/     
-            inflow = 0;
+            lindex = options.Nlayer - 1;
+            liq[lindex] += Q12[lindex - 1] - evap[lindex][fidx];
+            
+            inflow = 0;            
             for(lindex = lbot; lindex < options.Nlayer; lindex ++){
                 
                 liq[lindex] += inflow;                
