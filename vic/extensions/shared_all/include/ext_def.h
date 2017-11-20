@@ -44,10 +44,10 @@ void initialize_gw_parameters(ext_parameters_struct *parameters);
 void initialize_gw_options(ext_option_struct *options);
 
 bool ext_get_global_param(char *opstr);
-void ext_check_global_param(void);
+void ext_validate_global_parameters(void);
 
 bool ext_get_parameters(char *optstr);
-void validate_ext_parameters(void);
+void ext_validate_parameters(void);
 void ext_start(void);
 void ext_alloc(void);
 void ext_init(void);

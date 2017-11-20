@@ -1012,7 +1012,7 @@ get_global_param(FILE *gp)
     /******************************************
        Check for undefined required extension parameters
     ******************************************/
-    ext_check_global_param();
+    ext_validate_global_parameters();
     
     /*********************************
        Output major options

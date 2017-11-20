@@ -287,7 +287,12 @@ enum
     OUT_TIME_VICRUN_CPU,  /**< Wall time spent inside vic_run [seconds] */
     
     // Extension variables
-            
+    OUT_GW_ZWT,
+    OUT_GW_QR,
+    OUT_GW_QB,
+    OUT_GW_WA,
+    OUT_GW_WT,
+    
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */

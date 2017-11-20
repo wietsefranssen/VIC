@@ -28,9 +28,9 @@ void initialize_gw_con(gw_con_struct *gw_con);
 
 void gw_alloc(void);
 void gw_start(void);
-bool gw_get_global_param(char *cmdstr);
-void gw_check_global_param(void);
-void validate_gw_parameters(void);
+bool gw_get_global_parameters(char *cmdstr);
+void gw_validate_global_parameters(void);
+void gw_validate_parameters(void);
 void get_groundwater_type(char *cmdstr);
 void gw_set_output_meta_data_info(void);
 void gw_set_state_meta_data_info(void);

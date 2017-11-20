@@ -80,10 +80,10 @@ gw_init(void)
     
     for (i = 0; i < local_domain.ncells_active; i++) {
         gw_con[i].Fp_expt = 3.0;
-        gw_con[i].Ka_expt = 3.0;
-        gw_con[i].Qb_expt = 0.3;
+        gw_con[i].Ka_expt = 0.3;
+        gw_con[i].Qb_expt = 3;
         gw_con[i].Qb_max = 5.0;
-        gw_con[i].Sy = 0.5;
+        gw_con[i].Sy = 0.2;
     }
     
     free(dvar);

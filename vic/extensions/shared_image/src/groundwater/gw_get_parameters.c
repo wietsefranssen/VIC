@@ -1,7 +1,7 @@
 #include <ext_driver_shared_image.h>
 
 bool
-gw_get_global_param(char *cmdstr)
+gw_get_global_parameters(char *cmdstr)
 {    
     extern ext_option_struct ext_options;
     extern ext_filenames_struct ext_filenames;
@@ -32,25 +32,31 @@ gw_get_global_param(char *cmdstr)
 void
 get_groundwater_type(char *cmdstr)
 {
-    extern ext_filenames_struct ext_filenames;
-    
-    char                 optstr[MAXSTRING];
-    char                 ncvarname[MAXSTRING];
+//    extern ext_filenames_struct ext_filenames;
+//    
+//    char                 optstr[MAXSTRING];
+//    char                 ncvarname[MAXSTRING];
+//
+//    strcpy(ncvarname, MISSING_S);
+//
+//    sscanf(cmdstr, "%*s %s %s", optstr, ncvarname);
+//    
+//    if (strcasecmp("ZWTI", optstr) == 0) {
+//        
+//    }
+//    else {
+//        log_err("Unrecognized routing variable: %s %s", optstr, ncvarname);
+//    }
+}
 
-    strcpy(ncvarname, MISSING_S);
-
-    sscanf(cmdstr, "%*s %s %s", optstr, ncvarname);
-    
-    if (strcasecmp("ZWTI", optstr) == 0) {
-        
-    }
-    else {
-        log_err("Unrecognized routing variable: %s %s", optstr, ncvarname);
-    }
+bool
+gw_get_parameters(char *cmdstr)
+{        
+    return false;
 }
 
 void
-gw_check_global_param(void)
+gw_validate_global_parameters(void)
 {
     extern ext_option_struct ext_options;
     extern ext_filenames_struct ext_filenames;
@@ -60,4 +66,10 @@ gw_check_global_param(void)
             log_err("GROUNDWATER = TRUE but GROUNDWATER_PARAMETERS is missing");
         }
     }
+}
+
+void
+gw_validate_parameters(void)
+{
+    
 }

@@ -12,7 +12,7 @@ ext_start(){
     int status;
     
     if(mpi_rank == VIC_MPI_ROOT){      
-        validate_ext_parameters();  
+        ext_validate_parameters();  
         
         if(ext_options.GROUNDWATER){
             gw_start();

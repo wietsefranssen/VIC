@@ -44,6 +44,7 @@ runoff(cell_data_struct  *cell,
        int                Nnodes)
 {
     extern option_struct       options;
+    extern ext_option_struct   ext_options;
     extern global_param_struct global_param;
 
     size_t                     lindex;
@@ -84,6 +85,8 @@ runoff(cell_data_struct  *cell,
 
      
     double matric_pot[MAX_LAYERS];
+    double matric_expt[MAX_LAYERS];
+    double Se[MAX_LAYERS];
     double Fp[MAX_LAYERS];
     double z[MAX_LAYERS];
     double z_node[MAX_LAYERS];
@@ -115,8 +118,6 @@ runoff(cell_data_struct  *cell,
     cell->runoff = 0.0;
     cell->baseflow = 0.0;
     cell->asat = 0.0;
-    gw_var->Qb = 0.0;
-    gw_var->Qr = 0.0;
 
     runoff_steps_per_dt = global_param.runoff_steps_per_day /
                           global_param.model_steps_per_day;
@@ -124,13 +125,20 @@ runoff(cell_data_struct  *cell,
     for (fidx = 0; fidx < (int)options.Nfrost; fidx++) {
         baseflow[fidx] = 0.0;
         recharge[fidx] = 0.0;
-        zwt[fidx] = gw_var->zwt;
-        Wa[fidx] = gw_var->Wa;
-        Wt[fidx] = gw_var->Wt;
     }
-    gw_var->zwt = 0.0;
-    gw_var->Wa = 0.0;
-    gw_var->Wt = 0.0;
+    
+    if(ext_options.GROUNDWATER){     
+        for (fidx = 0; fidx < (int)options.Nfrost; fidx++) {
+            zwt[fidx] = gw_var->zwt;
+            Wa[fidx] = 0.0;
+            Wt[fidx] = gw_var->Wt;
+        }
+        gw_var->Qb = 0.0;
+        gw_var->Qr = 0.0;
+        gw_var->zwt = 0.0;
+        gw_var->Wa = 0.0;   
+        gw_var->Wt = 0.0;
+    }
 
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
@@ -206,8 +214,8 @@ runoff(cell_data_struct  *cell,
                     soil_con->porosity[lindex]) - ice[lindex]) /
                     soil_con->depth[lindex];
             
-//            debug("Fp %.2f\tz %.2f\tz_node %.2f\teff_p %.2f",
-//                    Fp[lindex],z[lindex],z_node[lindex],eff_porosity[lindex]);
+            /** Set Matric Potential Exponent (Burdine model 1953) **/
+            matric_expt[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
         }
 
         /******************************************************
@@ -242,11 +250,11 @@ runoff(cell_data_struct  *cell,
                 tmp_liq = liq[lindex] - evap[lindex][fidx];
                 if(tmp_liq > resid_moist[lindex]){
                     
-                    /** Clapp and Hornberger (1978) relation for matric potential **/
+                    /** Brooks & Corey relation for matric potential **/
                     matric_pot[lindex] = soil_con->bubble[lindex] * 
                             pow((tmp_liq - resid_moist[lindex]) /
                             (max_moist[lindex] - resid_moist[lindex]), 
-                            -((soil_con->expt[lindex] - 3.0) / 2.0));
+                            -matric_expt[lindex]);
                 }else{
                     matric_pot[lindex] = DRY_RESIST;
                 }
@@ -260,16 +268,18 @@ runoff(cell_data_struct  *cell,
                 tmp_liq = liq[lindex] - evap[lindex][fidx];
                 if (tmp_liq > resid_moist[lindex]) {
                     
-                    matric_avg = pow( 10, (soil_con->depth[lindex+1] 
-				     * log10(fabs(matric_pot[lindex]))
-				     + soil_con->depth[lindex]
-				     * log10(fabs(matric_pot[lindex+1])))
-				    / (soil_con->depth[lindex] 
-				       + soil_con->depth[lindex+1]) );
-                    
-                    tmp_liq = resid_moist[lindex]
-                      + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
-                      * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/((soil_con->expt[lindex] - 3.0) / 2.0) );
+                    if(lindex < options.Nlayer - 1){
+                        matric_avg = pow( 10, (soil_con->depth[lindex+1] 
+                                         * log10(fabs(matric_pot[lindex]))
+                                         + soil_con->depth[lindex]
+                                         * log10(fabs(matric_pot[lindex+1])))
+                                        / (soil_con->depth[lindex] 
+                                           + soil_con->depth[lindex+1]) );
+
+                        tmp_liq = resid_moist[lindex]
+                          + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
+                          * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/matric_expt[lindex] );
+                    }
                     
                     /** Brooks & Corey relation for hydraulic conductivity **/
                     Kl[lindex] = Fp[lindex] * calc_Q12(Ksat[lindex], tmp_liq,
@@ -388,23 +398,21 @@ runoff(cell_data_struct  *cell,
             
             /** Calculate baseflow **/
             if(lwt == -1){                        
-                dt_baseflow = gw_con->Qb_max * exp(-gw_con->Qb_expt * zwt[fidx]);
+                dt_baseflow = (soil_con->Dsmax / global_param.runoff_steps_per_day) * exp(-gw_con->Qb_expt * zwt[fidx]);
             }else{
-                dt_baseflow = Fp[lwt] * gw_con->Qb_max * exp(-gw_con->Qb_expt * zwt[fidx]);
+                dt_baseflow = Fp[lwt] * (soil_con->Dsmax / global_param.runoff_steps_per_day) * exp(-gw_con->Qb_expt * zwt[fidx]);
             }
             
             /** Calculate recharge **/ 
             // Conductivity in bottom layer
-            tmp_liq = liq[lbot] - evap[lbot][fidx];
             K1 = Kl[lbot];
             
             if (lwt == -1) {          
                 // Conductivity in aquifer (exponentially decrease conductivity below soil column)
                 K2 = K1 * (1 - exp(-gw_con->Ka_expt * (zwt[fidx] - z[lbot]))) / 
-                        gw_con->Ka_expt * (zwt[fidx] - z[lbot]);
+                        (gw_con->Ka_expt * (zwt[fidx] - z[lbot]));
             } else {           
                 // Conductivity in water table layer
-                tmp_liq = liq[lwt] - evap[lwt][fidx];
                 K2 = Kl[lwt];
             }
                 
@@ -412,17 +420,17 @@ runoff(cell_data_struct  *cell,
             Ka = ((z[lbot] - z_node[lbot]) * K1 +
                     (zwt[fidx] - z[lbot]) * K2) /
                     (zwt[fidx] - z_node[lbot]);
-        
+                
             if (lwt == -1) {   
                 // Ignore matric potential of groundwater
                 dt_recharge = -Ka * 
-                        (-zwt[fidx] - (matric_pot[lbot] - z_node[lbot])) / 
-                        (zwt[fidx] - z_node[lbot]);  
+                        (-zwt[fidx] - ((matric_pot[lbot] / MM_PER_M) - z_node[lbot])) / 
+                        ((zwt[fidx] - z_node[lbot]));  
             } else {
                 // Include (saturated) matric potential of groundwater
                 dt_recharge = -Ka * 
-                        ((soil_con->bubble[lbot] - zwt[fidx]) - 
-                        (matric_pot[lbot] - z_node[lbot])) / 
+                        (((soil_con->bubble[lbot] / MM_PER_M) - zwt[fidx]) - 
+                        ((matric_pot[lbot] / MM_PER_M) - z_node[lbot])) / 
                         (zwt[fidx] - z_node[lbot]);
             }
             
