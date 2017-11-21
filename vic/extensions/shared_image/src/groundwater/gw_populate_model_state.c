@@ -3,7 +3,27 @@
 void
 gw_generate_default_state(void)
 {
+    extern domain_struct local_domain;
+    extern veg_con_map_struct *veg_con_map;
+    extern option_struct options;
+    extern gw_con_struct *gw_con;
+    extern ext_all_vars_struct *ext_all_vars;
     
+    size_t i;
+    size_t j;
+    size_t k;
+    
+    for(i=0; i<local_domain.ncells_active; i++){
+        for(j=0; j<veg_con_map[i].nv_active; j++){
+            for(k=0; k<options.SNOW_BAND; k++){
+                ext_all_vars[i].groundwater[j][k].zwt = 5.0;
+                ext_all_vars[i].groundwater[j][k].Wa = 
+                        (GW_REF_DEPTH - ext_all_vars[i].groundwater[j][k].zwt) * 
+                        gw_con[i].Sy * MM_PER_M;
+                ext_all_vars[i].groundwater[j][k].Wt = ext_all_vars[i].groundwater[j][k].Wa;
+            }
+        }
+    }
 }
 
 void
