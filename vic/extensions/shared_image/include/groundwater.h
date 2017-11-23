@@ -5,21 +5,19 @@
 
 #define DRY_RESIST 1.e20
 #define GW_REF_DEPTH 50
+#define GW_DEF_ZWT_INIT 10.0
 
 typedef struct{
     double Qr;
-    double Qb;
     double Wa;
     double Wt;
     double zwt;
 }gw_var_struct;
 
 typedef struct{
-    double Sy;
-    double Qb_max;
-    double Qb_expt;
-    double Ka_expt;
-    double Fp_expt;
+    double Qb_max;          /**< maximum subsurface flow rate (mm/day) */
+    double Sy;              /**< specific yield of aquifer */
+    double Ka_expt;         /**< exponent a in Niu et al. eqn (2007) for conductivity in groundwater aquifer */
 }gw_con_struct;
 
 void initialize_gw_local_structures(void);

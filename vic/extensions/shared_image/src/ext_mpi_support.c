@@ -414,7 +414,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 1;
+    nitems = 2;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -434,6 +434,10 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     
     //bool GROUNDWATER;    
     offsets[i] = offsetof(ext_option_struct, GROUNDWATER);
+    mpi_types[i++] = MPI_C_BOOL;
+    
+    //bool GW_INIT_FROM_FILE;    
+    offsets[i] = offsetof(ext_option_struct, GW_INIT_FROM_FILE);
     mpi_types[i++] = MPI_C_BOOL;
         
     // make sure that the we have the right number of elements

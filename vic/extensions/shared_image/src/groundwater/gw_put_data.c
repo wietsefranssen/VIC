@@ -18,7 +18,6 @@ gw_put_data(void)
             for(k=0; k < options.SNOW_BAND; k++){
                 out_data[i][OUT_GW_ZWT][0] = ext_all_vars[i].groundwater[j][k].zwt;
                 out_data[i][OUT_GW_QR][0] = ext_all_vars[i].groundwater[j][k].Qr;
-                out_data[i][OUT_GW_QB][0] = ext_all_vars[i].groundwater[j][k].Qb;
                 out_data[i][OUT_GW_WA][0] = ext_all_vars[i].groundwater[j][k].Wa;
                 out_data[i][OUT_GW_WT][0] = ext_all_vars[i].groundwater[j][k].Wt;
             }

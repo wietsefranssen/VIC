@@ -55,57 +55,63 @@ runoff(cell_data_struct  *cell,
     double                     tmp_runoff;
     double                     inflow;
     double                     Q01;
-    double                     resid_moist[MAX_LAYERS]; // residual moisture (mm)
-    double                     org_moist[MAX_LAYERS]; // total soil moisture (liquid and frozen) at beginning of this function (mm)
-    double                     avail_liq[MAX_LAYERS][MAX_FROST_AREAS]; // liquid soil moisture available for evap/drainage (mm)
-    double                     liq[MAX_LAYERS]; // current liquid soil moisture (mm)
-    double                     ice[MAX_LAYERS]; // current frozen soil moisture (mm)
-    double                     moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
-    double                     max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
-    double                     Ksat[MAX_LAYERS];
-    double                     Q12[MAX_LAYERS];   
-    double                     tmp_moist;
     double                     tmp_moist_for_runoff[MAX_LAYERS];
-    double                     tmp_liq;
-    double                     dt_inflow;
-    double                     dt_runoff;
-    double                     runoff[MAX_FROST_AREAS];
-    double                     baseflow[MAX_FROST_AREAS];
-    double                     dt_baseflow;
-    double                     evap[MAX_LAYERS][MAX_FROST_AREAS];
-    double                     sum_liq;
-    double                     evap_fraction;
-    double                     evap_sum;
     layer_data_struct         *layer;
     layer_data_struct          tmp_layer;
     unsigned short             runoff_steps_per_dt;
-
-    // Groundwater addition
-    double matric[MAX_LAYERS];
-    double matric_expt[MAX_LAYERS];
-    double Fp[MAX_LAYERS];
-    double z[MAX_LAYERS];
-    double z_node[MAX_LAYERS];
-    double eff_porosity[MAX_LAYERS];
-    double Kl[MAX_LAYERS];
-    double recharge[MAX_FROST_AREAS];
-    double zwt[MAX_FROST_AREAS];
-    double Wa[MAX_FROST_AREAS];    
-    double Wt[MAX_FROST_AREAS];
-    
-    double matric_avg;        
-    double z_tmp;
+        
+    // fluxes
     double dt_recharge;
-    double dt_exchange;
+    double dt_exchange; 
+    double dt_inflow;
+    double dt_runoff;
+    double dt_baseflow; 
+    double evap[MAX_LAYERS][MAX_FROST_AREAS];  
+    
+    double tmp_moist;
+    double tmp_liq;
+    double sum_liq;
+    double evap_sum;
+    double evap_fraction;
+    double avg_matric;        
+    double tmp_z;
     
     int lwt;
     int lbot;           
     double K1, K2, Ka;
     double K_avg;
     double Ws;      
-    
+    double Qb_max;    
     int new_lwt;
     double old_Wa;
+
+    
+    double resid_moist[MAX_LAYERS]; // residual moisture (mm)
+    double org_moist[MAX_LAYERS]; // total soil moisture (liquid and frozen) at beginning of this function (mm)
+    double avail_liq[MAX_LAYERS][MAX_FROST_AREAS]; // liquid soil moisture available for evap/drainage (mm)
+    double liq[MAX_LAYERS]; // current liquid soil moisture (mm)
+    double ice[MAX_LAYERS]; // current frozen soil moisture (mm)
+    double moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
+    double max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
+    double Ksat[MAX_LAYERS];
+    double Q12[MAX_LAYERS];   
+    double matric[MAX_LAYERS];
+    double matric_expt[MAX_LAYERS];
+    double Fp[MAX_LAYERS];
+    double Kl[MAX_LAYERS];    
+    // Groundwater
+    double z[MAX_LAYERS];
+    double z_node[MAX_LAYERS];
+    double eff_porosity[MAX_LAYERS];
+    
+    // Output
+    double runoff[MAX_FROST_AREAS];
+    double baseflow[MAX_FROST_AREAS];
+    // Groundwater
+    double recharge[MAX_FROST_AREAS];    
+    double zwt[MAX_FROST_AREAS];
+    double Wa[MAX_FROST_AREAS];    
+    double Wt[MAX_FROST_AREAS];
     
     /** Set Residual Moisture **/
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
@@ -132,7 +138,6 @@ runoff(cell_data_struct  *cell,
         Wt[fidx] = gw_var->Wt;
     }
     
-    gw_var->Qb = 0.0;
     gw_var->Qr = 0.0;
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;   
@@ -180,10 +185,11 @@ runoff(cell_data_struct  *cell,
     for (fidx = 0; fidx < (int)options.Nfrost; fidx++) {
         /** ppt = amount of liquid water coming to the surface **/
         inflow = ppt;
-
+        
         /**************************************************
            Initialize Frostarea Variables
         **************************************************/
+        tmp_z = 0.0;
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
             Ksat[lindex] = soil_con->Ksat[lindex] /
                            global_param.runoff_steps_per_day;
@@ -197,22 +203,21 @@ runoff(cell_data_struct  *cell,
             /** Set Layer Maximum Moisture Content **/
             max_moist[lindex] = soil_con->max_moist[lindex];
                         
-            /** Set fraction of permeable/non-frozen area (Nui & Yang 2006)**/
+            /** Set fraction of permeable/non-frozen area (Niu & Yang 2006)**/
             Fp[lindex] = 1 - (exp(-soil_con->Fp_expt * 
                     (1 - ice[lindex] / max_moist[lindex])) - 
                     exp(-soil_con->Fp_expt));
 
             /** Set Matric Potential Exponent (Burdine model 1953) **/
-            matric_expt[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
+            matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
             
             /** Set Depth of Layers and Nodes **/
-            z_tmp += soil_con->depth[lindex];
-            z[lindex] = z_tmp;
-            z_node[lindex] = z_tmp - 0.5 * soil_con->depth[lindex];
+            tmp_z += soil_con->depth[lindex];
+            z[lindex] = tmp_z;
+            z_node[lindex] = tmp_z - 0.5 * soil_con->depth[lindex];
 
             /** Set Effective Porosity **/
-            eff_porosity[lindex] = ((soil_con->depth[lindex] * 
-                    soil_con->porosity[lindex]) - ice[lindex]) /
+            eff_porosity[lindex] = (max_moist[lindex] - ice[lindex]) / 
                     soil_con->depth[lindex];
         }
 
@@ -230,24 +235,7 @@ runoff(cell_data_struct  *cell,
            Compute Flow Between Soil Layers ()
         **************************************************/
         dt_inflow = inflow / (double) runoff_steps_per_dt;
-        dt_runoff = runoff[fidx] / (double) runoff_steps_per_dt;            
-            
-        /**************************************************
-         Check WB
-        **************************************************/ 
-        double storage_gw_wa_start = 0.0;
-        double storage_gw_wt_start = 0.0;
-        double storage_ly_start = 0.0;
-        double inflow_wb = 0.0;      
-        double evap_wb = 0.0;
-        for(lindex = 0; lindex < options.Nlayer; lindex ++){
-            storage_ly_start += liq[lindex];
-            evap_wb += evap[lindex][fidx];
-        }
-        storage_gw_wa_start += Wa[fidx];  
-        storage_gw_wt_start += Wt[fidx];            
-        inflow_wb += inflow;
-        
+        dt_runoff = runoff[fidx] / (double) runoff_steps_per_dt;
 
         for (time_step = 0; time_step < runoff_steps_per_dt; time_step++) {            
             /**************************************************
@@ -278,7 +266,7 @@ runoff(cell_data_struct  *cell,
                 
                 if (tmp_liq > resid_moist[lindex]) {
                     if(lindex < options.Nlayer - 1){
-                        matric_avg = pow( 10, (soil_con->depth[lindex+1] 
+                        avg_matric = pow( 10, (soil_con->depth[lindex+1] 
                                          * log10(fabs(matric[lindex]))
                                          + soil_con->depth[lindex]
                                          * log10(fabs(matric[lindex+1])))
@@ -287,14 +275,14 @@ runoff(cell_data_struct  *cell,
 
                         tmp_liq = resid_moist[lindex]
                           + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
-                          * pow( ( matric_avg / soil_con->bubble[lindex] ), -1/matric_expt[lindex] );
+                          * pow( ( avg_matric / soil_con->bubble[lindex] ), -1/matric_expt[lindex] );
                     }
                     
                     /** Brooks & Corey relation for hydraulic conductivity **/
                     Kl[lindex] = Fp[lindex] * calc_Q12(Ksat[lindex], tmp_liq,
                                                     resid_moist[lindex],
                                                     soil_con->max_moist[lindex],
-                                                    soil_con->expt[lindex]);
+                                                    soil_con->K_expt[lindex]);
                 }
                 else {
                     Kl[lindex] = 0.;
@@ -393,12 +381,13 @@ runoff(cell_data_struct  *cell,
                     break;
                 }
             }
-
-            /** Calculate baseflow **/
+            
+            /** Calculate baseflow **/     
+            Qb_max = gw_con->Qb_max / global_param.runoff_steps_per_day;
             if(lwt == -1){                        
-                dt_baseflow = (soil_con->Dsmax / global_param.runoff_steps_per_day) * exp(-gw_con->Qb_expt * zwt[fidx]);
+                dt_baseflow = Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
             }else{
-                dt_baseflow = Fp[lwt] * (soil_con->Dsmax / global_param.runoff_steps_per_day) * exp(-gw_con->Qb_expt * zwt[fidx]);
+                dt_baseflow = Fp[lwt] * Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
             }
 
             /** Calculate recharge **/ 
@@ -418,7 +407,7 @@ runoff(cell_data_struct  *cell,
                 dt_recharge = Q12[lbot];
             }
             
-            /** Calculate soil moisture change **/ 
+            /** Subtract baseflow or recharge from drainage **/ 
             if(lwt == -1){
                 Q12[options.Nlayer - 1] = dt_recharge;
             }else{
@@ -472,6 +461,7 @@ runoff(cell_data_struct  *cell,
             /**************************************************
                Solve for Current Soil Layer Moisture, and
                Check Versus Maximum and Minimum Moisture Contents.
+               Bottom layer only!
             **************************************************/             
             /** Update soil layer moisture content **/
             lindex = options.Nlayer - 1; 
@@ -529,11 +519,9 @@ runoff(cell_data_struct  *cell,
             
             /**************************************************
                Compute Groundwater
-            **************************************************/ 
-            old_Wt = Wt[fidx];
-            old_Wa = Wa[fidx];
-            
+            **************************************************/          
             Wt[fidx] += dt_recharge - dt_baseflow;
+            old_Wa = Wa[fidx];  
 
             if(Wt[fidx] / gw_con->Sy / MM_PER_M < GW_REF_DEPTH - z[options.Nlayer - 1]){
                 Wa[fidx] = Wt[fidx];
@@ -630,7 +618,6 @@ runoff(cell_data_struct  *cell,
         cell->baseflow += baseflow[fidx] * frost_fract[fidx];
         
         gw_var->Qr += recharge[fidx] * frost_fract[fidx];
-        gw_var->Qb += baseflow[fidx] * frost_fract[fidx];
         gw_var->zwt += zwt[fidx] * frost_fract[fidx];
         gw_var->Wa += Wa[fidx] * frost_fract[fidx];
         gw_var->Wt += Wt[fidx] * frost_fract[fidx];
@@ -653,7 +640,7 @@ runoff(cell_data_struct  *cell,
                                                         soil_con->Zsum_node,
                                                         energy->T,
                                                         soil_con->max_moist_node,
-                                                        soil_con->expt_node,
+                                                        soil_con->K_expt_node,
                                                         soil_con->bubble_node,
                                                         moist, soil_con->depth,
                                                         soil_con->soil_dens_min,

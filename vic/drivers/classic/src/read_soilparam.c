@@ -176,10 +176,10 @@ read_soilparam(FILE            *soilparam,
                 log_err("Can't find values for EXPT for layer %zu in "
                         "soil file", layer);
             }
-            sscanf(token, "%lf", &(temp->expt)[layer]);
-            if (temp->expt[layer] < 3.0) {
+            sscanf(token, "%lf", &(temp->K_expt)[layer]);
+            if (temp->K_expt[layer] < 3.0) {
                 log_err("Exponent in layer %zu is %f < 3.0; This must be "
-                        "> 3.0", layer, temp->expt[layer]);
+                        "> 3.0", layer, temp->K_expt[layer]);
             }
         }
 
@@ -884,7 +884,7 @@ read_soilparam(FILE            *soilparam,
         /* Individual layers */
         tmp_depth = 0;
         for (layer = 0; layer < options.Nlayer; layer++) {
-            b = 0.5 * (temp->expt[layer] - 3);
+            b = 0.5 * (temp->K_expt[layer] - 3);
             bubble = temp->bubble[layer];
             tmp_resid_moist = temp->resid_moist[layer] * temp->depth[layer] *
                               MM_PER_M;                                     // in mm
@@ -923,7 +923,7 @@ read_soilparam(FILE            *soilparam,
         tmp_max_moist = 0;
         tmp_resid_moist = 0;
         for (layer = 0; layer < options.Nlayer - 1; layer++) {
-            b += 0.5 * (temp->expt[layer] - 3) * temp->depth[layer];
+            b += 0.5 * (temp->K_expt[layer] - 3) * temp->depth[layer];
             bubble += temp->bubble[layer] * temp->depth[layer];
             tmp_max_moist += temp->max_moist[layer]; // total max_moist
             tmp_resid_moist += temp->resid_moist[layer] * temp->depth[layer] *
@@ -983,7 +983,7 @@ read_soilparam(FILE            *soilparam,
                 w_avg =
                     (tmp_depth2 * CM_PER_M + temp->depth[layer] * CM_PER_M -
                      zwt_prime) / (temp->depth[layer] * CM_PER_M);
-                b = 0.5 * (temp->expt[layer] - 3);
+                b = 0.5 * (temp->K_expt[layer] - 3);
                 bubble = temp->bubble[layer];
                 tmp_resid_moist = temp->resid_moist[layer] *
                                   temp->depth[layer] * MM_PER_M;
@@ -1004,7 +1004,7 @@ read_soilparam(FILE            *soilparam,
                 while (layer > 0) {
                     layer--;
                     tmp_depth2 -= temp->depth[layer];
-                    b = 0.5 * (temp->expt[layer] - 3);
+                    b = 0.5 * (temp->K_expt[layer] - 3);
                     bubble = temp->bubble[layer];
                     tmp_resid_moist = temp->resid_moist[layer] *
                                       temp->depth[layer] * MM_PER_M;

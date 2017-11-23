@@ -572,8 +572,8 @@ typedef struct {
     double dp;                        /**< soil thermal damping depth (m) */
     double dz_node[MAX_NODES];        /**< thermal node thickness (m) */
     double Zsum_node[MAX_NODES];      /**< thermal node depth (m) */
-    double expt[MAX_LAYERS];          /**< layer-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
-    double expt_node[MAX_NODES];      /**< node-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
+    double K_expt[MAX_LAYERS];        /**< layer-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
+    double K_expt_node[MAX_NODES];      /**< node-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
     double frost_fract[MAX_FROST_AREAS]; /**< spatially distributed frost coverage fractions */
     double frost_slope;               /**< slope of frost distribution */
     double gamma[MAX_NODES];          /**< thermal solution constant */
@@ -609,7 +609,7 @@ typedef struct {
     double aspect;
     double ehoriz;
     double whoriz;
-    double Fp_expt;
+    double Fp_expt;                     /**< exponent a in Niu & Yang's eqn (2006) for conductivity in frozen soils */
 } soil_con_struct;
 
 /******************************************************************************

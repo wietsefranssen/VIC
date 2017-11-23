@@ -23,9 +23,9 @@
 
 typedef struct {
     char Qb_max[MAXSTRING];
-    char Qb_expt[MAXSTRING];
     char Ka_expt[MAXSTRING];
-    char Sa[MAXSTRING];
+    char Sy[MAXSTRING];
+    char zwt_init[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {

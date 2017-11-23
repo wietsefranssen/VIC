@@ -27,6 +27,8 @@ typedef struct{
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
     bool GROUNDWATER;
+    
+    bool GW_INIT_FROM_FILE;
 }ext_option_struct;
 
 typedef struct{

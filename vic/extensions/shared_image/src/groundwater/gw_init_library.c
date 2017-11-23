@@ -28,7 +28,6 @@ void
 initialize_gw_var(gw_var_struct *gw_var)
 {
     gw_var->Qr = 0.0;
-    gw_var->Qb = 0.0;
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;
     gw_var->Wt = 0.0;
@@ -39,7 +38,6 @@ initialize_gw_con(gw_con_struct *gw_con)
 {
     gw_con->Ka_expt = 0.0;
     gw_con->Qb_max = 0.0;
-    gw_con->Qb_expt = 0.0;
     gw_con->Sy = 0.0;
 }
 
@@ -51,10 +49,10 @@ initialize_gw_parameters(ext_parameters_struct *parameters)
 void
 initialize_gw_info(ext_info_struct *info)
 {
-    strcpy(info->Ka_expt, MISSING_S);
-    strcpy(info->Qb_max, MISSING_S);
-    strcpy(info->Qb_expt, MISSING_S);
-    strcpy(info->Sa, MISSING_S);
+    strcpy(info->Ka_expt, "Ka_expt");
+    strcpy(info->Qb_max, "Qb_max");
+    strcpy(info->zwt_init, "zwt_init");
+    strcpy(info->Sy, "Sy");
 }
 
 void
@@ -67,4 +65,6 @@ void
 initialize_gw_options(ext_option_struct *options)
 {
     options->GROUNDWATER = false;
+    
+    options->GW_INIT_FROM_FILE = false;
 }

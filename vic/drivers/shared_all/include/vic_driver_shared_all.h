@@ -289,7 +289,6 @@ enum
     // Extension variables
     OUT_GW_ZWT,
     OUT_GW_QR,
-    OUT_GW_QB,
     OUT_GW_WA,
     OUT_GW_WT,
     

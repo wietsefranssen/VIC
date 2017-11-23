@@ -21,14 +21,6 @@ gw_set_output_meta_data_info(void)
     strcpy(out_metadata[OUT_GW_QR].description,
            "groundwater recharge");
     
-    strcpy(out_metadata[OUT_GW_QB].varname, "OUT_GW_QB");
-    strcpy(out_metadata[OUT_GW_QB].long_name, "groundwater baseflow");
-    strcpy(out_metadata[OUT_GW_QB].standard_name,
-           "groundwater baseflow");
-    strcpy(out_metadata[OUT_GW_QB].units, "mm");
-    strcpy(out_metadata[OUT_GW_QB].description,
-           "groundwater baseflow");
-    
     strcpy(out_metadata[OUT_GW_WA].varname, "OUT_GW_WA");
     strcpy(out_metadata[OUT_GW_WA].long_name, "Reference aquifer storage");
     strcpy(out_metadata[OUT_GW_WA].standard_name,
@@ -47,7 +39,6 @@ gw_set_output_meta_data_info(void)
         
     out_metadata[OUT_GW_ZWT].nelem = 1;
     out_metadata[OUT_GW_QR].nelem = 1;
-    out_metadata[OUT_GW_QB].nelem = 1;
     out_metadata[OUT_GW_WA].nelem = 1;
     out_metadata[OUT_GW_WT].nelem = 1;
 }

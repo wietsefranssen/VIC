@@ -18,8 +18,15 @@ gw_get_global_parameters(char *cmdstr)
     else if (strcasecmp("GROUNDWATER_PARAMETERS", optstr) == 0) {
         sscanf(cmdstr, "%*s %s", ext_filenames.groundwater.nc_filename);
     }
-    else if (strcasecmp("GROUNDWATER_TYPE", optstr) == 0) {
-        get_groundwater_type(cmdstr);
+    else if (strcasecmp("GROUNDWATER_INIT", optstr) == 0) {
+        sscanf(cmdstr, "%*s %s", flgstr);
+        if(strcasecmp("DEFAULT", flgstr) == 0){
+            ext_options.GW_INIT_FROM_FILE = false;
+        }else if(strcasecmp("FROM_FILE", flgstr) == 0){
+            ext_options.GW_INIT_FROM_FILE = true;
+        }else{
+            log_err("GROUNDWATER_INIT should be DEFAULT or FROM_FILE");
+        }
     }
     
     else {
@@ -32,21 +39,7 @@ gw_get_global_parameters(char *cmdstr)
 void
 get_groundwater_type(char *cmdstr)
 {
-//    extern ext_filenames_struct ext_filenames;
-//    
-//    char                 optstr[MAXSTRING];
-//    char                 ncvarname[MAXSTRING];
-//
-//    strcpy(ncvarname, MISSING_S);
-//
-//    sscanf(cmdstr, "%*s %s %s", optstr, ncvarname);
-//    
-//    if (strcasecmp("ZWTI", optstr) == 0) {
-//        
-//    }
-//    else {
-//        log_err("Unrecognized routing variable: %s %s", optstr, ncvarname);
-//    }
+    
 }
 
 bool
