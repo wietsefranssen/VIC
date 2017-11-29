@@ -63,6 +63,18 @@ gw_generate_default_state(void)
             }
         }
         
+        for (j = 0; j < veg_con_map[i].nv_active; j++) {
+            d4start[0] = j;
+            for (k = 0; k < options.SNOW_BAND; k++) {
+                d4start[1] = k;
+                get_scatter_nc_field_double(&(ext_filenames.groundwater),
+                        ext_filenames.info.Ws_init, d4start, d4count, dvar);
+                for (i = 0; i < local_domain.ncells_active; i++) {
+                    ext_all_vars[i].groundwater[j][k].Ws = (double) dvar[i];
+                }
+            }
+        }
+        
         // close parameter file
         status = nc_close(ext_filenames.groundwater.nc_id);
         check_nc_status(status, "Error closing %s",

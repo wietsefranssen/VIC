@@ -31,6 +31,7 @@ initialize_gw_var(gw_var_struct *gw_var)
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;
     gw_var->Wt = 0.0;
+    gw_var->Ws = 0.0;
 }
 
 void
@@ -52,6 +53,7 @@ initialize_gw_info(ext_info_struct *info)
     strcpy(info->Ka_expt, "Ka_expt");
     strcpy(info->Qb_max, "Qb_max");
     strcpy(info->zwt_init, "zwt_init");
+    strcpy(info->Ws_init, "Ws_init");
     strcpy(info->Sy, "Sy");
 }
 

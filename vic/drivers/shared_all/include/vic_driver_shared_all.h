@@ -291,6 +291,7 @@ enum
     OUT_GW_QR,
     OUT_GW_WA,
     OUT_GW_WT,
+    OUT_GW_WS,
     
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */

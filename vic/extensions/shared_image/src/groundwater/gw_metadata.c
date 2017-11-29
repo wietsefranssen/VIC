@@ -37,10 +37,19 @@ gw_set_output_meta_data_info(void)
     strcpy(out_metadata[OUT_GW_WT].description,
            "Reference groundwater storage (aquifer and soil layers combined)");
         
+    strcpy(out_metadata[OUT_GW_WS].varname, "OUT_GW_WS");
+    strcpy(out_metadata[OUT_GW_WS].long_name, "Water storage");
+    strcpy(out_metadata[OUT_GW_WS].standard_name,
+           "Water storage");
+    strcpy(out_metadata[OUT_GW_WS].units, "mm");
+    strcpy(out_metadata[OUT_GW_WS].description,
+           "Water storage (between soil column and water table)");
+        
     out_metadata[OUT_GW_ZWT].nelem = 1;
     out_metadata[OUT_GW_QR].nelem = 1;
     out_metadata[OUT_GW_WA].nelem = 1;
     out_metadata[OUT_GW_WT].nelem = 1;
+    out_metadata[OUT_GW_WS].nelem = 1;
 }
 
 void

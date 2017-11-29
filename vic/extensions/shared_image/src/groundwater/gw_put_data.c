@@ -20,6 +20,7 @@ gw_put_data(void)
                 out_data[i][OUT_GW_QR][0] = ext_all_vars[i].groundwater[j][k].Qr;
                 out_data[i][OUT_GW_WA][0] = ext_all_vars[i].groundwater[j][k].Wa;
                 out_data[i][OUT_GW_WT][0] = ext_all_vars[i].groundwater[j][k].Wt;
+                out_data[i][OUT_GW_WS][0] = ext_all_vars[i].groundwater[j][k].Ws;
             }
         }
     }

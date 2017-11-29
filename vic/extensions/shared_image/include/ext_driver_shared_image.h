@@ -26,6 +26,7 @@ typedef struct {
     char Ka_expt[MAXSTRING];
     char Sy[MAXSTRING];
     char zwt_init[MAXSTRING];
+    char Ws_init[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
