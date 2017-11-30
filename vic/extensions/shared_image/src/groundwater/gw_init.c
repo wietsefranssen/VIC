@@ -7,6 +7,7 @@ gw_init(void)
     extern domain_struct       global_domain;
     extern gw_con_struct      *gw_con;
     extern ext_filenames_struct ext_filenames;
+    extern int mpi_rank;
     
     double                    *dvar = NULL;
     
@@ -27,10 +28,12 @@ gw_init(void)
     d2count[1] = global_domain.n_nx;
     
     // open parameter file
-    status = nc_open(ext_filenames.groundwater.nc_filename, NC_NOWRITE,
-                     &(ext_filenames.groundwater.nc_id));
-    check_nc_status(status, "Error opening %s",
-                    ext_filenames.groundwater.nc_filename);
+    if(mpi_rank == VIC_MPI_ROOT){
+        status = nc_open(ext_filenames.groundwater.nc_filename, NC_NOWRITE,
+                         &(ext_filenames.groundwater.nc_id));
+        check_nc_status(status, "Error opening %s",
+                        ext_filenames.groundwater.nc_filename);
+    }
     
     get_scatter_nc_field_double(&(ext_filenames.groundwater), 
             ext_filenames.info.Qb_max, d2start, d2count, dvar);
@@ -51,9 +54,11 @@ gw_init(void)
     }
     
     // close parameter file
-    status = nc_close(ext_filenames.groundwater.nc_id);
-    check_nc_status(status, "Error closing %s",
-                    ext_filenames.groundwater.nc_filename);
-    
+    if(mpi_rank == VIC_MPI_ROOT){
+        status = nc_close(ext_filenames.groundwater.nc_id);
+        check_nc_status(status, "Error closing %s",
+                        ext_filenames.groundwater.nc_filename);
+    }
+        
     free(dvar);   
 }
