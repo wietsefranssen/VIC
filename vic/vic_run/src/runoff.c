@@ -55,7 +55,6 @@ runoff(cell_data_struct  *cell,
     double                     tmp_runoff;
     double                     inflow;
     double                     Q01;
-    double                     Q12s;
     double                     tmp_moist_for_runoff[MAX_LAYERS];
     layer_data_struct         *layer;
     layer_data_struct          tmp_layer;
@@ -74,15 +73,15 @@ runoff(cell_data_struct  *cell,
     double sum_liq;
     double evap_sum;
     double evap_fraction;
-    double avg_matric;        
+    double avg_matric; 
+    double avg_K;   
+    double avg_Fp;     
     double tmp_z;
     double tmp_Wt;
-    double storage_yield;
+    double rise_frac;
     
     int lwt;
-    int lbot;           
-    double K1, K2, Ka;
-    double K_avg;      
+    int lbot;     
     double Qb_max;    
     int new_lwt;
     double old_Wa;
@@ -96,7 +95,8 @@ runoff(cell_data_struct  *cell,
     double moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
     double max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
     double Ksat[MAX_LAYERS];
-    double Q12[MAX_LAYERS];   
+    double Q12[MAX_LAYERS];  
+    double Qb[MAX_LAYERS];   
     double matric[MAX_LAYERS];
     double matric_expt[MAX_LAYERS];
     double Fp[MAX_LAYERS];
@@ -188,11 +188,9 @@ runoff(cell_data_struct  *cell,
     }
 
     for (fidx = 0; fidx < (int)options.Nfrost; fidx++) {
-        /** ppt = amount of liquid water coming to the surface **/
-        inflow = ppt;
         
         /**************************************************
-           Initialize Frostarea Variables
+           Initialize Frost Area Variables
         **************************************************/
         tmp_z = 0.0;
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
@@ -223,13 +221,14 @@ runoff(cell_data_struct  *cell,
 
             /** Set Effective Porosity **/
             eff_porosity[lindex] = (max_moist[lindex] - ice[lindex]) / 
-                    soil_con->depth[lindex];
+                    (soil_con->depth[lindex] * MM_PER_M);
         }
 
         /******************************************************
            Runoff Based on Soil Moisture Level of Upper Layers
         ******************************************************/
-
+        /** ppt = amount of liquid water coming to the surface **/
+        inflow = ppt;
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
             tmp_moist_for_runoff[lindex] = (liq[lindex] + ice[lindex]);
         }
@@ -237,18 +236,22 @@ runoff(cell_data_struct  *cell,
                                 &(runoff[fidx]));
 
         /**************************************************
-           Compute Flow Between Soil Layers ()
+           Initialize Frost Area Variables
         **************************************************/
         dt_inflow = inflow / (double) runoff_steps_per_dt;
         dt_runoff = runoff[fidx] / (double) runoff_steps_per_dt;
+        Qb_max = gw_con->Qb_max / global_param.runoff_steps_per_day;
 
-        for (time_step = 0; time_step < runoff_steps_per_dt; time_step++) {            
+        /**************************************************
+           Compute Flow Between Soil Layers
+        **************************************************/
+        for (time_step = 0; time_step < runoff_steps_per_dt; time_step++) { 
+            
             /**************************************************
                Initialize Timestep Variables
-            **************************************************/
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {    
-                
-                // Set matric potential (based on moisture content and soil texture)
+            **************************************************/            
+            // Set matric potential (based on moisture content and soil texture)
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {
                 tmp_liq = liq[lindex] - evap[lindex][fidx];
                 if(tmp_liq > resid_moist[lindex]){
                     
@@ -260,13 +263,27 @@ runoff(cell_data_struct  *cell,
                 }else{
                     matric[lindex] = DRY_RESIST;
                 }
+            }      
+            
+            // Find layer with phreatic water level
+            lwt = -1;
+            lbot = options.Nlayer - 1;
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {
+                if(zwt[fidx] <= z[lindex]){
+                    lwt=lindex;
+                    if(lindex == 0){
+                        lbot = lwt;
+                    }else{
+                        lbot = lwt - 1;
+                    }
+                    break;
+                }
             }
             
             /*************************************
                Compute Hydraulic Conductivity of Sublayers
             *************************************/
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {
-                
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {                
                 tmp_liq = liq[lindex] - evap[lindex][fidx];
                 
                 if (tmp_liq > resid_moist[lindex]) {
@@ -302,17 +319,88 @@ runoff(cell_data_struct  *cell,
             }
             
             /**************************************************
+               Compute Baseflow and Recharge
+            **************************************************/
+            if(lwt == -1){  
+                avg_K = 0.0;
+                // Conductivity in bottom layer   
+                avg_K += Kl[lbot] * 
+                        (z[lbot] - z_node[lbot]);
+                // Conductivity in aquifer (exponentially decrease conductivity below soil column)
+                avg_K += Kl[lbot] * 
+                        (1 - exp(-gw_con->Ka_expt * (zwt[fidx] - z[lbot]))) / 
+                        (gw_con->Ka_expt * (zwt[fidx] - z[lbot])) *
+                        (zwt[fidx] - z[lbot]);
+                // Depth weighted average of conductivity
+                avg_K /= (zwt[fidx] - z_node[lbot]);
+
+                dt_recharge = avg_K;                      
+                dt_baseflow = Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
+            }else{                
+                avg_Fp = 0.0;
+                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
+                    if((int)lindex == lwt){
+                        // Frozen conductivity in water table layer  
+                        avg_Fp += Fp[lindex] * 
+                                (z[lindex] - zwt[fidx]);
+                    }else{
+                        // Frozen conductivity below water table layer 
+                        avg_Fp += Fp[lindex] * 
+                                soil_con->depth[lindex];
+                    }
+                }
+                // Depth weighted average frozen conductivity
+                avg_Fp /= (z[options.Nlayer - 1] - zwt[fidx]);
+                
+                dt_recharge = Q12[lbot]; 
+                dt_baseflow = avg_Fp * Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
+            }
+            
+            /**************************************************
+               Compute Baseflow from Sublayers
+            **************************************************/              
+            for(lindex = 0; lindex < options.Nlayer; lindex ++){
+                Qb[lindex] = 0.0;
+            }   
+            
+            if(lwt != -1){                     
+                avg_K = 0.0;
+                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
+                    if((int)lindex == lwt){
+                        avg_K += (z[lindex] - zwt[fidx]) * Kl[lindex];
+                    }else{
+                        avg_K += soil_con->depth[lindex] * Kl[lindex];
+                    }
+                }
+                
+                /** Update soil layer moisture content **/
+                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
+                    if((int)lindex == lwt){
+                        Qb[lindex] += dt_baseflow * 
+                                (((z[lindex] - zwt[fidx]) * Kl[lindex]) / 
+                                avg_K);
+                    }else{
+                        Qb[lindex] += dt_baseflow * 
+                                ((soil_con->depth[lindex] * Kl[lindex]) / 
+                                avg_K);
+                    }
+                }
+                
+                /** No drainage if water table is in soil column **/  
+                Q12[options.Nlayer - 1] = 0.0; 
+            }    
+            
+            /**************************************************
                Solve for Current Soil Layer Moisture, and
                Check Versus Maximum and Minimum Moisture Contents.
             **************************************************/
+                        
             Q01 = dt_inflow - dt_runoff;
             for (lindex = 0; lindex < options.Nlayer; lindex++) {
 
                 /** Update soil layer moisture content **/
                 liq[lindex] = liq[lindex] + Q01 -
-                              (Q12[lindex] + evap[lindex][fidx]);   
-
-                /* transport moisture for all sublayers **/
+                              (Q12[lindex] + evap[lindex][fidx] + Qb[lindex]);   
                 
                 /** Verify that soil layer moisture is less than maximum **/
                 tmp_moist = 0.;
@@ -370,135 +458,64 @@ runoff(cell_data_struct  *cell,
             } /* end loop through soil layers */
             
             /**************************************************
-               Compute Baseflow and Recharge
-            **************************************************/      
-            // Find layer with phreatic water level
-            lwt = -1;
-            lbot = options.Nlayer - 1;
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {
-                if(zwt[fidx] <= z[lindex]){
-                    lwt=lindex;
-                    if(lindex == 0){
-                        lbot = lwt;
-                    }else{
-                        lbot = lwt - 1;
-                    }
-                    break;
-                }
-            }
-            
-            /** Calculate baseflow **/     
-            Qb_max = gw_con->Qb_max / global_param.runoff_steps_per_day;
-            if(lwt == -1){                        
-                dt_baseflow = Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
-            }else{
-                dt_baseflow = Fp[lwt] * Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
-            }
-
-            /** Calculate recharge **/ 
-            if (lwt == -1) {
-                // Conductivity in bottom layer   
-                K1 = Kl[lbot];
-                // Conductivity in aquifer (exponentially decrease conductivity below soil column)
-                K2 = K1 * (1 - exp(-gw_con->Ka_expt * (zwt[fidx] - z[lbot]))) / 
-                        (gw_con->Ka_expt * (zwt[fidx] - z[lbot]));
-                // Depth weighted average of conductivity
-                Ka = ((z[lbot] - z_node[lbot]) * K1 +
-                        (zwt[fidx] - z[lbot]) * K2) /
-                        (zwt[fidx] - z_node[lbot]);
-
-                dt_recharge = Ka;
-            } else {
-                dt_recharge = Q12[lbot];
-            }
-                        
-            /**************************************************
-               Solve for Current Soil Layer Moisture, and
-               Check Versus Minimum Moisture Contents.
+               Compute Groundwater
             **************************************************/
-            /* Subtract baseflow or recharge */ 
+            /** Update storage content **/
             if(lwt == -1){
-//                if((dt_recharge - dt_baseflow) > 0 && Ws[fidx] > 0){
-//                    storage_yield = Ws[fidx] / (zwt[fidx] - z[options.Nlayer - 1]);
-//                    dt_recharge += ((dt_recharge - dt_baseflow) / (MM_PER_M * gw_con->Sy)) * ((1 - pow(storage_yield,100000))/(1 - storage_yield));
-//                }
+                if((dt_recharge - dt_baseflow) > 0 && Ws[fidx] > 0){
+                    rise_frac = ((dt_recharge - dt_baseflow) / gw_con->Sy) / 
+                    ((zwt[fidx] - z[options.Nlayer - 1]) * MM_PER_M);
+                    if(rise_frac > 1){
+                        rise_frac = 1.0;
+                    }
+                    dt_recharge += rise_frac * Ws[fidx];//                    
+                }
                 
-                Ws[fidx] += Q12[lbot] - dt_recharge;
+                /** Update storage moisture content **/
+                Ws[fidx] += Q12[options.Nlayer - 1] - dt_recharge;
                                 
                 /** Verify that moisture is greater than minimum **/
                 if (Ws[fidx] < 0) {
                     /** liquid cannot fall below 0 **/
-                    /** Subtract from groundwater **/
                     dt_recharge += Ws[fidx];
                     Ws[fidx] = 0;
                 }
-            }else{                
-                K_avg = 0.0;
-                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
-                    if((int)lindex == lwt){
-                        K_avg += (z[lindex] - zwt[fidx]) * Kl[lindex];
-                    }else{
-                        K_avg += soil_con->depth[lindex] * Kl[lindex];
-                    }
-                }
-                
-                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
-                    if((int)lindex == lwt){
-                        liq[lindex] -= dt_baseflow * 
-                                (((z[lindex] - zwt[fidx]) * Kl[lindex]) / 
-                                K_avg);
-                    }else{
-                        liq[lindex] -= dt_baseflow * 
-                                ((soil_con->depth[lindex] * Kl[lindex]) / 
-                                K_avg);
-                    }
-                }
-                            
-                /** Verify that soil layer moisture is greater than minimum **/
-                Q01 = 0;            
-                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
-
-                    liq[lindex] += Q01; 
-                    
-                    if (liq[lindex] < 0) {
-                        /** liquid cannot fall below 0 **/
-                        Q01 += liq[lindex];
-                        liq[lindex] = 0;
-                    }               
-                    if ((liq[lindex] + ice[lindex]) < resid_moist[lindex]) {
-                        /** moisture cannot fall below minimum **/
-                        Q01 += liq[lindex] - (resid_moist[lindex] - ice[lindex]);
-                        liq[lindex] = resid_moist[lindex] - ice[lindex];
-                    } else {
-                        Q01 = 0.0;
-                    }
-                }
-                dt_recharge -= Q01;
-            }               
+            } else {
+                dt_recharge += Q12[options.Nlayer - 1];
+            }  
             
-            /**************************************************
-               Compute Groundwater
-            **************************************************/
+            /** Update groundwater content **/
             Wt[fidx] += dt_recharge - dt_baseflow;
-            old_Wa = Wa[fidx];  
-
+            old_Wa = Wa[fidx];
+            
+            /** Calculate groundwater level **/
             if(Wt[fidx] / gw_con->Sy / MM_PER_M < GW_REF_DEPTH - z[options.Nlayer - 1]){
+                // New water level is below soil column
                 Wa[fidx] = Wt[fidx];
-                zwt[fidx] = GW_REF_DEPTH
-                        - Wt[fidx] / gw_con->Sy / MM_PER_M;
+                
+                zwt[fidx] = GW_REF_DEPTH - Wt[fidx] / gw_con->Sy / MM_PER_M;
                 new_lwt = -1;
             }else{
+                // New water level is in soil column
                 Wa[fidx] = (GW_REF_DEPTH - z[options.Nlayer - 1]) * gw_con->Sy * MM_PER_M;
+                
                 tmp_Wt = (Wt[fidx] - Wa[fidx]) / MM_PER_M;
                 for(lindex = options.Nlayer -1; (int)lindex >=0; lindex --){
                     if(tmp_Wt < soil_con->depth[lindex] * eff_porosity[lindex]){
                         zwt[fidx] = z[lindex] - tmp_Wt / eff_porosity[lindex];  
+                        tmp_Wt = 0.0;
                         new_lwt = lindex;
                         break;
                     }
                     tmp_Wt -= soil_con->depth[lindex] * eff_porosity[lindex];
-                }               
-            }   
+                }
+                
+                // Remove excess water (above soil column)
+                if(tmp_Wt > 0){
+                    Wt[fidx] -= tmp_Wt * MM_PER_M;
+                    new_lwt = 0;
+                }
+            }
             
             /* Handle cases where water table crosses soil column */
             // Add water to bottom layer to compensate for 
@@ -512,6 +529,8 @@ runoff(cell_data_struct  *cell,
                     }else if(new_lwt == -1){
                         dt_exchange = old_Wa - Wt[fidx];
                     }
+                    
+                    /** Update storage moisture content **/
                     lindex = options.Nlayer -1;
                     liq[lindex] += dt_exchange;
                     
