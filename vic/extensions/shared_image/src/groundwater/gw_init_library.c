@@ -43,11 +43,6 @@ initialize_gw_con(gw_con_struct *gw_con)
 }
 
 void
-initialize_gw_parameters(ext_parameters_struct *parameters)
-{
-}
-
-void
 initialize_gw_info(ext_info_struct *info)
 {
     strcpy(info->Ka_expt, "Ka_expt");

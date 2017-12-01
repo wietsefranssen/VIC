@@ -51,7 +51,7 @@ initialize_ext_info(ext_info_struct *info){
 void
 initialize_ext_parameters(ext_parameters_struct *parameters)
 {          
-    initialize_gw_parameters(parameters);
+    
 }
 
 /******************************************************************************

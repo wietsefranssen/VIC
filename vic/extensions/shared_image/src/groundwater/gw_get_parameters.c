@@ -37,32 +37,11 @@ gw_get_global_parameters(char *cmdstr)
 }
 
 void
-get_groundwater_type(char *cmdstr)
-{
-    
-}
-
-bool
-gw_get_parameters(char *cmdstr)
-{        
-    return false;
-}
-
-void
 gw_validate_global_parameters(void)
 {
-    extern ext_option_struct ext_options;
     extern ext_filenames_struct ext_filenames;
     
-    if(ext_options.GROUNDWATER){
-        if(strcasecmp(ext_filenames.groundwater.nc_filename, MISSING_S) == 0){
-            log_err("GROUNDWATER = TRUE but GROUNDWATER_PARAMETERS is missing");
-        }
+    if(strcasecmp(ext_filenames.groundwater.nc_filename, MISSING_S) == 0){
+        log_err("GROUNDWATER = TRUE but GROUNDWATER_PARAMETERS is missing");
     }
-}
-
-void
-gw_validate_parameters(void)
-{
-    
 }

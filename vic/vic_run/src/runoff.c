@@ -45,6 +45,7 @@ runoff(cell_data_struct  *cell,
 {
     extern option_struct       options;
     extern global_param_struct global_param;
+    extern parameters_struct   param;
 
     size_t                     lindex;
     size_t                     time_step;
@@ -260,7 +261,7 @@ runoff(cell_data_struct  *cell,
                             (max_moist[lindex] - resid_moist[lindex]), 
                             -matric_expt[lindex]);
                 }else{
-                    matric[lindex] = DRY_RESIST;
+                    matric[lindex] = param.HUGE_RESIST;
                 }
             }      
             

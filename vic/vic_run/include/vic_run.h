@@ -340,4 +340,5 @@ void wrap_compute_zwt(soil_con_struct *, cell_data_struct *);
 void write_layer(layer_data_struct *, int, double *);
 void write_vegvar(veg_var_struct *, int);
 
+
 #endif
