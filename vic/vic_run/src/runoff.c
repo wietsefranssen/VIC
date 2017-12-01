@@ -461,9 +461,17 @@ runoff(cell_data_struct  *cell,
             **************************************************/
             /** Update recharge content **/
             if(lwt == -1){
+                if(Ws[fidx] / gw_con->Sy > 
+                        (zwt[fidx] - z[options.Nlayer - 1]) * MM_PER_M){
+                    dt_recharge += (Ws[fidx] / gw_con->Sy) - 
+                            ((zwt[fidx] - z[options.Nlayer - 1]) * MM_PER_M);
+                    Ws[fidx] -= (Ws[fidx] / gw_con->Sy) - 
+                            ((zwt[fidx] - z[options.Nlayer - 1]) * MM_PER_M);
+                }
+                
                 if((dt_recharge - dt_baseflow) > 0 && Ws[fidx] > 0){
-                    storage_yield = Ws[fidx] / ((zwt[fidx] - z[options.Nlayer - 1]) * 
-                        MM_PER_M * gw_con->Sy);
+                    storage_yield = (Ws[fidx] / gw_con->Sy) / 
+                            ((zwt[fidx] - z[options.Nlayer - 1]) * MM_PER_M);
                     
                     dt_recharge = (1/(1-storage_yield)) * 
                             (dt_recharge - dt_baseflow) + 
