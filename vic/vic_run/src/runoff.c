@@ -78,13 +78,12 @@ runoff(cell_data_struct  *cell,
     double avg_Fp;     
     double tmp_z;
     double tmp_Wt;
-    double rise_frac;
     
     int lwt;
     int lbot;     
     double Qb_max;    
     int new_lwt;
-    double old_Wa;
+    double storage_yield;
 
     
     double resid_moist[MAX_LAYERS]; // residual moisture (mm)
@@ -363,7 +362,10 @@ runoff(cell_data_struct  *cell,
                 Qb[lindex] = 0.0;
             }   
             
-            if(lwt != -1){                     
+            if(lwt != -1){                       
+                /** No drainage if water table is in soil column **/  
+                Q12[options.Nlayer - 1] = 0.0; 
+                
                 avg_K = 0.0;
                 for(lindex = lwt; lindex < options.Nlayer; lindex ++){
                     if((int)lindex == lwt){
@@ -385,9 +387,6 @@ runoff(cell_data_struct  *cell,
                                 avg_K);
                     }
                 }
-                
-                /** No drainage if water table is in soil column **/  
-                Q12[options.Nlayer - 1] = 0.0; 
             }    
             
             /**************************************************
@@ -460,20 +459,20 @@ runoff(cell_data_struct  *cell,
             /**************************************************
                Compute Groundwater
             **************************************************/
-            /** Update storage content **/
+            /** Update recharge content **/
             if(lwt == -1){
                 if((dt_recharge - dt_baseflow) > 0 && Ws[fidx] > 0){
-                    rise_frac = ((dt_recharge - dt_baseflow) / gw_con->Sy) / 
-                    ((zwt[fidx] - z[options.Nlayer - 1]) * MM_PER_M);
-                    if(rise_frac > 1){
-                        rise_frac = 1.0;
-                    }
-                    dt_recharge += rise_frac * Ws[fidx];//                    
+                    storage_yield = Ws[fidx] / ((zwt[fidx] - z[options.Nlayer - 1]) * 
+                        MM_PER_M * gw_con->Sy);
+                    
+                    dt_recharge = (1/(1-storage_yield)) * 
+                            (dt_recharge - dt_baseflow) + 
+                            dt_baseflow;                    
                 }
                 
-                /** Update storage moisture content **/
+                /** Update storage content **/
                 Ws[fidx] += Q12[options.Nlayer - 1] - dt_recharge;
-                                
+                
                 /** Verify that moisture is greater than minimum **/
                 if (Ws[fidx] < 0) {
                     /** liquid cannot fall below 0 **/
