@@ -13,6 +13,7 @@ gw_generate_default_state(void)
     extern gw_con_struct *gw_con;
     extern ext_option_struct ext_options;
     extern ext_filenames_struct ext_filenames;
+    extern int mpi_rank;
     
     size_t i;
     size_t j;
@@ -46,10 +47,12 @@ gw_generate_default_state(void)
         d4count[3] = global_domain.n_nx;
 
         // open parameter file
-        status = nc_open(ext_filenames.groundwater.nc_filename, NC_NOWRITE,
-                         &(ext_filenames.groundwater.nc_id));
-        check_nc_status(status, "Error opening %s",
-                        ext_filenames.groundwater.nc_filename);
+        if(mpi_rank == VIC_MPI_ROOT){
+            status = nc_open(ext_filenames.groundwater.nc_filename, NC_NOWRITE,
+                             &(ext_filenames.groundwater.nc_id));
+            check_nc_status(status, "Error opening %s",
+                            ext_filenames.groundwater.nc_filename);
+        }
     
         for (j = 0; j < veg_con_map[i].nv_active; j++) {
             d4start[0] = j;
@@ -76,9 +79,11 @@ gw_generate_default_state(void)
         }
         
         // close parameter file
-        status = nc_close(ext_filenames.groundwater.nc_id);
-        check_nc_status(status, "Error closing %s",
-                    ext_filenames.groundwater.nc_filename);
+        if(mpi_rank == VIC_MPI_ROOT){
+            status = nc_close(ext_filenames.groundwater.nc_id);
+            check_nc_status(status, "Error closing %s",
+                        ext_filenames.groundwater.nc_filename);
+        }
         
     }else{
         for(i=0; i<local_domain.ncells_active; i++){
@@ -90,15 +95,18 @@ gw_generate_default_state(void)
         }
     }
     
-    in_column = false;
     for(i=0; i<local_domain.ncells_active; i++){ 
         for(j=0; j<veg_con_map[i].nv_active; j++){
             for(k=0; k<options.SNOW_BAND; k++){   
+                in_column = false;
+                
                 z_tmp = 0.0;    
                 for(l=0; l<options.Nlayer; l++){
                     z_tmp += soil_con[i].depth[l];
+                    
                     if(ext_all_vars[i].groundwater[j][k].zwt < z_tmp){
                         // groundwater table is in layer
+                        in_column = true;
                         
                         // add water for current layer
                         ice = 0.0;
@@ -106,10 +114,10 @@ gw_generate_default_state(void)
                             ice += all_vars[i].cell[j][k].layer[l].ice[m];
                         }                        
                         eff_porosity = (soil_con[i].max_moist[l] - ice) / 
-                                soil_con[i].depth[l];
+                                (soil_con[i].depth[l] * MM_PER_M);
                         
                         ext_all_vars[i].groundwater[j][k].Wt +=
-                                z_tmp - ext_all_vars[i].groundwater[j][k].zwt * 
+                                (z_tmp - ext_all_vars[i].groundwater[j][k].zwt) * 
                                 eff_porosity * MM_PER_M;
                         
                         // add water for lower layers
@@ -118,10 +126,10 @@ gw_generate_default_state(void)
                             
                             ice = 0.0;
                             for(m=0; m<options.Nfrost; m++){
-                                ice += all_vars[i].cell[j][k].layer[l].ice[m];
+                                ice += all_vars[i].cell[j][k].layer[n].ice[m];
                             }                        
-                            eff_porosity = (soil_con[i].max_moist[l] - ice) / 
-                                    soil_con[i].depth[l];
+                            eff_porosity = (soil_con[i].max_moist[n] - ice) / 
+                                    (soil_con[i].depth[n] * MM_PER_M);
 
                             ext_all_vars[i].groundwater[j][k].Wt +=
                                     soil_con[i].depth[n] * 
@@ -135,7 +143,6 @@ gw_generate_default_state(void)
                         ext_all_vars[i].groundwater[j][k].Wt +=
                                 ext_all_vars[i].groundwater[j][k].Wa;
                         
-                        in_column = true;
                         break;
                     }
                 }
@@ -148,7 +155,7 @@ gw_generate_default_state(void)
                 }
             }
         }
-    }
+    }    
 }
 
 void
