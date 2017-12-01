@@ -486,7 +486,6 @@ runoff(cell_data_struct  *cell,
             
             /** Update groundwater content **/
             Wt[fidx] += dt_recharge - dt_baseflow;
-            old_Wa = Wa[fidx];
             
             /** Calculate groundwater level **/
             if(Wt[fidx] / gw_con->Sy / MM_PER_M < GW_REF_DEPTH - z[options.Nlayer - 1]){
@@ -527,7 +526,8 @@ runoff(cell_data_struct  *cell,
                     if(lwt == -1){ 
                         dt_exchange = Wt[fidx] - Wa[fidx];
                     }else if(new_lwt == -1){
-                        dt_exchange = old_Wa - Wt[fidx];
+                        dt_exchange = ((GW_REF_DEPTH - z[options.Nlayer - 1]) * 
+                                gw_con->Sy * MM_PER_M) - Wt[fidx];
                     }
                     
                     /** Update storage moisture content **/
