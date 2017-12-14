@@ -27,7 +27,7 @@ initialize_gw_local_structures(void)
 void
 initialize_gw_var(gw_var_struct *gw_var)
 {
-    gw_var->Qr = 0.0;
+    gw_var->recharge = 0.0;
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;
     gw_var->Wt = 0.0;

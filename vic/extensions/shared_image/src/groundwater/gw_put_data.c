@@ -27,7 +27,7 @@ gw_put_data(void)
                         
                 out_data[i][OUT_GW_ZWT][0] += ext_all_vars[i].groundwater[j][k].zwt * 
                         veg_frac * snow_frac;
-                out_data[i][OUT_GW_QR][0] += ext_all_vars[i].groundwater[j][k].Qr * 
+                out_data[i][OUT_GW_RECHARGE][0] += ext_all_vars[i].groundwater[j][k].recharge * 
                         veg_frac * snow_frac;
                 out_data[i][OUT_GW_WA][0] += ext_all_vars[i].groundwater[j][k].Wa * 
                         veg_frac * snow_frac;

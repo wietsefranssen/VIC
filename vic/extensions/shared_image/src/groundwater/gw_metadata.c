@@ -13,12 +13,12 @@ gw_set_output_meta_data_info(void)
     strcpy(out_metadata[OUT_GW_ZWT].description,
            "groundwater table depth");
 
-    strcpy(out_metadata[OUT_GW_QR].varname, "OUT_GW_QR");
-    strcpy(out_metadata[OUT_GW_QR].long_name, "groundwater recharge");
-    strcpy(out_metadata[OUT_GW_QR].standard_name,
+    strcpy(out_metadata[OUT_GW_RECHARGE].varname, "OUT_GW_RECHARGE");
+    strcpy(out_metadata[OUT_GW_RECHARGE].long_name, "groundwater recharge");
+    strcpy(out_metadata[OUT_GW_RECHARGE].standard_name,
            "groundwater recharge");
-    strcpy(out_metadata[OUT_GW_QR].units, "mm");
-    strcpy(out_metadata[OUT_GW_QR].description,
+    strcpy(out_metadata[OUT_GW_RECHARGE].units, "mm");
+    strcpy(out_metadata[OUT_GW_RECHARGE].description,
            "groundwater recharge");
     
     strcpy(out_metadata[OUT_GW_WA].varname, "OUT_GW_WA");
@@ -46,7 +46,7 @@ gw_set_output_meta_data_info(void)
            "Water storage (between soil column and water table)");
         
     out_metadata[OUT_GW_ZWT].nelem = 1;
-    out_metadata[OUT_GW_QR].nelem = 1;
+    out_metadata[OUT_GW_RECHARGE].nelem = 1;
     out_metadata[OUT_GW_WA].nelem = 1;
     out_metadata[OUT_GW_WT].nelem = 1;
     out_metadata[OUT_GW_WS].nelem = 1;

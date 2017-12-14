@@ -6,8 +6,7 @@
 
 #include <stdbool.h>
 typedef struct{
-    double Qr;              /**< drainage to groundwater (mm) */    
-    double Qs;              /**< drainage to storage (mm) */    
+    double recharge;        /**< drainage to groundwater (mm) */
     double Wa;              /**< water stored in groundwater below soil column (compared to reference) (mm) */    
     double Wt;              /**< total water stored in groundwater (compared to reference) (mm) */    
     double Ws;              /**< water stored below soil column and above water table (mm) */    

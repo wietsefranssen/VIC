@@ -139,7 +139,6 @@ runoff(cell_data_struct  *cell,
         Ws[fidx] = gw_var->Ws;
     }
     
-    gw_var->Qr = 0.0;
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;   
     gw_var->Wt = 0.0;
@@ -569,7 +568,7 @@ runoff(cell_data_struct  *cell,
         cell->runoff += runoff[fidx] * frost_fract[fidx];
         cell->baseflow += baseflow[fidx] * frost_fract[fidx];
         
-        gw_var->Qr += recharge[fidx] * frost_fract[fidx];
+        gw_var->recharge += recharge[fidx] * frost_fract[fidx];
         gw_var->zwt += zwt[fidx] * frost_fract[fidx];
         gw_var->Wa += Wa[fidx] * frost_fract[fidx];
         gw_var->Wt += Wt[fidx] * frost_fract[fidx];

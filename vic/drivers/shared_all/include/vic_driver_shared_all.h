@@ -287,12 +287,12 @@ enum
     OUT_TIME_VICRUN_CPU,  /**< Wall time spent inside vic_run [seconds] */
     
     // Extension variables
-    OUT_GW_ZWT,
-    OUT_GW_QR,
-    OUT_GW_WA,
-    OUT_GW_WT,
-    OUT_GW_WS,
-    
+    // Groundwater terms
+    OUT_GW_ZWT,           /**< depth of the water table (m) */
+    OUT_GW_RECHARGE,      /**< drainage to groundwater (mm) */
+    OUT_GW_WA,            /**< water stored in groundwater below soil column (compared to reference) (mm) */    
+    OUT_GW_WT,            /**< total water stored in groundwater (compared to reference) (mm) */  
+    OUT_GW_WS,            /**< water stored below soil column and above water table (mm) */
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */
