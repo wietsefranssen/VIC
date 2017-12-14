@@ -53,7 +53,6 @@ runoff(cell_data_struct  *cell,
     int                        fidx;
     int                        ErrorFlag;
     double                     A;
-    double                     tmp_runoff;
     double                     inflow;
     double                     Q01;
     double                     tmp_moist_for_runoff[MAX_LAYERS];
@@ -70,6 +69,7 @@ runoff(cell_data_struct  *cell,
     double evap[MAX_LAYERS][MAX_FROST_AREAS];  
     
     // temp variables
+    double tmp_runoff;
     double tmp_moist;
     double tmp_liq;
     double sum_liq;
@@ -495,18 +495,17 @@ runoff(cell_data_struct  *cell,
             // Add water to bottom layer to compensate for 
             //  1) water table rising above soil column (adding the rise to the soil column)
             //  2) baseflow subtraction while water table was below soil column
-            dt_exchange = 0.0;
             if(lwt != new_lwt){
-                if(lwt == -1 || new_lwt == -1){ 
+                if(lwt == -1 || new_lwt == -1){
                     if(lwt == -1){ 
                         dt_exchange = Wt[fidx] - Wa[fidx];
-                    }else if(new_lwt == -1){
+                    }else {
                         dt_exchange = ((GW_REF_DEPTH - z[options.Nlayer - 1]) * 
                                 gw_con->Sy * MM_PER_M) - Wt[fidx];
                     }
                     
                     /** Update storage moisture content **/
-                    lindex = options.Nlayer -1;
+                    lindex = options.Nlayer - 1;
                     liq[lindex] += dt_exchange;
                     
                     /** Verify that soil layer moisture is less than maximum **/
