@@ -76,8 +76,7 @@ runoff(cell_data_struct  *cell,
     double evap_sum;
     double evap_fraction;
     double avg_matric; 
-    double avg_K;   
-    double avg_Fp;     
+    double avg_K;      
     double tmp_z;
     double tmp_Wt;
     int new_lwt;
@@ -87,10 +86,7 @@ runoff(cell_data_struct  *cell,
     int lbot;     
     double Qb_max;    
     double delta_z;
-    double Ksata;
     double max_moist_a;
-    double Ka;
-    double Q1a;
     
     double resid_moist[MAX_LAYERS]; // residual moisture (mm)
     double org_moist[MAX_LAYERS]; // total soil moisture (liquid and frozen) at beginning of this function (mm)
@@ -100,12 +96,11 @@ runoff(cell_data_struct  *cell,
     double moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
     double max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
     double Ksat[MAX_LAYERS];
-    double Kl[MAX_LAYERS];
-    double Q12[MAX_LAYERS];
+    double Kl[MAX_LAYERS + 1];
+    double Q12[MAX_LAYERS + 1];
     double Qb[MAX_LAYERS];   
     double matric[MAX_LAYERS];
     double matric_expt[MAX_LAYERS];
-    double Fp[MAX_LAYERS];
     double z[MAX_LAYERS];
     double eff_porosity[MAX_LAYERS];
     
@@ -207,11 +202,6 @@ runoff(cell_data_struct  *cell,
 
             /** Set Layer Maximum Moisture Content **/
             max_moist[lindex] = soil_con->max_moist[lindex];
-                        
-            /** Set fraction of permeable/non-frozen area (Niu & Yang 2006)**/
-            Fp[lindex] = 1 - (exp(-soil_con->Fp_expt * 
-                    (1 - ice[lindex] / max_moist[lindex])) - 
-                    exp(-soil_con->Fp_expt));
 
             /** Set Matric Potential Exponent (Burdine model 1953) **/
             matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
@@ -282,34 +272,12 @@ runoff(cell_data_struct  *cell,
             }
             delta_z = zwt[fidx] - z[options.Nlayer - 1];
             
-            // exponentially decrease conductivity below soil column
-            Ksata = soil_con->Ksat[lbot] * 
-                    (1 - exp(-gw_con->Ka_expt * delta_z)) / 
-                    (gw_con->Ka_expt * delta_z);
             max_moist_a = gw_con->Sy * delta_z * MM_PER_M;
             
             /**************************************************
                Compute Baseflow from Sublayers
-            **************************************************/               
-            avg_Fp = 1.0;
-            if(lwt != -1){            
-                avg_Fp = 0.0;
-                for(lindex = lwt; lindex < options.Nlayer; lindex ++){
-                    if((int)lindex == lwt){
-                        // Frozen conductivity in water table layer  
-                        avg_Fp += Fp[lindex] * 
-                                (z[lindex] - zwt[fidx]);
-                    }else{
-                        // Frozen conductivity below water table layer 
-                        avg_Fp += Fp[lindex] * 
-                                soil_con->depth[lindex];
-                    }
-                }
-                // Depth weighted average frozen conductivity
-                avg_Fp /= -delta_z;
-            }      
-            
-            dt_baseflow = avg_Fp * Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
+            **************************************************/
+            dt_baseflow = Qb_max * exp(-gw_con->Ka_expt * zwt[fidx]);
             
             for(lindex = 0; lindex < options.Nlayer; lindex ++){
                 Qb[lindex] = 0.0;
@@ -360,7 +328,7 @@ runoff(cell_data_struct  *cell,
                     }
                     
                     /** Brooks & Corey relation for hydraulic conductivity **/
-                    Kl[lindex] = Fp[lindex] * calc_Q12(Ksat[lindex], tmp_liq,
+                    Kl[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
                                                     resid_moist[lindex],
                                                     soil_con->max_moist[lindex],
                                                     soil_con->K_expt[lindex]);
@@ -377,23 +345,19 @@ runoff(cell_data_struct  *cell,
             }
             
             if (tmp_liq > 0) {
-//                Ka = calc_Q12(Ksata, tmp_liq, 0, max_moist_a, 
-//                        soil_con->K_expt[options.Nlayer - 1]);
-                Ka = Kl[options.Nlayer - 1] * 
+                Kl[options.Nlayer] = Kl[options.Nlayer - 1] * 
                         (1 - exp(-gw_con->Ka_expt * delta_z)) / 
                         (gw_con->Ka_expt * delta_z);
             } else {
-                Ka = 0.0;
+                Kl[options.Nlayer] = 0.0;
             }
             
             /*************************************
                Compute Drainage between Sublayers
             *************************************/
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {
+            for (lindex = 0; lindex < options.Nlayer + 1; lindex++) {
                 Q12[lindex] = Kl[lindex];
             }
-            /** Compute drainage of aquifer storage **/ 
-            Q1a = Ka;
             
             /** No drainage if water table is in soil column **/  
             if(lwt != -1){
@@ -467,21 +431,21 @@ runoff(cell_data_struct  *cell,
             } /* end loop through soil layers */
                                     
             /** Update aquifer storage moisture content **/
-            Ws[fidx] = Ws[fidx] + Q01 - Q1a; 
+            Ws[fidx] = Ws[fidx] + Q01 - Q12[lindex]; 
             
             /** Verify that aquifer storage moisture is less than maximum **/
             if (Ws[fidx] > max_moist_a) {
-                Q1a += Ws[fidx] - max_moist_a;
+                Q12[lindex] += Ws[fidx] - max_moist_a;
                 Ws[fidx] = max_moist_a;
             }
             
             /** verify that aquifer storage moisture is greater than minimum **/
             if (Ws[fidx] < 0) {
-                Q1a += Ws[fidx];
+                Q12[lindex] += Ws[fidx];
                 Ws[fidx] = 0.0;
             }
             
-            Q01 = Q1a;
+            Q01 = Q12[lindex];
                         
             /**************************************************
                Compute Recharge

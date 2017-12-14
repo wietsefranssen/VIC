@@ -609,7 +609,6 @@ typedef struct {
     double aspect;
     double ehoriz;
     double whoriz;
-    double Fp_expt;                     /**< exponent a in Niu & Yang's eqn (2006) for conductivity in frozen soils */
 } soil_con_struct;
 
 /******************************************************************************

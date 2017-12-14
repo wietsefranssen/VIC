@@ -65,7 +65,6 @@ initialize_soil_con(soil_con_struct *soil_con)
     soil_con->snow_rough = 0.;
     soil_con->whoriz = 0.;
     soil_con->Ws = 0.;
-    soil_con->Fp_expt = 0.;
 
     for (i = 0; i < MAX_LAYERS; i++) {
         soil_con->bubble[i] = 0.;
