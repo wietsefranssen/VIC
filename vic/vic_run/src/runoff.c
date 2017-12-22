@@ -113,18 +113,8 @@ runoff(cell_data_struct  *cell,
     double Wt[MAX_FROST_AREAS];
     double Ws[MAX_FROST_AREAS];
     
-    /** Set Residual Moisture **/
-    for (lindex = 0; lindex < options.Nlayer; lindex++) {
-        resid_moist[lindex] = soil_con->resid_moist[lindex] *
-                              soil_con->depth[lindex] * MM_PER_M;
-    }
-
     /** Allocate and Set Values for Soil Sublayers **/
     layer = cell->layer;
-
-    cell->runoff = 0.0;
-    cell->baseflow = 0.0;
-    cell->asat = 0.0;
 
     runoff_steps_per_dt = global_param.runoff_steps_per_day /
                           global_param.model_steps_per_day;
@@ -138,29 +128,62 @@ runoff(cell_data_struct  *cell,
         Wt[fidx] = gw_var->Wt;
         Ws[fidx] = gw_var->Ws;
     }
+
+    cell->runoff = 0.0;
+    cell->baseflow = 0.0;
+    cell->asat = 0.0;
     
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;   
     gw_var->Wt = 0.0;
     gw_var->Ws = 0.0;
+        
+    tmp_z = 0.0;
+    for (lindex = 0; lindex < options.Nlayer; lindex++) {
+        /** Set Depth of Layers and Nodes **/
+        tmp_z += soil_con->depth[lindex];
+        z[lindex] = tmp_z; 
+
+        /** Set Layer Origional Moisture Content **/
+        org_moist[lindex] = layer[lindex].moist;
+        layer[lindex].moist = 0;
+        layer[lindex].eff_saturation = 0;
+        
+        /** Set Layer Maximum Moisture Content **/
+        max_moist[lindex] = soil_con->max_moist[lindex];
+        
+        /** Set Layer Residual Moisture Content **/
+        resid_moist[lindex] = soil_con->resid_moist[lindex] *
+                              soil_con->depth[lindex] * MM_PER_M; 
+        
+        /** Set Layer Saturated Hydraulic Conductivity **/
+        Ksat[lindex] = soil_con->Ksat[lindex] /
+                       global_param.runoff_steps_per_day;
+
+        /** Set Matric Potential Exponent (Burdine model 1953) **/
+        matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
+    }
 
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
-        org_moist[lindex] = layer[lindex].moist;
-        layer[lindex].moist = 0;
+        
         if (evap[lindex][0] > 0) { // if there is positive evaporation
-            sum_liq = 0;
             // compute available soil moisture for each frost sub area.
+            sum_liq = 0;
             for (fidx = 0; fidx < (int)options.Nfrost; fidx++) {
+                
                 avail_liq[lindex][fidx] =
                     (org_moist[lindex] - layer[lindex].ice[fidx] -
                      resid_moist[lindex]);
+                
                 if (avail_liq[lindex][fidx] < 0) {
                     avail_liq[lindex][fidx] = 0;
                 }
+                
                 sum_liq += avail_liq[lindex][fidx] *
                            frost_fract[fidx];
             }
+            
             // compute fraction of available soil moisture that is evaporated
             if (sum_liq > 0) {
                 evap_fraction = evap[lindex][0] / sum_liq;
@@ -168,6 +191,7 @@ runoff(cell_data_struct  *cell,
             else {
                 evap_fraction = 1.0;
             }
+            
             // distribute evaporation between frost sub areas by percentage
             evap_sum = evap[lindex][0];
             for (fidx = (int)options.Nfrost - 1; fidx >= 0; fidx--) {
@@ -188,26 +212,12 @@ runoff(cell_data_struct  *cell,
         /**************************************************
            Initialize Frost Area Variables
         **************************************************/
-        tmp_z = 0.0;
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
-            Ksat[lindex] = soil_con->Ksat[lindex] /
-                           global_param.runoff_steps_per_day;
-
             /** Set Layer Liquid Moisture Content **/
             liq[lindex] = org_moist[lindex] - layer[lindex].ice[fidx];
 
             /** Set Layer Frozen Moisture Content **/
             ice[lindex] = layer[lindex].ice[fidx];
-
-            /** Set Layer Maximum Moisture Content **/
-            max_moist[lindex] = soil_con->max_moist[lindex];
-
-            /** Set Matric Potential Exponent (Burdine model 1953) **/
-            matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
-            
-            /** Set Depth of Layers and Nodes **/
-            tmp_z += soil_con->depth[lindex];
-            z[lindex] = tmp_z;
 
             /** Set Effective Porosity **/
             eff_porosity[lindex] = (max_moist[lindex] - ice[lindex]) / 
@@ -322,14 +332,14 @@ runoff(cell_data_struct  *cell,
                                            + soil_con->depth[lindex+1]) );
 
                         tmp_liq = resid_moist[lindex]
-                          + ( soil_con->max_moist[lindex] - resid_moist[lindex] )
+                          + (max_moist[lindex] - resid_moist[lindex] )
                           * pow( ( avg_matric / soil_con->bubble[lindex] ), -1/matric_expt[lindex] );
                     }
                     
                     /** Brooks & Corey relation for hydraulic conductivity **/
                     Kl[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
                                                     resid_moist[lindex],
-                                                    soil_con->max_moist[lindex],
+                                                    max_moist[lindex],
                                                     soil_con->K_expt[lindex]);
                 }
                 else {
@@ -563,6 +573,10 @@ runoff(cell_data_struct  *cell,
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
             layer[lindex].moist +=
                 ((liq[lindex] + ice[lindex]) * frost_fract[fidx]);
+            layer[lindex].eff_saturation +=
+                ((liq[lindex] + ice[lindex]) - resid_moist[lindex] / 
+                    (max_moist[lindex] - resid_moist[lindex])
+                    * frost_fract[fidx]);                    
         }
         cell->asat += A * frost_fract[fidx];
         cell->runoff += runoff[fidx] * frost_fract[fidx];

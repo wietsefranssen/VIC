@@ -769,6 +769,8 @@ typedef struct {
                                layer (W/m/K) */
     double moist;           /**< moisture content of the unfrozen sublayer
                                (mm) */
+    double eff_saturation;  /**< effective saturation of the unfrozen sublayer
+                               (-) */
     double phi;             /**< moisture diffusion parameter */
     double zwt;             /**< water table position relative to soil surface within the layer (cm) */
     // Fluxes

@@ -234,6 +234,14 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_SOIL_MOIST].units, "mm");
     strcpy(out_metadata[OUT_SOIL_MOIST].description,
            "soil total moisture content");
+    
+    /* soil effective saturation [-] for each soil layer */
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].varname, "OUT_SOIL_EFF_SAT");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].long_name, "soil_effective_saturation");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].standard_name, "soil_effective_saturation");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].units, "-");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].description,
+           "soil effective saturation");
 
     /* vertical average of (soil moisture - wilting point)/(maximum soil moisture - wilting point) [mm/mm] */
     strcpy(out_metadata[OUT_SOIL_WET].varname, "OUT_SOIL_WET");
