@@ -177,6 +177,7 @@ get_nc_latlon(nameid_struct *nc_nameid,
     }
 
     if (nc_domain->info.n_coord_dims == 1) {
+        debug("In ncor 1");
         // allocate memory for variables
         var_lon = malloc(nc_domain->n_nx * sizeof(*var_lon));
         check_alloc_status(var_lon, "Memory allocation error.");
@@ -201,6 +202,7 @@ get_nc_latlon(nameid_struct *nc_nameid,
                     (double) var_lon[i];
             }
         }
+        debug("Done lon");
 
         d1start[0] = 0;
         d1count[0] = nc_domain->n_ny;
@@ -214,17 +216,16 @@ get_nc_latlon(nameid_struct *nc_nameid,
                     (double) var_lat[i];
             }
         }
+        debug("Done lat");
 
         // free memory
         free(var_lon);
         free(var_lat);
     }
     else if (nc_domain->info.n_coord_dims == 2) {
-        debug("In ncor 2");
         // allocate memory for variables
         var = malloc(nc_domain->ncells_total * sizeof(*var));
         check_alloc_status(var, "Memory allocation error.");
-
 
         d2start[0] = 0;
         d2start[1] = 0;
@@ -242,7 +243,6 @@ get_nc_latlon(nameid_struct *nc_nameid,
             }
             nc_domain->locations[i].longitude = var[i];
         }
-        debug("Done lon");
 
         // get latitude for unmasked grid
         get_nc_field_double(nc_nameid, nc_domain->info.lat_var,
@@ -250,7 +250,7 @@ get_nc_latlon(nameid_struct *nc_nameid,
         for (i = 0; i < nc_domain->ncells_total; i++) {
             nc_domain->locations[i].latitude = var[i];
         }
-        debug("Done lat");
+        
         // free memory
         free(var);
     }
