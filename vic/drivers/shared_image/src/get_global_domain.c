@@ -84,14 +84,12 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     for (i = 0; i < global_domain->ncells_total; i++) {
         initialize_location(&(global_domain->locations[i]));
     }
-    debug("init locations");
 
     for (i = 0; i < global_domain->ncells_total; i++) {
         if (mask[i] == 1) {
             global_domain->locations[i].run = true;
         }
     }
-    debug("set run");
 
     for (i = 0, j = 0; i < global_domain->ncells_total; i++) {
         if (mask[i] == 1) {
@@ -100,7 +98,6 @@ get_global_domain(nameid_struct *domain_nc_nameid,
             j++;
         }
     }
-    debug("set IO");
 
     // allocate memory for variables
     var = malloc(global_domain->ncells_total * sizeof(*var));
@@ -113,7 +110,6 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     for (i = 0; i < global_domain->ncells_total; i++) {
         global_domain->locations[i].area = var[i];
     }
-    debug("set area");
 
     // get fraction
     // TBD: read var id from file
@@ -122,16 +118,13 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     for (i = 0; i < global_domain->ncells_total; i++) {
         global_domain->locations[i].frac = var[i];
     }
-    debug("set frac");
 
     // get lat and lon coordinates
     get_nc_latlon(domain_nc_nameid, global_domain);
-    debug("set latlon");
 
     // check whether lat and lon coordinates in the parameter file match those
     // in the domain file
     compare_ncdomain_with_global_domain(param_nc_nameid);
-    debug("compare");
 
     // free memory
     free(var);
@@ -163,12 +156,10 @@ get_nc_latlon(nameid_struct *nc_nameid,
                                        nc_domain->info.x_dim);
     nc_domain->n_ny = get_nc_dimension(nc_nameid,
                                        nc_domain->info.y_dim);
-        debug("Done nxny");
 
     // Get number of lat/lon dimensions.
     nc_domain->info.n_coord_dims = get_nc_varndimensions(nc_nameid,
                                                          nc_domain->info.lon_var);
-        debug("Done vardimensions");
     if (nc_domain->info.n_coord_dims !=
         (size_t) get_nc_varndimensions(nc_nameid, nc_domain->info.lat_var)) {
         log_err("Un even number of dimensions for %s and %s in: %s",
@@ -177,8 +168,6 @@ get_nc_latlon(nameid_struct *nc_nameid,
     }
 
     if (nc_domain->info.n_coord_dims == 1) {
-        debug("In ncor 1; nx %zu ny %zu lon_var %s lat_var %s",nc_domain->n_nx, nc_domain->n_ny,
-                nc_domain->info.lon_var, nc_domain->info.lat_var);
         // allocate memory for variables
         var_lon = malloc(nc_domain->n_nx * sizeof(*var_lon));
         check_alloc_status(var_lon, "Memory allocation error.");
@@ -203,7 +192,6 @@ get_nc_latlon(nameid_struct *nc_nameid,
                     (double) var_lon[i];
             }
         }
-        debug("Done lon");
 
         d1start[0] = 0;
         d1count[0] = nc_domain->n_ny;
@@ -217,7 +205,6 @@ get_nc_latlon(nameid_struct *nc_nameid,
                     (double) var_lat[i];
             }
         }
-        debug("Done lat");
 
         // free memory
         free(var_lon);
@@ -227,6 +214,7 @@ get_nc_latlon(nameid_struct *nc_nameid,
         // allocate memory for variables
         var = malloc(nc_domain->ncells_total * sizeof(*var));
         check_alloc_status(var, "Memory allocation error.");
+
 
         d2start[0] = 0;
         d2start[1] = 0;
@@ -251,7 +239,6 @@ get_nc_latlon(nameid_struct *nc_nameid,
         for (i = 0; i < nc_domain->ncells_total; i++) {
             nc_domain->locations[i].latitude = var[i];
         }
-        
         // free memory
         free(var);
     }
@@ -260,7 +247,6 @@ get_nc_latlon(nameid_struct *nc_nameid,
                 nc_domain->info.lon_var, nc_domain->info.lat_var,
                 nc_nameid->nc_filename);
     }
-        debug("Done");
 }
 
 /******************************************************************************

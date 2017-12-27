@@ -90,12 +90,10 @@ vic_start(void)
         status = nc_close(filenames.domain.nc_id);
         check_nc_status(status, "Error closing %s",
                         filenames.domain.nc_filename);
-        debug("Done domain");
         
         // add the number of vegetation type to the location info in the
         // global domain struct. This just makes life easier
         add_nveg_to_global_domain(&(filenames.params), &global_domain);
-        debug("Done nveg");
 
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *
@@ -115,7 +113,6 @@ vic_start(void)
                               &mpi_map_local_array_sizes,
                               &mpi_map_global_array_offsets,
                               &mpi_map_mapping_array);
-        debug("Done decomposition");
 
         // get dimensions (number of vegetation types, soil zones, etc)
         options.ROOT_ZONES = get_nc_dimension(&(filenames.params), "root_zone");
@@ -132,7 +129,6 @@ vic_start(void)
 
         // Check that model parameters are valid
         validate_parameters();
-        debug("Done validation");
     }
         
     // broadcast global, option, param structures as well as global valies
@@ -154,8 +150,6 @@ vic_start(void)
     status = MPI_Bcast(&param, 1, mpi_param_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-    
-        debug("Done broadcast");
 
     // setup the local domain_structs
 
