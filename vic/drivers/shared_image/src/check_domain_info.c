@@ -46,8 +46,11 @@ compare_ncdomain_with_global_domain(nameid_struct *nc_nameid)
         malloc(global_domain.ncells_total *
                sizeof(*(ncfile_domain.locations)));
     check_alloc_status(ncfile_domain.locations, "Memory allocation error.");
+        debug("Done load");
     copy_domain_info(&global_domain, &ncfile_domain);
+        debug("Done copy");
     get_nc_latlon(nc_nameid, &ncfile_domain);
+        debug("Done get latlon");
 
     // using the ncfile_domain, we can compare the values to the global domain.
 
@@ -58,6 +61,7 @@ compare_ncdomain_with_global_domain(nameid_struct *nc_nameid)
     if (global_domain.n_ny != ncfile_domain.n_ny) {
         log_err("y dimension in parameters file does not match domain");
     }
+        debug("Done check");
 
     // loop over all grid cells and check that the two domains are identical
     for (i = 0; i < global_domain.ncells_total; i++) {
@@ -80,5 +84,6 @@ compare_ncdomain_with_global_domain(nameid_struct *nc_nameid)
                     global_domain.locations[i].longitude, i);
         }
     }
+        debug("Done loop");
     free(ncfile_domain.locations);
 }
