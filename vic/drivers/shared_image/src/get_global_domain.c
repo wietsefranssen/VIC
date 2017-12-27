@@ -177,7 +177,8 @@ get_nc_latlon(nameid_struct *nc_nameid,
     }
 
     if (nc_domain->info.n_coord_dims == 1) {
-        debug("In ncor 1");
+        debug("In ncor 1; nx %zu ny %zu lon_var %s lat_var %s",nc_domain->n_nx, nc_domain->n_ny,
+                nc_domain->info.lon_var, nc_domain->info.lat_var);
         // allocate memory for variables
         var_lon = malloc(nc_domain->n_nx * sizeof(*var_lon));
         check_alloc_status(var_lon, "Memory allocation error.");
