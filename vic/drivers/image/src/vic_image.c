@@ -117,19 +117,23 @@ main(int    argc,
     }
 
     // read global parameters
+    debug("VIC start");
     initialize_ext_global_structures();
     vic_image_start();
     ext_start();
     
     // allocate memory
+    debug("VIC alloc");
     vic_alloc();
     ext_alloc();
     
     // initialize model parameters from parameter files
+    debug("VIC init");
     vic_image_init();    
     ext_init();
     
     // populate model state, either using a cold start or from a restart file
+    debug("VIC populate");
     vic_populate_model_state(&(dmy[0]));
     ext_populate_model_state();
     
