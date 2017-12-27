@@ -84,12 +84,14 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     for (i = 0; i < global_domain->ncells_total; i++) {
         initialize_location(&(global_domain->locations[i]));
     }
+    debug("init locations");
 
     for (i = 0; i < global_domain->ncells_total; i++) {
         if (mask[i] == 1) {
             global_domain->locations[i].run = true;
         }
     }
+    debug("set run");
 
     for (i = 0, j = 0; i < global_domain->ncells_total; i++) {
         if (mask[i] == 1) {
@@ -98,6 +100,7 @@ get_global_domain(nameid_struct *domain_nc_nameid,
             j++;
         }
     }
+    debug("set IO");
 
     // allocate memory for variables
     var = malloc(global_domain->ncells_total * sizeof(*var));
@@ -110,6 +113,7 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     for (i = 0; i < global_domain->ncells_total; i++) {
         global_domain->locations[i].area = var[i];
     }
+    debug("set area");
 
     // get fraction
     // TBD: read var id from file
@@ -118,13 +122,16 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     for (i = 0; i < global_domain->ncells_total; i++) {
         global_domain->locations[i].frac = var[i];
     }
+    debug("set frac");
 
     // get lat and lon coordinates
     get_nc_latlon(domain_nc_nameid, global_domain);
+    debug("set latlon");
 
     // check whether lat and lon coordinates in the parameter file match those
     // in the domain file
     compare_ncdomain_with_global_domain(param_nc_nameid);
+    debug("compare");
 
     // free memory
     free(var);
