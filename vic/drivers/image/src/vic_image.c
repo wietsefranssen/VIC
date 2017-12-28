@@ -117,7 +117,6 @@ main(int    argc,
     }
 
     // read global parameters
-    initialize_ext_global_structures();
     vic_image_start();
     ext_start();
     

@@ -128,6 +128,21 @@ runoff(cell_data_struct  *cell,
         Wt[fidx] = gw_var->Wt;
         Ws[fidx] = gw_var->Ws;
     }
+        
+    tmp_z = 0.0;
+    for (lindex = 0; lindex < options.Nlayer; lindex++) {
+        org_moist[lindex] = layer[lindex].moist;
+        max_moist[lindex] = soil_con->max_moist[lindex];
+        resid_moist[lindex] = soil_con->resid_moist[lindex] *
+                              soil_con->depth[lindex] * MM_PER_M;
+        Ksat[lindex] = soil_con->Ksat[lindex] /
+                       global_param.runoff_steps_per_day;
+        
+        tmp_z += soil_con->depth[lindex];
+        z[lindex] = tmp_z; 
+        /** Set Matric Potential Exponent (Burdine model 1953) **/
+        matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
+    }
 
     cell->runoff = 0.0;
     cell->baseflow = 0.0;
@@ -137,32 +152,9 @@ runoff(cell_data_struct  *cell,
     gw_var->Wa = 0.0;   
     gw_var->Wt = 0.0;
     gw_var->Ws = 0.0;
-        
-    tmp_z = 0.0;
-    for (lindex = 0; lindex < options.Nlayer; lindex++) {
-        /** Set Depth of Layers and Nodes **/
-        tmp_z += soil_con->depth[lindex];
-        z[lindex] = tmp_z; 
-
-        /** Set Layer Origional Moisture Content **/
-        org_moist[lindex] = layer[lindex].moist;
-        layer[lindex].moist = 0;
-        layer[lindex].eff_saturation = 0;
-        
-        /** Set Layer Maximum Moisture Content **/
-        max_moist[lindex] = soil_con->max_moist[lindex];
-        
-        /** Set Layer Residual Moisture Content **/
-        resid_moist[lindex] = soil_con->resid_moist[lindex] *
-                              soil_con->depth[lindex] * MM_PER_M; 
-        
-        /** Set Layer Saturated Hydraulic Conductivity **/
-        Ksat[lindex] = soil_con->Ksat[lindex] /
-                       global_param.runoff_steps_per_day;
-
-        /** Set Matric Potential Exponent (Burdine model 1953) **/
-        matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
-    }
+    
+    layer[lindex].moist = 0;
+    layer[lindex].eff_saturation = 0;
 
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
@@ -322,7 +314,7 @@ runoff(cell_data_struct  *cell,
             for (lindex = 0; lindex < options.Nlayer; lindex++) {                
                 tmp_liq = liq[lindex] - evap[lindex][fidx] - Qb[lindex];
                 
-                if (tmp_liq > resid_moist[lindex]) {
+                if (liq[lindex] > resid_moist[lindex]) {
                     if(lindex < options.Nlayer - 1){
                         avg_matric = pow( 10, (soil_con->depth[lindex+1] 
                                          * log10(fabs(matric[lindex]))
@@ -574,9 +566,9 @@ runoff(cell_data_struct  *cell,
             layer[lindex].moist +=
                 ((liq[lindex] + ice[lindex]) * frost_fract[fidx]);
             layer[lindex].eff_saturation +=
-                ((liq[lindex] + ice[lindex]) - resid_moist[lindex] / 
+                ((liq[lindex] + ice[lindex]) - resid_moist[lindex]) / 
                     (max_moist[lindex] - resid_moist[lindex])
-                    * frost_fract[fidx]);                    
+                    * frost_fract[fidx];                    
         }
         cell->asat += A * frost_fract[fidx];
         cell->runoff += runoff[fidx] * frost_fract[fidx];

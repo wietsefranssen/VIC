@@ -38,6 +38,7 @@ vic_image_start(void)
 
     // Initialize structures
     initialize_global_structures();
+    initialize_ext_global_structures();
 
     if (mpi_rank == VIC_MPI_ROOT) {
         // Read the global parameter file
