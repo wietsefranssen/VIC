@@ -131,7 +131,10 @@ runoff(cell_data_struct  *cell,
         
     tmp_z = 0.0;
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
-        org_moist[lindex] = layer[lindex].moist;
+        org_moist[lindex] = layer[lindex].moist;    
+        layer[lindex].moist = 0;
+        layer[lindex].eff_saturation = 0;
+        
         max_moist[lindex] = soil_con->max_moist[lindex];
         resid_moist[lindex] = soil_con->resid_moist[lindex] *
                               soil_con->depth[lindex] * MM_PER_M;
@@ -152,9 +155,6 @@ runoff(cell_data_struct  *cell,
     gw_var->Wa = 0.0;   
     gw_var->Wt = 0.0;
     gw_var->Ws = 0.0;
-    
-    layer[lindex].moist = 0;
-    layer[lindex].eff_saturation = 0;
 
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
