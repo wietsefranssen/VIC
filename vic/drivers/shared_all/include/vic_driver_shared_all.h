@@ -294,6 +294,21 @@ enum
     OUT_GW_WA,            /**< water stored in groundwater below soil column (compared to reference) (mm) */    
     OUT_GW_WT,            /**< total water stored in groundwater (compared to reference) (mm) */  
     OUT_GW_WS,            /**< water stored below soil column and above water table (mm) */
+    // Routing terms
+    OUT_DISCHARGE,
+    OUT_NAT_DISCHARGE,
+    // Water use terms
+    OUT_WU_DEMAND, 
+    OUT_WU_CONSUMP_FRAC, 
+    OUT_WU_WITHDRAWN, 
+    OUT_WU_CONSUMED, 
+    OUT_WU_RETURNED, 
+    OUT_WU_COMPENSATED, 
+    OUT_WU_TOCOMPENSATE, 
+    OUT_WU_TORETURN,
+    OUT_WU_AVAILABLE,
+    OUT_WU_DISCHARGE,
+    OUT_WU_SHORTAGE,  
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */

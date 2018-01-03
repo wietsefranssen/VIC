@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 #include <vic_driver_shared_image.h>
+#include <ext_driver_shared_image.h>
 
 /******************************************************************************
  * @brief    Wrapper function for VIC startup tasks.
@@ -54,6 +55,7 @@ vic_start(void)
     extern int                *mpi_map_global_array_offsets;
     extern int                 mpi_rank;
     extern int                 mpi_size;
+    extern int                 mpi_decomposition;
     extern option_struct       options;
     extern parameters_struct   param;
     size_t                     j;
@@ -108,11 +110,21 @@ vic_start(void)
             }
         }
         
-        // decompose the mask
-        mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
+        if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
+            // decompose the mask
+            mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
                               &mpi_map_local_array_sizes,
                               &mpi_map_global_array_offsets,
                               &mpi_map_mapping_array);
+        }else if (mpi_decomposition == MPI_DECOMPOSITION_BASIN){
+            // decompose the mask
+            mpi_map_decomp_domain_basin(global_domain.ncells_active, mpi_size,
+                              &mpi_map_local_array_sizes,
+                              &mpi_map_global_array_offsets,
+                              &mpi_map_mapping_array);
+        } else{
+            log_err("Unknown mpi decomposition method");
+        }
 
         // get dimensions (number of vegetation types, soil zones, etc)
         options.ROOT_ZONES = get_nc_dimension(&(filenames.params), "root_zone");

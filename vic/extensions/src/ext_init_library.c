@@ -11,6 +11,12 @@ initialize_ext_local_structures(void)
     if(ext_options.GROUNDWATER){
         initialize_gw_local_structures();
     }
+    if(ext_options.ROUTING){
+        initialize_rout_local_structures();
+    }
+    if(ext_options.WATER_USE){
+        initialize_wu_local_structures();
+    }
 }
 
 /******************************************************************************
@@ -20,7 +26,12 @@ initialize_ext_local_structures(void)
 void
 initialize_ext_options(ext_option_struct *options)
 {    
-    initialize_gw_options(options);
+    options->GROUNDWATER = false;
+    options->ROUTING = false;
+    options->WATER_USE = false;
+    
+    options->GW_INIT_FROM_FILE = false;
+    options->UH_NSTEPS = 0;
 }
 
 /******************************************************************************
@@ -30,7 +41,9 @@ initialize_ext_options(ext_option_struct *options)
 void
 initialize_ext_filenames(ext_filenames_struct *filenames)
 {    
-    initialize_gw_filenames(filenames);
+    initialize_nameid(&filenames->groundwater);
+    initialize_nameid(&filenames->routing);
+    initialize_nameid(&filenames->water_use);
     
     initialize_ext_info(&filenames->info);
 }
@@ -40,8 +53,18 @@ initialize_ext_filenames(ext_filenames_struct *filenames)
  *           model.
  *****************************************************************************/
 void
-initialize_ext_info(ext_info_struct *info){    
-    initialize_gw_info(info);
+initialize_ext_info(ext_info_struct *info){
+    strcpy(info->Ka_expt, "Ka_expt");
+    strcpy(info->zwt_init, "zwt_init");
+    strcpy(info->Ws_init, "Ws_init");
+    strcpy(info->Sy, "Sy");
+    
+    strcpy(info->direction, "flow_direction");
+    strcpy(info->flow_velocity, "flow_velocity");
+    strcpy(info->flow_diffusion, "flow_diffusion");
+    
+    strcpy(info->demand, "demand");
+    strcpy(info->consumption_fraction, "consumption_fraction");
 }
 
 /******************************************************************************

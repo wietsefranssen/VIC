@@ -1,21 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   ext_def.h
- * Author: bram
- *
- * Created on September 7, 2017, 12:28 AM
- */
-
 #ifndef EXT_DEF_H
 #define EXT_DEF_H
 
 #include <stdbool.h>
 #include <groundwater.h>
+#include <routing.h>
+#include <water_use.h>
 
 #define VIC_RESOLUTION 0.5
 
@@ -27,12 +16,19 @@ typedef struct{
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
     bool GROUNDWATER;
+    bool ROUTING;
+    bool WATER_USE;
     
-    bool GW_INIT_FROM_FILE;
+    bool GW_INIT_FROM_FILE;    
+    int UH_NSTEPS;
+    int WU_INPUT_FREQUENCY[WU_NSECTORS];
+    int WU_RETURN_LOCATION[WU_NSECTORS];
 }ext_option_struct;
 
 typedef struct{
     gw_var_struct **groundwater;
+    rout_var_struct routing;
+    wu_var_struct *water_use;
 }ext_all_vars_struct;
 
 void initialize_ext_mpi();

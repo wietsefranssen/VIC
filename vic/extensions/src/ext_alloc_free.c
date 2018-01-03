@@ -13,6 +13,12 @@ ext_alloc(void)
     if(ext_options.GROUNDWATER){
         gw_alloc();
     }    
+    if(ext_options.ROUTING){
+        rout_alloc();
+    }    
+    if(ext_options.WATER_USE){
+        wu_alloc();
+    }    
         
     initialize_ext_local_structures();
 }
@@ -25,6 +31,12 @@ void ext_finalize()
     if(ext_options.GROUNDWATER){
         gw_finalize();
     }
+    if(ext_options.ROUTING){
+        rout_finalize();
+    }    
+    if(ext_options.WATER_USE){
+        wu_finalize();
+    }    
         
     free(ext_all_vars);
 }

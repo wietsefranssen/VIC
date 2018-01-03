@@ -4,7 +4,8 @@
  * @brief   Gather double precision variable
  * @details Values are gathered to the master node
  *****************************************************************************/
-void gather_double(double *dvar, double *var_local) {
+void gather_double(double *dvar, double *var_local) 
+{
     extern MPI_Comm MPI_COMM_VIC;
     extern domain_struct global_domain;
     extern domain_struct local_domain;
@@ -43,7 +44,8 @@ void gather_double(double *dvar, double *var_local) {
  * @brief   Scatter double precision variable recursive
  * @details values from master node are scattered to the local nodes
  *****************************************************************************/
-void gather_double_2d(double **dvar, double **var_local, int depth) {
+void gather_double_2d(double **dvar, double **var_local, int depth) 
+{
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern int mpi_rank;
@@ -86,7 +88,8 @@ void gather_double_2d(double **dvar, double **var_local, int depth) {
  * @brief   Gather int variable
  * @details Values are gathered to the master node
  *****************************************************************************/
-void gather_int(int *ivar, int *ivar_local) {
+void gather_int(int *ivar, int *ivar_local) 
+{
     extern MPI_Comm MPI_COMM_VIC;
     extern domain_struct global_domain;
     extern domain_struct local_domain;
@@ -125,7 +128,8 @@ void gather_int(int *ivar, int *ivar_local) {
  * @brief   Gather int variable
  * @details Values are gathered to the master node
  *****************************************************************************/
-void gather_sizet(size_t *svar, size_t *svar_local) {
+void gather_sizet(size_t *svar, size_t *svar_local) 
+{
     extern MPI_Comm MPI_COMM_VIC;
     extern domain_struct global_domain;
     extern domain_struct local_domain;
@@ -164,7 +168,8 @@ void gather_sizet(size_t *svar, size_t *svar_local) {
  * @brief   Gather int variable
  * @details Values are gathered to the master node
  *****************************************************************************/
-void gather_sizet_2d(size_t **svar, size_t **var_local, int depth) {
+void gather_sizet_2d(size_t **svar, size_t **var_local, int depth) 
+{
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern int mpi_rank;
@@ -207,7 +212,8 @@ void gather_sizet_2d(size_t **svar, size_t **var_local, int depth) {
  * @brief   Scatter double precision variable
  * @details values from master node are scattered to the local nodes
  *****************************************************************************/
-void scatter_double(double *dvar, double *var_local) {
+void scatter_double(double *dvar, double *var_local) 
+{
 
     extern MPI_Comm MPI_COMM_VIC;
     extern domain_struct global_domain;
@@ -246,7 +252,8 @@ void scatter_double(double *dvar, double *var_local) {
  * @brief   Scatter double precision variable
  * @details values from master node are scattered to the local nodes
  *****************************************************************************/
-void scatter_double_2d(double **dvar, double **var_local, int depth) {
+void scatter_double_2d(double **dvar, double **var_local, int depth) 
+{
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern int mpi_rank;
@@ -288,7 +295,8 @@ void scatter_double_2d(double **dvar, double **var_local, int depth) {
  * @brief   Scatter integer variable
  * @details values from master node are scattered to the local nodes
  *****************************************************************************/
-void scatter_int(int *ivar, int *var_local) {
+void scatter_int(int *ivar, int *var_local) 
+{
 
     extern MPI_Comm MPI_COMM_VIC;
     extern domain_struct global_domain;
@@ -327,7 +335,8 @@ void scatter_int(int *ivar, int *var_local) {
  * @brief   Scatter size_t variable
  * @details values from master node are scattered to the local nodes
  *****************************************************************************/
-void scatter_sizet(size_t *svar, size_t *var_local) {
+void scatter_sizet(size_t *svar, size_t *var_local) 
+{
 
     extern MPI_Comm MPI_COMM_VIC;
     extern domain_struct global_domain;
@@ -366,7 +375,8 @@ void scatter_sizet(size_t *svar, size_t *var_local) {
  * @brief   Scatter size_t variable recursive
  * @details values from master node are scattered to the local nodes
  *****************************************************************************/
-void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth) {
+void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth)
+{
     extern domain_struct global_domain;
     extern domain_struct local_domain;
     extern int mpi_rank;
@@ -405,7 +415,8 @@ void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth) {
 }
 
 void 
-create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
+create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type)
+{
     extern MPI_Comm MPI_COMM_VIC;
     int             nitems; // number of elements in struct
     int             status;
@@ -414,7 +425,7 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     MPI_Aint       *offsets;
     MPI_Datatype   *mpi_types;
     
-    nitems = 2;
+    nitems = 4;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -434,6 +445,12 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
     
     //bool GROUNDWATER;    
     offsets[i] = offsetof(ext_option_struct, GROUNDWATER);
+    mpi_types[i++] = MPI_C_BOOL;
+    //bool ROUTING;    
+    offsets[i] = offsetof(ext_option_struct, ROUTING);
+    mpi_types[i++] = MPI_C_BOOL;
+    //bool WATER_USE;    
+    offsets[i] = offsetof(ext_option_struct, WATER_USE);
     mpi_types[i++] = MPI_C_BOOL;
     
     //bool GW_INIT_FROM_FILE;    
@@ -459,7 +476,8 @@ create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type){
 }
 
 void 
-create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
+create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type)
+{
     extern MPI_Comm MPI_COMM_VIC;
     int             nitems; // number of elements in struct
     int             status;
@@ -502,4 +520,89 @@ create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type){
     free(blocklengths);
     free(offsets);
     free(mpi_types);
+}
+
+void
+mpi_map_decomp_domain_basin(size_t   ncells,
+                      size_t   mpi_size,
+                      int    **mpi_map_local_array_sizes,
+                      int    **mpi_map_global_array_offsets,
+                      size_t **mpi_map_mapping_array)
+{    
+    extern ext_filenames_struct ext_filenames; 
+    
+    basin_struct basins;
+    
+    size_t i;
+    size_t j;
+    size_t k;
+    size_t l;
+    
+    size_t *node_ids;
+    size_t *basin_to_node;
+    
+    // open extension routing file
+    status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
+                     &(ext_filenames.routing.nc_id));
+    check_nc_status(status, "Error opening %s",
+                    ext_filenames.routing.nc_filename);
+    
+    get_basins(&basins);
+    
+    // close extension routing file
+    status = nc_close(ext_filenames.routing.nc_id);
+    check_nc_status(status, "Error closing %s",
+                    ext_filenames.routing.nc_filename);
+    
+    size_t node_ids = malloc(mpi_size * sizeof(*node_ids));
+    check_alloc_status(node_ids, "Memory allocation error.");
+    size_t basin_to_node = malloc(basins.Nbasin * sizeof(*basin_to_node));
+    check_alloc_status(basin_to_node, "Memory allocation error.");
+    
+    *mpi_map_local_array_sizes = calloc(mpi_size,
+                                        sizeof(*(*mpi_map_local_array_sizes)));
+    *mpi_map_global_array_offsets = calloc(mpi_size,
+                                           sizeof(*(*
+                                                    mpi_map_global_array_offsets)));
+    *mpi_map_mapping_array = calloc(ncells, sizeof(*(*mpi_map_mapping_array)));
+    
+    for(i=0;i<mpi_size;i++){
+        (*mpi_map_local_array_sizes)[i]=0;
+        (*mpi_map_global_array_offsets)[i]=0;
+    }
+    for(i=0;i<ncells;i++){
+        (*mpi_map_mapping_array)[i]=0;
+    }
+    
+    // determine number of cells per node
+    for(i=0;i<basins.Nbasin;i++){        
+        //sort nodes by size
+        for(j=0;j<mpi_size;j++){
+            node_ids[j]=j;
+        }
+        sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,true);   
+                      
+        // find node with lowest amount of cells and add the biggest basin
+        (*mpi_map_local_array_sizes)[node_ids[0]] += basins.Ncells[basins.sorted_basins[i]];
+        basin_to_node[basins.sorted_basins[i]] = node_ids[0];
+    }
+
+    // determine offsets to use for MPI_Scatterv and MPI_Gatherv
+    for (i = 1; i < mpi_size; i++) {
+        for (j = 0; j < i; j++) {
+            (*mpi_map_global_array_offsets)[i] +=
+                (*mpi_map_local_array_sizes)[j];
+        }
+    }
+
+    // set mapping array
+    for (i = 0, l = 0; i < (size_t) mpi_size; i++) {
+        for(j=0;j<basins.Nbasin;j++){
+            if(basin_to_node[j]==i){
+                for(k=0;k<basins.Ncells[j];k++){
+                    (*mpi_map_mapping_array)[l++] = basins.catchment[j][k];
+                }
+            }
+        }
+    }
 }

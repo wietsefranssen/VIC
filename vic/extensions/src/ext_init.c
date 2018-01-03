@@ -9,4 +9,10 @@ ext_init(void){
     if(ext_options.GROUNDWATER){
         gw_init();
     }
+    if(ext_options.ROUTING){
+        rout_init();
+    }
+    if(ext_options.WATER_USE){
+        wu_init();
+    }
 }

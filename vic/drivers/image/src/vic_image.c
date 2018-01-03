@@ -70,11 +70,15 @@ nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 MPI_Datatype mpi_ext_option_struct_type;
 MPI_Datatype mpi_ext_param_struct_type;
     
+int mpi_decomposition;
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
 ext_all_vars_struct *ext_all_vars = NULL;
 gw_con_struct *gw_con = NULL;
+rout_con_struct *rout_con = NULL;
+wu_con_struct **wu_con = NULL;
+size_t *routing_order;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model

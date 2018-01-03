@@ -41,27 +41,3 @@ initialize_gw_con(gw_con_struct *gw_con)
     gw_con->Qb_max = 0.0;
     gw_con->Sy = 0.0;
 }
-
-void
-initialize_gw_info(ext_info_struct *info)
-{
-    strcpy(info->Ka_expt, "Ka_expt");
-    strcpy(info->Qb_max, "Qb_max");
-    strcpy(info->zwt_init, "zwt_init");
-    strcpy(info->Ws_init, "Ws_init");
-    strcpy(info->Sy, "Sy");
-}
-
-void
-initialize_gw_filenames(ext_filenames_struct *filenames)
-{
-    initialize_nameid(&filenames->groundwater);
-}
-
-void
-initialize_gw_options(ext_option_struct *options)
-{
-    options->GROUNDWATER = false;
-    
-    options->GW_INIT_FROM_FILE = false;
-}

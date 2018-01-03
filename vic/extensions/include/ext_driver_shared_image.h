@@ -22,15 +22,25 @@
 #define GW_DEFAULT_ZWT 50
 
 typedef struct {
-    char Qb_max[MAXSTRING];
+    // Groundwater
     char Ka_expt[MAXSTRING];
     char Sy[MAXSTRING];
     char zwt_init[MAXSTRING];
     char Ws_init[MAXSTRING];
+    // Routing
+    char direction[MAXSTRING];
+    char uh_nsteps[MAXSTRING];
+    char uh_length[MAXSTRING];
+    char uh[MAXSTRING];
+    // Water use
+    char demand[WU_NSECTORS][MAXSTRING];
+    char consumption_fraction[WU_NSECTORS][MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
     nameid_struct groundwater;
+    nameid_struct routing;
+    nameid_struct water_use;
     
     ext_info_struct info;
 }ext_filenames_struct;
