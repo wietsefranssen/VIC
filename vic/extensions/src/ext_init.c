@@ -1,7 +1,8 @@
 #include <ext_driver_shared_image.h>
 
 void
-ext_init(void){
+ext_init(void)
+{
     extern ext_option_struct ext_options;
     
     ext_set_state_meta_data_info();
@@ -11,8 +12,5 @@ ext_init(void){
     }
     if(ext_options.ROUTING){
         rout_init();
-    }
-    if(ext_options.WATER_USE){
-        wu_init();
     }
 }

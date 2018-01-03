@@ -1,3 +1,5 @@
+#include <ext_driver_shared_image.h>
+
 void get_basins(basin_struct *basins){
     extern domain_struct global_domain;
     extern ext_filenames_struct ext_filenames;
@@ -34,7 +36,7 @@ void get_basins(basin_struct *basins){
         basins->basin_map[i] = MISSING_USI;
     }
     
-    get_active_nc_field_int(ext_filenames.routing, ext_filenames.info.direction, d2start, d2count,
+    get_active_nc_field_int(&ext_filenames.routing, ext_filenames.info.flow_direction, d2start, d2count,
                      direction);
     
     basins->Nbasin = 0;
@@ -55,7 +57,7 @@ void get_basins(basin_struct *basins){
                 break;
             }
 
-            get_downstream(cur_cell, cur_direction, &next_cell);
+            get_downstream_global(cur_cell, cur_direction);
             
             if(next_cell == cur_cell){
                 for(j=0;j<Nriver;j++){

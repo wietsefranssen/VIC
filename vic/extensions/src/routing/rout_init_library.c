@@ -16,6 +16,8 @@ initialize_rout_var(rout_var_struct *rout_var)
 void
 initialize_rout_con(rout_con_struct *rout_con)
 {
+    extern ext_option_struct ext_options;
+    
     size_t i;
     
     rout_con->Nupstream = 0;

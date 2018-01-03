@@ -28,19 +28,20 @@ typedef struct {
     char zwt_init[MAXSTRING];
     char Ws_init[MAXSTRING];
     // Routing
-    char direction[MAXSTRING];
+    char flow_direction[MAXSTRING];
     char uh_nsteps[MAXSTRING];
-    char uh_length[MAXSTRING];
     char uh[MAXSTRING];
     // Water use
-    char demand[WU_NSECTORS][MAXSTRING];
-    char consumption_fraction[WU_NSECTORS][MAXSTRING];
+    char demand[MAXSTRING];
+    char consumption_fraction[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
     nameid_struct groundwater;
     nameid_struct routing;
     nameid_struct water_use;
+    
+    char water_use_forcing_pfx[MAXSTRING];
     
     ext_info_struct info;
 }ext_filenames_struct;

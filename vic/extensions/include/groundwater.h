@@ -1,10 +1,11 @@
 #ifndef GROUNDWATER_H
 #define GROUNDWATER_H
 
+#include <stdbool.h>
+
 #define GW_REF_DEPTH 50
 #define GW_DEF_ZWT_INIT 4.0
 
-#include <stdbool.h>
 typedef struct{
     double recharge;        /**< drainage to groundwater (mm) */
     double Wa;              /**< water stored in groundwater below soil column (compared to reference) (mm) */    
@@ -19,23 +20,17 @@ typedef struct{
     double Sy;              /**< specific yield of aquifer (m/m) */
 }gw_con_struct;
 
-
-void initialize_gw_local_structures(void);
-void initialize_gw_var(gw_var_struct *gw_var);
-void initialize_gw_con(gw_con_struct *gw_con);
-
-void gw_alloc(void);
-void gw_start(void);
 bool gw_get_global_parameters(char *cmdstr);
 void gw_validate_global_parameters(void);
+void gw_alloc(void);
+void initialize_gw_local_structures(void);
+void gw_init(void);
 void gw_set_output_meta_data_info(void);
 void gw_set_state_meta_data_info(void);
-void gw_init(void);
 void gw_generate_default_state(void);
 void gw_restore(void);
-void gw_update_step_vars(void);
-void gw_run(void);
 void gw_put_data(void);
 void gw_finalize(void);
+
 #endif
 

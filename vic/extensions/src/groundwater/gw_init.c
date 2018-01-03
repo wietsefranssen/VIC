@@ -77,8 +77,7 @@ gw_init(void)
     }
     
     gw_set_aquifer();
-    gw_set_maximum_baseflow();
-    
+    gw_set_maximum_baseflow();    
     
     // close parameter file
     if(mpi_rank == VIC_MPI_ROOT){

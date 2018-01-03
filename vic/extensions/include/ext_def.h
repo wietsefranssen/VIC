@@ -20,9 +20,13 @@ typedef struct{
     bool WATER_USE;
     
     bool GW_INIT_FROM_FILE;    
-    int UH_NSTEPS;
-    int WU_INPUT_FREQUENCY[WU_NSECTORS];
+    size_t UH_NSTEPS;
+    int WU_INPUT_FREQUENCY;
+    int WU_INPUT_LOCATION[WU_NSECTORS];
     int WU_RETURN_LOCATION[WU_NSECTORS];
+    int WU_COMPENSATION_TIME[WU_NSECTORS];
+    
+    size_t wu_force_offset;
 }ext_option_struct;
 
 typedef struct{

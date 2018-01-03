@@ -9,7 +9,7 @@ rout_set_uh(void)
     extern domain_struct local_domain;
     extern rout_con_struct *rout_con;
     
-    int *dvar = NULL;
+    double *dvar = NULL;
     
     size_t i;
     size_t j;
@@ -63,17 +63,84 @@ rout_set_direction(void)
     d2count[0] = global_domain.n_ny;
     d2count[1] = global_domain.n_nx; 
     
-    get_scatter_nc_field_double(&(ext_filenames.routing), 
-            ext_filenames.info.direction, d2start, d2count, ivar);
+    get_scatter_nc_field_int(&(ext_filenames.routing), 
+            ext_filenames.info.flow_direction, d2start, d2count, ivar);
     for (i = 0; i < local_domain.ncells_active; i++) {
         rout_con[i].direction = ivar[i];
     }
     
     free(ivar);
 }
+size_t
+get_downstream_global(size_t id, int direction)
+{    
+    extern domain_struct global_domain;
+    extern domain_struct local_domain;
+    extern size_t *filter_active_cells;
+    
+    size_t current_io_idx;
+    size_t downstream_io_idx;
+            
+    current_io_idx = filter_active_cells[id];     
+
+    switch(direction){
+        case 3:
+            downstream_io_idx = current_io_idx + 1;
+            break;
+        case 4:
+            if(current_io_idx < global_domain.n_nx - 1){
+                log_err("Flow direction is going outside of domain");      
+            }
+            downstream_io_idx = current_io_idx - global_domain.n_nx + 1;
+            break;
+        case 5:
+            if(current_io_idx < global_domain.n_nx){
+                log_err("Flow direction is going outside of domain");      
+            }
+            downstream_io_idx = current_io_idx - global_domain.n_nx;
+            break;
+        case 6:
+            if(current_io_idx < global_domain.n_nx + 1){
+                log_err("Flow direction is going outside of domain");      
+            }
+            downstream_io_idx = current_io_idx - global_domain.n_nx - 1;
+            break;
+        case 7:
+            if(current_io_idx <= 0){
+                log_err("Flow direction is going outside of domain");      
+            }
+            downstream_io_idx = current_io_idx - 1;
+            break;
+        case 8:
+            downstream_io_idx = current_io_idx + global_domain.n_nx - 1;
+            break;
+        case 1:
+            downstream_io_idx = current_io_idx + global_domain.n_nx;
+            break;
+        case 2:
+            downstream_io_idx = current_io_idx + global_domain.n_nx + 1;
+            break;
+        case 9:
+            downstream_io_idx = current_io_idx;
+            break;
+        default:
+            downstream_io_idx = current_io_idx;
+            break;
+    }
+    
+    if(downstream_io_idx >= global_domain.ncells_total){
+        log_err("Flow direction is going outside of total domain");      
+    }  
+           
+    if(local_domain.locations[downstream_io_idx].global_idx == MISSING_USI){
+        log_err("Flow direction is going outside of global domain");
+    }
+    
+    return local_domain.locations[downstream_io_idx].global_idx;    
+}
 
 size_t
-get_downstream(size_t id, int direction)
+get_downstream_local(size_t id, int direction)
 {    
     extern domain_struct global_domain;
     extern domain_struct local_domain;
@@ -131,7 +198,7 @@ get_downstream(size_t id, int direction)
             break;
     }
     
-    if(downstream_io_idx >= global_domain.ncells_total || downstream_io_idx < 0){
+    if(downstream_io_idx >= global_domain.ncells_total){
         log_err("Flow direction is going outside of total domain");      
     }  
            
@@ -150,13 +217,11 @@ rout_set_downstream(void)
 {   
     extern domain_struct local_domain;
     extern rout_con_struct *rout_con;
-        
-    size_t downstream;
     
     size_t i;
               
     for(i=0; i<local_domain.ncells_active; i++){
-        downstream = get_downstream(i, rout_con[i].direction);
+        rout_con[i].downstream = get_downstream_local(i, rout_con[i].direction);
     }    
 }
 

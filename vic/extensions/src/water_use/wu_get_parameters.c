@@ -32,7 +32,7 @@ wu_validate_global_parameters(void)
     extern ext_filenames_struct ext_filenames;
     extern ext_option_struct ext_options;
     
-    if(!ext_options.routing){
+    if(!ext_options.ROUTING){
         log_err("WATER_USE = TRUE but ROUTING = FALSE");
     }
     if(strcasecmp(ext_filenames.water_use.nc_filename, MISSING_S) == 0){

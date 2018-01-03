@@ -532,6 +532,7 @@ mpi_map_decomp_domain_basin(size_t   ncells,
     extern ext_filenames_struct ext_filenames; 
     
     basin_struct basins;
+    int status;
     
     size_t i;
     size_t j;
@@ -554,9 +555,9 @@ mpi_map_decomp_domain_basin(size_t   ncells,
     check_nc_status(status, "Error closing %s",
                     ext_filenames.routing.nc_filename);
     
-    size_t node_ids = malloc(mpi_size * sizeof(*node_ids));
+    node_ids = malloc(mpi_size * sizeof(*node_ids));
     check_alloc_status(node_ids, "Memory allocation error.");
-    size_t basin_to_node = malloc(basins.Nbasin * sizeof(*basin_to_node));
+    basin_to_node = malloc(basins.Nbasin * sizeof(*basin_to_node));
     check_alloc_status(basin_to_node, "Memory allocation error.");
     
     *mpi_map_local_array_sizes = calloc(mpi_size,

@@ -75,7 +75,7 @@ INCLUDES = -I ${DRIVERPATH}/include \
 		   -I ${VICPATH}/include \
 		   -I ${SHAREDPATH}/include \
 		   -I ${SHAREDIMAGEPATH}/include \
-		   -I ${EXTPATH}/include
+		   -I ${EXTPATH}/include \
 
 # Uncomment to include debugging information
 CFLAGS  =  ${INCLUDES} ${NC_CFLAGS} -ggdb -O0 -Wall -Wextra -std=c99 \
@@ -104,14 +104,15 @@ HDRS = \
 	$(wildcard ${DRIVERPATH}/include/*.h) \
 	$(wildcard ${SHAREDPATH}/include/*.h) \
 	$(wildcard ${SHAREDIMAGEPATH}/include/*.h) \
-	$(wildcard ${EXTPATH}/include/*.h)
+	$(wildcard ${EXTPATH}/include/*.h) \
 
 SRCS = \
 	$(wildcard ${VICPATH}/src/*.c) \
 	$(wildcard ${DRIVERPATH}/src/*.c) \
 	$(wildcard ${SHAREDPATH}/src/*.c) \
 	$(wildcard ${SHAREDIMAGEPATH}/src/*.c) \
-	$(wildcard ${EXTPATH}/src/*/*.c)
+	$(wildcard ${EXTPATH}/src/*.c) \
+	$(wildcard ${EXTPATH}/src/*/*.c) \
 
 OBJS = $(SRCS:%.o=%.c)
 

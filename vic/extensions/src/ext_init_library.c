@@ -59,9 +59,9 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->Ws_init, "Ws_init");
     strcpy(info->Sy, "Sy");
     
-    strcpy(info->direction, "flow_direction");
-    strcpy(info->flow_velocity, "flow_velocity");
-    strcpy(info->flow_diffusion, "flow_diffusion");
+    strcpy(info->flow_direction, "flow_direction");
+    strcpy(info->uh_nsteps, "uh_nsteps");
+    strcpy(info->uh, "uh");
     
     strcpy(info->demand, "demand");
     strcpy(info->consumption_fraction, "consumption_fraction");

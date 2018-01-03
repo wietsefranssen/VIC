@@ -15,6 +15,9 @@ void initialize_ext_mpi();
 void create_MPI_ext_option_struct_type(MPI_Datatype *mpi_type);
 void create_MPI_ext_parameters_struct_type(MPI_Datatype *mpi_type);
 
+bool ext_mpi_get_global_parameters(char *cmdstr);
+void ext_mpi_validate_global_parameters(void);
+
 void mpi_map_decomp_domain_basin(size_t ncells, size_t mpi_size,
                            int **mpi_map_local_array_sizes,
                            int **mpi_map_global_array_offsets,

@@ -13,8 +13,8 @@ ext_run()
     timer_start(&timer);
     
     // Run the extensions
-    if(ext_options.GROUNDWATER){
-        gw_run();
+    if(ext_options.ROUTING){
+        rout_run();
     }
     
     timer_stop(&timer);
