@@ -141,6 +141,10 @@ typedef struct {
     size_t time_size;
     size_t veg_size;
     
+    // Extensions
+    int sector_dimid;
+    size_t sector_size;
+    
     bool open;
     nc_var_struct *nc_vars;
 } nc_file_struct;

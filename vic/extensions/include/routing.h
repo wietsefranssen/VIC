@@ -29,12 +29,14 @@ typedef struct{
 void get_basins(basin_struct *basins);
 bool rout_get_global_parameters(char *cmdstr);
 void rout_validate_global_parameters(void);
+void rout_start(void);
 void rout_alloc(void);
 void initialize_rout_local_structures(void);
 void rout_init(void);
 void rout_set_output_meta_data_info(void);
 void rout_set_state_meta_data_info(void);
-void rout_run(void);
+void rout_run(size_t cur_cell);
+void rout_put_data(void);
 void rout_finalize(void);
 
 size_t get_downstream_global(size_t id, int direction);

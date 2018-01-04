@@ -17,7 +17,7 @@ ext_mpi_get_global_parameters(char *cmdstr)
         }else if(strcasecmp("RANDOM", flgstr) == 0){
             mpi_decomposition = MPI_DECOMPOSITION_RANDOM;
         }else{
-            log_err("MPI_DECOMPOSITION should be BASIN or RANDOM");
+            log_err("MPI_DECOMPOSITION should be BASIN or RANDOM; %s is unknown", flgstr);
         }
     }
     else {

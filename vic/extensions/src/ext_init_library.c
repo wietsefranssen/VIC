@@ -26,12 +26,23 @@ initialize_ext_local_structures(void)
 void
 initialize_ext_options(ext_option_struct *options)
 {    
+    size_t i;
+    
     options->GROUNDWATER = false;
     options->ROUTING = false;
     options->WATER_USE = false;
     
     options->GW_INIT_FROM_FILE = false;
     options->UH_NSTEPS = 0;
+    options->WU_NINPUT_FROM_FILE = 0;
+    options->WU_INPUT_FREQUENCY = WU_INPUT_MONTHLY;
+    for(i = 0; i < WU_NSECTORS; i++){
+        options->WU_COMPENSATION_TIME[i] = 0;
+        options->WU_INPUT_LOCATION[i] = WU_INPUT_NONE;
+        options->WU_RETURN_LOCATION[i] = WU_RETURN_SURFACEWATER;
+    }
+    
+    options->wu_force_offset = 0;
 }
 
 /******************************************************************************
@@ -44,6 +55,8 @@ initialize_ext_filenames(ext_filenames_struct *filenames)
     initialize_nameid(&filenames->groundwater);
     initialize_nameid(&filenames->routing);
     initialize_nameid(&filenames->water_use);
+    
+    strcpy(filenames->water_use_forcing_pfx, MISSING_S);
     
     initialize_ext_info(&filenames->info);
 }
@@ -61,7 +74,7 @@ initialize_ext_info(ext_info_struct *info){
     
     strcpy(info->flow_direction, "flow_direction");
     strcpy(info->uh_nsteps, "uh_nsteps");
-    strcpy(info->uh, "uh");
+    strcpy(info->uh, "unit_hydrograph");
     
     strcpy(info->demand, "demand");
     strcpy(info->consumption_fraction, "consumption_fraction");
@@ -103,9 +116,12 @@ initialize_ext_mpi()
 {    
     extern MPI_Datatype mpi_ext_option_struct_type;
     extern MPI_Datatype mpi_ext_param_struct_type;
+    extern int mpi_decomposition;
     
     create_MPI_ext_option_struct_type(&mpi_ext_option_struct_type);
     create_MPI_ext_parameters_struct_type(&mpi_ext_param_struct_type);
+    
+    mpi_decomposition = MPI_DECOMPOSITION_RANDOM;
 }
 
 /******************************************************************************

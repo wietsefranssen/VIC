@@ -1,10 +1,10 @@
 #include <ext_driver_shared_image.h>
 
 void
-ext_start(){
+ext_start(void)
+{
     extern ext_parameters_struct ext_param;
     extern ext_option_struct ext_options;
-    extern ext_filenames_struct ext_filenames;
     extern MPI_Datatype mpi_ext_option_struct_type;
     extern MPI_Datatype mpi_ext_param_struct_type;
     extern MPI_Comm MPI_COMM_VIC;
@@ -14,9 +14,10 @@ ext_start(){
     
     if(mpi_rank == VIC_MPI_ROOT){      
         ext_validate_parameters();    
-        
-        ext_options.UH_NSTEPS = get_nc_dimension(&(ext_filenames.routing), 
-                ext_filenames.info.uh_nsteps);
+                
+        if(ext_options.ROUTING){
+            rout_start();
+        }
     }  
     
     status = MPI_Bcast(&ext_param, 1, mpi_ext_param_struct_type,

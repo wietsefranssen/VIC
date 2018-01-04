@@ -3,18 +3,30 @@
 void
 ext_run()
 {
+    extern domain_struct local_domain;
     extern ext_option_struct ext_options;
+    extern size_t *routing_order;
     
     timer_struct timer;
+    size_t cur_cell;
+    
+    size_t i;
     
     // Update variables locally
     ext_update_step_vars();
        
     timer_start(&timer);
     
-    // Run the extensions
-    if(ext_options.ROUTING){
-        rout_run();
+    for(i = 0; i < local_domain.ncells_active; i++){
+        cur_cell = routing_order[i];
+        
+        // Run the extensions
+        if(ext_options.ROUTING){
+            rout_run(cur_cell);
+        }
+        if(ext_options.WATER_USE){
+            wu_run(cur_cell);
+        }
     }
     
     timer_stop(&timer);

@@ -231,7 +231,9 @@ void rescale_soil_veg_fluxes(double, double, cell_data_struct *,
 void rhoinit(double *, double);
 double root_brent(double, double, double (*Function)(double, va_list), ...);
 double rtnewt(double x1, double x2, double xacc, double Ur, double Zr);
-int runoff(cell_data_struct *, energy_bal_struct *, gw_var_struct *, soil_con_struct *, gw_con_struct *, double,
+int runoff(cell_data_struct *, energy_bal_struct *, soil_con_struct *, double,
+           double *, int);
+int runoff_gw(cell_data_struct *, energy_bal_struct *, gw_var_struct *, soil_con_struct *, gw_con_struct *, double,
            double *, int);
 void set_node_parameters(double *, double *, double *, double *, double *,
                          double *, double *, double *, double *, double *,

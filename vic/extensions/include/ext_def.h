@@ -25,6 +25,7 @@ typedef struct{
     int WU_INPUT_LOCATION[WU_NSECTORS];
     int WU_RETURN_LOCATION[WU_NSECTORS];
     int WU_COMPENSATION_TIME[WU_NSECTORS];
+    size_t WU_NINPUT_FROM_FILE;
     
     size_t wu_force_offset;
 }ext_option_struct;

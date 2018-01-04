@@ -2,28 +2,19 @@
 
 bool
 ext_get_global_param(char *cmdstr)
-{
-    extern ext_option_struct ext_options;
-    
+{    
     if(ext_mpi_get_global_parameters(cmdstr)){
         return true;
+    }    
+    if(gw_get_global_parameters(cmdstr)){
+        return true;
     }
-    
-    if(ext_options.GROUNDWATER){
-        if(gw_get_global_parameters(cmdstr)){
-            return true;
-        }
-    }   
-    if(ext_options.ROUTING){
-        if(rout_get_global_parameters(cmdstr)){
-            return true;
-        }
-    }  
-    if(ext_options.WATER_USE){
-        if(wu_get_global_parameters(cmdstr)){
-            return true;
-        }
-    }  
+    if(rout_get_global_parameters(cmdstr)){
+        return true;
+    }
+    if(wu_get_global_parameters(cmdstr)){
+        return true;
+    }
     return false;
 }
 

@@ -20,15 +20,15 @@ rout_set_uh(void)
     d3start[0] = 0;
     d3start[1] = 0;
     d3start[2] = 0;
-    d3count[0] = global_domain.n_ny;
-    d3count[1] = global_domain.n_nx; 
-    d3count[2] = 1; 
+    d3count[0] = 1; 
+    d3count[1] = global_domain.n_ny;
+    d3count[2] = global_domain.n_nx; 
     
     dvar = malloc(local_domain.ncells_active * sizeof(*dvar));
     check_alloc_status(dvar, "Memory allocation error."); 
     
     for(j = 0; j < ext_options.UH_NSTEPS; j++){
-        d3start[2] = j;
+        d3start[0] = j;
         
         get_scatter_nc_field_double(&(ext_filenames.routing), 
                 ext_filenames.info.uh, d3start, d3count, dvar);
@@ -75,7 +75,6 @@ size_t
 get_downstream_global(size_t id, int direction)
 {    
     extern domain_struct global_domain;
-    extern domain_struct local_domain;
     extern size_t *filter_active_cells;
     
     size_t current_io_idx;
@@ -132,11 +131,11 @@ get_downstream_global(size_t id, int direction)
         log_err("Flow direction is going outside of total domain");      
     }  
            
-    if(local_domain.locations[downstream_io_idx].global_idx == MISSING_USI){
-        log_err("Flow direction is going outside of global domain");
+    if(global_domain.locations[downstream_io_idx].global_idx == MISSING_USI){
+        downstream_io_idx = current_io_idx;
     }
     
-    return local_domain.locations[downstream_io_idx].global_idx;    
+    return global_domain.locations[downstream_io_idx].global_idx;    
 }
 
 size_t
@@ -208,8 +207,7 @@ get_downstream_local(size_t id, int direction)
         }
     }
     
-    log_err("Flow direction is going outside of local domain");
-    return MISSING_USI;    
+    return id;    
 }
 
 void
@@ -319,10 +317,10 @@ rout_init(void)
     
     // open parameter file
     if(mpi_rank == VIC_MPI_ROOT){
-        status = nc_open(ext_filenames.groundwater.nc_filename, NC_NOWRITE,
-                         &(ext_filenames.groundwater.nc_id));
+        status = nc_open(ext_filenames.routing.nc_filename, NC_NOWRITE,
+                         &(ext_filenames.routing.nc_id));
         check_nc_status(status, "Error opening %s",
-                        ext_filenames.groundwater.nc_filename);
+                        ext_filenames.routing.nc_filename);
     }
     
     rout_set_uh();
@@ -333,8 +331,8 @@ rout_init(void)
     
     // close parameter file
     if(mpi_rank == VIC_MPI_ROOT){
-        status = nc_close(ext_filenames.groundwater.nc_id);
+        status = nc_close(ext_filenames.routing.nc_id);
         check_nc_status(status, "Error closing %s",
-                        ext_filenames.groundwater.nc_filename);
+                        ext_filenames.routing.nc_filename);
     }
 }

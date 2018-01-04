@@ -25,7 +25,7 @@ gw_get_global_parameters(char *cmdstr)
         }else if(strcasecmp("FROM_FILE", flgstr) == 0){
             ext_options.GW_INIT_FROM_FILE = true;
         }else{
-            log_err("GROUNDWATER_INIT should be DEFAULT or FROM_FILE");
+            log_err("GROUNDWATER_INIT should be DEFAULT or FROM_FILE; %s is unknown", flgstr);
         }
     }
     
