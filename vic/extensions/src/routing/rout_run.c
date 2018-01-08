@@ -3,6 +3,8 @@
 void
 rout_run(size_t cur_cell)
 {
+    extern domain_struct local_domain;
+    extern global_param_struct global_param;
     extern ext_option_struct ext_options;
     extern ext_all_vars_struct *ext_all_vars;
     extern rout_con_struct *rout_con;
@@ -30,7 +32,8 @@ rout_run(size_t cur_cell)
     }        
 
     runoff = 0;
-    runoff += out_data[cur_cell][OUT_RUNOFF][0] + out_data[cur_cell][OUT_BASEFLOW][0];
+    runoff += (out_data[cur_cell][OUT_RUNOFF][0] + out_data[cur_cell][OUT_BASEFLOW][0]) / 
+            MM_PER_M * local_domain.locations[cur_cell].area / global_param.dt;
 
     rout((runoff + inflow), rout_con[cur_cell].uh, ext_all_vars[cur_cell].routing.discharge, ext_options.UH_NSTEPS);  
     rout((runoff + nat_inflow), rout_con[cur_cell].uh, ext_all_vars[cur_cell].routing.nat_discharge, ext_options.UH_NSTEPS);

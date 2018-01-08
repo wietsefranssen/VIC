@@ -12,13 +12,13 @@ wu_put_data(void)
     
     for(i = 0; i < local_domain.ncells_active; i++){ 
         for(j = 0; j < WU_NSECTORS; j++){
-            out_data[i][OUT_WU_DEMAND][0] = ext_all_vars[i].water_use[j].demand;
-            out_data[i][OUT_WU_COMPENSATION][0] = ext_all_vars[i].water_use[j].compensation_total;
-            out_data[i][OUT_WU_COMPENSATED][0] = ext_all_vars[i].water_use[j].compensated;
-            out_data[i][OUT_WU_WITHDRAWN][0] = ext_all_vars[i].water_use[j].withdrawn;
-            out_data[i][OUT_WU_CONSUMED][0] = ext_all_vars[i].water_use[j].consumed;
-            out_data[i][OUT_WU_RETURNED][0] = ext_all_vars[i].water_use[j].returned;
-            out_data[i][OUT_WU_SHORTAGE][0] = ext_all_vars[i].water_use[j].compensation[0];
+            out_data[i][OUT_WU_DEMAND][j] = ext_all_vars[i].water_use[j].demand;
+            out_data[i][OUT_WU_COMPENSATION][j] = ext_all_vars[i].water_use[j].compensation_total;
+            out_data[i][OUT_WU_COMPENSATED][j] = ext_all_vars[i].water_use[j].compensated;
+            out_data[i][OUT_WU_WITHDRAWN][j] = ext_all_vars[i].water_use[j].withdrawn;
+            out_data[i][OUT_WU_CONSUMED][j] = ext_all_vars[i].water_use[j].consumed;
+            out_data[i][OUT_WU_RETURNED][j] = ext_all_vars[i].water_use[j].returned;
+            out_data[i][OUT_WU_SHORTAGE][j] = ext_all_vars[i].water_use[j].compensation[0];
         }
     }    
 }

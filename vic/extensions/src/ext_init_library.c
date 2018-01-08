@@ -17,6 +17,31 @@ initialize_ext_local_structures(void)
     if(ext_options.WATER_USE){
         initialize_wu_local_structures();
     }
+    if(ext_options.IRRIGATION){
+        initialize_irr_local_structures();
+    }
+}
+
+/******************************************************************************
+ * @brief    Initialize a dmy
+ *****************************************************************************/
+void
+initialize_dmy(dmy_struct *dmy)
+{           
+    dmy->day = 0;
+    dmy->day_in_year = 0;
+    dmy->dayseconds = 0;
+    dmy->month = 0;
+    dmy->year = 0;
+}
+
+/******************************************************************************
+ * @brief    Initialize a nameid
+ *****************************************************************************/
+void
+initialize_nameid(nameid_struct *nameid){
+    strcpy(nameid->nc_filename, MISSING_S);
+    nameid->nc_id = MISSING;
 }
 
 /******************************************************************************
@@ -31,6 +56,7 @@ initialize_ext_options(ext_option_struct *options)
     options->GROUNDWATER = false;
     options->ROUTING = false;
     options->WATER_USE = false;
+    options->IRRIGATION = false;
     
     options->GW_INIT_FROM_FILE = false;
     options->UH_NSTEPS = 0;
@@ -55,6 +81,7 @@ initialize_ext_filenames(ext_filenames_struct *filenames)
     initialize_nameid(&filenames->groundwater);
     initialize_nameid(&filenames->routing);
     initialize_nameid(&filenames->water_use);
+    initialize_nameid(&filenames->irrigation);
     
     strcpy(filenames->water_use_forcing_pfx, MISSING_S);
     
@@ -78,6 +105,10 @@ initialize_ext_info(ext_info_struct *info){
     
     strcpy(info->demand, "demand");
     strcpy(info->consumption_fraction, "consumption_fraction");
+    
+    strcpy(info->nirr, "nirr");
+    strcpy(info->irrigated_class, "irr_class");
+    strcpy(info->ponded_class, "irr_pond");
 }
 
 /******************************************************************************
@@ -122,26 +153,4 @@ initialize_ext_mpi()
     create_MPI_ext_parameters_struct_type(&mpi_ext_param_struct_type);
     
     mpi_decomposition = MPI_DECOMPOSITION_RANDOM;
-}
-
-/******************************************************************************
- * @brief    Initialize a dmy
- *****************************************************************************/
-void
-initialize_dmy(dmy_struct *dmy)
-{           
-    dmy->day = 0;
-    dmy->day_in_year = 0;
-    dmy->dayseconds = 0;
-    dmy->month = 0;
-    dmy->year = 0;
-}
-
-/******************************************************************************
- * @brief    Initialize a nameid
- *****************************************************************************/
-void
-initialize_nameid(nameid_struct *nameid){
-    strcpy(nameid->nc_filename, MISSING_S);
-    nameid->nc_id = MISSING;
 }

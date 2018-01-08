@@ -74,11 +74,15 @@ int mpi_decomposition;
 ext_option_struct  ext_options;
 ext_filenames_struct  ext_filenames;
 ext_parameters_struct ext_param;
+
+size_t *routing_order;
+
 ext_all_vars_struct *ext_all_vars = NULL;
 gw_con_struct *gw_con = NULL;
 rout_con_struct *rout_con = NULL;
 wu_con_struct **wu_con = NULL;
-size_t *routing_order;
+irr_con_struct **irr_con = NULL;
+irr_con_map_struct *irr_con_map = NULL;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model

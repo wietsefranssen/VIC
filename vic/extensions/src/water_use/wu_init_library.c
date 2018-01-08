@@ -27,7 +27,7 @@ initialize_wu_con(wu_con_struct *wu_con)
     size_t i;
     
     for(i = 0; i < WU_NSECTORS; i++){
-        wu_con[i].consumption_fraction = 0.0; 
+        wu_con[i].consumption_fraction = 1.0; 
         wu_con[i].demand = 0.0;
     }
 }

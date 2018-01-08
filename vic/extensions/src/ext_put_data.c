@@ -20,4 +20,7 @@ ext_put_data(timer_struct timer)
     if(ext_options.ROUTING){
         rout_put_data();
     }
+    if(ext_options.WATER_USE){
+        wu_put_data();
+    }
 }

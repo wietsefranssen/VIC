@@ -2,7 +2,6 @@
 #define WATER_USE_H
 
 #include <stdbool.h>
-#include <vic_driver_shared_image.h>
 
 #define MAX_RETURN_STEPS 50
 #define MAX_COMPENSATION_STEPS 100
@@ -60,14 +59,9 @@ void wu_alloc(void);
 void initialize_wu_local_structures(void);
 void wu_set_output_meta_data_info(void);
 void wu_set_state_meta_data_info(void);
-bool wu_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
-bool wu_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
 void wu_force(void);
 void wu_run(size_t cur_cell);
-void wu_set_nc_output_file_info(nc_file_struct *nc_output_file);
-void wu_write_def_dim(nc_file_struct *nc_output_file, stream_struct *stream);
-void wu_write_def_dimvar(nc_file_struct *nc_output_file, stream_struct *stream);
-void wu_write_put_dimvar(nc_file_struct *nc_output_file, stream_struct *stream);
+void wu_put_data(void);
 void wu_finalize(void);
 
 

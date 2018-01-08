@@ -26,7 +26,7 @@ ext_write_def_dimvar(nc_file_struct *nc_output_file, stream_struct *stream)
     extern ext_option_struct ext_options;
     
     if(ext_options.WATER_USE){
-        wu_write_def_dimvar(nc_output_file);
+        wu_write_def_dimvar(nc_output_file, stream);
     }    
 }
 
@@ -36,6 +36,6 @@ ext_write_put_dimvar(nc_file_struct *nc_output_file, stream_struct *stream)
     extern ext_option_struct ext_options;
     
     if(ext_options.WATER_USE){
-        wu_write_put_dimvar(nc_output_file);
+        wu_write_put_dimvar(nc_output_file, stream);
     }    
 }

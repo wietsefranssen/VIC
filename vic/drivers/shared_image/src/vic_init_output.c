@@ -444,7 +444,7 @@ initialize_history_file(nc_file_struct *nc,
         varid = stream->varid[j];
 
         set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
-
+        
         // define the variable
         status = nc_def_var(nc->nc_id,
                             out_metadata[varid].varname,

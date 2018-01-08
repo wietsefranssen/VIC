@@ -13,4 +13,7 @@ ext_init(void)
     if(ext_options.ROUTING){
         rout_init();
     }
+    if(ext_options.IRRIGATION){
+        irr_init();
+    }
 }

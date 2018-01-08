@@ -2,9 +2,11 @@
 #define EXT_DEF_H
 
 #include <stdbool.h>
+#include <ext_mpi.h>
 #include <groundwater.h>
 #include <routing.h>
 #include <water_use.h>
+#include <irrigation.h>
 
 #define VIC_RESOLUTION 0.5
 
@@ -15,18 +17,24 @@ typedef struct{
 
 // Remember to add variables to ext_mpi_support.c
 typedef struct{
+    // Modules
     bool GROUNDWATER;
     bool ROUTING;
     bool WATER_USE;
+    bool IRRIGATION;
     
+    // Groundwater options
     bool GW_INIT_FROM_FILE;    
+    // Routing options
     size_t UH_NSTEPS;
+    // Water use options
     int WU_INPUT_FREQUENCY;
     int WU_INPUT_LOCATION[WU_NSECTORS];
     int WU_RETURN_LOCATION[WU_NSECTORS];
     int WU_COMPENSATION_TIME[WU_NSECTORS];
     size_t WU_NINPUT_FROM_FILE;
     
+    // Variable global parameters
     size_t wu_force_offset;
 }ext_option_struct;
 
@@ -34,9 +42,9 @@ typedef struct{
     gw_var_struct **groundwater;
     rout_var_struct routing;
     wu_var_struct *water_use;
+    irr_var_struct **irrigation;
 }ext_all_vars_struct;
 
-void initialize_ext_mpi();
 void initialize_ext_global_structures(void);
 void initialize_ext_options(ext_option_struct *);
 void initialize_ext_parameters(ext_parameters_struct *);

@@ -104,7 +104,7 @@ set_nc_var_info(unsigned int       varid,
         nc_var->nc_counts[3] = nc_hist_file->ni_size;
         break;
     default:
-        if(!ext_set_nc_var_info(i,nc_var,nc_hist_file)){
+        if(!ext_set_nc_var_info(varid,nc_var,nc_hist_file)){
             nc_var->nc_dims = 3;
             nc_var->nc_counts[1] = nc_hist_file->nj_size;
             nc_var->nc_counts[2] = nc_hist_file->ni_size;

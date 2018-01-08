@@ -19,6 +19,9 @@ ext_alloc(void)
     if(ext_options.WATER_USE){
         wu_alloc();
     }    
+    if(ext_options.IRRIGATION){
+        irr_alloc();
+    }    
         
     initialize_ext_local_structures();
 }
@@ -36,6 +39,9 @@ void ext_finalize()
     }    
     if(ext_options.WATER_USE){
         wu_finalize();
+    }    
+    if(ext_options.IRRIGATION){
+        irr_finalize();
     }    
         
     free(ext_all_vars);

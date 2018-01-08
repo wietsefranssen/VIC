@@ -1,8 +1,7 @@
 #ifndef EXT_MPI_H
 #define EXT_MPI_H
 
-#include <vic_mpi.h>
-#include <ext_driver_shared_image.h>
+#include <mpi.h>
 
 enum{
     MPI_DECOMPOSITION_CALCULATE,
@@ -22,19 +21,6 @@ void mpi_map_decomp_domain_basin(size_t ncells, size_t mpi_size,
                            int **mpi_map_local_array_sizes,
                            int **mpi_map_global_array_offsets,
                            size_t **mpi_map_mapping_array);
-
-void gather_double(double *dvar, double *var_local);
-void gather_double_2d(double **dvar, double **var_local, int depth);
-void gather_int(int *ivar, int *var_local);
-void gather_int_2d(int **ivar, int **var_local, int depth);
-void gather_sizet(size_t *svar, size_t *var_local);
-void gather_sizet_2d(size_t **svar, size_t **var_local, int depth);
-void scatter_double(double *dvar, double *var_local);
-void scatter_double_2d(double **dvar, double **var_local, int depth);
-void scatter_int(int *ivar, int *var_local);
-void scatter_int_2d(int **ivar, int **var_local, int depth);
-void scatter_sizet(size_t *svar, size_t *var_local);
-void scatter_sizet_2d(size_t **svar, size_t **var_local, int depth);
 
 #endif
 

@@ -28,6 +28,9 @@ ext_generate_default_state(void)
     if(ext_options.GROUNDWATER){
         gw_generate_default_state();
     }
+    if(ext_options.IRRIGATION){
+        irr_generate_default_state();
+    }
 }
 
 /******************************************************************************

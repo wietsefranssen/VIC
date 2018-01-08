@@ -66,6 +66,7 @@ wu_set_output_meta_data_info(void)
     out_metadata[OUT_WU_CONSUMED].nelem = WU_NSECTORS;
     out_metadata[OUT_WU_RETURNED].nelem = WU_NSECTORS;
     out_metadata[OUT_WU_COMPENSATED].nelem = WU_NSECTORS;
+    out_metadata[OUT_WU_COMPENSATION].nelem = WU_NSECTORS;
     out_metadata[OUT_WU_SHORTAGE].nelem = WU_NSECTORS;
 }
 

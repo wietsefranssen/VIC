@@ -8,12 +8,12 @@ wu_set_nc_output_file_info(nc_file_struct *nc_output_file)
 }
 
 void
-wu_write_def_dim(nc_file_struct *nc_output_file, stream_struct *stream)
+wu_write_def_dim(nc_file_struct *nc_file, stream_struct *stream)
 {
     int status;
     
-    status = nc_def_dim(nc_output_file->nc_id, "sector", nc_output_file->veg_size,
-                        &(nc_output_file->veg_dimid));
+    status = nc_def_dim(nc_file->nc_id, "sector", nc_file->sector_size,
+                        &(nc_file->sector_dimid));
     check_nc_status(status, "Error defining sector dimension in %s",
                     stream->filename);   
 }
