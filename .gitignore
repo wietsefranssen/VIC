@@ -24,10 +24,8 @@ vic_headers.py
 *.mod
 
 vicNl
-vic_classic.exe
-vic_image.exe
-liblnd.a
-_vic.py
+vic.exe
+xliblnd.a
 vic_timing_*txt
 massif.out.*
 vic_call_graph_*
@@ -44,3 +42,10 @@ TAGS
 __pycache__
 .ipynb_checkpoints
 .eggs
+
+# NetBeans
+nbproject
+
+# WUR
+vic_stub.exe
+samples_wur
