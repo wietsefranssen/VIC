@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include <vic_driver_shared_all.h>
+#include <vic.h>
 
 char *optstring = "g:vo";
 

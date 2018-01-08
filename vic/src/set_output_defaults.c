@@ -25,7 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_all.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Set the output_stream and out_data structures to default values.

@@ -29,7 +29,7 @@
 #define ROUT_EXT "rout_rvic"
 
 #include <vic_def.h>
-#include <vic_driver_shared_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief   Routing Structs

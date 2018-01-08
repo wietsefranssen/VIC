@@ -30,7 +30,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    This function handles tasks related to populating model state.

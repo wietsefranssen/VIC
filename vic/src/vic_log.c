@@ -28,7 +28,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_all.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Finalize logging - called after all logging is completed

@@ -1,7 +1,7 @@
  ##############################################################################
  # @section DESCRIPTION
  #
- # VIC Image Driver Makefile
+ # VIC Makefile
  #
  # @section LICENSE
  #
@@ -39,7 +39,7 @@ EXTPATH = extensions
 # |----------  |---------------------------------   |
 # | rout_stub  | Stub routing model (no routing)    |
 # | rout_rvic  | Use RVIC routing scheme            |
-ROUT=rout_stub
+ROUT=rout_rvic
 
 include ${EXTPATH}/${ROUT}/rout.mk
 
@@ -78,6 +78,7 @@ INCLUDES = -I ${VICPATH}/include \
 
 # Uncomment to include debugging information
 CFLAGS  =  ${INCLUDES} ${NC_CFLAGS} -ggdb -O0 -Wall -Wextra -std=c99 \
+					 -Wno-unused-parameter \
 					 -fopenmp \
 					 -DLOG_LVL=$(LOG_LVL) \
 					 -DGIT_VERSION=\"$(GIT_VERSION)\" \

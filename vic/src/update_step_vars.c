@@ -25,7 +25,7 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ******************************************************************************/
 
-#include <vic_driver_shared_all.h>
+#include <vic.h>
 
 /******************************************************************************
 * @brief        This subroutine controls the model core, it solves both the

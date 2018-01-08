@@ -25,7 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    This routine determines the current forcing file data type and

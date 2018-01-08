@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Wrapper function for VIC startup tasks.
@@ -58,6 +58,16 @@ vic_start(void)
     extern parameters_struct   param;
     size_t                     j;
 
+    // Initialize structures
+    initialize_global_structures();
+
+    if (mpi_rank == VIC_MPI_ROOT) {
+        // Read the global parameter file
+        filep.globalparam = open_file(filenames.global, "r");
+        get_global_param(filep.globalparam);
+    }
+
+    
     status = MPI_Bcast(&filenames, 1, mpi_filenames_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");

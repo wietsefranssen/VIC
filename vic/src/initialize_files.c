@@ -25,7 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Initialize all filenames before they are called by the

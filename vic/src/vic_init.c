@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Initialize model parameters
@@ -45,6 +45,9 @@ vic_init(void)
     extern lake_con_struct    *lake_con;
     extern parameters_struct   param;
     extern int                 mpi_rank;
+    extern dmy_struct         *dmy;
+    extern global_param_struct global_param;
+
 
     bool                       found;
     char                       locstr[MAXSTRING];
@@ -71,6 +74,10 @@ vic_init(void)
     int                        tmp_lake_idx;
     double                     Zsum, dp;
     double                     tmpdp, tmpadj, Bexp;
+
+    // make_dmy()
+    initialize_time();
+    dmy = make_dmy(&global_param);
 
     // allocate memory for Cv_sum
     Cv_sum = malloc(local_domain.ncells_active * sizeof(*Cv_sum));

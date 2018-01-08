@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_shared_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Finalize VIC run by freeing memory and closing open files.
@@ -62,7 +62,7 @@ vic_finalize(void)
     size_t                     i;
     size_t                     j;
     int                        status;
-
+    extern dmy_struct         *dmy;
 
     if (mpi_rank == VIC_MPI_ROOT) {
         // close the global parameter file
@@ -102,6 +102,7 @@ vic_finalize(void)
         free(veg_lib[i]);
     }
 
+    free(dmy);
     free_streams(&output_streams);
     free_out_data(local_domain.ncells_active, out_data);
     free(force);

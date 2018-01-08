@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_image.h>
+#include <vic.h>
 #include <rout.h>   // Routing routine (extension)
 
 size_t              NF, NR;
@@ -110,7 +110,7 @@ main(int    argc,
     }
 
     // read global parameters
-    vic_image_start();
+    vic_start();
 
     // allocate memory
     vic_alloc();
@@ -119,7 +119,7 @@ main(int    argc,
     rout_alloc();   // Routing routine (extension)
 
     // initialize model parameters from parameter files
-    vic_image_init();
+    vic_init();
 
     // initialize routing parameters from parameter files
     rout_init();    // Routing routine (extension)
@@ -167,8 +167,9 @@ main(int    argc,
     timer_stop(&(global_timers[TIMER_VIC_RUN]));
     // start vic final timer
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
+    
     // clean up
-    vic_image_finalize();
+    vic_finalize();
 
     // clean up routing
     rout_finalize();    // Routing routine (extension)

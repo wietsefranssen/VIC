@@ -25,7 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic_driver_image.h>
+#include <vic.h>
 
 /******************************************************************************
  * @brief    Read the VIC model global control file, getting values for
