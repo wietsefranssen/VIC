@@ -53,8 +53,13 @@ vic_image_run(dmy_struct *dmy_current)
     timer_struct               timer;
 
     // Print the current timestep info before running vic_run
-    sprint_dmy(dmy_str, dmy_current);
-    debug("Running timestep %zu: %s", current, dmy_str);
+    printf("Running timestep: %zu (%02i-%02i-%2i, %02i:00)\n", 
+            current, 
+            dmy_current->day, 
+            dmy_current->month, 
+            dmy_current->year,
+            dmy_current->dayseconds/SEC_PER_HOUR);
+
 
     // If running with OpenMP, run this for loop using multiple threads
     #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
