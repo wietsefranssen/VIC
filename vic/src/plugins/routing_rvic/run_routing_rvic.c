@@ -30,7 +30,7 @@
 * @brief        This subroutine controls the RVIC convolution.
 ******************************************************************************/
 void
-rout_run(void)
+run_routing_rvic(void)
 {
     extern int           mpi_rank;
     extern double     ***out_data;

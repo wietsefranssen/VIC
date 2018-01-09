@@ -1271,8 +1271,9 @@ vic_store(dmy_struct *dmy_state,
     }
 
     // store extension variables
-    vic_store_rout_extension(&nc_state_file);
-
+    if (options.ROUTING_RVIC) {
+        vic_store_routing_rvic(&nc_state_file);
+    }
 
     // close the netcdf file if it is still open
     if (mpi_rank == VIC_MPI_ROOT) {

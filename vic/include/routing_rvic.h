@@ -67,7 +67,7 @@ typedef struct {
  *****************************************************************************/
 void alloc_routing_rvic(void);                 // allocate memory
 void init_routing_rvic(void);                  // initialize model parameters from parameter files
-void rout_run(void);                   // run routing over the domain
+void run_routing_rvic(void);                   // run routing over the domain
 void finalize_routing_rvic(void);              // clean up routine for routing
 void convolution(double *, double *);  // convolution over the domain
 
@@ -82,9 +82,9 @@ void gather_var_double(double *, double *);
  *****************************************************************************/
 void get_global_param_rout(FILE *gp);
 void cshift(double *, int, int, int, int);
-void vic_store_rout_extension(nc_file_struct *);
-void vic_restore_rout_extension(nameid_struct *, metadata_struct *);
-void state_metadata_rout_extension();
+void vic_store_routing_rvic(nc_file_struct *);
+void vic_restore_routing_rvic(nameid_struct *, metadata_struct *);
+void state_metadata_routing_rvic();
 void set_nc_state_file_info_rout_extension(nc_file_struct *);
 void set_nc_state_var_info_rout_extension(nc_file_struct *);
 void initialize_state_file_rout_extension(char *, nc_file_struct *);

@@ -25,13 +25,24 @@
  *****************************************************************************/
 
 #include <vic.h>
-#include <rout.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
  * @brief    Save model state.
  *****************************************************************************/
 void
-vic_restore_rout_extension(nameid_struct   *init_state_file,
-                           metadata_struct *state_metadata)
+state_metadata_routing_rvic()
 {
+    extern metadata_struct state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
+
+    // STATE_ROUT_RING
+    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].varname,
+           "STATE_ROUT_RING");
+    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].long_name,
+           "routing_ring");
+    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].standard_name,
+           "routing_ring");
+    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].units, "-");
+    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].description,
+           "unit hydrographs in the routing ring");
 }

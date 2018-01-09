@@ -710,5 +710,7 @@ set_state_meta_data_info()
     }
 
     // STATE_ROUT_RING
-    state_metadata_rout_extension();
+    if (options.ROUTING_RVIC) {
+        state_metadata_routing_rvic();
+    }
 }

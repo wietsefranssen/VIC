@@ -31,7 +31,7 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-vic_store_rout_extension(nc_file_struct *nc_state_file)
+vic_store_routing_rvic(nc_file_struct *nc_state_file)
 {
     extern int         mpi_rank;
     extern rout_struct rout;

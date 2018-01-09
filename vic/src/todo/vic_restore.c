@@ -884,8 +884,10 @@ vic_restore(void)
     }
 
     // routing ring
-    vic_restore_rout_extension(&(filenames.init_state), state_metadata);
-
+    if (options.ROUTING_RVIC) {
+        vic_restore_routing_rvic(&(filenames.init_state), state_metadata);
+    }
+    
     free(ivar);
     free(dvar);
 

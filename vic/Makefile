@@ -39,15 +39,6 @@ ROUTINGRVICPATH	    = routing_rvic
 # VIC EXTENTIONS PATH
 EXTPATH = extensions
 
-# Set the routing model extension
-# | Level      | Value                              |
-# |----------  |---------------------------------   |
-# | rout_stub  | Stub routing model (no routing)    |
-# | rout_rvic  | Use RVIC routing scheme            |
-ROUT=rout_rvic
-
-include ${EXTPATH}/${ROUT}/rout.mk
-
 ifndef NC_LIBS
 NC_LIBS = $(shell nc-config --libs)
 endif
@@ -78,8 +69,7 @@ HOSTNAME := $(shell uname -n)
 LOG_LVL = 15
 
 # set includes
-INCLUDES = -I ${MAINPATH}/include \
-		   -I ${EXTPATH}/${ROUT}/include
+INCLUDES = -I ${MAINPATH}/include
 
 # Uncomment to include debugging information
 CFLAGS  =  ${INCLUDES} ${NC_CFLAGS} -ggdb -O0 -Wall -Wextra -std=c99 \
@@ -105,16 +95,14 @@ EXT = .exe
 # -----------------------------------------------------------------------
 
 HDRS = \
-	$(wildcard ${MAINPATH}/include/*.h) \
-	$(wildcard ${EXTPATH}/${ROUT}/include/*.h)
+	$(wildcard ${MAINPATH}/include/*.h)
 
 SRCS = \
 	$(wildcard ${MAINPATH}/src/*.c) \
 	$(wildcard ${MAINPATH}/src/${VICPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${GENERALPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${TODOPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
-	$(wildcard ${EXTPATH}/${ROUT}/src/*.c)
+	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c)
 
 OBJS = $(SRCS:%.o=%.c)
 

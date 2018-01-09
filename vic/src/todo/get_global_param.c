@@ -388,9 +388,15 @@ get_global_param(FILE *gp)
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("RVIC", flgstr) == 0) {
                     options.ROUTING_RVIC = true;
+                    options.ROUTING_LOHMANN = false;
+                }
+                if (strcasecmp("LOHMANN", flgstr) == 0) {
+                    options.ROUTING_RVIC = false;
+                    options.ROUTING_LOHMANN = true;
                 }
                 else if (strcasecmp("OFF", flgstr) == 0) {
                     options.ROUTING_RVIC = false;
+                    options.ROUTING_LOHMANN = false;
                 }
                 else {
                     log_err("Unknown ROUTING option: %s", flgstr);
