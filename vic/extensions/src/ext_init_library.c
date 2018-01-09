@@ -114,7 +114,7 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->nirr, "nirr");
     strcpy(info->nseason, "nseason");
     strcpy(info->irrigated_class, "irr_veg_class");
-    strcpy(info->ponded_class, "pond_veg_class");
+    strcpy(info->ponded_class, "irr_pond");
     strcpy(info->season_start, "growing_season_start");
     strcpy(info->season_end, "growing_season_end");
 }

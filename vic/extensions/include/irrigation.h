@@ -5,8 +5,8 @@
 
 #define FIELD_CAP_FRAC 0.7
 #define IRRIGATION_FRAC 0.9
-#define POND_FRAC 0.5
-#define POND_DEF_CAPACITY 30
+#define POND_FRAC 0.3
+#define POND_DEF_CAPACITY 20
 
 typedef struct{
     size_t ni_types;
@@ -30,7 +30,7 @@ typedef struct{
     double leftover;  
     
     double prev_demand;
-    double prev_root_moist;
+    double prev_avail_moist;
 }irr_var_struct;
 
 bool irr_get_global_parameters(char *cmdstr);

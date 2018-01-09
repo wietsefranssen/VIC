@@ -75,12 +75,12 @@ irr_set_mapping(void)
         
         nirr = 0;
         for(j = 0; j < (size_t)ext_options.NIRRTYPES; j++){
-            if(veg_con_map[i].vidx[ivar[j]] != NODATA_VEG){                
-                if(nirr > irr_con_map[i].ni_active){
+            if(veg_con_map[i].vidx[ivar[j] - 1] != NODATA_VEG){                
+                if(nirr >= irr_con_map[i].ni_active){
                     log_err("Number of irrigated vegetation classes does not match vegetation classes");
                 }
                 
-                irr_con_map[i].vidx[j] = veg_con_map[i].vidx[ivar[j]];
+                irr_con_map[i].vidx[j] = veg_con_map[i].vidx[ivar[j] - 1];
                 irr_con_map[i].iidx[j] = nirr;
                 nirr ++;                
             } else {
@@ -108,8 +108,8 @@ irr_set_nseasons(void)
     size_t i;
     size_t j;
     
-    size_t  d3count[2];
-    size_t  d3start[2];
+    size_t  d3count[3];
+    size_t  d3start[3];
     
     // Get active irrigated vegetation    
     d3start[0] = 0;

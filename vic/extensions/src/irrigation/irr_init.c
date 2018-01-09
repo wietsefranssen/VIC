@@ -15,6 +15,7 @@ irr_set_seasons(void)
     size_t i;
     size_t j;
     size_t k;
+    size_t l;
     
     size_t  d4count[4];
     size_t  d4start[4];
@@ -59,13 +60,34 @@ irr_set_seasons(void)
         }
     }
     
+    // Set full dmy
     for(i = 0; i < local_domain.ncells_active; i++){
         for(j = 0; j < irr_con_map[i].ni_active; j++){
             for(k = 0; k < irr_con[i][j].nseasons; k++){
-                irr_con[i][j].season_start[k] = 
-                        dmy_from_diy(irr_con[i][j].season_start[k].day_in_year);
-                irr_con[i][j].season_end[k] = 
-                        dmy_from_diy(irr_con[i][j].season_end[k].day_in_year);
+                dmy_no_leap_day((double)(irr_con[i][j].season_start[k].day_in_year - 1),
+                        &(irr_con[i][j].season_start[k]));
+                dmy_no_leap_day((double)(irr_con[i][j].season_end[k].day_in_year - 1),
+                        &(irr_con[i][j].season_end[k]));
+            }
+        }
+    }
+    
+    // Check for overlap
+    for(i = 0; i < local_domain.ncells_active; i++){
+        for(j = 0; j < irr_con_map[i].ni_active; j++){
+            for(k = 0; k < irr_con[i][j].nseasons; k++){
+                for(l = 0; l < irr_con[i][j].nseasons; l++){
+                    
+                    if(k != l && 
+                            (between_dmy(irr_con[i][j].season_start[l],
+                            irr_con[i][j].season_end[l],
+                            irr_con[i][j].season_start[k]) ||
+                            between_dmy(irr_con[i][j].season_start[l],
+                            irr_con[i][j].season_end[l],
+                            irr_con[i][j].season_end[k]))){
+                        log_err("Irrigated vegetation calendars are overlapping");
+                    }
+                }
             }
         }
     }
@@ -111,7 +133,7 @@ irr_set_ponding(void)
     
     // Do mapping
     for(i = 0; i < local_domain.ncells_active; i++){        
-        for(j = 0; j < ext_options.NIRRTYPES; j++){
+        for(j = 0; j < (size_t)ext_options.NIRRTYPES; j++){
             if(ivar[j] == 1 && irr_con_map[i].iidx[j] != NODATA_VEG){
                 irr_con[i][irr_con_map[i].iidx[j]].ponding = true;
                 irr_con[i][irr_con_map[i].iidx[j]].pond_capacity = POND_DEF_CAPACITY;

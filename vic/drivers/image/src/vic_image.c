@@ -129,11 +129,11 @@ main(int    argc,
     ext_start();
     
     // allocate memory
-    vic_alloc();
-    ext_alloc();
-    
+    vic_alloc();    
     // initialize model parameters from parameter files
-    vic_image_init();    
+    vic_image_init();  
+    
+    ext_alloc();  
     ext_init();
     
     // populate model state, either using a cold start or from a restart file

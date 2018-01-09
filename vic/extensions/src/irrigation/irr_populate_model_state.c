@@ -20,7 +20,7 @@ irr_generate_default_state(void)
             cur_veg = irr_con_map[i].vidx[j];
 
             for(k = 0; k < options.SNOW_BAND; k++){
-                ext_all_vars[i].irrigation[j][k].prev_root_moist = all_vars[i].cell[cur_veg][k].layer[0].moist;
+                ext_all_vars[i].irrigation[j][k].prev_avail_moist = all_vars[i].cell[cur_veg][k].layer[0].moist;
             }
         }
     }    

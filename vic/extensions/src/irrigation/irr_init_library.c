@@ -6,7 +6,7 @@ initialize_irr_var(irr_var_struct *irr_var)
     irr_var->pond_storage = 0.0;
     irr_var->leftover = 0.0;
     irr_var->prev_demand = 0.0;
-    irr_var->prev_root_moist = 0.0;
+    irr_var->prev_avail_moist = 0.0;
 }
 
 void
