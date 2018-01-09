@@ -37,6 +37,8 @@
 
 #include <vic_general.h>
 
+// plugins
 #include <routing_rvic.h>
+#include <routing_lohmann.h>
 
 #endif

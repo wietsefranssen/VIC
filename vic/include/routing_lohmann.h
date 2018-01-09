@@ -23,10 +23,8 @@
  * this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
-#ifndef ROUTING_RVIC_H
-#define ROUTING_RVIC_H
-
-#define ROUT_EXT "rout_rvic"
+#ifndef ROUTING_LOHMANN_H
+#define ROUTING_LOHMANN_H
 
 #include <vic_def.h>
 #include <vic.h>
@@ -51,25 +49,25 @@ typedef struct {
     int *source_time_offset;                  /*1d array - source time offset*/
     double *unit_hydrograph;                  /*2d array[times][sources] - unit hydrographs*/
     double *aggrunin;                         /*2d array[ysize][xsize] - vic runoff flux*/
-} routing_rvic_param_struct;
+} routing_lohmann_param_struct;
 
 /******************************************************************************
  * @brief   main routing Struct
  *****************************************************************************/
 typedef struct {
-    routing_rvic_param_struct rout_param;
+    routing_lohmann_param_struct rout_param;
     double *ring;
     double *discharge;
-} routing_rvic_struct;
+} routing_lohmann_struct;
 
 /******************************************************************************
  * @brief   Function prototypes for the rout_rvic extension
  *****************************************************************************/
-void alloc_routing_rvic(void);                 // allocate memory
-void init_routing_rvic(void);                  // initialize model parameters from parameter files
-void run_routing_rvic(void);                   // run routing over the domain
-void finalize_routing_rvic(void);              // clean up routine for routing
-void convolution_routing_rvic(double *, double *);  // convolution over the domain
+void alloc_routing_lohmann(void);                 // allocate memory
+void init_routing_lohmann(void);                  // initialize model parameters from parameter files
+void run_routing_lohmann(void);                   // run routing over the domain
+void finalize_routing_lohmann(void);              // clean up routine for routing
+void convolution_routing_lohmann(double *, double *);  // convolution over the domain
 
 /******************************************************************************
  * @brief   MPI Function prototypes for the rout_rvic extension
@@ -81,24 +79,24 @@ void gather_var_double(double *, double *);
  * @brief   Convolution function adapted from the RVIC scheme
  *****************************************************************************/
 void cshift(double *, int, int, int, int);
-void vic_store_routing_rvic(nc_file_struct *);
-void vic_restore_routing_rvic(nameid_struct *, metadata_struct *);
-void state_metadata_routing_rvic();
-void set_nc_state_file_info_routing_rvic(nc_file_struct *);
-void set_nc_state_var_info_routing_rvic(nc_file_struct *);
-void initialize_state_file_routing_rvic(char *, nc_file_struct *);
+void vic_store_routing_lohmann(nc_file_struct *);
+void vic_restore_routing_lohmann(nameid_struct *, metadata_struct *);
+void state_metadata_routing_lohmann();
+void set_nc_state_file_info_routing_lohmann(nc_file_struct *);
+void set_nc_state_var_info_routing_lohmann(nc_file_struct *);
+void initialize_state_file_routing_lohmann(char *, nc_file_struct *);
 
-bool get_global_param_routing_rvic(char *, char *, char *);
+bool get_global_param_routing_lohmann(char *, char *, char *);
 
 /******************************************************************************
  * @brief   Output state variable.
  *****************************************************************************/
-enum
-{
-    STATE_ROUT_RING,                   /**<  routing ring: rout_ring[routing_timestep, outlet] */
-    // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
-    // used as a loop counter and must be >= the largest value in this enum
-    N_STATE_VARS_EXT                       /**< used as a loop counter*/
-};
+//enum
+//{
+//    STATE_ROUT_RING,                   /**<  routing ring: rout_ring[routing_timestep, outlet] */
+//    // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
+//    // used as a loop counter and must be >= the largest value in this enum
+//    N_STATE_VARS_EXT                       /**< used as a loop counter*/
+//};
 
 #endif

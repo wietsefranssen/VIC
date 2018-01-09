@@ -35,7 +35,7 @@ alloc_routing_rvic(void)
     extern int mpi_rank;
     if (mpi_rank == VIC_MPI_ROOT) {
         extern domain_struct    global_domain;
-        extern rout_struct      rout;
+        extern routing_rvic_struct      rout;
         int                     ivar;
         size_t                  d1count[1];
         size_t                  d1start[1];

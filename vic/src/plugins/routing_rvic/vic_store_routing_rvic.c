@@ -34,7 +34,7 @@ void
 vic_store_routing_rvic(nc_file_struct *nc_state_file)
 {
     extern int         mpi_rank;
-    extern rout_struct rout;
+    extern routing_rvic_struct rout;
 
     int                status;
     size_t             d2start[2];
@@ -60,9 +60,9 @@ vic_store_routing_rvic(nc_file_struct *nc_state_file)
  * @brief   Setup state file netcdf structure
  *****************************************************************************/
 void
-set_nc_state_file_info_rout_extension(nc_file_struct *nc_state_file)
+set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file)
 {
-    extern rout_struct rout;
+    extern routing_rvic_struct rout;
 
     // set ids to MISSING
     nc_state_file->outlet_dimid = MISSING;
@@ -77,7 +77,7 @@ set_nc_state_file_info_rout_extension(nc_file_struct *nc_state_file)
  * @brief   Setup state variable dimensions, types, etc.
  *****************************************************************************/
 void
-set_nc_state_var_info_rout_extension(nc_file_struct *nc)
+set_nc_state_var_info_routing_rvic(nc_file_struct *nc)
 {
     size_t i;
     size_t j;
@@ -116,7 +116,7 @@ set_nc_state_var_info_rout_extension(nc_file_struct *nc)
             and adding metadata.
  *****************************************************************************/
 void
-initialize_state_file_rout_extension(char           *filename,
+initialize_state_file_routing_rvic(char           *filename,
                                      nc_file_struct *nc_state_file)
 {
     int status;

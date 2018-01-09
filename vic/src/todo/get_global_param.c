@@ -68,9 +68,15 @@ get_global_param(FILE *gp)
             }
 
             /*************************************
+               Get Model Global Parameters from plugins
+            *************************************/
+            if (get_global_param_routing_rvic(optstr, flgstr, cmdstr)) {}
+            else if (get_global_param_routing_lohmann(optstr, flgstr, cmdstr)) {}
+            
+            /*************************************
                Get Model Global Parameters
             *************************************/
-            if (strcasecmp("NODES", optstr) == 0) {
+            else if (strcasecmp("NODES", optstr) == 0) {
                 sscanf(cmdstr, "%*s %zu", &options.Nnode);
             }
             else if (strcasecmp("MODEL_STEPS_PER_DAY", optstr) == 0) {
@@ -383,29 +389,6 @@ get_global_param(FILE *gp)
             else if (strcasecmp("PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.params.nc_filename);
             }
-            // plugins
-            else if (strcasecmp("ROUTING", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", flgstr);
-                if (strcasecmp("RVIC", flgstr) == 0) {
-                    options.ROUTING_RVIC = true;
-                    options.ROUTING_LOHMANN = false;
-                }
-                else if (strcasecmp("LOHMANN", flgstr) == 0) {
-                    options.ROUTING_RVIC = false;
-                    options.ROUTING_LOHMANN = true;
-                }
-                else if (strcasecmp("OFF", flgstr) == 0) {
-                    options.ROUTING_RVIC = false;
-                    options.ROUTING_LOHMANN = false;
-                }
-                else {
-                    log_err("Unknown ROUTING option: %s", flgstr);
-                }
-            }
-            else if (strcasecmp("ROUT_PARAM", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", filenames.rout_params.nc_filename);
-            }
-            
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("TRUE", flgstr) == 0) {

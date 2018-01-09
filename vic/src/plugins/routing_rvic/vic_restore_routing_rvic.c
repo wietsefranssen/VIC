@@ -35,7 +35,7 @@ vic_restore_routing_rvic(nameid_struct   *init_state_file,
                            metadata_struct *state_metadata)
 {
     extern int         mpi_rank;
-    extern rout_struct rout;
+    extern routing_rvic_struct rout;
 
     size_t             d2start[2];
     size_t             d2count[2];

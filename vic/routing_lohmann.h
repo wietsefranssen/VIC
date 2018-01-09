@@ -23,10 +23,8 @@
  * this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
-#ifndef ROUTING_RVIC_H
-#define ROUTING_RVIC_H
-
-#define ROUT_EXT "rout_rvic"
+#ifndef ROUTING_LOHMANN_H
+#define ROUTING_LOHMANN_H
 
 #include <vic_def.h>
 #include <vic.h>
@@ -80,6 +78,7 @@ void gather_var_double(double *, double *);
 /******************************************************************************
  * @brief   Convolution function adapted from the RVIC scheme
  *****************************************************************************/
+void get_global_param_rout(FILE *gp);
 void cshift(double *, int, int, int, int);
 void vic_store_routing_rvic(nc_file_struct *);
 void vic_restore_routing_rvic(nameid_struct *, metadata_struct *);

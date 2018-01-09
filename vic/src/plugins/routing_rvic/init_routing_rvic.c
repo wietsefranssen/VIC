@@ -33,7 +33,7 @@ void
 init_routing_rvic(void)
 {
     extern int              mpi_rank;
-    extern rout_struct      rout;
+    extern routing_rvic_struct      rout;
     extern domain_struct    global_domain;
     extern filenames_struct filenames;
     int                     status;

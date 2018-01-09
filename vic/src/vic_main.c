@@ -67,7 +67,7 @@ stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
 
 // Extensions
-rout_struct         rout; // Routing routine (extension)
+routing_rvic_struct         rout; // Routing routine (extension)
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model

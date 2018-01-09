@@ -35,6 +35,7 @@ GENERALPATH	    = general
 TODOPATH	    = todo
 PLUGINPATH	    = plugins
 ROUTINGRVICPATH	    = routing_rvic
+ROUTINGLOHMANNPATH  = routing_lohmann
 
 # VIC EXTENTIONS PATH
 EXTPATH = extensions
@@ -102,7 +103,8 @@ SRCS = \
 	$(wildcard ${MAINPATH}/src/${VICPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${GENERALPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${TODOPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c)
+	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGLOHMANNPATH}/*.c)
 
 OBJS = $(SRCS:%.o=%.c)
 

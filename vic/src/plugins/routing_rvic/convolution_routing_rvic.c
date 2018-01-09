@@ -27,10 +27,10 @@
 #include <routing_rvic.h>
 
 void
-convolution(double *runoff,
+convolution_routing_rvic(double *runoff,
             double *discharge)
 {
-    extern rout_struct         rout;
+    extern routing_rvic_struct         rout;
     extern global_param_struct global_param;
     extern domain_struct       global_domain;
 

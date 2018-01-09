@@ -81,7 +81,7 @@ run_routing_rvic(void)
 
     // Run the convolution on the master node
     if (mpi_rank == VIC_MPI_ROOT) {
-        convolution(var_domain_runoff, var_domain_discharge);
+        convolution_routing_rvic(var_domain_runoff, var_domain_discharge);
     }
 
     // Scatter the discharge back to the local nodes
