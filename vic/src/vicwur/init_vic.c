@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * clean up functions for routing extension
+ * Initialize model parameters
  *
  * @section LICENSE
  *
@@ -24,28 +24,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <rout.h>
+#include <vic.h>
 
 /******************************************************************************
- * @brief    Finalize RVIC by freeing memory.
+ * @brief    Initialize model parameters
  *****************************************************************************/
 void
-rout_finalize(void)
+init_vic(void)
 {
-    extern rout_struct rout;
+    extern option_struct     options;
 
-    free(rout.rout_param.source2outlet_ind);
-    free(rout.rout_param.source_time_offset);
-    free(rout.rout_param.source_x_ind);
-    free(rout.rout_param.source_y_ind);
-    free(rout.rout_param.source_lat);
-    free(rout.rout_param.source_lon);
-    free(rout.rout_param.source_VIC_index);
-    free(rout.rout_param.outlet_lat);
-    free(rout.rout_param.outlet_lon);
-    free(rout.rout_param.outlet_VIC_index);
-    free(rout.rout_param.unit_hydrograph);
-    free(rout.rout_param.aggrunin);
-    free(rout.discharge);
-    free(rout.ring);
+    // Initialize all non specific VIC structures
+    init_general();
+    
+    // Initialize routing
+    if (options.ROUTING_RVIC) {
+        init_routing_rvic();
+    }
 }

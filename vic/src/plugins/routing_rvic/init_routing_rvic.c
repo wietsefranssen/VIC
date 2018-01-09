@@ -24,13 +24,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <rout.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
  * @brief    Initialize routing model parameters
  *****************************************************************************/
 void
-rout_init(void)
+init_routing_rvic(void)
 {
     extern int              mpi_rank;
     extern rout_struct      rout;

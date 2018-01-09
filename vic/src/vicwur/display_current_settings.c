@@ -26,7 +26,7 @@
  *****************************************************************************/
 
 #include <vic.h>
-#include <rout.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
  * @brief    Display the current settings of options defined in the header

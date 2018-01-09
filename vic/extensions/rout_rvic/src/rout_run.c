@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <rout.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
 * @brief        This subroutine controls the RVIC convolution.

@@ -25,7 +25,6 @@
  *****************************************************************************/
 
 #include <vic.h>
-#include <rout.h>   // Routing routine (extension)
 
 size_t              NF, NR;
 size_t              current;
@@ -112,15 +111,14 @@ main(int    argc,
     // read global parameters
     vic_start();
 
+    // TODO!
     options.ROUTING_RVIC = 1;
+    
     // allocate memory
-    vic_alloc();
+    alloc_vic();
 
     // initialize model parameters from parameter files
-    vic_init();
-
-    // initialize routing parameters from parameter files
-    rout_init();    // Routing routine (extension)
+    init_vic();
 
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state(&(dmy[0]));
@@ -167,10 +165,7 @@ main(int    argc,
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
     
     // clean up
-    vic_finalize();
-
-    // clean up routing
-    rout_finalize();    // Routing routine (extension)
+    finalize_vic();
 
     // finalize MPI
     status = MPI_Finalize();

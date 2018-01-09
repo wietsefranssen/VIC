@@ -54,7 +54,7 @@ typedef struct {
 void rout_alloc(void);      // allocate memory
 void rout_init(void);       // initialize model parameters from parameter files
 void rout_run(void);        // run routing over the domain
-void rout_finalize(void);   // clean up routine for routing
+void finalize_routing_rvic(void);   // clean up routine for routing
 void vic_store_rout_extension(nc_file_struct *);
 void vic_restore_rout_extension(nameid_struct *, metadata_struct *);
 void state_metadata_rout_extension();

@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Header file for rvic routing routines
+ * Finalize VIC run by freeing memory and closing open files.
  *
  * @section LICENSE
  *
@@ -23,4 +23,22 @@
  * this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
-#define EXTENSION_RVIC
+
+#include <vic.h>
+
+/******************************************************************************
+ * @brief    Initialize model parameters
+ *****************************************************************************/
+void
+finalize_vic(void)
+{
+    extern option_struct     options;
+
+    // Allocate memory for all non specific VIC structures
+    finalize_general();
+    
+    // finalize routing
+    if (options.ROUTING_RVIC) {
+        finalize_routing_rvic();
+    }
+}

@@ -23,8 +23,8 @@
  * this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
-#ifndef ROUT_RVIC_H
-#define ROUT_RVIC_H
+#ifndef ROUTING_RVIC_H
+#define ROUTING_RVIC_H
 
 #define ROUT_EXT "rout_rvic"
 
@@ -66,9 +66,9 @@ typedef struct {
  * @brief   Function prototypes for the rout_rvic extension
  *****************************************************************************/
 void alloc_routing_rvic(void);                 // allocate memory
-void rout_init(void);                  // initialize model parameters from parameter files
+void init_routing_rvic(void);                  // initialize model parameters from parameter files
 void rout_run(void);                   // run routing over the domain
-void rout_finalize(void);              // clean up routine for routing
+void finalize_routing_rvic(void);              // clean up routine for routing
 void convolution(double *, double *);  // convolution over the domain
 
 /******************************************************************************

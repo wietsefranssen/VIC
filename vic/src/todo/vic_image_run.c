@@ -25,7 +25,7 @@
  *****************************************************************************/
 
 #include <vic.h>
-#include <rout.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
  * @brief    Run VIC for one timestep and store output data

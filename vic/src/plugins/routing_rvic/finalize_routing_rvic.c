@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Allocate memory for VIC structures.
+ * clean up functions for routing extension
  *
  * @section LICENSE
  *
@@ -24,22 +24,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
- * @brief    Allocate memory for VIC structures.
+ * @brief    Finalize RVIC by freeing memory.
  *****************************************************************************/
 void
-vic_alloc(void)
+finalize_routing_rvic(void)
 {
-    extern option_struct     options;
+    extern rout_struct rout;
 
-    // Allocate memory for all non specific VIC structures
-    alloc_general();
-    
-    // Routing allocations
-    if (options.ROUTING_RVIC) {
-        alloc_routing_rvic();
-    }
-
+    free(rout.rout_param.source2outlet_ind);
+    free(rout.rout_param.source_time_offset);
+    free(rout.rout_param.source_x_ind);
+    free(rout.rout_param.source_y_ind);
+    free(rout.rout_param.source_lat);
+    free(rout.rout_param.source_lon);
+    free(rout.rout_param.source_VIC_index);
+    free(rout.rout_param.outlet_lat);
+    free(rout.rout_param.outlet_lon);
+    free(rout.rout_param.outlet_VIC_index);
+    free(rout.rout_param.unit_hydrograph);
+    free(rout.rout_param.aggrunin);
+    free(rout.discharge);
+    free(rout.ring);
 }

@@ -30,7 +30,7 @@
  * @brief    Finalize VIC run by freeing memory and closing open files.
  *****************************************************************************/
 void
-vic_finalize(void)
+finalize_general(void)
 {
     extern size_t             *filter_active_cells;
     extern size_t             *mpi_map_mapping_array;

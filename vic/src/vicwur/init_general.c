@@ -30,7 +30,7 @@
  * @brief    Initialize model parameters
  *****************************************************************************/
 void
-vic_init(void)
+init_general(void)
 {
     extern all_vars_struct    *all_vars;
     extern size_t              current;

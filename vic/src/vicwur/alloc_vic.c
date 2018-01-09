@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Header file for vic_driver_shared_all routines
+ * Allocate memory for VIC structures.
  *
  * @section LICENSE
  *
@@ -24,19 +24,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VIC_H
-#define VIC_H
+#include <vic.h>
 
-#include <vic_run.h>
-#include <vic_version.h>
+/******************************************************************************
+ * @brief    Allocate memory for VIC structures.
+ *****************************************************************************/
+void
+alloc_vic(void)
+{
+    extern option_struct     options;
 
-#include <vic_image_log.h>
-#include <vic_mpi.h>
+    // Allocate memory for all non specific VIC structures
+    alloc_general();
+    
+    // Allocate memory for routing
+    if (options.ROUTING_RVIC) {
+        alloc_routing_rvic();
+    }
 
-#include <netcdf.h>
-
-#include <vic_general.h>
-
-#include <routing_rvic.h>
-
-#endif
+}

@@ -54,6 +54,6 @@ rout_run(void)
  * @brief    Clean up routine for routing.
  *****************************************************************************/
 void
-rout_finalize(void)
+finalize_routing_rvic(void)
 {
 }

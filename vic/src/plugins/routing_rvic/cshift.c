@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <rout.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
  * @brief   Function to shift columns or rows one position
