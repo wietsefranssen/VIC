@@ -32,6 +32,8 @@
 MAINPATH	    = .
 VICPATH		    = vicwur
 GENERALPATH	    = general
+SNOWPATH	    = snow
+SOILPATH	    = soil
 TODOPATH	    = todo
 PLUGINPATH	    = plugins
 ROUTINGRVICPATH	    = routing_rvic
@@ -102,6 +104,8 @@ SRCS = \
 	$(wildcard ${MAINPATH}/src/*.c) \
 	$(wildcard ${MAINPATH}/src/${VICPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${GENERALPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${SNOWPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${SOILPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${TODOPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGLOHMANNPATH}/*.c)
