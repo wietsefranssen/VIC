@@ -30,7 +30,7 @@
  * @brief    Allocate memory for VIC structures.
  *****************************************************************************/
 void
-vic_alloc(void)
+alloc_general(void)
 {
     extern all_vars_struct    *all_vars;
     extern force_data_struct  *force;

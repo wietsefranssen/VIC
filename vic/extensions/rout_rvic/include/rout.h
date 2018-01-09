@@ -65,7 +65,7 @@ typedef struct {
 /******************************************************************************
  * @brief   Function prototypes for the rout_rvic extension
  *****************************************************************************/
-void rout_alloc(void);                 // allocate memory
+void alloc_routing_rvic(void);                 // allocate memory
 void rout_init(void);                  // initialize model parameters from parameter files
 void rout_run(void);                   // run routing over the domain
 void rout_finalize(void);              // clean up routine for routing

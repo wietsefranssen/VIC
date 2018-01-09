@@ -30,7 +30,7 @@
  * @brief    Allocate memory for Routing structures.
  *****************************************************************************/
 void
-rout_alloc(void)
+alloc_routing_rvic(void)
 {
     extern int mpi_rank;
     if (mpi_rank == VIC_MPI_ROOT) {

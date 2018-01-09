@@ -291,6 +291,9 @@ typedef struct {
 
     // output options
     size_t Noutstreams;  /**< Number of output stream */
+
+    // plugins
+    bool ROUTING_RVIC;  /**< RVIC Routing */
 } option_struct;
 
 /******************************************************************************

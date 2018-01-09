@@ -115,9 +115,6 @@ main(int    argc,
     // allocate memory
     vic_alloc();
 
-    // allocate memory for routing
-    rout_alloc();   // Routing routine (extension)
-
     // initialize model parameters from parameter files
     vic_init();
 

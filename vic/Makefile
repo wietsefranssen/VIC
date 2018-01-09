@@ -28,8 +28,13 @@
 # SET ENVIRONMENT-SPECIFIC OPTIONS HERE
 # -----------------------------------------------------------------------
 
-# VIC RUN PATH
-VICPATH = .
+# VIC PATHS
+MAINPATH	    = .
+VICPATH		    = vicwur
+GENERALPATH	    = general
+TODOPATH	    = todo
+PLUGINPATH	    = plugins
+ROUTINGRVICPATH	    = routing_rvic
 
 # VIC EXTENTIONS PATH
 EXTPATH = extensions
@@ -73,7 +78,7 @@ HOSTNAME := $(shell uname -n)
 LOG_LVL = 15
 
 # set includes
-INCLUDES = -I ${VICPATH}/include \
+INCLUDES = -I ${MAINPATH}/include \
 		   -I ${EXTPATH}/${ROUT}/include
 
 # Uncomment to include debugging information
@@ -100,11 +105,15 @@ EXT = .exe
 # -----------------------------------------------------------------------
 
 HDRS = \
-	$(wildcard ${VICPATH}/include/*.h) \
+	$(wildcard ${MAINPATH}/include/*.h) \
 	$(wildcard ${EXTPATH}/${ROUT}/include/*.h)
 
 SRCS = \
-	$(wildcard ${VICPATH}/src/*.c) \
+	$(wildcard ${MAINPATH}/src/*.c) \
+	$(wildcard ${MAINPATH}/src/${VICPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${GENERALPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${TODOPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
 	$(wildcard ${EXTPATH}/${ROUT}/src/*.c)
 
 OBJS = $(SRCS:%.o=%.c)

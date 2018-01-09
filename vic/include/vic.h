@@ -970,7 +970,11 @@ void set_nc_var_info(unsigned int varid, unsigned short int dtype,
 void set_nc_state_file_info(nc_file_struct *nc_state_file);
 void set_nc_state_var_info(nc_file_struct *nc_state_file);
 void sprint_location(char *str, location_struct *loc);
+
+// allocation
 void vic_alloc(void);
+void alloc_general(void);
+
 void vic_finalize(void);
 void vic_image_run(dmy_struct *dmy_current);
 void vic_init(void);
@@ -989,5 +993,7 @@ void display_current_settings(int);
 void get_forcing_file_info(param_set_struct *param_set, size_t file_num);
 void vic_force(void);
 void vic_populate_model_state(dmy_struct *dmy_current);
+
+#include <rout.h>
 
 #endif
