@@ -33,6 +33,9 @@ typedef struct{
     int WU_RETURN_LOCATION[WU_NSECTORS];
     int WU_COMPENSATION_TIME[WU_NSECTORS];
     size_t WU_NINPUT_FROM_FILE;
+    // Irrigation options
+    int NIRRTYPES;
+    int NIRRSEASONS;
     
     // Variable global parameters
     size_t wu_force_offset;

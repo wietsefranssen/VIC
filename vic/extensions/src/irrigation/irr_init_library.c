@@ -13,16 +13,7 @@ void
 initialize_irr_con(irr_con_struct *irr_con)
 {    
     irr_con->ponding = false;
-}
-
-void
-initialize_irr_con_map(irr_con_map_struct *irr_con_map)
-{
-    size_t i;
-    
-    for(i = 0; i < irr_con_map->ni_active; i++){
-        irr_con_map->vidx[i] = NODATA_VEG;
-    }
+    irr_con->pond_capacity = 0.0;
 }
 
 void
@@ -38,9 +29,7 @@ initialize_irr_local_structures(void)
     size_t j;
     size_t k;
     
-    for(i=0; i < local_domain.ncells_active; i++){
-        initialize_irr_con_map(&irr_con_map[i]);
-        
+    for(i=0; i < local_domain.ncells_active; i++){        
         for(j = 0; j < irr_con_map[i].ni_active; j++){
             initialize_irr_con(&irr_con[i][j]);
         

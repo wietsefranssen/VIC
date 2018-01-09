@@ -17,6 +17,9 @@ ext_start(void)
                 
         if(ext_options.ROUTING){
             rout_start();
+        }   
+        if(ext_options.IRRIGATION){
+            irr_start();
         }
     }  
     

@@ -30,10 +30,16 @@ typedef struct {
     // Water use
     char demand[MAXSTRING];
     char consumption_fraction[MAXSTRING];
-    // Irrigation
+    // Irrigation    
+    char nirr_dim[MAXSTRING];
+    char nseason_dim[MAXSTRING];
     char nirr[MAXSTRING];
     char irrigated_class[MAXSTRING];
     char ponded_class[MAXSTRING];
+    char nseason[MAXSTRING];
+    char season_start[MAXSTRING];
+    char season_end[MAXSTRING];
+    
 }ext_info_struct;
 
 typedef struct {

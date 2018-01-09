@@ -5,8 +5,11 @@ irr_run1(size_t cur_cell)
 {
     extern domain_struct local_domain;
     extern global_param_struct global_param;
+    extern dmy_struct *dmy;
+    extern size_t current;
     extern all_vars_struct *all_vars;
     extern irr_con_map_struct *irr_con_map;
+    extern irr_con_struct **irr_con;
     extern ext_all_vars_struct *ext_all_vars;
     extern soil_con_struct *soil_con;
     extern veg_con_struct **veg_con;
@@ -16,6 +19,7 @@ irr_run1(size_t cur_cell)
     double moist[options.Nlayer];    
     double irrigation_need;
     double demand;
+    bool in_season;
     size_t root_layer;
     size_t cur_veg;
     
@@ -25,9 +29,23 @@ irr_run1(size_t cur_cell)
     size_t l;       
             
     wu_con[cur_cell][WU_IRRIGATION].demand = 0;
+    wu_con[cur_cell][WU_IRRIGATION].consumption_fraction = 1.0; 
             
     for(i = 0; i < irr_con_map[cur_cell].ni_active; i++){
         cur_veg = irr_con_map[cur_cell].vidx[i];
+        
+        for(j = 0; j < irr_con[cur_cell][i].nseasons; j++){
+            in_season = between_dmy(irr_con[cur_cell][i].season_start[j],
+                irr_con[cur_cell][i].season_end[j],dmy[current]);
+            
+            if(in_season){
+                break;
+            }
+        }
+        
+        if(!in_season){
+            continue;
+        }
         
         for(j = 0; j < options.SNOW_BAND; j++){
             

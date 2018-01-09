@@ -68,6 +68,9 @@ initialize_ext_options(ext_option_struct *options)
         options->WU_RETURN_LOCATION[i] = WU_RETURN_SURFACEWATER;
     }
     
+    options->NIRRTYPES = 0;
+    options->NIRRSEASONS = 0;
+    
     options->wu_force_offset = 0;
 }
 
@@ -106,9 +109,14 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->demand, "demand");
     strcpy(info->consumption_fraction, "consumption_fraction");
     
+    strcpy(info->nirr_dim, "irr_classes");
+    strcpy(info->nseason_dim, "grow_seasons");
     strcpy(info->nirr, "nirr");
-    strcpy(info->irrigated_class, "irr_class");
-    strcpy(info->ponded_class, "irr_pond");
+    strcpy(info->nseason, "nseason");
+    strcpy(info->irrigated_class, "irr_veg_class");
+    strcpy(info->ponded_class, "pond_veg_class");
+    strcpy(info->season_start, "growing_season_start");
+    strcpy(info->season_end, "growing_season_end");
 }
 
 /******************************************************************************

@@ -3,6 +3,10 @@
 
 #include <stdbool.h>
 #include <ext_debug.h>
+#include <vic_def.h>
+
+bool between_dmy(dmy_struct start, dmy_struct end, dmy_struct current);
+dmy_struct dmy_from_diy(int diy);
 
 void cshift(double *data, int nx, int ny, int axis, int direction);
 

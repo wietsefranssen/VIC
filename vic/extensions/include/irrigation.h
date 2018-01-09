@@ -5,20 +5,30 @@
 
 #define FIELD_CAP_FRAC 0.7
 #define IRRIGATION_FRAC 0.9
+#define POND_FRAC 0.5
+#define POND_DEF_CAPACITY 30
 
 typedef struct{
+    size_t ni_types;
     size_t ni_active;
+    
     int *vidx;
+    int *iidx;
 }irr_con_map_struct;
 
 typedef struct{
     bool ponding;
+    double pond_capacity;
+    
+    size_t nseasons;
+    dmy_struct *season_start;
+    dmy_struct *season_end;
 }irr_con_struct;
 
 typedef struct{
-    double pond_storage;
+    double pond_storage;    
+    double leftover;  
     
-    double leftover;
     double prev_demand;
     double prev_root_moist;
 }irr_var_struct;

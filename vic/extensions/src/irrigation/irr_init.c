@@ -1,69 +1,76 @@
 #include <ext_driver_shared_image.h>
 
 void
-irr_set_mapping(void)
-{
+irr_set_seasons(void)
+{    
     extern domain_struct local_domain;
+    extern domain_struct global_domain;
     extern ext_filenames_struct ext_filenames;
-    extern option_struct options;
-    extern veg_con_map_struct *veg_con_map;
+    extern ext_option_struct ext_options;
     extern irr_con_map_struct *irr_con_map;
-    extern int mpi_rank;
-    extern MPI_Comm            MPI_COMM_VIC;
-    
-    int *irr_veg_class;
-    size_t nirr;
-    
+    extern irr_con_struct **irr_con;
+        
     int *ivar;
-    int status;
     
     size_t i;
     size_t j;
+    size_t k;
     
-    size_t  d1count;
-    size_t  d1start;
+    size_t  d4count[4];
+    size_t  d4start[4];
     
-    d1start = 0;
-    d1count = options.NVEGTYPES;
+    // Get active irrigated vegetation    
+    d4start[0] = 0;
+    d4start[1] = 0;
+    d4start[2] = 0;
+    d4start[3] = 0;
+    d4count[0] = 1;
+    d4count[1] = 1;
+    d4count[2] = global_domain.n_ny;
+    d4count[3] = global_domain.n_nx; 
     
-    irr_veg_class = malloc(options.NVEGTYPES * sizeof(*irr_veg_class));
-    check_alloc_status(irr_veg_class,"Memory allocation error");
+    ivar = malloc(local_domain.ncells_active * sizeof(*ivar));
+    check_alloc_status(ivar, "Memory allocation error."); 
+        
+    for(k = 0; k < (size_t)ext_options.NIRRSEASONS; k++){
+        d4start[0] = k;
+        for(j = 0; j < (size_t)ext_options.NIRRTYPES; j++){
+            d4start[1] = j;
+        
+            get_scatter_nc_field_int(&(ext_filenames.irrigation), 
+                    ext_filenames.info.season_start, d4start, d4count, ivar);
 
-    ivar = malloc(options.NVEGTYPES * sizeof(*ivar));
-    check_alloc_status(ivar,"Memory allocation error");
-        
-    // Gather irrigated vegetation classes
-    if(mpi_rank == VIC_MPI_ROOT){    
-        get_nc_field_int(&(ext_filenames.irrigation), 
-                ext_filenames.info.irrigated_class, &d1start, &d1count, ivar);
-        for (i = 0; i < options.NVEGTYPES; i++) {
-            irr_veg_class[i] = ivar[i];
-        }    
-    }
-    
-    status = MPI_Bcast(&irr_veg_class, options.NVEGTYPES, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
-    check_mpi_status(status, "MPI error.");
-    
-    // Do mapping
-    for(i = 0; i < local_domain.ncells_active; i++){
-        nirr = 0;
-        
-        for(j = 0; j < options.NVEGTYPES; j++){
-            if(irr_veg_class[j] == 1 && 
-                    veg_con_map[i].vidx[j] != NODATA_VEG){
-                
-                if(nirr > irr_con_map[i].ni_active){
-                    log_err("Number of irrigated vegetation classes does not match vegetation classes");
+            for(i = 0; i < local_domain.ncells_active; i++){
+                if(irr_con_map[i].iidx[j] != NODATA_VEG && 
+                        k < irr_con[i][irr_con_map[i].iidx[j]].nseasons){
+                    irr_con[i][irr_con_map[i].iidx[j]].season_start[k].day_in_year = ivar[i];
                 }
-                
-                irr_con_map[i].vidx[nirr] = veg_con_map[i].vidx[j];
-                nirr++;
+            }
+
+            get_scatter_nc_field_int(&(ext_filenames.irrigation), 
+                    ext_filenames.info.season_end, d4start, d4count, ivar);
+
+            for(i = 0; i < local_domain.ncells_active; i++){
+                if(irr_con_map[i].iidx[j] != NODATA_VEG && 
+                        k < irr_con[i][irr_con_map[i].iidx[j]].nseasons){
+                    irr_con[i][irr_con_map[i].iidx[j]].season_end[k].day_in_year = ivar[i];
+                }
             }
         }
     }
     
-    free(irr_veg_class);   
-    free(ivar);   
+    for(i = 0; i < local_domain.ncells_active; i++){
+        for(j = 0; j < irr_con_map[i].ni_active; j++){
+            for(k = 0; k < irr_con[i][j].nseasons; k++){
+                irr_con[i][j].season_start[k] = 
+                        dmy_from_diy(irr_con[i][j].season_start[k].day_in_year);
+                irr_con[i][j].season_end[k] = 
+                        dmy_from_diy(irr_con[i][j].season_end[k].day_in_year);
+            }
+        }
+    }
+    
+    free(ivar);  
 }
 
 void
@@ -71,15 +78,12 @@ irr_set_ponding(void)
 {
     extern domain_struct local_domain;
     extern ext_filenames_struct ext_filenames;
+    extern ext_option_struct ext_options;
     extern option_struct options;
-    extern veg_con_map_struct *veg_con_map;
     extern irr_con_map_struct *irr_con_map;
     extern irr_con_struct **irr_con;
     extern int mpi_rank;
     extern MPI_Comm            MPI_COMM_VIC;
-    
-    int *pond_veg_class;
-    size_t nirr;
     
     int *ivar;
     int status;
@@ -91,49 +95,30 @@ irr_set_ponding(void)
     size_t  d1start;
     
     d1start = 0;
-    d1count = options.NVEGTYPES;
+    d1count = ext_options.NIRRTYPES;
     
-    pond_veg_class = malloc(options.NVEGTYPES * sizeof(*pond_veg_class));
-    check_alloc_status(pond_veg_class,"Memory allocation error");
-    
-    ivar = malloc(options.NVEGTYPES * sizeof(*ivar));
+    ivar = malloc(ext_options.NIRRTYPES * sizeof(*ivar));
     check_alloc_status(ivar,"Memory allocation error");
     
     // Gather ponded vegetation classes
     if(mpi_rank == VIC_MPI_ROOT){        
         get_nc_field_int(&(ext_filenames.irrigation), 
                 ext_filenames.info.ponded_class, &d1start, &d1count, ivar);
-        for (i = 0; i < options.NVEGTYPES; i++) {
-            pond_veg_class[i] = ivar[i];
-        }      
     }
     
-    status = MPI_Bcast(&pond_veg_class, options.NVEGTYPES, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
+    status = MPI_Bcast(&ivar, options.NVEGTYPES, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
     
     // Do mapping
-    for(i = 0; i < local_domain.ncells_active; i++){
-        nirr = 0;
-        
-        for(j = 0; j < options.NVEGTYPES; j++){
-            if(pond_veg_class[j] == 1 &&
-                    veg_con_map[i].vidx[j] != NODATA_VEG){
-                
-                if(nirr > irr_con_map[i].ni_active){
-                    log_err("Number of irrigated vegetation classes does not match vegetation classes");
-                }
-                
-                if(irr_con_map[i].vidx[nirr] == NODATA_VEG){
-                    log_err("Ponded vegetation classes does not match irrigated vegetation classes");
-                }
-                
-                irr_con[i][nirr].ponding = true;
-                nirr++;
+    for(i = 0; i < local_domain.ncells_active; i++){        
+        for(j = 0; j < ext_options.NIRRTYPES; j++){
+            if(ivar[j] == 1 && irr_con_map[i].iidx[j] != NODATA_VEG){
+                irr_con[i][irr_con_map[i].iidx[j]].ponding = true;
+                irr_con[i][irr_con_map[i].iidx[j]].pond_capacity = POND_DEF_CAPACITY;
             }
         }
     }
     
-    free(pond_veg_class);   
     free(ivar);   
 }
 
@@ -153,7 +138,7 @@ irr_init(void)
                         ext_filenames.irrigation.nc_filename);
     }
     
-    irr_set_mapping();
+    irr_set_seasons();
     irr_set_ponding();
     
     // close parameter file
