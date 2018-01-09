@@ -112,6 +112,7 @@ main(int    argc,
     // read global parameters
     vic_start();
 
+    options.ROUTING_RVIC = 1;
     // allocate memory
     vic_alloc();
 
