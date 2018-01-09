@@ -390,7 +390,7 @@ get_global_param(FILE *gp)
                     options.ROUTING_RVIC = true;
                     options.ROUTING_LOHMANN = false;
                 }
-                if (strcasecmp("LOHMANN", flgstr) == 0) {
+                else if (strcasecmp("LOHMANN", flgstr) == 0) {
                     options.ROUTING_RVIC = false;
                     options.ROUTING_LOHMANN = true;
                 }
