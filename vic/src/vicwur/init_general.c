@@ -1068,6 +1068,11 @@ init_general(void)
         }
     }
 
+    // Validate plugins
+    if (options.ROUTING_RVIC == false) {
+        log_err("You must define one routing scheme");
+    }
+
     // TODO: Determine which bands are above treeline
 
     // read_vegparam()

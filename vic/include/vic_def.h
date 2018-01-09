@@ -293,7 +293,7 @@ typedef struct {
     size_t Noutstreams;  /**< Number of output stream */
 
     // plugins
-    bool ROUTING_RVIC;  /**< RVIC Routing */
+    bool ROUTING_RVIC;  /**< TRUE = Use RVIC routing scheme */
 } option_struct;
 
 /******************************************************************************

@@ -380,6 +380,14 @@ display_current_settings(int mode)
     else {
         fprintf(LOG_DEST, "LAKE_PROFILE\t\tFALSE\n");
     }
+    //Plugins
+    if (options.ROUTING_RVIC) {
+        fprintf(LOG_DEST, "ROUTING_RVIC\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "ROUTING_RVIC\t\tFALSE\n");
+    }
+
 
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input State File:\n");

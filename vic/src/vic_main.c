@@ -110,9 +110,6 @@ main(int    argc,
 
     // read global parameters
     vic_start();
-
-    // TODO!
-    options.ROUTING_RVIC = 1;
     
     // allocate memory
     alloc_vic();

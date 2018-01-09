@@ -383,9 +383,23 @@ get_global_param(FILE *gp)
             else if (strcasecmp("PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.params.nc_filename);
             }
+            // plugins
+            else if (strcasecmp("ROUTING", optstr) == 0) {
+                sscanf(cmdstr, "%*s %s", flgstr);
+                if (strcasecmp("RVIC", flgstr) == 0) {
+                    options.ROUTING_RVIC = true;
+                }
+                else if (strcasecmp("OFF", flgstr) == 0) {
+                    options.ROUTING_RVIC = false;
+                }
+                else {
+                    log_err("Unknown ROUTING option: %s", flgstr);
+                }
+            }
             else if (strcasecmp("ROUT_PARAM", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.rout_params.nc_filename);
             }
+            
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("TRUE", flgstr) == 0) {
