@@ -7,7 +7,7 @@ initialize_rout_var(rout_var_struct *rout_var)
     
     size_t i;
     
-    for(i=0; i<ext_options.UH_NSTEPS; i++){
+    for(i=0; i<ext_options.RIRF_NSTEPS; i++){
         rout_var->discharge[i] = 0.0;
         rout_var->nat_discharge[i] = 0.0;
     }
@@ -26,8 +26,11 @@ initialize_rout_con(rout_con_struct *rout_con)
     
     rout_con->upstream = NULL;
     
-    for(i=0; i<ext_options.UH_NSTEPS; i++){
-        rout_con->uh[i] = 0.0;
+    for(i=0; i<ext_options.RIRF_NSTEPS; i++){
+        rout_con->river_irf[i] = 0.0;
+    }
+    for(i=0; i<ext_options.GIRF_NSTEPS; i++){
+        rout_con->grid_irf[i] = 0.0;
     }
 }
 

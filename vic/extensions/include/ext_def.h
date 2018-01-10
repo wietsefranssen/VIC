@@ -7,6 +7,8 @@
 #include <routing.h>
 #include <water_use.h>
 #include <irrigation.h>
+#include <efr.h>
+#include <dams.h>
 
 #define VIC_RESOLUTION 0.5
 
@@ -22,11 +24,14 @@ typedef struct{
     bool ROUTING;
     bool WATER_USE;
     bool IRRIGATION;
+    bool EFR;
+    bool DAMS;
     
     // Groundwater options
     bool GW_INIT_FROM_FILE;    
     // Routing options
-    size_t UH_NSTEPS;
+    size_t RIRF_NSTEPS;
+    size_t GIRF_NSTEPS;
     // Water use options
     int WU_INPUT_FREQUENCY;
     int WU_INPUT_LOCATION[WU_NSECTORS];
@@ -36,6 +41,9 @@ typedef struct{
     // Irrigation options
     int NIRRTYPES;
     int NIRRSEASONS;
+    // EFR options
+    // Dam options
+    int MAXDAMS;
     
     // Variable global parameters
     size_t wu_force_offset;
@@ -46,6 +54,7 @@ typedef struct{
     rout_var_struct routing;
     wu_var_struct *water_use;
     irr_var_struct **irrigation;
+    efr_var_struct efr;
 }ext_all_vars_struct;
 
 void initialize_ext_global_structures(void);

@@ -8,6 +8,8 @@
 bool between_dmy(dmy_struct start, dmy_struct end, dmy_struct current);
 dmy_struct dmy_from_diy(int diy);
 
+double array_average(double *array, size_t repetitions, size_t length, size_t offset, size_t skip);
+
 void cshift(double *data, int nx, int ny, int axis, int direction);
 
 void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending);

@@ -27,13 +27,23 @@ rout_set_uh(void)
     dvar = malloc(local_domain.ncells_active * sizeof(*dvar));
     check_alloc_status(dvar, "Memory allocation error."); 
     
-    for(j = 0; j < ext_options.UH_NSTEPS; j++){
+    for(j = 0; j < ext_options.RIRF_NSTEPS; j++){
         d3start[0] = j;
         
         get_scatter_nc_field_double(&(ext_filenames.routing), 
-                ext_filenames.info.uh, d3start, d3count, dvar);
+                ext_filenames.info.river_irf, d3start, d3count, dvar);
         for (i = 0; i < local_domain.ncells_active; i++) {
-            rout_con[i].uh[j] = dvar[i];
+            rout_con[i].river_irf[j] = dvar[i];
+        }
+    }
+    
+    for(j = 0; j < ext_options.GIRF_NSTEPS; j++){
+        d3start[0] = j;
+        
+        get_scatter_nc_field_double(&(ext_filenames.routing), 
+                ext_filenames.info.grid_irf, d3start, d3count, dvar);
+        for (i = 0; i < local_domain.ncells_active; i++) {
+            rout_con[i].grid_irf[j] = dvar[i];
         }
     }
     

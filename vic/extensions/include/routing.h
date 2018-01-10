@@ -18,7 +18,8 @@ typedef struct{
     size_t downstream;    
     size_t Nupstream;
     size_t *upstream;    
-    double *uh;
+    double *river_irf;
+    double *grid_irf;
 }rout_con_struct;
 
 typedef struct{    

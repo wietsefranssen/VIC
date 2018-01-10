@@ -25,8 +25,10 @@ typedef struct {
     char Ws_init[MAXSTRING];
     // Routing
     char flow_direction[MAXSTRING];
-    char uh_nsteps[MAXSTRING];
-    char uh[MAXSTRING];
+    char rirf_nsteps[MAXSTRING];
+    char river_irf[MAXSTRING];
+    char girf_nsteps[MAXSTRING];
+    char grid_irf[MAXSTRING];
     // Water use
     char demand[MAXSTRING];
     char consumption_fraction[MAXSTRING];

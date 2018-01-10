@@ -18,13 +18,16 @@ rout_alloc(void)
     check_alloc_status(routing_order,"Memory allocation error");
         
     for(i=0; i<local_domain.ncells_active; i++){        
-        rout_con[i].uh = malloc(ext_options.UH_NSTEPS * sizeof(*rout_con[i].uh));
-        check_alloc_status(rout_con[i].uh,"Memory allocation error");
+        rout_con[i].river_irf = malloc(ext_options.RIRF_NSTEPS * sizeof(*rout_con[i].river_irf));
+        check_alloc_status(rout_con[i].river_irf,"Memory allocation error");
         
-        ext_all_vars[i].routing.discharge = malloc(ext_options.UH_NSTEPS * sizeof(*ext_all_vars[i].routing.discharge));
+        rout_con[i].grid_irf = malloc(ext_options.GIRF_NSTEPS * sizeof(*rout_con[i].grid_irf));
+        check_alloc_status(rout_con[i].grid_irf,"Memory allocation error");
+        
+        ext_all_vars[i].routing.discharge = malloc(ext_options.RIRF_NSTEPS * sizeof(*ext_all_vars[i].routing.discharge));
         check_alloc_status(ext_all_vars[i].routing.discharge,"Memory allocation error");
         
-        ext_all_vars[i].routing.nat_discharge = malloc(ext_options.UH_NSTEPS * sizeof(*ext_all_vars[i].routing.nat_discharge));
+        ext_all_vars[i].routing.nat_discharge = malloc(ext_options.RIRF_NSTEPS * sizeof(*ext_all_vars[i].routing.nat_discharge));
         check_alloc_status(ext_all_vars[i].routing.nat_discharge,"Memory allocation error");
     }   
 }
@@ -40,7 +43,8 @@ rout_finalize(void)
     size_t i;    
     
     for(i=0; i<local_domain.ncells_active; i++){
-        free(rout_con[i].uh);
+        free(rout_con[i].river_irf);
+        free(rout_con[i].grid_irf);
         free(rout_con[i].upstream);
         free(ext_all_vars[i].routing.discharge);
         free(ext_all_vars[i].routing.nat_discharge);

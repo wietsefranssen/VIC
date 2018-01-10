@@ -18,6 +18,9 @@ ext_get_global_param(char *cmdstr)
     if(irr_get_global_parameters(cmdstr)){
         return true;
     }
+    if(efr_get_global_parameters(cmdstr)){
+        return true;
+    }
     return false;
 }
 
@@ -43,6 +46,9 @@ ext_validate_global_parameters(void)
     }  
     if(ext_options.IRRIGATION){
         irr_validate_global_parameters();
+    }  
+    if(ext_options.EFR){
+        efr_validate_global_parameters();
     }  
 }
 

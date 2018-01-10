@@ -27,6 +27,9 @@ ext_run()
         if(ext_options.IRRIGATION){
             irr_run1(cur_cell);
         }
+        if(ext_options.EFR){
+            efr_run(cur_cell);
+        }
         if(ext_options.WATER_USE){
             wu_run(cur_cell);
         }

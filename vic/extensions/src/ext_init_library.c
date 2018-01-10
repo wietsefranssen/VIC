@@ -20,6 +20,9 @@ initialize_ext_local_structures(void)
     if(ext_options.IRRIGATION){
         initialize_irr_local_structures();
     }
+    if(ext_options.EFR){
+        initialize_efr_local_structures();
+    }
 }
 
 /******************************************************************************
@@ -57,9 +60,10 @@ initialize_ext_options(ext_option_struct *options)
     options->ROUTING = false;
     options->WATER_USE = false;
     options->IRRIGATION = false;
+    options->EFR = false;
     
     options->GW_INIT_FROM_FILE = false;
-    options->UH_NSTEPS = 0;
+    options->RIRF_NSTEPS = 0;
     options->WU_NINPUT_FROM_FILE = 0;
     options->WU_INPUT_FREQUENCY = WU_INPUT_MONTHLY;
     for(i = 0; i < WU_NSECTORS; i++){
@@ -103,8 +107,10 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->Sy, "Sy");
     
     strcpy(info->flow_direction, "flow_direction");
-    strcpy(info->uh_nsteps, "uh_nsteps");
-    strcpy(info->uh, "unit_hydrograph");
+    strcpy(info->rirf_nsteps, "rirf_nsteps");
+    strcpy(info->girf_nsteps, "girf_nsteps");
+    strcpy(info->river_irf, "river_irf");
+    strcpy(info->grid_irf, "grid_irf");
     
     strcpy(info->demand, "demand");
     strcpy(info->consumption_fraction, "consumption_fraction");

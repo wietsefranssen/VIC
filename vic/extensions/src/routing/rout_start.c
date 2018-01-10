@@ -14,8 +14,10 @@ rout_start(void)
     check_nc_status(status, "Error opening %s",
                     ext_filenames.routing.nc_filename);
 
-    ext_options.UH_NSTEPS = get_nc_dimension(&(ext_filenames.routing), 
-            ext_filenames.info.uh_nsteps);
+    ext_options.RIRF_NSTEPS = get_nc_dimension(&(ext_filenames.routing), 
+            ext_filenames.info.rirf_nsteps);
+    ext_options.GIRF_NSTEPS = get_nc_dimension(&(ext_filenames.routing), 
+            ext_filenames.info.girf_nsteps);
 
     // close routing parameter file
     status = nc_close(ext_filenames.routing.nc_id);
