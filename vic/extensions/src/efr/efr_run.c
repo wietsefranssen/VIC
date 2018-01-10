@@ -51,19 +51,22 @@ efr_run(size_t cur_cell)
             ext_all_vars[cur_cell].routing.nat_discharge[0];
     ext_all_vars[cur_cell].efr.total_steps++;
     
-    if(ext_all_vars[cur_cell].efr.am_flow <
-            ext_all_vars[cur_cell].efr.ay_flow * EFR_LOW_FLOW_FRAC){
-        demand = ext_all_vars[cur_cell].efr.am_flow * EFR_LOW_DEMAND_FRAC;
-    }else if(ext_all_vars[cur_cell].efr.am_flow >
-            ext_all_vars[cur_cell].efr.ay_flow * EFR_HIGH_FLOW_FRAC){
-        demand = ext_all_vars[cur_cell].efr.am_flow * EFR_HIGH_DEMAND_FRAC;
-    }else{
-        demand = linear_interp(ext_all_vars[cur_cell].efr.am_flow,
-                ext_all_vars[cur_cell].efr.ay_flow * EFR_LOW_FLOW_FRAC,
-                ext_all_vars[cur_cell].efr.ay_flow * EFR_HIGH_FLOW_FRAC,
-                EFR_LOW_DEMAND_FRAC, EFR_HIGH_DEMAND_FRAC) *
-                ext_all_vars[cur_cell].efr.am_flow;
-    }    
+    demand = 0.0;
+    if(ext_all_vars[cur_cell].efr.ay_flow > 0){
+        if(ext_all_vars[cur_cell].routing.nat_discharge[0] <
+                ext_all_vars[cur_cell].efr.ay_flow * EFR_LOW_FLOW_FRAC){
+            demand = ext_all_vars[cur_cell].routing.nat_discharge[0] * EFR_LOW_DEMAND_FRAC;
+        }else if(ext_all_vars[cur_cell].routing.nat_discharge[0] >
+                ext_all_vars[cur_cell].efr.ay_flow * EFR_HIGH_FLOW_FRAC){
+            demand = ext_all_vars[cur_cell].routing.nat_discharge[0] * EFR_HIGH_DEMAND_FRAC;
+        }else{
+            demand = linear_interp(ext_all_vars[cur_cell].routing.nat_discharge[0],
+                    ext_all_vars[cur_cell].efr.ay_flow * EFR_LOW_FLOW_FRAC,
+                    ext_all_vars[cur_cell].efr.ay_flow * EFR_HIGH_FLOW_FRAC,
+                    EFR_LOW_DEMAND_FRAC, EFR_HIGH_DEMAND_FRAC) *
+                    ext_all_vars[cur_cell].routing.nat_discharge[0];
+        }    
+    }
     
     wu_con[cur_cell][WU_ENVIRONMENTAL].demand = demand;
     wu_con[cur_cell][WU_ENVIRONMENTAL].consumption_fraction = 0.0; 
