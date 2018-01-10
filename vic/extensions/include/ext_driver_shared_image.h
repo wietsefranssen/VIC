@@ -41,7 +41,13 @@ typedef struct {
     char nseason[MAXSTRING];
     char season_start[MAXSTRING];
     char season_end[MAXSTRING];
-    
+    // Dams
+    char ndam_dim[MAXSTRING];
+    char ndam[MAXSTRING];
+    char dam_year[MAXSTRING];
+    char dam_area[MAXSTRING];
+    char dam_volume[MAXSTRING];
+    char dam_height[MAXSTRING];
 }ext_info_struct;
 
 typedef struct {
@@ -49,6 +55,7 @@ typedef struct {
     nameid_struct routing;
     nameid_struct water_use;
     nameid_struct irrigation;
+    nameid_struct dams;
     
     char water_use_forcing_pfx[MAXSTRING];
     

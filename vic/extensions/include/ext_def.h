@@ -55,6 +55,7 @@ typedef struct{
     wu_var_struct *water_use;
     irr_var_struct **irrigation;
     efr_var_struct efr;
+    dam_var_struct *dams;
 }ext_all_vars_struct;
 
 void initialize_ext_global_structures(void);

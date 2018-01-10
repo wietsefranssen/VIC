@@ -83,6 +83,8 @@ rout_con_struct *rout_con = NULL;
 wu_con_struct **wu_con = NULL;
 irr_con_struct **irr_con = NULL;
 irr_con_map_struct *irr_con_map = NULL;
+dam_con_struct **dam_con = NULL;
+dam_con_map_struct *dam_con_map = NULL;
 
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model
