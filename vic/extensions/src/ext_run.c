@@ -6,6 +6,7 @@ ext_run()
     extern domain_struct local_domain;
     extern ext_option_struct ext_options;
     extern size_t *routing_order;
+    extern ext_all_vars_struct *ext_all_vars;
     
     timer_struct timer;
     size_t cur_cell;
@@ -23,12 +24,15 @@ ext_run()
         // Run the extensions
         if(ext_options.ROUTING){
             rout_run(cur_cell);
-        }
+        } 
         if(ext_options.IRRIGATION){
             irr_run1(cur_cell);
-        }
+        } 
         if(ext_options.EFR){
             efr_run(cur_cell);
+        }
+        if(ext_options.DAMS){
+            dam_run(cur_cell);
         }
         if(ext_options.WATER_USE){
             wu_run(cur_cell);
@@ -36,6 +40,7 @@ ext_run()
         if(ext_options.IRRIGATION){
             irr_run2(cur_cell);
         }
+            
     }
     
     timer_stop(&timer);

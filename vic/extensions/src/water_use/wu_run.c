@@ -63,10 +63,10 @@ wu_run(size_t cur_cell)
             ext_all_vars[cur_cell].water_use[i].returned += 
                     ext_all_vars[cur_cell].water_use[i].compensated * 
                     (1 - wu_con[cur_cell][i].consumption_fraction);
+        }        
 
-            if(ext_all_vars[cur_cell].routing.discharge[0] < 0){
-                ext_all_vars[cur_cell].routing.discharge[0] = 0.0;
-            }
+        if(ext_all_vars[cur_cell].routing.discharge[0] < 0){
+            ext_all_vars[cur_cell].routing.discharge[0] = 0.0;
         }
     }
     
@@ -98,10 +98,10 @@ wu_run(size_t cur_cell)
             ext_all_vars[cur_cell].water_use[i].returned += 
                     ext_all_vars[cur_cell].water_use[i].withdrawn * 
                     (1 - wu_con[cur_cell][i].consumption_fraction);
-
-            if(ext_all_vars[cur_cell].routing.discharge[0] < 0){
-                ext_all_vars[cur_cell].routing.discharge[0] = 0.0;
-            }
+        }
+        
+        if(ext_all_vars[cur_cell].routing.discharge[0] < 0){
+            ext_all_vars[cur_cell].routing.discharge[0] = 0.0;
         }
     }
     

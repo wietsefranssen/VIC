@@ -524,10 +524,8 @@ get_parameters(FILE *paramfile)
                 sscanf(cmdstr, "%*s %lf", &param.ROOT_BRENT_T);
             }
             else {
-                if (!ext_get_parameters(optstr)){
-                    log_warn("Unrecognized option in the parameter file:  %s "
-                             "- check your spelling", optstr);
-                }
+                log_warn("Unrecognized option in the parameter file:  %s "
+                         "- check your spelling", optstr);
             }
         }
         fgets(cmdstr, MAXSTRING, paramfile);

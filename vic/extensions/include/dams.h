@@ -2,7 +2,11 @@
 #define DAMS_H
 
 #define DAM_HIST_YEARS 3
+#define DAM_AMP_STEP 0.05
 #define DAM_PREF_VOL_FRAC 0.85
+#define DAM_DIS_MOD_FRAC 2
+
+#define DAYS_PER_MONTH_AVG 30.42
 
 typedef struct{
     size_t nd_active;
@@ -20,12 +24,14 @@ typedef struct{
     double area;
     double height;
     
-    double *history_flow;
-    double *calc_volume;
+    double history_flow[MONTHS_PER_YEAR * DAM_HIST_YEARS];
+    double op_discharge[MONTHS_PER_YEAR];
+    double op_volume[MONTHS_PER_YEAR];
     
     double total_flow;
     size_t total_steps;
     
+    dmy_struct op_year;
     size_t months_running;
 }dam_var_struct;
 

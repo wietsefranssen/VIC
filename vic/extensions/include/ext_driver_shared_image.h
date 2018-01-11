@@ -62,6 +62,7 @@ typedef struct {
     ext_info_struct info;
 }ext_filenames_struct;
 
+void initialize_dmy(dmy_struct *);
 void initialize_ext_info(ext_info_struct *);
 void initialize_ext_filenames(ext_filenames_struct *);
 void initialize_nameid(nameid_struct *);

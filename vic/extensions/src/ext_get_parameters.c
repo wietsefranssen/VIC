@@ -21,12 +21,9 @@ ext_get_global_param(char *cmdstr)
     if(efr_get_global_parameters(cmdstr)){
         return true;
     }
-    return false;
-}
-
-bool
-ext_get_parameters(char *cmdstr)
-{    
+    if(dam_get_global_parameters(cmdstr)){
+        return true;
+    }
     return false;
 }
 
@@ -50,10 +47,7 @@ ext_validate_global_parameters(void)
     if(ext_options.EFR){
         efr_validate_global_parameters();
     }  
-}
-
-void
-ext_validate_parameters(void)
-{
-    
+    if(ext_options.DAMS){
+        dam_validate_global_parameters();
+    }  
 }

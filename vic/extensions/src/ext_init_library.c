@@ -23,6 +23,9 @@ initialize_ext_local_structures(void)
     if(ext_options.EFR){
         initialize_efr_local_structures();
     }
+    if(ext_options.DAMS){
+        initialize_dam_local_structures();
+    }
 }
 
 /******************************************************************************
@@ -61,6 +64,7 @@ initialize_ext_options(ext_option_struct *options)
     options->WATER_USE = false;
     options->IRRIGATION = false;
     options->EFR = false;
+    options->DAMS = false;
     
     options->GW_INIT_FROM_FILE = false;
     options->RIRF_NSTEPS = 0;
@@ -74,6 +78,8 @@ initialize_ext_options(ext_option_struct *options)
     
     options->NIRRTYPES = 0;
     options->NIRRSEASONS = 0;
+    
+    options->MAXDAMS = 0;
     
     options->wu_force_offset = 0;
 }
@@ -89,6 +95,7 @@ initialize_ext_filenames(ext_filenames_struct *filenames)
     initialize_nameid(&filenames->routing);
     initialize_nameid(&filenames->water_use);
     initialize_nameid(&filenames->irrigation);
+    initialize_nameid(&filenames->dams);
     
     strcpy(filenames->water_use_forcing_pfx, MISSING_S);
     
@@ -123,16 +130,13 @@ initialize_ext_info(ext_info_struct *info){
     strcpy(info->ponded_class, "irr_pond");
     strcpy(info->season_start, "growing_season_start");
     strcpy(info->season_end, "growing_season_end");
-}
-
-/******************************************************************************
- * @brief    Initialize all parameters before they are called by the
- *           model.
- *****************************************************************************/
-void
-initialize_ext_parameters(ext_parameters_struct *parameters)
-{          
     
+    strcpy(info->ndam_dim, "dam_class");    
+    strcpy(info->ndam, "ndams");
+    strcpy(info->dam_year, "year");
+    strcpy(info->dam_volume, "max_volume");
+    strcpy(info->dam_area, "max_area");
+    strcpy(info->dam_height, "max_height");
 }
 
 /******************************************************************************
@@ -149,7 +153,6 @@ initialize_ext_global_structures(void)
     if(mpi_rank == VIC_MPI_ROOT){    
         initialize_ext_options(&ext_options);
         initialize_ext_filenames(&ext_filenames);
-        initialize_ext_parameters(&ext_param);
     }
 }
 

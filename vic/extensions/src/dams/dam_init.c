@@ -11,6 +11,7 @@ dam_set_info(void)
     extern dam_con_struct **dam_con;
     
     int *ivar;
+    double *dvar;
     
     size_t i;
     size_t j;
@@ -27,6 +28,9 @@ dam_set_info(void)
     
     ivar = malloc(local_domain.ncells_active * sizeof(*ivar));
     check_alloc_status(ivar, "Memory allocation error."); 
+    
+    dvar = malloc(local_domain.ncells_active * sizeof(*dvar));
+    check_alloc_status(dvar, "Memory allocation error."); 
         
     for(j = 0; j < (size_t)ext_options.MAXDAMS; j++){
         d3start[0] = j;
@@ -40,35 +44,36 @@ dam_set_info(void)
             }
         }
         
-        get_scatter_nc_field_int(&(ext_filenames.dams), 
-                ext_filenames.info.dam_height, d3start, d3count, ivar);
+        get_scatter_nc_field_double(&(ext_filenames.dams), 
+                ext_filenames.info.dam_height, d3start, d3count, dvar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){
-                dam_con[i][j].max_height = ivar[i];
+                dam_con[i][j].max_height = dvar[i];
             }
         }
         
-        get_scatter_nc_field_int(&(ext_filenames.dams), 
-                ext_filenames.info.dam_area, d3start, d3count, ivar);
+        get_scatter_nc_field_double(&(ext_filenames.dams), 
+                ext_filenames.info.dam_area, d3start, d3count, dvar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){
-                dam_con[i][j].max_area = ivar[i];
+                dam_con[i][j].max_area = dvar[i] * pow(M_PER_KM, 2);
             }
         }
         
-        get_scatter_nc_field_int(&(ext_filenames.dams), 
-                ext_filenames.info.dam_volume, d3start, d3count, ivar);
+        get_scatter_nc_field_double(&(ext_filenames.dams), 
+                ext_filenames.info.dam_volume, d3start, d3count, dvar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){
-                dam_con[i][j].max_volume = ivar[i];
+                dam_con[i][j].max_volume = dvar[i] * pow(M_PER_KM, 2);
             }
         }
     }
     
     free(ivar);
+    free(dvar);
 }
 
 void

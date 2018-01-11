@@ -16,4 +16,7 @@ ext_init(void)
     if(ext_options.IRRIGATION){
         irr_init();
     }
+    if(ext_options.DAMS){
+        dam_init();
+    }
 }

@@ -22,9 +22,9 @@ ext_alloc(void)
     if(ext_options.IRRIGATION){
         irr_alloc();
     }    
-    if(ext_options.EFR){
-        efr_alloc();
-    }    
+    if(ext_options.DAMS){
+        dam_alloc();
+    }
         
     initialize_ext_local_structures();
 }
@@ -46,9 +46,9 @@ void ext_finalize()
     if(ext_options.IRRIGATION){
         irr_finalize();
     }    
-    if(ext_options.EFR){
-        efr_finalize();
-    }    
+    if(ext_options.DAMS){
+        dam_finalize();
+    }
         
     free(ext_all_vars);
 }

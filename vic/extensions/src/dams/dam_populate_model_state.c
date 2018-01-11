@@ -7,6 +7,8 @@ dam_generate_default_state(void)
     extern dam_con_map_struct *dam_con_map;
     extern dam_con_struct **dam_con;
     extern ext_all_vars_struct *ext_all_vars;
+    extern dmy_struct *dmy;
+    extern size_t current;
     
     size_t i;
     size_t j;
@@ -23,6 +25,7 @@ dam_generate_default_state(void)
             ext_all_vars[i].dams[j].height = 
                     dam_height(ext_all_vars[i].dams[j].area,
                     dam_con[i][j].max_height);
+            ext_all_vars[i].dams[j].op_year.month = dmy[current].month;
         }
     }    
 }

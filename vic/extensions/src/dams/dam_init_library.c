@@ -16,8 +16,11 @@ initialize_dam_var(dam_var_struct *dam_var)
         dam_var->history_flow[i] = 0.0;
     }    
     for(i = 0; i < MONTHS_PER_YEAR; i++){
-        dam_var->calc_volume[i] = 0.0;
+        dam_var->op_volume[i] = 0.0;
+        dam_var->op_discharge[i] = 0.0;
     }
+    
+    initialize_dmy(&(dam_var->op_year));
 }
 
 void

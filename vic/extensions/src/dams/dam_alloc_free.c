@@ -70,10 +70,8 @@ dam_alloc(void)
         ext_all_vars[i].dams = malloc(dam_con_map[i].nd_active * sizeof(*ext_all_vars[i].dams));
         check_alloc_status(ext_all_vars[i].dams,"Memory allocation error"); 
         for(j=0;j<dam_con_map[i].nd_active;j++){
-            ext_all_vars[i].dams[j].history_flow = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*ext_all_vars[i].dams[j].history_flow));
-            check_alloc_status(ext_all_vars[i].dams[j].history_flow,"Memory allocation error");
-            ext_all_vars[i].dams[j].calc_volume = malloc(MONTHS_PER_YEAR * sizeof(*ext_all_vars[i].dams[j].calc_volume));
-            check_alloc_status(ext_all_vars[i].dams[j].calc_volume,"Memory allocation error");
+//            ext_all_vars[i].dams[j].history_flow = malloc(DAM_HIST_YEARS * MONTHS_PER_YEAR * sizeof(*ext_all_vars[i].dams[j].history_flow));
+//            check_alloc_status(ext_all_vars[i].dams[j].history_flow,"Memory allocation error");
         }   
     }   
 
@@ -98,8 +96,7 @@ dam_finalize(void)
             
     for(i=0; i<local_domain.ncells_active; i++){        
         for(j=0;j<dam_con_map[i].nd_active;j++){
-            free(ext_all_vars[i].dams[j].calc_volume);
-            free(ext_all_vars[i].dams[j].history_flow);
+//            free(ext_all_vars[i].dams[j].history_flow);
         }
         free(ext_all_vars[i].dams);
         free(dam_con[i]);

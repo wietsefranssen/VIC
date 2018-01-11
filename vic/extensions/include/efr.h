@@ -10,7 +10,7 @@
 typedef struct{
     double ay_flow;
     double am_flow;
-    double *history_flow;
+    double history_flow[EFR_HIST_YEARS * MONTHS_PER_YEAR];
     
     double total_flow;
     size_t total_steps;

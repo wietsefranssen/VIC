@@ -12,14 +12,15 @@ ext_start(void)
     
     int status;
     
-    if(mpi_rank == VIC_MPI_ROOT){      
-        ext_validate_parameters();    
-                
+    if(mpi_rank == VIC_MPI_ROOT){
         if(ext_options.ROUTING){
             rout_start();
         }   
         if(ext_options.IRRIGATION){
             irr_start();
+        }   
+        if(ext_options.DAMS){
+            dam_start();
         }
     }  
     
