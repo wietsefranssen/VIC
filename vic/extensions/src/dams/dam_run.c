@@ -275,7 +275,8 @@ dam_run(size_t cur_cell)
                     global_param.dt;
             if(ext_all_vars[cur_cell].dams[i].volume < 0){
                 ext_all_vars[cur_cell].dams[i].discharge -= 
-                        ext_all_vars[cur_cell].dams[i].volume;
+                        ext_all_vars[cur_cell].dams[i].volume / 
+                        global_param.dt;
                 ext_all_vars[cur_cell].dams[i].volume = 0.0;
             }
             
@@ -292,15 +293,6 @@ dam_run(size_t cur_cell)
                         
             ext_all_vars[cur_cell].routing.discharge[0] += 
                     ext_all_vars[cur_cell].dams[i].discharge;
-            
-            if(ext_all_vars[cur_cell].dams[i].volume < 0){
-                debug(" ");
-            }
-            if(calc_volume > ext_all_vars[cur_cell].dams[i].volume){
-                if(discharge_correction > 0){
-                    debug(" ");
-                }
-            }
             
             ext_all_vars[cur_cell].dams[i].area = 
                     dam_area(ext_all_vars[cur_cell].dams[i].volume,
