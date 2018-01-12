@@ -73,6 +73,8 @@ bool ext_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_fi
 bool ext_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
 bool wu_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
 bool wu_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
+bool dam_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
+bool dam_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file);
 
 void ext_write(void);
 void ext_set_nc_output_file_info(nc_file_struct *nc_output_file);
@@ -83,6 +85,10 @@ void wu_set_nc_output_file_info(nc_file_struct *nc_output_file);
 void wu_write_def_dim(nc_file_struct *nc_output_file, stream_struct *stream);
 void wu_write_def_dimvar(nc_file_struct *nc_output_file, stream_struct *stream);
 void wu_write_put_dimvar(nc_file_struct *nc_output_file, stream_struct *stream);
+void dam_set_nc_output_file_info(nc_file_struct *nc_output_file);
+void dam_write_def_dim(nc_file_struct *nc_file, stream_struct *stream);
+void dam_write_def_dimvar(nc_file_struct *nc_file, stream_struct *stream);
+void dam_write_put_dimvar(nc_file_struct *nc_file, stream_struct *stream);
 
 void ext_store(void);
 void ext_set_nc_state_file_info(nc_file_struct *nc_state_file);

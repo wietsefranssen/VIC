@@ -56,13 +56,20 @@ dam_calc_year_discharge(double ay_flow,
 }
 
 void
-dam_get_operation(double ay_flow, double *am_flow, double cur_volume, double pref_volume, double *op_discharge, double *op_volume)
+dam_get_operation(double ay_flow, 
+        double *am_flow, 
+        double cur_volume, 
+        double pref_volume, 
+        double max_volume, 
+        double *op_discharge, 
+        double *op_volume)
 {
     extern global_param_struct global_param;
     
     double amplitude;
     double offset;
     double volume_needed;
+    double cur_volume_tmp;
     
     size_t i;
     
@@ -95,9 +102,14 @@ dam_get_operation(double ay_flow, double *am_flow, double cur_volume, double pre
         }
     }
     
+    cur_volume_tmp = cur_volume;
+    if(cur_volume_tmp > max_volume){
+        cur_volume_tmp = max_volume;
+    }
+    
     for(i = 0; i < MONTHS_PER_YEAR; i++){
         if(i == 0){
-            op_volume[i] = cur_volume + 
+            op_volume[i] = cur_volume_tmp + 
                     ((am_flow[i] - op_discharge[i]) * 
                     global_param.dt * 
                     global_param.model_steps_per_day * 
@@ -113,9 +125,14 @@ dam_get_operation(double ay_flow, double *am_flow, double cur_volume, double pre
         }
     }    
     
-    debug("\nDAM\tCUR_VOL %.2f\tPREF_VOL %.2f\tAMP %.2f\tOFF %.2f"
-            "\nINFLOW\tDISCHARGE\tVOLUME",
-            cur_volume/1000000, pref_volume/1000000, amplitude, offset);
+    debug("\nDAM\tAY_INFLOW %.2f\tCUR_VOL %.2f\tPREF_VOL %.2f\tMAX_VOL %.2f\tAMP %.2f\tOFF %.2f",
+            ay_flow,
+            cur_volume/1000000, 
+            pref_volume/1000000, 
+            max_volume/1000000,
+            amplitude, 
+            offset);
+    debug("INFLOW\tDISCHARGE\tVOLUME");
     for(i = 0; i < MONTHS_PER_YEAR; i ++){
         debug("%.2f\t%.2f\t%.2f",
                 am_flow[i],op_discharge[i],op_volume[i]/1000000);
@@ -139,7 +156,6 @@ dam_run(size_t cur_cell)
     double calc_volume;
     double day_step;
     double discharge_correction;
-    double calc_discharge;
     
     size_t i;
     size_t j;
@@ -189,6 +205,7 @@ dam_run(size_t cur_cell)
                 dam_get_operation(ay_flow, am_flow, 
                         ext_all_vars[cur_cell].dams[i].volume,
                         dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
+                        dam_con[cur_cell][i].max_volume,
                         ext_all_vars[cur_cell].dams[i].op_discharge,
                         ext_all_vars[cur_cell].dams[i].op_volume);      
      
@@ -213,12 +230,14 @@ dam_run(size_t cur_cell)
         // Run dams
         if(dmy[current].year >= dam_con[cur_cell][i].year && years_running > 0){
             
+            ext_all_vars[cur_cell].dams[i].discharge = 0.0;
+            
             ext_all_vars[cur_cell].dams[i].volume += 
                     ext_all_vars[cur_cell].routing.discharge[0] * 
                     global_param.dt;            
             ext_all_vars[cur_cell].routing.discharge[0] = 0.0;
             
-            // Calculate expected volume and correction
+            // Calculate expected volume
             day_step = ext_all_vars[cur_cell].dams[i].total_steps / 
                     global_param.model_steps_per_day;
             if(day_step > (size_t)DAYS_PER_MONTH_AVG){
@@ -229,39 +248,58 @@ dam_run(size_t cur_cell)
                     ext_all_vars[cur_cell].dams[i].op_volume[MONTHS_PER_YEAR - 1],
                     ext_all_vars[cur_cell].dams[i].op_volume[0]);
             
+            // Calculate discharge correction
             discharge_correction = 
                     (ext_all_vars[cur_cell].dams[i].volume - 
                     calc_volume) / global_param.dt;
-            if(discharge_correction > 
+            if(abs(discharge_correction) > 
                     ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
                     DAM_DIS_MOD_FRAC){
-                discharge_correction = 
-                        ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
-                        DAM_DIS_MOD_FRAC;
+                if(discharge_correction > 0){
+                    discharge_correction = 
+                            ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
+                            DAM_DIS_MOD_FRAC;
+                } else {
+                    discharge_correction = 
+                            -ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
+                            DAM_DIS_MOD_FRAC;
+                }
             }
             
             // Release
-            calc_discharge = 
+            ext_all_vars[cur_cell].dams[i].discharge = 
                     ext_all_vars[cur_cell].dams[i].op_discharge[0] +
                     discharge_correction;
             ext_all_vars[cur_cell].dams[i].volume -= 
-                    calc_discharge * global_param.dt;
+                    ext_all_vars[cur_cell].dams[i].discharge * 
+                    global_param.dt;
             if(ext_all_vars[cur_cell].dams[i].volume < 0){
-                calc_discharge -= ext_all_vars[cur_cell].dams[i].volume;
+                ext_all_vars[cur_cell].dams[i].discharge -= 
+                        ext_all_vars[cur_cell].dams[i].volume;
                 ext_all_vars[cur_cell].dams[i].volume = 0.0;
             }
-                        
-            ext_all_vars[cur_cell].routing.discharge[0] += calc_discharge;
             
             // Overflow
             if(ext_all_vars[cur_cell].dams[i].volume >
                     dam_con[cur_cell][i].max_volume){
-                ext_all_vars[cur_cell].routing.discharge[0] +=
+                ext_all_vars[cur_cell].dams[i].discharge +=
                         (ext_all_vars[cur_cell].dams[i].volume -
                         dam_con[cur_cell][i].max_volume) / 
                         global_param.dt;            
                 ext_all_vars[cur_cell].dams[i].volume = 
                         dam_con[cur_cell][i].max_volume;
+            }
+                        
+            ext_all_vars[cur_cell].routing.discharge[0] += 
+                    ext_all_vars[cur_cell].dams[i].discharge;
+            
+            if(ext_all_vars[cur_cell].dams[i].volume < 0){
+                debug(" ");
+            }
+            if(calc_volume > ext_all_vars[cur_cell].dams[i].volume){
+                if(discharge_correction > 0){
+                    debug(" ");
+                }
             }
             
             ext_all_vars[cur_cell].dams[i].area = 

@@ -143,7 +143,9 @@ typedef struct {
     
     // Extensions
     int sector_dimid;
+    int dam_dimid;
     size_t sector_size;
+    size_t dam_size;
     
     bool open;
     nc_var_struct *nc_vars;

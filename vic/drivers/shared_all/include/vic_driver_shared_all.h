@@ -305,6 +305,14 @@ enum
     OUT_WU_CONSUMED, 
     OUT_WU_RETURNED,
     OUT_WU_SHORTAGE,
+    // Dams terms
+    OUT_DAM_VOLUME,
+    OUT_DAM_DISCHARGE,
+    OUT_DAM_AREA,
+    OUT_DAM_HEIGHT,
+    OUT_DAM_OP_DISCHARGE,
+    OUT_DAM_OP_VOLUME,
+    OUT_DAM_OP_MONTH,
     // Timing and Profiling Terms
     OUT_TIME_EXTRUN_WALL, /**< Wall time spent inside ext_run [seconds] */
     OUT_TIME_EXTRUN_CPU,  /**< Wall time spent inside ext_run [seconds] */

@@ -147,7 +147,6 @@ initialize_ext_global_structures(void)
 {  
     extern ext_filenames_struct ext_filenames;
     extern ext_option_struct ext_options;
-    extern ext_parameters_struct ext_param;
     extern int mpi_rank;
     
     if(mpi_rank == VIC_MPI_ROOT){    

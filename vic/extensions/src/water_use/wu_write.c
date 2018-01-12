@@ -19,13 +19,13 @@ wu_write_def_dim(nc_file_struct *nc_file, stream_struct *stream)
 }
 
 void
-wu_write_def_dimvar(nc_file_struct *nc_output_file, stream_struct *stream)
+wu_write_def_dimvar(nc_file_struct *nc_file, stream_struct *stream)
 {
     
 }
 
 void
-wu_write_put_dimvar(nc_file_struct *nc_output_file, stream_struct *stream)
+wu_write_put_dimvar(nc_file_struct *nc_file, stream_struct *stream)
 {
     
 }

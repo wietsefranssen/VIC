@@ -6,7 +6,6 @@ ext_run()
     extern domain_struct local_domain;
     extern ext_option_struct ext_options;
     extern size_t *routing_order;
-    extern ext_all_vars_struct *ext_all_vars;
     
     timer_struct timer;
     size_t cur_cell;

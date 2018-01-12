@@ -23,4 +23,7 @@ ext_put_data(timer_struct timer)
     if(ext_options.WATER_USE){
         wu_put_data();
     }
+    if(ext_options.DAMS){
+        dam_put_data();
+    }
 }

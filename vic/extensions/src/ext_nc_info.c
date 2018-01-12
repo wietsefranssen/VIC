@@ -10,6 +10,11 @@ ext_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file)
             return true;
         }
     }
+    if(ext_options.DAMS){
+        if(dam_set_nc_var_info(varid, nc_var, nc_file)){
+            return true;
+        }
+    }
     return false;
 }
 
@@ -20,6 +25,11 @@ ext_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file)
     
     if(ext_options.WATER_USE){
         if(wu_set_nc_var_dimids(varid, nc_var, nc_file)){
+            return true;
+        }
+    }
+    if(ext_options.DAMS){
+        if(dam_set_nc_var_dimids(varid, nc_var, nc_file)){
             return true;
         }
     }

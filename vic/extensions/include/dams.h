@@ -4,7 +4,7 @@
 #define DAM_HIST_YEARS 3
 #define DAM_AMP_STEP 0.05
 #define DAM_PREF_VOL_FRAC 0.85
-#define DAM_DIS_MOD_FRAC 2
+#define DAM_DIS_MOD_FRAC 0.3
 
 #define DAYS_PER_MONTH_AVG 30.42
 
@@ -21,6 +21,7 @@ typedef struct{
 
 typedef struct{    
     double volume;
+    double discharge;
     double area;
     double height;
     
@@ -41,10 +42,13 @@ void dam_start(void);
 void dam_alloc(void);
 void initialize_dam_local_structures(void);
 void dam_init(void);
+void dam_set_output_meta_data_info(void);
+void dam_set_state_meta_data_info(void);
 void dam_generate_default_state(void);
 void dam_run(size_t cur_cell);
 double dam_area(double volume, double max_volume, double max_area, double max_height);
 double dam_height(double area, double max_height);
+void dam_put_data(void);
 void dam_finalize(void);
 
 #endif /* DAMS_H */

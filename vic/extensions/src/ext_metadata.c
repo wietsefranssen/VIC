@@ -14,6 +14,9 @@ ext_set_output_met_data_info(void)
     if(ext_options.WATER_USE){
         wu_set_output_meta_data_info();
     }
+    if(ext_options.DAMS){
+        dam_set_output_meta_data_info();
+    }
 }
 
 void
@@ -29,5 +32,8 @@ ext_set_state_meta_data_info(void)
     }
     if(ext_options.WATER_USE){
         wu_set_state_meta_data_info();
+    }
+    if(ext_options.DAMS){
+        dam_set_state_meta_data_info();
     }
 }

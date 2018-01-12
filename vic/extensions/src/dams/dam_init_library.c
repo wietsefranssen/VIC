@@ -8,6 +8,7 @@ initialize_dam_var(dam_var_struct *dam_var)
     dam_var->area = 0.0;
     dam_var->height = 0.0;
     dam_var->volume = 0.0;
+    dam_var->discharge = 0.0;
     dam_var->total_flow = 0.0;
     dam_var->total_steps = 0;
     dam_var->months_running = 0;
