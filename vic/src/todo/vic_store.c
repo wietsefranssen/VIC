@@ -1331,11 +1331,13 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     nc_state_file->veg_size = options.NVEGTYPES;
 
     // set ids and dimension sizes of the extension variables
-    set_nc_state_file_info_routing_rvic(nc_state_file);
-
+    if (options.ROUTING_RVIC) {
+        set_nc_state_file_info_routing_rvic(nc_state_file);
+    }
+        
     // allocate memory for nc_vars
     nc_state_file->nc_vars =
-        calloc(N_STATE_VARS + N_STATE_VARS_EXT,
+        calloc(N_STATE_VARS_ALL,
                sizeof(*(nc_state_file->nc_vars)));
     check_alloc_status(nc_state_file->nc_vars, "Memory allocation error");
 }
@@ -1346,6 +1348,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
 void
 set_nc_state_var_info(nc_file_struct *nc)
 {
+    extern option_struct options;
     size_t i;
     size_t j;
 
@@ -1544,7 +1547,9 @@ set_nc_state_var_info(nc_file_struct *nc)
             log_err("Too many dimensions specified in variable %zu", i);
         }
     }
-    set_nc_state_var_info_routing_rvic(nc);
+    if (options.ROUTING_RVIC) {
+        set_nc_state_var_info_routing_rvic(nc);
+    }
 }
 
 /******************************************************************************
@@ -1560,7 +1565,7 @@ initialize_state_file(char           *filename,
     extern domain_struct       global_domain;
     extern domain_struct       local_domain;
     extern global_param_struct global_param;
-    extern metadata_struct     state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
+    extern metadata_struct    *state_metadata;
     extern soil_con_struct    *soil_con;
     extern int                 mpi_rank;
 
@@ -1586,6 +1591,7 @@ initialize_state_file(char           *filename,
     double                     dtime;
     double                    *dvar = NULL;
     int                       *ivar = NULL;
+    int                        i_var;
 
     // open the netcdf file
     if (mpi_rank == VIC_MPI_ROOT) {
@@ -1686,8 +1692,10 @@ initialize_state_file(char           *filename,
         }
 
         // add extension dimensions
-        initialize_state_file_routing_rvic(filename, nc_state_file);
-
+        if (options.ROUTING_RVIC) {
+            initialize_state_file_routing_rvic(filename, nc_state_file);
+        }
+ 
         set_nc_state_var_info(nc_state_file);
     }
 
@@ -1898,55 +1906,55 @@ initialize_state_file(char           *filename,
 
     // Define state variables
     if (mpi_rank == VIC_MPI_ROOT) {
-        for (i = 0; i < (N_STATE_VARS + N_STATE_VARS_EXT); i++) {
-            if (strcasecmp(state_metadata[i].varname, MISSING_S) == 0) {
+        for (i_var = 0; i_var < (N_STATE_VARS_ALL); i_var++) {
+            if (strcasecmp(state_metadata[i_var].varname, MISSING_S) == 0) {
                 // skip variables not set in set_state_meta_data_info
                 continue;
             }
 
             // create the variable
-            status = nc_def_var(nc_state_file->nc_id, state_metadata[i].varname,
-                                nc_state_file->nc_vars[i].nc_type,
-                                nc_state_file->nc_vars[i].nc_dims,
-                                nc_state_file->nc_vars[i].nc_dimids,
-                                &(nc_state_file->nc_vars[i].nc_varid));
+            status = nc_def_var(nc_state_file->nc_id, state_metadata[i_var].varname,
+                                nc_state_file->nc_vars[i_var].nc_type,
+                                nc_state_file->nc_vars[i_var].nc_dims,
+                                nc_state_file->nc_vars[i_var].nc_dimids,
+                                &(nc_state_file->nc_vars[i_var].nc_varid));
             check_nc_status(status, "Error defining state variable %s in %s",
-                            state_metadata[i].varname, filename);
+                            state_metadata[i_var].varname, filename);
 
             // set the fill value attribute
-            if (nc_state_file->nc_vars[i].nc_type == NC_DOUBLE) {
+            if (nc_state_file->nc_vars[i_var].nc_type == NC_DOUBLE) {
                 status = nc_put_att_double(nc_state_file->nc_id,
-                                           nc_state_file->nc_vars[i].nc_varid,
+                                           nc_state_file->nc_vars[i_var].nc_varid,
                                            "_FillValue", NC_DOUBLE, 1,
                                            &(nc_state_file->d_fillvalue));
             }
-            else if (nc_state_file->nc_vars[i].nc_type == NC_INT) {
+            else if (nc_state_file->nc_vars[i_var].nc_type == NC_INT) {
                 status = nc_put_att_int(nc_state_file->nc_id,
-                                        nc_state_file->nc_vars[i].nc_varid,
+                                        nc_state_file->nc_vars[i_var].nc_varid,
                                         "_FillValue", NC_INT, 1,
                                         &(nc_state_file->i_fillvalue));
             }
             else {
                 log_err("NC_TYPE %d not supported at this time",
-                        nc_state_file->nc_vars[i].nc_type);
+                        nc_state_file->nc_vars[i_var].nc_type);
             }
             check_nc_status(status,
                             "Error putting _FillValue attribute to %s in %s",
-                            state_metadata[i].varname, filename);
+                            state_metadata[i_var].varname, filename);
 
             // Set string attributes
             put_nc_attr(nc_state_file->nc_id,
-                        nc_state_file->nc_vars[i].nc_varid,
-                        "long_name", state_metadata[i].long_name);
+                        nc_state_file->nc_vars[i_var].nc_varid,
+                        "long_name", state_metadata[i_var].long_name);
             put_nc_attr(nc_state_file->nc_id,
-                        nc_state_file->nc_vars[i].nc_varid,
-                        "standard_name", state_metadata[i].standard_name);
+                        nc_state_file->nc_vars[i_var].nc_varid,
+                        "standard_name", state_metadata[i_var].standard_name);
             put_nc_attr(nc_state_file->nc_id,
-                        nc_state_file->nc_vars[i].nc_varid,
-                        "units", state_metadata[i].units);
+                        nc_state_file->nc_vars[i_var].nc_varid,
+                        "units", state_metadata[i_var].units);
             put_nc_attr(nc_state_file->nc_id,
-                        nc_state_file->nc_vars[i].nc_varid,
-                        "description", state_metadata[i].description);
+                        nc_state_file->nc_vars[i_var].nc_varid,
+                        "description", state_metadata[i_var].description);
         }
 
         // leave define mode

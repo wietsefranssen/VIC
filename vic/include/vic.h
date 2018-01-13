@@ -41,4 +41,25 @@
 #include <routing_rvic.h>
 #include <routing_lohmann.h>
 
+typedef struct node {
+    int   id;
+    char *name;
+    int   data;
+    struct node* next;
+} node;
+
+int   N_STATE_VARS_ALL;
+int   N_OUTVAR_TYPES_ALL;
+
+node *list_create(node* next, char *name);
+node *list_prepend(node* head, char *name);
+node *list_search(node* head, int id);
+int   list_search_id(node* head, char *name);
+void  list_dispose(node *head);
+int   list_count(node *head);
+node *list_insertion_sort(node* head);
+node *list_reverse(node* head);
+void  list_print(node* head);
+node *list_add_ids(node* head, int start);
+
 #endif

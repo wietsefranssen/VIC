@@ -59,12 +59,15 @@ veg_con_map_struct *veg_con_map = NULL;
 veg_con_struct    **veg_con = NULL;
 veg_hist_struct   **veg_hist = NULL;
 veg_lib_struct    **veg_lib = NULL;
-metadata_struct     state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
-metadata_struct     out_metadata[N_OUTVAR_TYPES];
 save_data_struct   *save_data;  // [ncells]
 double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
 nc_file_struct     *nc_hist_files = NULL;  // [nstreams]
+metadata_struct    *state_metadata = NULL;
+metadata_struct    *out_metadata = NULL;
+node               *outvar_types = NULL;
+node               *state_vars = NULL;
+
 
 // Extensions
 routing_rvic_struct         rout; // Routing routine (extension)
@@ -107,7 +110,7 @@ main(int    argc,
     if (mpi_rank == VIC_MPI_ROOT) {
         cmd_proc(argc, argv, filenames.global);
     }
-
+    
     // read global parameters
     vic_start();
     

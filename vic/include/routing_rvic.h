@@ -90,15 +90,4 @@ void initialize_state_file_routing_rvic(char *, nc_file_struct *);
 
 bool get_global_param_routing_rvic(char *, char *, char *);
 
-/******************************************************************************
- * @brief   Output state variable.
- *****************************************************************************/
-enum
-{
-    STATE_ROUT_RING,                   /**<  routing ring: rout_ring[routing_timestep, outlet] */
-    // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
-    // used as a loop counter and must be >= the largest value in this enum
-    N_STATE_VARS_EXT                       /**< used as a loop counter*/
-};
-
 #endif

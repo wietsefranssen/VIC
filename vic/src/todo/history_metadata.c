@@ -32,15 +32,17 @@
 void
 set_output_met_data_info()
 {
-    size_t                 v;
+    int                  v;
 
-    extern option_struct   options;
-    extern metadata_struct out_metadata[N_OUTVAR_TYPES];
+    extern option_struct    options;
+    extern metadata_struct *out_metadata;
+    extern int              N_OUTVAR_TYPES_ALL;
+
 
     // Build the list of supported output variables
 
     // Set missing and/or default values
-    for (v = 0; v < N_OUTVAR_TYPES; v++) {
+    for (v = 0; v < N_OUTVAR_TYPES_ALL; v++) {
         // Set default string values
         strcpy(out_metadata[v].varname, MISSING_S);
         strcpy(out_metadata[v].long_name, MISSING_S);

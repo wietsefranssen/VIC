@@ -530,12 +530,13 @@ void
 print_out_data(double         **out_data,
                metadata_struct *metadata)
 {
-    size_t i;
+    int    i;
     size_t j;
+    extern int                 N_OUTVAR_TYPES_ALL;
 
     fprintf(LOG_DEST, "out_data:\n");
 
-    for (i = 0; i < N_OUTVAR_TYPES; i++) {
+    for (i = 0; i < N_OUTVAR_TYPES_ALL; i++) {
         fprintf(LOG_DEST, "\tvarname: %s\n", metadata[i].varname);
         fprintf(LOG_DEST, "\t\tnelem: %zu\n", metadata[i].nelem);
         fprintf(LOG_DEST, "\t\tdata:");

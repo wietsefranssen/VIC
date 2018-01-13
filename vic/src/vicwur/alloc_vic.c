@@ -30,16 +30,19 @@
  * @brief    Allocate memory for VIC structures.
  *****************************************************************************/
 void
-alloc_vic(void)
-{
-    extern option_struct     options;
+alloc_vic(void) {
+    extern option_struct options;
+    extern int           N_STATE_VARS_ALL;
+    extern int           N_OUTVAR_TYPES_ALL;
+
+    N_STATE_VARS_ALL   = N_STATE_VARS;
+    N_OUTVAR_TYPES_ALL = N_OUTVAR_TYPES;
 
     // Allocate memory for all non specific VIC structures
     alloc_general();
-    
+
     // Allocate memory for routing
     if (options.ROUTING_RVIC) {
         alloc_routing_rvic();
     }
-
 }

@@ -33,15 +33,15 @@
 void
 set_state_meta_data_info()
 {
-    size_t                 v;
+    int                  v;
 
-    extern option_struct   options;
-    extern metadata_struct state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
+    extern option_struct    options;
+    extern metadata_struct *state_metadata;
 
     // Build the list of state variables
 
     // Set missing and/or default values
-    for (v = 0; v < (N_STATE_VARS + N_STATE_VARS_EXT); v++) {
+    for (v = 0; v < (N_STATE_VARS_ALL); v++) {
         // Set default string values
         strcpy(state_metadata[v].varname, MISSING_S);
         strcpy(state_metadata[v].long_name, MISSING_S);

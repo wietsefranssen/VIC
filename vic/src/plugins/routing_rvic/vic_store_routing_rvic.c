@@ -31,27 +31,26 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-vic_store_routing_rvic(nc_file_struct *nc_state_file)
-{
-    extern int         mpi_rank;
-    extern routing_rvic_struct rout;
+vic_store_routing_rvic(nc_file_struct *nc_state_file) {
+    extern int                  mpi_rank;
+    extern routing_rvic_struct  rout;
+    extern node                *state_vars;
 
-    int                status;
-    size_t             d2start[2];
-    nc_var_struct     *nc_var;
+    int            status;
+    size_t         d2start[2];
+    nc_var_struct *nc_var;
 
     // write state variables
-
     // routing ring
     if (mpi_rank == VIC_MPI_ROOT) {
         d2start[0] = 0;
         d2start[1] = 0;
-        nc_var = &(nc_state_file->nc_vars[N_STATE_VARS + STATE_ROUT_RING]);
+        nc_var = &(nc_state_file->nc_vars[list_search_id(state_vars, "STATE_ROUT_RING")]);
 
         status =
-            nc_put_vara_double(nc_state_file->nc_id, nc_var->nc_varid, d2start,
-                               nc_var->nc_counts,
-                               rout.ring);
+                nc_put_vara_double(nc_state_file->nc_id, nc_var->nc_varid, d2start,
+                nc_var->nc_counts,
+                rout.ring);
         check_nc_status(status, "Error writing values.");
     }
 }
@@ -60,8 +59,7 @@ vic_store_routing_rvic(nc_file_struct *nc_state_file)
  * @brief   Setup state file netcdf structure
  *****************************************************************************/
 void
-set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file)
-{
+set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file) {
     extern routing_rvic_struct rout;
 
     // set ids to MISSING
@@ -77,37 +75,26 @@ set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file)
  * @brief   Setup state variable dimensions, types, etc.
  *****************************************************************************/
 void
-set_nc_state_var_info_routing_rvic(nc_file_struct *nc)
-{
-    size_t i;
+set_nc_state_var_info_routing_rvic(nc_file_struct *nc) {
     size_t j;
+    extern node *state_vars;
+    int STATE_ROUT_RING = list_search_id(state_vars, "STATE_ROUT_RING");
 
-    for (i = N_STATE_VARS; i < (N_STATE_VARS + N_STATE_VARS_EXT); i++) {
-        nc->nc_vars[i].nc_varid = i;
-        for (j = 0; j < MAXDIMS; j++) {
-            nc->nc_vars[i].nc_dimids[j] = -1;
-            nc->nc_vars[i].nc_counts[j] = 0;
-        }
-        nc->nc_vars[i].nc_dims = 0;
-        nc->nc_vars[i].nc_type = NC_DOUBLE;
+    nc->nc_vars[STATE_ROUT_RING].nc_varid = STATE_ROUT_RING;
+    for (j = 0; j < MAXDIMS; j++) {
+        nc->nc_vars[STATE_ROUT_RING].nc_dimids[j] = -1;
+        nc->nc_vars[STATE_ROUT_RING].nc_counts[j] = 0;
+    }
+    nc->nc_vars[STATE_ROUT_RING].nc_type = NC_DOUBLE;
 
-        // Set the number of dimensions and dimids for each state variable
-        switch (i) {
-        case (N_STATE_VARS + STATE_ROUT_RING):
-            // 2d vars [routing_timestep, outlet]
-            nc->nc_vars[i].nc_dims = 2;
-            nc->nc_vars[i].nc_dimids[0] = nc->routing_timestep_dimid;
-            nc->nc_vars[i].nc_dimids[1] = nc->outlet_dimid;
-            nc->nc_vars[i].nc_counts[0] = nc->routing_timestep_size;
-            nc->nc_vars[i].nc_counts[1] = nc->outlet_size;
-            break;
-        default:
-            log_err("state variable %zu not found when setting dimensions", i);
-        }
+    nc->nc_vars[STATE_ROUT_RING].nc_dims = 2;
+    nc->nc_vars[STATE_ROUT_RING].nc_dimids[0] = nc->routing_timestep_dimid;
+    nc->nc_vars[STATE_ROUT_RING].nc_dimids[1] = nc->outlet_dimid;
+    nc->nc_vars[STATE_ROUT_RING].nc_counts[0] = nc->routing_timestep_size;
+    nc->nc_vars[STATE_ROUT_RING].nc_counts[1] = nc->outlet_size;
 
-        if (nc->nc_vars[i].nc_dims > MAXDIMS) {
-            log_err("Too many dimensions specified in variable %zu", i);
-        }
+    if (nc->nc_vars[STATE_ROUT_RING].nc_dims > MAXDIMS) {
+        log_err("Too many dimensions specified in variable %d", STATE_ROUT_RING);
     }
 }
 
@@ -116,19 +103,18 @@ set_nc_state_var_info_routing_rvic(nc_file_struct *nc)
             and adding metadata.
  *****************************************************************************/
 void
-initialize_state_file_routing_rvic(char           *filename,
-                                     nc_file_struct *nc_state_file)
-{
+initialize_state_file_routing_rvic(char *filename,
+        nc_file_struct *nc_state_file) {
     int status;
 
     // Add routing dimensions
     status = nc_def_dim(nc_state_file->nc_id, "outlet",
-                        nc_state_file->outlet_size,
-                        &(nc_state_file->outlet_dimid));
+            nc_state_file->outlet_size,
+            &(nc_state_file->outlet_dimid));
     check_nc_status(status, "Error defining outlet in %s", filename);
 
     status = nc_def_dim(nc_state_file->nc_id, "routing_timestep",
-                        nc_state_file->routing_timestep_size,
-                        &(nc_state_file->routing_timestep_dimid));
+            nc_state_file->routing_timestep_size,
+            &(nc_state_file->routing_timestep_dimid));
     check_nc_status(status, "Error defining routing_timestep in %s", filename);
 }

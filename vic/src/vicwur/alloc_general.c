@@ -44,8 +44,21 @@ alloc_general(void)
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
     extern lake_con_struct    *lake_con;
+    extern metadata_struct    *out_metadata;
+    extern metadata_struct    *state_metadata;
+
+    extern int                 N_OUTVAR_TYPES_ALL;
+    extern int                 N_STATE_VARS_ALL;        
     size_t                     i;
     size_t                     j;
+
+    // allocate memory for out_metadata structure
+    out_metadata = malloc(N_OUTVAR_TYPES_ALL * sizeof(*out_metadata));
+    check_alloc_status(out_metadata, "Memory allocation error.");
+
+    // allocate memory for state_vars structure
+    state_metadata = malloc(N_STATE_VARS_ALL * sizeof(*state_metadata));
+    check_alloc_status(state_metadata, "Memory allocation error.");
 
     // allocate memory for force structure
     force = malloc(local_domain.ncells_active * sizeof(*force));

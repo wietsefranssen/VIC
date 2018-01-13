@@ -33,16 +33,17 @@
 void
 state_metadata_routing_rvic()
 {
-    extern metadata_struct state_metadata[N_STATE_VARS + N_STATE_VARS_EXT];
-
+    extern metadata_struct *state_metadata;
+    extern node            *state_vars;
+    
     // STATE_ROUT_RING
-    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].varname,
+    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
            "STATE_ROUT_RING");
-    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].long_name,
+    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].long_name,
            "routing_ring");
-    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].standard_name,
+    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].standard_name,
            "routing_ring");
-    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].units, "-");
-    strcpy(state_metadata[N_STATE_VARS + STATE_ROUT_RING].description,
+    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].units, "-");
+    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].description,
            "unit hydrographs in the routing ring");
 }

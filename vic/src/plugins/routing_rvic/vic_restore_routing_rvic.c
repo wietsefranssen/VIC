@@ -34,9 +34,10 @@ void
 vic_restore_routing_rvic(nameid_struct   *init_state_file,
                            metadata_struct *state_metadata)
 {
-    extern int         mpi_rank;
+    extern int          mpi_rank;
     extern routing_rvic_struct rout;
-
+    extern node        *state_vars;
+ 
     size_t             d2start[2];
     size_t             d2count[2];
 
@@ -51,7 +52,7 @@ vic_restore_routing_rvic(nameid_struct   *init_state_file,
 
         get_nc_field_double(
             init_state_file,
-            state_metadata[N_STATE_VARS + STATE_ROUT_RING].varname,
+            state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
             d2start, d2count, rout.ring);
     }
 }

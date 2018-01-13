@@ -34,15 +34,15 @@ agg_stream_data(stream_struct *stream,
                 dmy_struct    *dmy_current,
                 double      ***out_data)
 {
-    extern metadata_struct out_metadata[N_OUTVAR_TYPES];
+    extern metadata_struct *out_metadata;
 
-    alarm_struct          *alarm;
-    size_t                 i;
-    size_t                 j;
-    size_t                 k;
-    size_t                 nelem;
-    unsigned int           varid;
-    bool                   alarm_now;
+    alarm_struct           *alarm;
+    size_t                  i;
+    size_t                  j;
+    size_t                  k;
+    size_t                  nelem;
+    unsigned int            varid;
+    bool                    alarm_now;
 
     alarm = &(stream->agg_alarm);
     alarm->count++;
