@@ -90,4 +90,7 @@ void initialize_state_file_routing_rvic(char *, nc_file_struct *);
 
 bool get_global_param_routing_rvic(char *, char *, char *);
 
+// Extensions
+routing_rvic_struct         routing_rvic; // Routing routine (extension)
+
 #endif

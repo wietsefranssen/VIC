@@ -35,7 +35,7 @@ vic_restore_routing_rvic(nameid_struct   *init_state_file,
                            metadata_struct *state_metadata)
 {
     extern int          mpi_rank;
-    extern routing_rvic_struct rout;
+    extern routing_rvic_struct routing_rvic;
     extern node        *state_vars;
  
     size_t             d2start[2];
@@ -47,12 +47,12 @@ vic_restore_routing_rvic(nameid_struct   *init_state_file,
     if (mpi_rank == VIC_MPI_ROOT) {
         d2start[0] = 0;
         d2start[1] = 0;
-        d2count[0] = rout.rout_param.full_time_length;
-        d2count[1] = rout.rout_param.n_outlets;
+        d2count[0] = routing_rvic.rout_param.full_time_length;
+        d2count[1] = routing_rvic.rout_param.n_outlets;
 
         get_nc_field_double(
             init_state_file,
             state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
-            d2start, d2count, rout.ring);
+            d2start, d2count, routing_rvic.ring);
     }
 }

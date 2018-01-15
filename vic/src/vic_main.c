@@ -68,10 +68,6 @@ metadata_struct    *out_metadata = NULL;
 node               *outvar_types = NULL;
 node               *state_vars = NULL;
 
-
-// Extensions
-routing_rvic_struct         rout; // Routing routine (extension)
-
 /******************************************************************************
  * @brief   Stand-alone image mode driver of the VIC model
  * @details The image mode driver runs VIC for a single timestep for all grid

@@ -52,7 +52,7 @@ alloc_routing_rvic(void)
 
     if (mpi_rank == VIC_MPI_ROOT) {
         extern domain_struct    global_domain;
-        extern routing_rvic_struct      rout;
+        extern routing_rvic_struct      routing_rvic;
         int                     ivar;
         size_t                  d1count[1];
         size_t                  d1start[1];
@@ -74,90 +74,90 @@ alloc_routing_rvic(void)
                          d1start,
                          d1count,
                          &ivar);
-        rout.rout_param.full_time_length = (int) ivar;
+        routing_rvic.rout_param.full_time_length = (int) ivar;
 
-        rout.rout_param.n_timesteps = get_nc_dimension(&(filenames.rout_params),
+        routing_rvic.rout_param.n_timesteps = get_nc_dimension(&(filenames.rout_params),
                                                        "timesteps");
-        rout.rout_param.n_outlets = get_nc_dimension(&(filenames.rout_params),
+        routing_rvic.rout_param.n_outlets = get_nc_dimension(&(filenames.rout_params),
                                                      "outlets");
-        rout.rout_param.n_sources = get_nc_dimension(&(filenames.rout_params),
+        routing_rvic.rout_param.n_sources = get_nc_dimension(&(filenames.rout_params),
                                                      "sources");
 
         // Allocate memory in rout param_struct
-        rout.rout_param.source2outlet_ind = malloc(
-            rout.rout_param.n_sources *
-            sizeof(*rout.rout_param.source2outlet_ind));
-        check_alloc_status(rout.rout_param.source2outlet_ind,
+        routing_rvic.rout_param.source2outlet_ind = malloc(
+            routing_rvic.rout_param.n_sources *
+            sizeof(*routing_rvic.rout_param.source2outlet_ind));
+        check_alloc_status(routing_rvic.rout_param.source2outlet_ind,
                            "Memory allocation error.");
 
-        rout.rout_param.source_time_offset = malloc(
-            rout.rout_param.n_sources *
-            sizeof(*rout.rout_param.source_time_offset));
-        check_alloc_status(rout.rout_param.source_time_offset,
+        routing_rvic.rout_param.source_time_offset = malloc(
+            routing_rvic.rout_param.n_sources *
+            sizeof(*routing_rvic.rout_param.source_time_offset));
+        check_alloc_status(routing_rvic.rout_param.source_time_offset,
                            "Memory allocation error.");
 
-        rout.rout_param.source_x_ind = malloc(
-            rout.rout_param.n_sources * sizeof(*rout.rout_param.source_x_ind));
-        check_alloc_status(rout.rout_param.source_x_ind,
+        routing_rvic.rout_param.source_x_ind = malloc(
+            routing_rvic.rout_param.n_sources * sizeof(*routing_rvic.rout_param.source_x_ind));
+        check_alloc_status(routing_rvic.rout_param.source_x_ind,
                            "Memory allocation error.");
 
-        rout.rout_param.source_y_ind = malloc(
-            rout.rout_param.n_sources * sizeof(*rout.rout_param.source_y_ind));
-        check_alloc_status(rout.rout_param.source_y_ind,
+        routing_rvic.rout_param.source_y_ind = malloc(
+            routing_rvic.rout_param.n_sources * sizeof(*routing_rvic.rout_param.source_y_ind));
+        check_alloc_status(routing_rvic.rout_param.source_y_ind,
                            "Memory allocation error.");
 
-        rout.rout_param.source_lat = malloc(
-            rout.rout_param.n_sources * sizeof(*rout.rout_param.source_lat));
-        check_alloc_status(rout.rout_param.source_lat,
+        routing_rvic.rout_param.source_lat = malloc(
+            routing_rvic.rout_param.n_sources * sizeof(*routing_rvic.rout_param.source_lat));
+        check_alloc_status(routing_rvic.rout_param.source_lat,
                            "Memory allocation error.");
 
-        rout.rout_param.source_lon = malloc(
-            rout.rout_param.n_sources * sizeof(*rout.rout_param.source_lon));
-        check_alloc_status(rout.rout_param.source_lon,
+        routing_rvic.rout_param.source_lon = malloc(
+            routing_rvic.rout_param.n_sources * sizeof(*routing_rvic.rout_param.source_lon));
+        check_alloc_status(routing_rvic.rout_param.source_lon,
                            "Memory allocation error.");
 
-        rout.rout_param.source_VIC_index = malloc(
-            rout.rout_param.n_sources *
-            sizeof(*rout.rout_param.source_VIC_index));
-        check_alloc_status(rout.rout_param.source_VIC_index,
+        routing_rvic.rout_param.source_VIC_index = malloc(
+            routing_rvic.rout_param.n_sources *
+            sizeof(*routing_rvic.rout_param.source_VIC_index));
+        check_alloc_status(routing_rvic.rout_param.source_VIC_index,
                            "Memory allocation error.");
 
-        rout.rout_param.outlet_lat = malloc(
-            rout.rout_param.n_outlets * sizeof(*rout.rout_param.outlet_lat));
-        check_alloc_status(rout.rout_param.outlet_lat,
+        routing_rvic.rout_param.outlet_lat = malloc(
+            routing_rvic.rout_param.n_outlets * sizeof(*routing_rvic.rout_param.outlet_lat));
+        check_alloc_status(routing_rvic.rout_param.outlet_lat,
                            "Memory allocation error.");
 
-        rout.rout_param.outlet_lon = malloc(
-            rout.rout_param.n_outlets * sizeof(*rout.rout_param.outlet_lon));
-        check_alloc_status(rout.rout_param.outlet_lon,
+        routing_rvic.rout_param.outlet_lon = malloc(
+            routing_rvic.rout_param.n_outlets * sizeof(*routing_rvic.rout_param.outlet_lon));
+        check_alloc_status(routing_rvic.rout_param.outlet_lon,
                            "Memory allocation error.");
 
-        rout.rout_param.outlet_VIC_index = malloc(
-            rout.rout_param.n_outlets *
-            sizeof(rout.rout_param.outlet_VIC_index));
-        check_alloc_status(rout.rout_param.outlet_VIC_index,
+        routing_rvic.rout_param.outlet_VIC_index = malloc(
+            routing_rvic.rout_param.n_outlets *
+            sizeof(routing_rvic.rout_param.outlet_VIC_index));
+        check_alloc_status(routing_rvic.rout_param.outlet_VIC_index,
                            "Memory allocation error.");
 
-        rout.rout_param.unit_hydrograph = malloc(
-            rout.rout_param.n_sources * rout.rout_param.n_timesteps *
-            sizeof(*rout.rout_param.unit_hydrograph));
-        check_alloc_status(rout.rout_param.unit_hydrograph,
+        routing_rvic.rout_param.unit_hydrograph = malloc(
+            routing_rvic.rout_param.n_sources * routing_rvic.rout_param.n_timesteps *
+            sizeof(*routing_rvic.rout_param.unit_hydrograph));
+        check_alloc_status(routing_rvic.rout_param.unit_hydrograph,
                            "Memory allocation error.");
 
-        rout.rout_param.aggrunin =
+        routing_rvic.rout_param.aggrunin =
             malloc(
-                global_domain.ncells_total * sizeof(*rout.rout_param.aggrunin));
-        check_alloc_status(rout.rout_param.aggrunin,
+                global_domain.ncells_total * sizeof(*routing_rvic.rout_param.aggrunin));
+        check_alloc_status(routing_rvic.rout_param.aggrunin,
                            "Memory allocation error.");
 
-        rout.discharge =
-            malloc(global_domain.ncells_total * sizeof(*rout.discharge));
-        check_alloc_status(rout.discharge, "Memory allocation error.");
+        routing_rvic.discharge =
+            malloc(global_domain.ncells_total * sizeof(*routing_rvic.discharge));
+        check_alloc_status(routing_rvic.discharge, "Memory allocation error.");
 
         // Allocate memory for the ring
-        rout.ring = malloc(
-            rout.rout_param.full_time_length * rout.rout_param.n_outlets *
-            sizeof(*rout.ring));
-        check_alloc_status(rout.ring, "Memory allocation error.");
+        routing_rvic.ring = malloc(
+            routing_rvic.rout_param.full_time_length * routing_rvic.rout_param.n_outlets *
+            sizeof(*routing_rvic.ring));
+        check_alloc_status(routing_rvic.ring, "Memory allocation error.");
     }
 }

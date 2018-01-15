@@ -33,7 +33,7 @@
 void
 vic_store_routing_rvic(nc_file_struct *nc_state_file) {
     extern int                  mpi_rank;
-    extern routing_rvic_struct  rout;
+    extern routing_rvic_struct  routing_rvic;
     extern node                *state_vars;
 
     int            status;
@@ -50,7 +50,7 @@ vic_store_routing_rvic(nc_file_struct *nc_state_file) {
         status =
                 nc_put_vara_double(nc_state_file->nc_id, nc_var->nc_varid, d2start,
                 nc_var->nc_counts,
-                rout.ring);
+                routing_rvic.ring);
         check_nc_status(status, "Error writing values.");
     }
 }
@@ -60,15 +60,15 @@ vic_store_routing_rvic(nc_file_struct *nc_state_file) {
  *****************************************************************************/
 void
 set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file) {
-    extern routing_rvic_struct rout;
+    extern routing_rvic_struct routing_rvic;
 
     // set ids to MISSING
     nc_state_file->outlet_dimid = MISSING;
     nc_state_file->routing_timestep_dimid = MISSING;
 
     // set dimension sizes
-    nc_state_file->outlet_size = rout.rout_param.n_outlets;
-    nc_state_file->routing_timestep_size = rout.rout_param.full_time_length;
+    nc_state_file->outlet_size = routing_rvic.rout_param.n_outlets;
+    nc_state_file->routing_timestep_size = routing_rvic.rout_param.full_time_length;
 }
 
 /******************************************************************************

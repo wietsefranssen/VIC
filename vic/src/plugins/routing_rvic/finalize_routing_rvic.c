@@ -32,20 +32,20 @@
 void
 finalize_routing_rvic(void)
 {
-    extern routing_rvic_struct rout;
+    extern routing_rvic_struct routing_rvic;
 
-    free(rout.rout_param.source2outlet_ind);
-    free(rout.rout_param.source_time_offset);
-    free(rout.rout_param.source_x_ind);
-    free(rout.rout_param.source_y_ind);
-    free(rout.rout_param.source_lat);
-    free(rout.rout_param.source_lon);
-    free(rout.rout_param.source_VIC_index);
-    free(rout.rout_param.outlet_lat);
-    free(rout.rout_param.outlet_lon);
-    free(rout.rout_param.outlet_VIC_index);
-    free(rout.rout_param.unit_hydrograph);
-    free(rout.rout_param.aggrunin);
-    free(rout.discharge);
-    free(rout.ring);
+    free(routing_rvic.rout_param.source2outlet_ind);
+    free(routing_rvic.rout_param.source_time_offset);
+    free(routing_rvic.rout_param.source_x_ind);
+    free(routing_rvic.rout_param.source_y_ind);
+    free(routing_rvic.rout_param.source_lat);
+    free(routing_rvic.rout_param.source_lon);
+    free(routing_rvic.rout_param.source_VIC_index);
+    free(routing_rvic.rout_param.outlet_lat);
+    free(routing_rvic.rout_param.outlet_lon);
+    free(routing_rvic.rout_param.outlet_VIC_index);
+    free(routing_rvic.rout_param.unit_hydrograph);
+    free(routing_rvic.rout_param.aggrunin);
+    free(routing_rvic.discharge);
+    free(routing_rvic.ring);
 }
