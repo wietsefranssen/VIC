@@ -33,6 +33,8 @@ void
 routing_rvic_finalize(void)
 {
     extern routing_rvic_struct routing_rvic;
+    extern node               *state_vars;
+    extern node               *outvar_types;
 
     free(routing_rvic.rout_param.source2outlet_ind);
     free(routing_rvic.rout_param.source_time_offset);
@@ -48,4 +50,7 @@ routing_rvic_finalize(void)
     free(routing_rvic.rout_param.aggrunin);
     free(routing_rvic.discharge);
     free(routing_rvic.ring);
+    
+    list_free(state_vars);
+    list_free(outvar_types);
 }

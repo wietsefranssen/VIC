@@ -43,7 +43,7 @@
 
 typedef struct node {
     int   id;
-    char *name;
+    char  name[MAXSTRING];
     int   data;
     struct node* next;
 } node;
@@ -56,6 +56,7 @@ node *list_prepend(node* head, char *name);
 node *list_search(node* head, int id);
 int   list_search_id(node* head, char *name);
 void  list_dispose(node *head);
+void  list_free(node *head);
 int   list_count(node *head);
 node *list_insertion_sort(node* head);
 node *list_reverse(node* head);

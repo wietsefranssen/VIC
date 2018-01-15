@@ -41,7 +41,7 @@ node* list_create(node* next, char *name) {
         printf("Error creating a new node.\n");
         exit(0);
     }
-    new_node->name = name;
+    strcpy(new_node->name,name);
     new_node->next = next;
 
     return new_node;
@@ -99,6 +99,21 @@ void list_dispose(node *head) {
             free(cursor);
             cursor = tmp;
         }
+        free(head);
+    }
+}
+
+/*
+    completely free a list
+ */
+void list_free(struct node *head)
+{
+    node *tmp;
+   while (head != NULL)
+    {
+       tmp = head;
+       head = head->next;
+       free(tmp);
     }
 }
 
