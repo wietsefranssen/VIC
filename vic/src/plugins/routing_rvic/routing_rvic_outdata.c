@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * clean up functions for routing extension
+ * Save model state.
  *
  * @section LICENSE
  *
@@ -24,28 +24,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
+#include <vic.h>
 #include <routing_rvic.h>
 
 /******************************************************************************
- * @brief    Finalize RVIC by freeing memory.
+ * @brief    Save model state.
  *****************************************************************************/
 void
-finalize_routing_rvic(void)
-{
-    extern routing_rvic_struct routing_rvic;
+routing_rvic_output_metadata() {
+    extern metadata_struct *out_metadata;
+    extern node            *outvar_types;
 
-    free(routing_rvic.rout_param.source2outlet_ind);
-    free(routing_rvic.rout_param.source_time_offset);
-    free(routing_rvic.rout_param.source_x_ind);
-    free(routing_rvic.rout_param.source_y_ind);
-    free(routing_rvic.rout_param.source_lat);
-    free(routing_rvic.rout_param.source_lon);
-    free(routing_rvic.rout_param.source_VIC_index);
-    free(routing_rvic.rout_param.outlet_lat);
-    free(routing_rvic.rout_param.outlet_lon);
-    free(routing_rvic.rout_param.outlet_VIC_index);
-    free(routing_rvic.rout_param.unit_hydrograph);
-    free(routing_rvic.rout_param.aggrunin);
-    free(routing_rvic.discharge);
-    free(routing_rvic.ring);
+    /* river discharge [m3 s-1] */
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].varname, "OUT_DISCHARGE");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].long_name,
+            "water_volume_transport_in_river_channel");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].standard_name, "river_discharge");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].units, "m3 s-1");
+    strcpy(
+            out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].description,
+            "The water flux or volume transport in rivers is the amount of water flowing in the river channel and flood plain. 'Water' means water in all phases");
 }

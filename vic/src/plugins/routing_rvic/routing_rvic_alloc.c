@@ -30,25 +30,9 @@
  * @brief    Allocate memory for Routing structures.
  *****************************************************************************/
 void
-alloc_routing_rvic(void)
+routing_rvic_alloc(void)
 {
     extern int      mpi_rank;
-    extern node    *outvar_types;
-    extern node    *state_vars;
-    extern int      N_STATE_VARS_ALL;
-    extern int      N_OUTVAR_TYPES_ALL;
-
-    // add outvar_types
-//    outvar_types = prepend(outvar_types, "OUT_DISCHARGE_NEW");
-    outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES_ALL);
-    N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES_ALL;
-    list_print(outvar_types);
-
-    // add statevar_types
-    state_vars = list_prepend(state_vars, "STATE_ROUT_RING"); /**<  routing ring: rout_ring[routing_timestep, outlet] */
-    state_vars = list_add_ids(state_vars, N_STATE_VARS_ALL);
-    N_STATE_VARS_ALL = list_count(state_vars) + N_STATE_VARS_ALL;
-    list_print(state_vars);
 
     if (mpi_rank == VIC_MPI_ROOT) {
         extern domain_struct    global_domain;

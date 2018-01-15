@@ -31,7 +31,7 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-vic_store_routing_rvic(nc_file_struct *nc_state_file) {
+routing_rvic_store(nc_file_struct *nc_state_file) {
     extern int                  mpi_rank;
     extern routing_rvic_struct  routing_rvic;
     extern node                *state_vars;
@@ -59,7 +59,7 @@ vic_store_routing_rvic(nc_file_struct *nc_state_file) {
  * @brief   Setup state file netcdf structure
  *****************************************************************************/
 void
-set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file) {
+routing_rvic_set_nc_state_file_info(nc_file_struct *nc_state_file) {
     extern routing_rvic_struct routing_rvic;
 
     // set ids to MISSING
@@ -75,7 +75,7 @@ set_nc_state_file_info_routing_rvic(nc_file_struct *nc_state_file) {
  * @brief   Setup state variable dimensions, types, etc.
  *****************************************************************************/
 void
-set_nc_state_var_info_routing_rvic(nc_file_struct *nc) {
+routing_rvic_set_nc_state_var_info(nc_file_struct *nc) {
     size_t j;
     extern node *state_vars;
     int STATE_ROUT_RING = list_search_id(state_vars, "STATE_ROUT_RING");
@@ -103,7 +103,7 @@ set_nc_state_var_info_routing_rvic(nc_file_struct *nc) {
             and adding metadata.
  *****************************************************************************/
 void
-initialize_state_file_routing_rvic(char *filename,
+routing_rvic_initialize_state_file(char *filename,
         nc_file_struct *nc_state_file) {
     int status;
 

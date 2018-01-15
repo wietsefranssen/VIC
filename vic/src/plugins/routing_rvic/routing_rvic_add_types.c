@@ -31,28 +31,23 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-vic_restore_routing_rvic(nameid_struct   *init_state_file,
-                           metadata_struct *state_metadata)
-{
-    extern int          mpi_rank;
-    extern routing_rvic_struct routing_rvic;
-    extern node        *state_vars;
- 
-    size_t             d2start[2];
-    size_t             d2count[2];
+routing_rvic_add_types(void) {
 
-    // write state variables
+    extern node    *outvar_types;
+    extern node    *state_vars;
+    extern int      N_STATE_VARS_ALL;
+    extern int      N_OUTVAR_TYPES_ALL;
 
-    // routing ring
-    if (mpi_rank == VIC_MPI_ROOT) {
-        d2start[0] = 0;
-        d2start[1] = 0;
-        d2count[0] = routing_rvic.rout_param.full_time_length;
-        d2count[1] = routing_rvic.rout_param.n_outlets;
+    // add outvar_types
+    outvar_types = list_prepend(outvar_types, "OUT_DISCHARGE");
+    outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES_ALL);
+    N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES_ALL;
+    list_print(outvar_types);
 
-        get_nc_field_double(
-            init_state_file,
-            state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
-            d2start, d2count, routing_rvic.ring);
-    }
+    // add statevar_types
+    state_vars = list_prepend(state_vars, "STATE_ROUT_RING"); /**<  routing ring: rout_ring[routing_timestep, outlet] */
+    state_vars = list_add_ids(state_vars, N_STATE_VARS_ALL);
+    N_STATE_VARS_ALL = list_count(state_vars) + N_STATE_VARS_ALL;
+    list_print(state_vars);
+
 }

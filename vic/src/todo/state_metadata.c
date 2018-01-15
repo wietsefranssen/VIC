@@ -52,6 +52,11 @@ set_state_meta_data_info()
         state_metadata[v].nelem = 1;
     }
 
+    // STATE_ROUT_RING
+    if (options.ROUTING_RVIC) {
+        routing_rvic_state_metadata();
+    }
+
     // STATE_SOIL_MOISTURE
     strcpy(state_metadata[STATE_SOIL_MOISTURE].varname, "STATE_SOIL_MOISTURE");
     strcpy(state_metadata[STATE_SOIL_MOISTURE].long_name, "soil_moisture");
@@ -707,10 +712,5 @@ set_state_meta_data_info()
         strcpy(state_metadata[STATE_LAKE_ICE_SNOW_DEPTH].units, "m");
         strcpy(state_metadata[STATE_LAKE_ICE_SNOW_DEPTH].description,
                "depth of snow on lake ice");
-    }
-
-    // STATE_ROUT_RING
-    if (options.ROUTING_RVIC) {
-        state_metadata_routing_rvic();
     }
 }

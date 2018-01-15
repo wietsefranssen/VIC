@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Allocate memory for Routing structures.
+ * clean up functions for routing extension
  *
  * @section LICENSE
  *
@@ -24,27 +24,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
+#include <routing_rvic.h>
 
 /******************************************************************************
- * @brief    Read the VIC model global control file, getting values for
- *           global parameters, model options, and debugging controls.
+ * @brief    Finalize RVIC by freeing memory.
  *****************************************************************************/
-bool
-get_global_param_routing_lohmann(char *optstr, char *flgstr, char *cmdstr) {
-    extern option_struct options;
+void
+routing_rvic_finalize(void)
+{
+    extern routing_rvic_struct routing_rvic;
 
-    if (strcasecmp("ROUTING", optstr) == 0) {
-        sscanf(cmdstr, "%*s %s", flgstr);
-        if (strcasecmp("LOHMANN", flgstr) == 0) {
-            options.ROUTING_LOHMANN = true;
-            return 1;
-        } else if (strcasecmp("OFF", flgstr) == 0) {
-            options.ROUTING_LOHMANN = false;
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-    return 0;
+    free(routing_rvic.rout_param.source2outlet_ind);
+    free(routing_rvic.rout_param.source_time_offset);
+    free(routing_rvic.rout_param.source_x_ind);
+    free(routing_rvic.rout_param.source_y_ind);
+    free(routing_rvic.rout_param.source_lat);
+    free(routing_rvic.rout_param.source_lon);
+    free(routing_rvic.rout_param.source_VIC_index);
+    free(routing_rvic.rout_param.outlet_lat);
+    free(routing_rvic.rout_param.outlet_lon);
+    free(routing_rvic.rout_param.outlet_VIC_index);
+    free(routing_rvic.rout_param.unit_hydrograph);
+    free(routing_rvic.rout_param.aggrunin);
+    free(routing_rvic.discharge);
+    free(routing_rvic.ring);
 }

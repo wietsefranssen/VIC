@@ -60,32 +60,6 @@ typedef struct {
     double *discharge;
 } routing_lohmann_struct;
 
-/******************************************************************************
- * @brief   Function prototypes for the rout_rvic extension
- *****************************************************************************/
-void alloc_routing_lohmann(void);                 // allocate memory
-void init_routing_lohmann(void);                  // initialize model parameters from parameter files
-void run_routing_lohmann(void);                   // run routing over the domain
-void finalize_routing_lohmann(void);              // clean up routine for routing
-void convolution_routing_lohmann(double *, double *);  // convolution over the domain
-
-/******************************************************************************
- * @brief   MPI Function prototypes for the rout_rvic extension
- *****************************************************************************/
-void scatter_var_double(double *, double *);
-void gather_var_double(double *, double *);
-
-/******************************************************************************
- * @brief   Convolution function adapted from the RVIC scheme
- *****************************************************************************/
-void cshift(double *, int, int, int, int);
-void vic_store_routing_lohmann(nc_file_struct *);
-void vic_restore_routing_lohmann(nameid_struct *, metadata_struct *);
-void state_metadata_routing_lohmann();
-void set_nc_state_file_info_routing_lohmann(nc_file_struct *);
-void set_nc_state_var_info_routing_lohmann(nc_file_struct *);
-void initialize_state_file_routing_lohmann(char *, nc_file_struct *);
-
-bool get_global_param_routing_lohmann(char *, char *, char *);
+bool routing_lohmann_get_global_param(char *, char *, char *);
 
 #endif

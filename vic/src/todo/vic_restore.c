@@ -885,7 +885,7 @@ vic_restore(void)
 
     // routing ring
     if (options.ROUTING_RVIC) {
-        vic_restore_routing_rvic(&(filenames.init_state), state_metadata);
+        routing_rvic_restore(&(filenames.init_state), state_metadata);
     }
     
     free(ivar);

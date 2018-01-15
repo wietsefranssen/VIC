@@ -1272,7 +1272,7 @@ vic_store(dmy_struct *dmy_state,
 
     // store extension variables
     if (options.ROUTING_RVIC) {
-        vic_store_routing_rvic(&nc_state_file);
+        routing_rvic_store(&nc_state_file);
     }
 
     // close the netcdf file if it is still open
@@ -1332,7 +1332,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
 
     // set ids and dimension sizes of the extension variables
     if (options.ROUTING_RVIC) {
-        set_nc_state_file_info_routing_rvic(nc_state_file);
+        routing_rvic_set_nc_state_file_info(nc_state_file);
     }
         
     // allocate memory for nc_vars
@@ -1548,7 +1548,7 @@ set_nc_state_var_info(nc_file_struct *nc)
         }
     }
     if (options.ROUTING_RVIC) {
-        set_nc_state_var_info_routing_rvic(nc);
+        routing_rvic_set_nc_state_var_info(nc);
     }
 }
 
@@ -1693,7 +1693,7 @@ initialize_state_file(char           *filename,
 
         // add extension dimensions
         if (options.ROUTING_RVIC) {
-            initialize_state_file_routing_rvic(filename, nc_state_file);
+            routing_rvic_initialize_state_file(filename, nc_state_file);
         }
  
         set_nc_state_var_info(nc_state_file);

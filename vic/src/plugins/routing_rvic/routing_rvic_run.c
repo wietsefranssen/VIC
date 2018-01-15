@@ -30,18 +30,19 @@
 * @brief        This subroutine controls the RVIC convolution.
 ******************************************************************************/
 void
-run_routing_rvic(void)
+routing_rvic_run(void)
 {
     extern int           mpi_rank;
     extern double     ***out_data;
     extern domain_struct local_domain;
     extern domain_struct global_domain;
+    extern node         *outvar_types;
     double              *var_local_runoff = NULL;
     double              *var_local_discharge = NULL;
     double              *var_domain_runoff = NULL;
     double              *var_domain_discharge = NULL;
     size_t               i;
-
+    int                  OUT_DISCHARGE;
     debug("RVIC");
 
     // Allocate memory for the local_domain variables
@@ -81,13 +82,14 @@ run_routing_rvic(void)
 
     // Run the convolution on the master node
     if (mpi_rank == VIC_MPI_ROOT) {
-        convolution_routing_rvic(var_domain_runoff, var_domain_discharge);
+        routing_rvic_convolution(var_domain_runoff, var_domain_discharge);
     }
 
     // Scatter the discharge back to the local nodes
     scatter_field_double(var_domain_discharge, var_local_discharge);
 
     // Write to output struct
+    OUT_DISCHARGE = list_search_id(outvar_types, "OUT_DISCHARGE");
     for (i = 0; i < local_domain.ncells_active; i++) {
         out_data[i][OUT_DISCHARGE][0] = var_local_discharge[i];
     }

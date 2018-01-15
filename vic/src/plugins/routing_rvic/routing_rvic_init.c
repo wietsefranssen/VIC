@@ -30,7 +30,7 @@
  * @brief    Initialize routing model parameters
  *****************************************************************************/
 void
-init_routing_rvic(void)
+routing_rvic_init(void)
 {
     extern int              mpi_rank;
     extern routing_rvic_struct      routing_rvic;

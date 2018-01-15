@@ -82,7 +82,7 @@ vic_image_run(dmy_struct *dmy_current)
 
     // run routing over the domain
     if (options.ROUTING_RVIC) {
-        run_routing_rvic();     // Routing routine (extension)
+        routing_rvic_run();     // Routing routine (extension)
     }
     
     for (i = 0; i < options.Noutstreams; i++) {

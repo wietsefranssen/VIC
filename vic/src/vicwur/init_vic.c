@@ -39,6 +39,6 @@ init_vic(void)
     
     // Initialize routing
     if (options.ROUTING_RVIC) {
-        init_routing_rvic();
+        routing_rvic_init();
     }
 }

@@ -37,12 +37,16 @@ alloc_vic(void) {
 
     N_STATE_VARS_ALL   = N_STATE_VARS;
     N_OUTVAR_TYPES_ALL = N_OUTVAR_TYPES;
+    
+    if (options.ROUTING_RVIC) {
+        routing_rvic_add_types();
+    }
 
     // Allocate memory for all non specific VIC structures
     alloc_general();
 
     // Allocate memory for routing
     if (options.ROUTING_RVIC) {
-        alloc_routing_rvic();
+        routing_rvic_alloc();
     }
 }

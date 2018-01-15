@@ -27,7 +27,7 @@
 #include <routing_rvic.h>
 
 void
-convolution_routing_rvic(double *runoff,
+routing_rvic_convolution(double *runoff,
             double *discharge)
 {
     extern routing_rvic_struct routing_rvic;

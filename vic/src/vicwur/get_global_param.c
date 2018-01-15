@@ -70,8 +70,8 @@ get_global_param(FILE *gp)
             /*************************************
                Get Model Global Parameters from plugins
             *************************************/
-            if (get_global_param_routing_rvic(optstr, flgstr, cmdstr)) {}
-            else if (get_global_param_routing_lohmann(optstr, flgstr, cmdstr)) {}
+            if (routing_rvic_get_global_param(optstr, flgstr, cmdstr)) {}
+            else if (routing_lohmann_get_global_param(optstr, flgstr, cmdstr)) {}
             
             /*************************************
                Get Model Global Parameters

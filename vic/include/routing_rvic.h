@@ -65,11 +65,11 @@ typedef struct {
 /******************************************************************************
  * @brief   Function prototypes for the rout_rvic extension
  *****************************************************************************/
-void alloc_routing_rvic(void);                 // allocate memory
-void init_routing_rvic(void);                  // initialize model parameters from parameter files
-void run_routing_rvic(void);                   // run routing over the domain
-void finalize_routing_rvic(void);              // clean up routine for routing
-void convolution_routing_rvic(double *, double *);  // convolution over the domain
+void routing_rvic_alloc(void);                 // allocate memory
+void routing_rvic_init(void);                  // initialize model parameters from parameter files
+void routing_rvic_run(void);                   // run routing over the domain
+void routing_rvic_finalize(void);              // clean up routine for routing
+void routing_rvic_convolution(double *, double *);  // convolution over the domain
 
 /******************************************************************************
  * @brief   MPI Function prototypes for the rout_rvic extension
@@ -81,14 +81,15 @@ void gather_var_double(double *, double *);
  * @brief   Convolution function adapted from the RVIC scheme
  *****************************************************************************/
 void cshift(double *, int, int, int, int);
-void vic_store_routing_rvic(nc_file_struct *);
-void vic_restore_routing_rvic(nameid_struct *, metadata_struct *);
-void state_metadata_routing_rvic();
-void set_nc_state_file_info_routing_rvic(nc_file_struct *);
-void set_nc_state_var_info_routing_rvic(nc_file_struct *);
-void initialize_state_file_routing_rvic(char *, nc_file_struct *);
-
-bool get_global_param_routing_rvic(char *, char *, char *);
+void routing_rvic_store(nc_file_struct *);
+void routing_rvic_restore(nameid_struct *, metadata_struct *);
+void routing_rvic_state_metadata();
+void routing_rvic_set_nc_state_file_info(nc_file_struct *);
+void routing_rvic_set_nc_state_var_info(nc_file_struct *);
+void routing_rvic_initialize_state_file(char *, nc_file_struct *);
+void routing_rvic_add_types(void);
+bool routing_rvic_get_global_param(char *, char *, char *);
+void routing_rvic_output_metadata(void);
 
 // Extensions
 routing_rvic_struct         routing_rvic; // Routing routine (extension)

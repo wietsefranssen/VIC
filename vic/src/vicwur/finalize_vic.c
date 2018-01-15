@@ -39,6 +39,6 @@ finalize_vic(void)
     
     // finalize routing
     if (options.ROUTING_RVIC) {
-        finalize_routing_rvic();
+        routing_rvic_finalize();
     }
 }

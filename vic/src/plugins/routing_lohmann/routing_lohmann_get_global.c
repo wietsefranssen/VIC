@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Save model state.
+ * Allocate memory for Routing structures.
  *
  * @section LICENSE
  *
@@ -25,25 +25,26 @@
  *****************************************************************************/
 
 #include <vic.h>
-#include <routing_rvic.h>
 
 /******************************************************************************
- * @brief    Save model state.
+ * @brief    Read the VIC model global control file, getting values for
+ *           global parameters, model options, and debugging controls.
  *****************************************************************************/
-void
-state_metadata_routing_rvic()
-{
-    extern metadata_struct *state_metadata;
-    extern node            *state_vars;
-    
-    // STATE_ROUT_RING
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
-           "STATE_ROUT_RING");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].long_name,
-           "routing_ring");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].standard_name,
-           "routing_ring");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].units, "-");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].description,
-           "unit hydrographs in the routing ring");
+bool
+routing_lohmann_get_global_param(char *optstr, char *flgstr, char *cmdstr) {
+    extern option_struct options;
+
+    if (strcasecmp("ROUTING", optstr) == 0) {
+        sscanf(cmdstr, "%*s %s", flgstr);
+        if (strcasecmp("LOHMANN", flgstr) == 0) {
+            options.ROUTING_LOHMANN = true;
+            return 1;
+        } else if (strcasecmp("OFF", flgstr) == 0) {
+            options.ROUTING_LOHMANN = false;
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    return 0;
 }
