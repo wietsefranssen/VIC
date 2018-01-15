@@ -28,9 +28,7 @@ dam_get_op_year_month(double ay_flow, double *am_flow, int current_month)
                 con_inflow = 0.0;
             }
         }            
-        month_add++;
-        debug("ADDMONTH %zu\tFIN_MONTH %zu\tay_flow %.2f",month_add,(current_month + month_add) % MONTHS_PER_YEAR,ay_flow);
-        return (current_month + month_add) % MONTHS_PER_YEAR;    
+        month_add++;  
 }
 
 double
@@ -38,7 +36,15 @@ dam_calc_discharge(double ay_flow,
         double am_flow, 
         double amplitude, 
         double offset){
-    return ay_flow + ((am_flow - ay_flow) * amplitude) + offset;
+    
+    double discharge = 0.0;
+    
+    discharge = ay_flow + ((am_flow - ay_flow) * amplitude) + offset;
+    if(discharge < 0){
+        discharge = 0.0;
+    }
+    
+    return discharge;
 }
 
 void
@@ -109,7 +115,7 @@ dam_get_operation(double ay_flow,
     
     for(i = 0; i < MONTHS_PER_YEAR; i++){
         if(i == 0){
-            op_volume[i] = cur_volume_tmp + 
+            op_volume[i] = pref_volume + 
                     ((am_flow[i] - op_discharge[i]) * 
                     global_param.dt * 
                     global_param.model_steps_per_day * 
@@ -123,21 +129,12 @@ dam_get_operation(double ay_flow,
                     global_param.model_steps_per_day * 
                     DAYS_PER_MONTH_AVG);
         }
-    }    
-    
-    debug("\nDAM\tAY_INFLOW %.2f\tCUR_VOL %.2f\tPREF_VOL %.2f\tMAX_VOL %.2f\tAMP %.2f\tOFF %.2f",
-            ay_flow,
-            cur_volume/1000000, 
-            pref_volume/1000000, 
-            max_volume/1000000,
-            amplitude, 
-            offset);
-    debug("INFLOW\tDISCHARGE\tVOLUME");
-    for(i = 0; i < MONTHS_PER_YEAR; i ++){
-        debug("%.2f\t%.2f\t%.2f",
-                am_flow[i],op_discharge[i],op_volume[i]/1000000);
+        if(op_volume[i] < 0){
+            op_volume[i] = 0.0;
+        }else if(op_volume[i] > max_volume){
+            op_volume[i] = max_volume;
+        }
     }
-   debug("");
 }
 
 void
@@ -207,14 +204,7 @@ dam_run(size_t cur_cell)
                         dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
                         dam_con[cur_cell][i].max_volume,
                         ext_all_vars[cur_cell].dams[i].op_discharge,
-                        ext_all_vars[cur_cell].dams[i].op_volume);      
-     
-            debug("HISTORY");
-            for(j = 0; j < DAM_HIST_YEARS * MONTHS_PER_YEAR; j ++){
-                debug("%.2f",
-                        ext_all_vars[cur_cell].dams[i].history_flow[j]);
-            }   
-            debug("");
+                        ext_all_vars[cur_cell].dams[i].op_volume);
             }
 
             // Shift array
@@ -251,7 +241,8 @@ dam_run(size_t cur_cell)
             // Calculate discharge correction
             discharge_correction = 
                     (ext_all_vars[cur_cell].dams[i].volume - 
-                    calc_volume) / global_param.dt;
+                    calc_volume) / (global_param.dt * 
+                    global_param.model_steps_per_day * DAYS_PER_WEEK);
             if(abs(discharge_correction) > 
                     ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
                     DAM_DIS_MOD_FRAC){
@@ -270,6 +261,9 @@ dam_run(size_t cur_cell)
             ext_all_vars[cur_cell].dams[i].discharge = 
                     ext_all_vars[cur_cell].dams[i].op_discharge[0] +
                     discharge_correction;
+            if(ext_all_vars[cur_cell].dams[i].discharge < 0){
+                ext_all_vars[cur_cell].dams[i].discharge = 0.0;
+            }
             ext_all_vars[cur_cell].dams[i].volume -= 
                     ext_all_vars[cur_cell].dams[i].discharge * 
                     global_param.dt;
@@ -294,6 +288,7 @@ dam_run(size_t cur_cell)
             ext_all_vars[cur_cell].routing.discharge[0] += 
                     ext_all_vars[cur_cell].dams[i].discharge;
             
+            // Recalculate dam info
             ext_all_vars[cur_cell].dams[i].area = 
                     dam_area(ext_all_vars[cur_cell].dams[i].volume,
                     dam_con[cur_cell][i].max_volume,
