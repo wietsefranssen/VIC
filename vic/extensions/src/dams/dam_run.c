@@ -29,6 +29,7 @@ dam_get_op_year_month(double ay_flow, double *am_flow, int current_month)
             }
         }            
         month_add++;  
+        return (current_month + month_add) % MONTHS_PER_YEAR;   
 }
 
 double
@@ -129,12 +130,54 @@ dam_get_operation(double ay_flow,
                     global_param.model_steps_per_day * 
                     DAYS_PER_MONTH_AVG);
         }
+        
         if(op_volume[i] < 0){
             op_volume[i] = 0.0;
         }else if(op_volume[i] > max_volume){
             op_volume[i] = max_volume;
         }
     }
+}
+
+double
+dam_discharge_correction(double op_discharge, double prev_op_volume, double next_op_volume, int steps, double volume)
+{
+    extern global_param_struct global_param;
+    
+    double calc_volume;
+    double day_step;
+    double discharge_correction;
+    
+    // Calculate expected volume
+    day_step = steps / 
+            global_param.model_steps_per_day;
+    if(day_step > (size_t)DAYS_PER_MONTH_AVG){
+        day_step = DAYS_PER_MONTH_AVG;
+    }
+    calc_volume = linear_interp(day_step,
+            0, (size_t)DAYS_PER_MONTH_AVG,
+            prev_op_volume,
+            next_op_volume);
+
+    // Calculate discharge correction
+    discharge_correction = 
+            (volume - calc_volume) / (global_param.dt * 
+            global_param.model_steps_per_day * DAYS_PER_WEEK);
+    if(abs(discharge_correction) > 
+            op_discharge * 
+            DAM_DIS_MOD_FRAC){
+        if(discharge_correction > 0){
+            discharge_correction = 
+                    op_discharge * 
+                    DAM_DIS_MOD_FRAC;
+        } else {
+            discharge_correction = 
+                    -op_discharge * 
+                    DAM_DIS_MOD_FRAC;
+        }
+    }
+    
+    return discharge_correction;
 }
 
 void
@@ -150,9 +193,6 @@ dam_run(size_t cur_cell)
     size_t years_running;
     double ay_flow;
     double am_flow[MONTHS_PER_YEAR];
-    double calc_volume;
-    double day_step;
-    double discharge_correction;
     
     size_t i;
     size_t j;
@@ -220,50 +260,27 @@ dam_run(size_t cur_cell)
         // Run dams
         if(dmy[current].year >= dam_con[cur_cell][i].year && years_running > 0){
             
-            ext_all_vars[cur_cell].dams[i].discharge = 0.0;
-            
+            // Fill reservoir
             ext_all_vars[cur_cell].dams[i].volume += 
                     ext_all_vars[cur_cell].routing.discharge[0] * 
                     global_param.dt;            
-            ext_all_vars[cur_cell].routing.discharge[0] = 0.0;
+            ext_all_vars[cur_cell].routing.discharge[0] = 0.0;                      
             
-            // Calculate expected volume
-            day_step = ext_all_vars[cur_cell].dams[i].total_steps / 
-                    global_param.model_steps_per_day;
-            if(day_step > (size_t)DAYS_PER_MONTH_AVG){
-                day_step = DAYS_PER_MONTH_AVG;
-            }
-            calc_volume = linear_interp(day_step,
-                    0, (size_t)DAYS_PER_MONTH_AVG,
-                    ext_all_vars[cur_cell].dams[i].op_volume[MONTHS_PER_YEAR - 1],
-                    ext_all_vars[cur_cell].dams[i].op_volume[0]);
-            
-            // Calculate discharge correction
-            discharge_correction = 
-                    (ext_all_vars[cur_cell].dams[i].volume - 
-                    calc_volume) / (global_param.dt * 
-                    global_param.model_steps_per_day * DAYS_PER_WEEK);
-            if(abs(discharge_correction) > 
-                    ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
-                    DAM_DIS_MOD_FRAC){
-                if(discharge_correction > 0){
-                    discharge_correction = 
-                            ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
-                            DAM_DIS_MOD_FRAC;
-                } else {
-                    discharge_correction = 
-                            -ext_all_vars[cur_cell].dams[i].op_discharge[0] * 
-                            DAM_DIS_MOD_FRAC;
-                }
-            }
-            
-            // Release
+            // Calculate discharge
+            ext_all_vars[cur_cell].dams[i].discharge = 0.0;
             ext_all_vars[cur_cell].dams[i].discharge = 
                     ext_all_vars[cur_cell].dams[i].op_discharge[0] +
-                    discharge_correction;
+                    dam_discharge_correction(
+                    ext_all_vars[cur_cell].dams[i].op_discharge[0],
+                    ext_all_vars[cur_cell].dams[i].op_volume[MONTHS_PER_YEAR - 1],                    
+                    ext_all_vars[cur_cell].dams[i].op_volume[0],                    
+                    ext_all_vars[cur_cell].dams[i].total_steps,
+                    ext_all_vars[cur_cell].dams[i].volume);
             if(ext_all_vars[cur_cell].dams[i].discharge < 0){
                 ext_all_vars[cur_cell].dams[i].discharge = 0.0;
             }
+            
+            // Release
             ext_all_vars[cur_cell].dams[i].volume -= 
                     ext_all_vars[cur_cell].dams[i].discharge * 
                     global_param.dt;

@@ -4,7 +4,7 @@
 #define DAM_HIST_YEARS 3
 #define DAM_AMP_STEP 0.05
 #define DAM_PREF_VOL_FRAC 0.85
-#define DAM_DIS_MOD_FRAC 0.6
+#define DAM_DIS_MOD_FRAC 0.4
 
 #define DAYS_PER_MONTH_AVG 30.42
 #define DAYS_PER_WEEK 7
