@@ -111,10 +111,10 @@ main(int    argc,
     vic_start();
     
     // allocate memory
-    alloc_vic();
+    vic_alloc();
 
     // initialize model parameters from parameter files
-    init_vic();
+    vic_init();
 
     // populate model state, either using a cold start or from a restart file
     vic_populate_model_state(&(dmy[0]));
@@ -161,7 +161,7 @@ main(int    argc,
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
     
     // clean up
-    finalize_vic();
+    vic_finalize();
 
     // finalize MPI
     status = MPI_Finalize();

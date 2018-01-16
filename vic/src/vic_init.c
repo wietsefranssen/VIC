@@ -30,7 +30,7 @@
  * @brief    Initialize model parameters
  *****************************************************************************/
 void
-init_vic(void)
+vic_init(void)
 {
     extern option_struct     options;
 

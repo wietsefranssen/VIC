@@ -31,10 +31,9 @@
 # VIC PATHS
 MAINPATH	    = .
 VICPATH		    = vicwur
-GENERALPATH	    = general
-SNOWPATH	    = snow
-SOILPATH	    = soil
-TODOPATH	    = todo
+MAINFUNCTIONSPATH    = ${VICPATH}/main_functions
+PROCESSESPATH	    = ${VICPATH}/processes
+GENERALFUNCTIONSPATH = general_functions
 PLUGINPATH	    = plugins
 ROUTINGRVICPATH	    = routing_rvic
 ROUTINGLOHMANNPATH  = routing_lohmann
@@ -103,10 +102,9 @@ HDRS = \
 SRCS = \
 	$(wildcard ${MAINPATH}/src/*.c) \
 	$(wildcard ${MAINPATH}/src/${VICPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${GENERALPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${SNOWPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${SOILPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${TODOPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${GENERALFUNCTIONSPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${MAINFUNCTIONSPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${PROCESSESPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGLOHMANNPATH}/*.c)
 

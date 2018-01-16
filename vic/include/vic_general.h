@@ -962,15 +962,15 @@ void set_nc_state_var_info(nc_file_struct *nc_state_file);
 void sprint_location(char *str, location_struct *loc);
 
 // allocation
-void alloc_vic(void);
+void vic_alloc(void);
 void alloc_general(void);
 
 // initialisation
-void init_vic(void);
+void vic_init(void);
 void init_general(void);
 
 // finalize
-void finalize_vic(void);
+void vic_finalize(void);
 void finalize_general(void);
 
 void vic_image_run(dmy_struct *dmy_current);

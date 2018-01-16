@@ -25,9 +25,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vic.h>
 
 /*
     create a new node

@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Finalize VIC run by freeing memory and closing open files.
+ * Allocate memory for VIC structures.
  *
  * @section LICENSE
  *
@@ -27,18 +27,26 @@
 #include <vic.h>
 
 /******************************************************************************
- * @brief    Initialize model parameters
+ * @brief    Allocate memory for VIC structures.
  *****************************************************************************/
 void
-finalize_vic(void)
-{
-    extern option_struct     options;
+vic_alloc(void) {
+    extern option_struct options;
+    extern int           N_STATE_VARS_ALL;
+    extern int           N_OUTVAR_TYPES_ALL;
+
+    N_STATE_VARS_ALL   = N_STATE_VARS;
+    N_OUTVAR_TYPES_ALL = N_OUTVAR_TYPES;
+    
+    if (options.ROUTING_RVIC) {
+        routing_rvic_add_types();
+    }
 
     // Allocate memory for all non specific VIC structures
-    finalize_general();
-    
-    // finalize routing
+    alloc_general();
+
+    // Allocate memory for routing
     if (options.ROUTING_RVIC) {
-        routing_rvic_finalize();
+        routing_rvic_alloc();
     }
 }
