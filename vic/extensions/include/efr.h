@@ -12,6 +12,8 @@ typedef struct{
     double am_flow;
     double history_flow[EFR_HIST_YEARS * MONTHS_PER_YEAR];
     
+    double requirement;
+    
     double total_flow;
     size_t total_steps;
     
@@ -20,9 +22,12 @@ typedef struct{
 
 bool efr_get_global_parameters(char *cmdstr);
 void efr_validate_global_parameters(void);
+void efr_set_output_meta_data_info(void);
+void efr_set_state_meta_data_info(void);
 void efr_alloc(void);
 void initialize_efr_local_structures(void);
 void efr_run(size_t cur_cell);
+void efr_put_data(void);
 void efr_finalize(void);
 
 #endif /* EFR_H */

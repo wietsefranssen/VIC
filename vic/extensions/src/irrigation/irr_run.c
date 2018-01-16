@@ -7,6 +7,7 @@ irr_run1(size_t cur_cell)
     extern global_param_struct global_param;
     extern dmy_struct *dmy;
     extern size_t current;
+    extern ext_option_struct ext_options;
     extern all_vars_struct *all_vars;
     extern irr_con_map_struct *irr_con_map;
     extern irr_con_struct **irr_con;
@@ -16,9 +17,8 @@ irr_run1(size_t cur_cell)
     extern wu_con_struct **wu_con;
     extern option_struct options;
     
-    double moist[options.Nlayer];    
-    double irrigation_need;
-    double demand;
+    double moist[options.Nlayer];
+    double total_demand;
     bool in_season;
     size_t root_layer;
     size_t cur_veg;
@@ -28,11 +28,14 @@ irr_run1(size_t cur_cell)
     size_t k;
     size_t l;       
             
-    wu_con[cur_cell][WU_IRRIGATION].demand = 0;
-    wu_con[cur_cell][WU_IRRIGATION].consumption_fraction = 1.0; 
-            
+    total_demand = 0;            
     for(i = 0; i < irr_con_map[cur_cell].ni_active; i++){
         cur_veg = irr_con_map[cur_cell].vidx[i];
+        
+        for(j = 0; j < options.SNOW_BAND; j++){
+            ext_all_vars[cur_cell].irrigation[i][j].need = 0.0;
+            ext_all_vars[cur_cell].irrigation[i][j].requirement = 0.0;
+        }
         
         for(j = 0; j < irr_con[cur_cell][i].nseasons; j++){
             in_season = between_dmy(irr_con[cur_cell][i].season_start[j],
@@ -47,11 +50,8 @@ irr_run1(size_t cur_cell)
             continue;
         }
         
-        for(j = 0; j < options.SNOW_BAND; j++){
-            
-            // Get irrigation need and demand
-            irrigation_need = 0.0;
-            demand = 0.0;
+        for(j = 0; j < options.SNOW_BAND; j++){            
+            // Get irrigation need and demand         
             if(irr_con[cur_cell][i].ponding){
                 if(ext_all_vars[cur_cell].irrigation[i][j].pond_storage > 
                         irr_con[cur_cell][j].pond_capacity / POND_FRAC || 
@@ -70,17 +70,19 @@ irr_run1(size_t cur_cell)
                 } else {
                     // moisture content is below critical, and decreasing
 
-                    irrigation_need = irr_con[cur_cell][j].pond_capacity - 
+                    ext_all_vars[cur_cell].irrigation[i][j].need = 
+                            irr_con[cur_cell][j].pond_capacity - 
                             ext_all_vars[cur_cell].irrigation[i][j].pond_storage;
-                    demand = irrigation_need - 
+                    ext_all_vars[cur_cell].irrigation[i][j].requirement = 
+                            ext_all_vars[cur_cell].irrigation[i][j].need - 
                             ext_all_vars[cur_cell].irrigation[i][j].prev_demand; 
 
-                    if(demand < 0){
-                        demand = 0.0;
+                    if(ext_all_vars[cur_cell].irrigation[i][j].requirement < 0){
+                        ext_all_vars[cur_cell].irrigation[i][j].requirement = 0.0;
                     }
 
                     ext_all_vars[cur_cell].irrigation[i][j].prev_demand +=
-                            demand;                   
+                            ext_all_vars[cur_cell].irrigation[i][j].requirement;                   
                 } 
             }else{
                 if(options.SHARE_LAYER_MOIST){
@@ -128,17 +130,19 @@ irr_run1(size_t cur_cell)
                     } else {
                         // moisture content is below critical, and decreasing
 
-                        irrigation_need = (soil_con[cur_cell].Wcr[root_layer] / FIELD_CAP_FRAC) - 
+                        ext_all_vars[cur_cell].irrigation[i][j].need = 
+                                (soil_con[cur_cell].Wcr[root_layer] / FIELD_CAP_FRAC) - 
                                 all_vars[cur_cell].cell[cur_veg][j].layer[root_layer].moist;
-                        demand = irrigation_need - 
+                        ext_all_vars[cur_cell].irrigation[i][j].requirement = 
+                                ext_all_vars[cur_cell].irrigation[i][j].need - 
                                 ext_all_vars[cur_cell].irrigation[i][j].prev_demand; 
 
-                        if(demand < 0){
-                            demand = 0.0;
+                        if(ext_all_vars[cur_cell].irrigation[i][j].requirement < 0){
+                            ext_all_vars[cur_cell].irrigation[i][j].requirement = 0.0;
                         }
 
                         ext_all_vars[cur_cell].irrigation[i][j].prev_demand +=
-                                demand;                   
+                                ext_all_vars[cur_cell].irrigation[i][j].requirement;                   
                     } 
 
                     ext_all_vars[cur_cell].irrigation[i][j].prev_avail_moist = 
@@ -148,10 +152,18 @@ irr_run1(size_t cur_cell)
                 }
             }
             
-            wu_con[cur_cell][WU_IRRIGATION].demand += demand / MM_PER_M *
+            total_demand += ext_all_vars[cur_cell].irrigation[i][j].requirement / 
+                    MM_PER_M *
                     local_domain.locations[cur_cell].area * 
-                    veg_con[cur_cell][cur_veg].Cv / global_param.dt;
+                    soil_con[cur_cell].AreaFract[j] * 
+                    veg_con[cur_cell][cur_veg].Cv / 
+                    global_param.dt;
         }        
+    }
+                
+    if(ext_options.WATER_USE){
+        wu_con[cur_cell][WU_IRRIGATION].demand = total_demand;
+        wu_con[cur_cell][WU_IRRIGATION].consumption_fraction = 1.0; 
     }
 }
 
@@ -161,6 +173,7 @@ irr_run2(size_t cur_cell)
     extern domain_struct local_domain;
     extern global_param_struct global_param;
     extern all_vars_struct *all_vars;
+    extern ext_option_struct ext_options;
     extern irr_con_map_struct *irr_con_map;
     extern irr_con_struct **irr_con;
     extern ext_all_vars_struct *ext_all_vars;
@@ -240,50 +253,52 @@ irr_run2(size_t cur_cell)
                     }         
                 }
             }
-            
-            irrigation_available = 
-                    ext_all_vars[cur_cell].water_use[WU_IRRIGATION].consumed *
-                    global_param.dt / local_domain.locations[cur_cell].area /
-                    veg_con[cur_cell][cur_veg].Cv * MM_PER_M;
-            
-            if(irrigation_available > 0){                
-                // Received water for irrigation   
-                
-                if(irr_con[cur_cell][i].ponding){
-                    irrigation_need = irr_con[cur_cell][i].pond_capacity - 
-                           ext_all_vars[cur_cell].irrigation[i][j].pond_storage;
+                        
+            if(ext_options.WATER_USE){
+                irrigation_available = 
+                        ext_all_vars[cur_cell].water_use[WU_IRRIGATION].consumed *
+                        global_param.dt / local_domain.locations[cur_cell].area /
+                        veg_con[cur_cell][cur_veg].Cv * MM_PER_M;
 
-                    if(irrigation_available > irrigation_need){
-                        // Received too much, add to leftover
-                        ext_all_vars[cur_cell].irrigation[i][j].pond_storage = 
-                                irr_con[cur_cell][i].pond_capacity;
-                        ext_all_vars[cur_cell].irrigation[i][j].leftover =
-                                irrigation_available -
-                                irrigation_need;
-                    }else{
-                        // Received too little, fill up
-                        ext_all_vars[cur_cell].irrigation[i][j].pond_storage += 
-                                irrigation_available;
-                    }
-                }else{
-                    irrigation_need = soil_con[cur_cell].max_moist[0] - 
-                           all_vars[cur_cell].cell[cur_veg][j].layer[0].moist;
+                if(irrigation_available > 0){                
+                    // Received water for irrigation   
 
-                    if(irrigation_available > irrigation_need){
-                        // Received too much, add to leftover
-                        all_vars[cur_cell].cell[cur_veg][j].layer[0].moist = 
-                                soil_con[cur_cell].max_moist[0];
-                        ext_all_vars[cur_cell].irrigation[i][j].leftover =
-                                irrigation_available -
-                                irrigation_need;
+                    if(irr_con[cur_cell][i].ponding){
+                        irrigation_need = irr_con[cur_cell][i].pond_capacity - 
+                               ext_all_vars[cur_cell].irrigation[i][j].pond_storage;
+
+                        if(irrigation_available > irrigation_need){
+                            // Received too much, add to leftover
+                            ext_all_vars[cur_cell].irrigation[i][j].pond_storage = 
+                                    irr_con[cur_cell][i].pond_capacity;
+                            ext_all_vars[cur_cell].irrigation[i][j].leftover =
+                                    irrigation_available -
+                                    irrigation_need;
+                        }else{
+                            // Received too little, fill up
+                            ext_all_vars[cur_cell].irrigation[i][j].pond_storage += 
+                                    irrigation_available;
+                        }
                     }else{
-                        // Received too little, fill up
-                        all_vars[cur_cell].cell[cur_veg][j].layer[0].moist += 
-                                irrigation_available;
-                        irrigation_available = 0.0;
+                        irrigation_need = soil_con[cur_cell].max_moist[0] - 
+                               all_vars[cur_cell].cell[cur_veg][j].layer[0].moist;
+
+                        if(irrigation_available > irrigation_need){
+                            // Received too much, add to leftover
+                            all_vars[cur_cell].cell[cur_veg][j].layer[0].moist = 
+                                    soil_con[cur_cell].max_moist[0];
+                            ext_all_vars[cur_cell].irrigation[i][j].leftover =
+                                    irrigation_available -
+                                    irrigation_need;
+                        }else{
+                            // Received too little, fill up
+                            all_vars[cur_cell].cell[cur_veg][j].layer[0].moist += 
+                                    irrigation_available;
+                            irrigation_available = 0.0;
+                        }
                     }
                 }
-            }    
+            }
         }
     }
 }            

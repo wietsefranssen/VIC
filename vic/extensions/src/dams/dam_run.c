@@ -8,14 +8,14 @@ dam_get_op_year_month(double ay_flow, double *am_flow, int current_month)
         size_t month_nr;
         size_t month_add;
         
-        size_t j;
+        size_t i;
         
         con_inflow = 0.0;
         max_con_inflow = 0.0;
         month_add = 0;
         
-        for(j = 0; j < 2 * MONTHS_PER_YEAR; j++){
-            month_nr = j % MONTHS_PER_YEAR;
+        for(i = 0; i < 2 * MONTHS_PER_YEAR; i++){
+            month_nr = i % MONTHS_PER_YEAR;
             
             if(am_flow[month_nr] > ay_flow){
                 con_inflow += am_flow[month_nr];
@@ -186,6 +186,7 @@ dam_run(size_t cur_cell)
     extern dmy_struct *dmy;
     extern size_t current;
     extern global_param_struct global_param;
+    extern ext_option_struct ext_options;
     extern ext_all_vars_struct *ext_all_vars;
     extern dam_con_map_struct *dam_con_map;
     extern dam_con_struct **dam_con;
@@ -276,6 +277,13 @@ dam_run(size_t cur_cell)
                     ext_all_vars[cur_cell].dams[i].op_volume[0],                    
                     ext_all_vars[cur_cell].dams[i].total_steps,
                     ext_all_vars[cur_cell].dams[i].volume);
+            if(ext_options.EFR){
+                if(ext_all_vars[cur_cell].dams[i].discharge <
+                        ext_all_vars[cur_cell].efr.requirement){
+                    ext_all_vars[cur_cell].dams[i].discharge =
+                        ext_all_vars[cur_cell].efr.requirement;
+                }
+            }
             if(ext_all_vars[cur_cell].dams[i].discharge < 0){
                 ext_all_vars[cur_cell].dams[i].discharge = 0.0;
             }
@@ -300,8 +308,7 @@ dam_run(size_t cur_cell)
                         global_param.dt;            
                 ext_all_vars[cur_cell].dams[i].volume = 
                         dam_con[cur_cell][i].max_volume;
-            }
-                        
+            }                        
             ext_all_vars[cur_cell].routing.discharge[0] += 
                     ext_all_vars[cur_cell].dams[i].discharge;
             

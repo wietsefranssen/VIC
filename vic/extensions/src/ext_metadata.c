@@ -11,6 +11,12 @@ ext_set_output_met_data_info(void)
     if(ext_options.ROUTING){
         rout_set_output_meta_data_info();
     }
+    if(ext_options.EFR){
+        efr_set_output_meta_data_info();
+    }
+    if(ext_options.IRRIGATION){
+        irr_set_output_meta_data_info();
+    }
     if(ext_options.WATER_USE){
         wu_set_output_meta_data_info();
     }
@@ -29,6 +35,12 @@ ext_set_state_meta_data_info(void)
     }
     if(ext_options.ROUTING){
         rout_set_state_meta_data_info();
+    }
+    if(ext_options.EFR){
+        efr_set_state_meta_data_info();
+    }
+    if(ext_options.IRRIGATION){
+        irr_set_state_meta_data_info();
     }
     if(ext_options.WATER_USE){
         wu_set_state_meta_data_info();

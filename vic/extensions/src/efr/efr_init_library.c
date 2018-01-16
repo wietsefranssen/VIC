@@ -12,6 +12,7 @@ initialize_efr_var(efr_var_struct *efr_var)
     for(i = 0; i < EFR_HIST_YEARS * MONTHS_PER_YEAR; i++){
         efr_var->history_flow[i] = 0.0;
     }
+    efr_var->requirement = 0.0;
     
     efr_var->total_flow = 0.0;
     efr_var->total_steps = 0;

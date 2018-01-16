@@ -297,6 +297,13 @@ enum
     // Routing terms
     OUT_DISCHARGE,
     OUT_NAT_DISCHARGE,
+    // Efr terms
+    OUT_EFR_REQUIREMENT,
+    // Irrigation terms
+    OUT_IRR_REQUIREMENT,
+    OUT_IRR_NEED,
+    OUT_IRR_POND_STORAGE,
+    OUT_IRR_LEFTOVER,
     // Water use terms
     OUT_WU_DEMAND, 
     OUT_WU_COMPENSATION,    

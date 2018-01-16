@@ -25,9 +25,5 @@ efr_get_global_parameters(char *cmdstr)
 void
 efr_validate_global_parameters(void)
 {
-    extern ext_option_struct ext_options;
     
-    if(!ext_options.WATER_USE){
-        log_err("EFR = TRUE but WATER_USE = FALSE");
-    }  
 }
