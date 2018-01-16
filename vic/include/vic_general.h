@@ -990,4 +990,5 @@ void get_forcing_file_info(param_set_struct *param_set, size_t file_num);
 void vic_force(void);
 void vic_populate_model_state(dmy_struct *dmy_current);
 
+void cshift(double *, int, int, int, int);
 #endif

@@ -70,17 +70,6 @@ void routing_rvic_init(void);                  // initialize model parameters fr
 void routing_rvic_run(void);                   // run routing over the domain
 void routing_rvic_finalize(void);              // clean up routine for routing
 void routing_rvic_convolution(double *, double *);  // convolution over the domain
-
-/******************************************************************************
- * @brief   MPI Function prototypes for the rout_rvic extension
- *****************************************************************************/
-void scatter_var_double(double *, double *);
-void gather_var_double(double *, double *);
-
-/******************************************************************************
- * @brief   Convolution function adapted from the RVIC scheme
- *****************************************************************************/
-void cshift(double *, int, int, int, int);
 void routing_rvic_store(nc_file_struct *);
 void routing_rvic_restore(nameid_struct *, metadata_struct *);
 void routing_rvic_state_metadata();
@@ -91,7 +80,6 @@ void routing_rvic_add_types(void);
 bool routing_rvic_get_global_param(char *, char *, char *);
 void routing_rvic_output_metadata(void);
 
-// Extensions
-routing_rvic_struct         routing_rvic; // Routing routine (extension)
+routing_rvic_struct         routing_rvic;
 
 #endif
