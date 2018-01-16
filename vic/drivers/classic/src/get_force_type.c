@@ -25,14 +25,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
+#include <vic_driver_classic.h>
 
 /******************************************************************************
  * @brief    This routine determines the current forcing file data type and
  *           stores its location in the description of the current forcing file.
  *****************************************************************************/
 void
-set_force_type(char *cmdstr,
+get_force_type(char *cmdstr,
                int   file_num,
                int  *field)
 {
@@ -40,21 +40,18 @@ set_force_type(char *cmdstr,
 
     char                    optstr[MAXSTRING];
     char                    flgstr[MAXSTRING];
-    char                    ncvarname[MAXSTRING];
-    int                     type = SKIP;
+    int                     type;
 
-    strcpy(ncvarname, "MISSING");
+    type = SKIP;
 
     /** Initialize flgstr **/
     strcpy(flgstr, "NULL");
 
     if ((*field) >= (int) param_set.N_TYPES[file_num]) {
-        log_err("Too many variables defined for forcing file %i., was "
-                "expecting at most %zu and got %d", file_num + 1,
-                param_set.N_TYPES[file_num], *field);
+        log_err("Too many variables defined for forcing file %i.", file_num);
     }
 
-    sscanf(cmdstr, "%*s %s %s", optstr, ncvarname);
+    sscanf(cmdstr, "%*s %s", optstr);
 
     /***************************************
        Get meteorological data forcing info
@@ -76,7 +73,7 @@ set_force_type(char *cmdstr,
     else if (strcasecmp("CHANNEL_IN", optstr) == 0) {
         type = CHANNEL_IN;
     }
-    /* type 4: vegetation cover fraction [fraction] */
+    /* type 4: vegetation canopy cover fraction */
     else if (strcasecmp("FCANOPY", optstr) == 0) {
         type = FCANOPY;
     }
@@ -108,36 +105,44 @@ set_force_type(char *cmdstr,
     else if (strcasecmp("VP", optstr) == 0) {
         type = VP;
     }
-    /* type 12: incoming shortwave radiation [W/m2] */
+    /* type 12: incoming shortwave radiation [W/m2]  */
     else if (strcasecmp("SWDOWN", optstr) == 0) {
         type = SWDOWN;
     }
-    /* type 13: wind speed [m/s] */
+    /* type 13: vegetation cover fraction */
+    else if (strcasecmp("FCANOPY", optstr) == 0) {
+        type = FCANOPY;
+    }
+    /* type 14: wind speed [m/s] */
     else if (strcasecmp("WIND", optstr) == 0) {
         type = WIND;
     }
-    /* type 14: unused (blank) data */
+    /* type 15: unused (blank) data */
     else if (strcasecmp("SKIP", optstr) == 0) {
         type = SKIP;
     }
     /** Undefined variable type **/
     else {
         log_err("Undefined forcing variable type %s in file %i.",
-                optstr, file_num + 1);
+                optstr, file_num);
     }
 
     param_set.TYPE[type].SUPPLIED = file_num + 1;
     param_set.FORCE_INDEX[file_num][(*field)] = type;
-
-    if (strcasecmp("MISSING", ncvarname) != 0) {
-        strcpy(param_set.TYPE[type].varname, ncvarname);
+    if (type == SKIP) {
+        param_set.TYPE[type].multiplier = 1;
+        param_set.TYPE[type].SIGNED = false;
     }
     else {
-        log_err(
-            "Must supply netCDF variable name for %s forcing file number %d",
-            optstr, file_num + 1);
+        sscanf(cmdstr, "%*s %*s %s %lf", flgstr,
+               &param_set.TYPE[type].multiplier);
+        if (strcasecmp("SIGNED", flgstr) == 0) {
+            param_set.TYPE[type].SIGNED = true;
+        }
+        else {
+            param_set.TYPE[type].SIGNED = false;
+        }
     }
-
     param_set.TYPE[type].N_ELEM = 1;
 
     (*field)++;

@@ -25,8 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
-#include <routing_rvic.h>
+#include <vic_driver_cesm.h>
 
 /******************************************************************************
  * @brief    Display the current settings of options defined in the header
@@ -42,7 +41,6 @@ display_current_settings(int mode)
 
     int                        file_num;
 
-
     print_version(VIC_DRIVER);
 
     if (mode == DISP_VERSION) {
@@ -57,11 +55,9 @@ display_current_settings(int mode)
 
     fprintf(LOG_DEST, "VIC_DRIVER:\t\t%s\n", VIC_DRIVER);
     fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "LOG_LEVEL:\t\t%d\n", LOG_LVL);
-    fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Maximum Array Sizes:\n");
     fprintf(LOG_DEST, "MAX_FRONTS\t\t%2d\n", MAX_FRONTS);
-    fprintf(LOG_DEST, "MAX_FROST_AREAS\t\t%2d\n", MAX_FROST_AREAS);
+    fprintf(LOG_DEST, "MAX_FROST_AREAS\t\t\t%2d\n", MAX_FROST_AREAS);
     fprintf(LOG_DEST, "MAX_LAKE_NODES\t\t%2d\n", MAX_LAKE_NODES);
     fprintf(LOG_DEST, "MAX_ZWTVMOIST\t\t%2d\n", MAX_ZWTVMOIST);
     fprintf(LOG_DEST, "MAX_LAYERS\t\t%2d\n", MAX_LAYERS);
@@ -74,11 +70,6 @@ display_current_settings(int mode)
             MIN_SUBDAILY_STEPS_PER_DAY);
     fprintf(LOG_DEST, "MAX_SUBDAILY_STEPS_PER_DAY %d\n",
             MAX_SUBDAILY_STEPS_PER_DAY);
-    fprintf(LOG_DEST, "\n");
-
-    fprintf(LOG_DEST, "Extensions:\n");
-    fprintf(LOG_DEST, "-----------\n");
-    fprintf(LOG_DEST, "ROUTING\t\t\t%2s\n", ROUT_EXT);
     fprintf(LOG_DEST, "\n");
 
     if (mode == DISP_COMPILE_TIME) {
@@ -351,20 +342,6 @@ display_current_settings(int mode)
     }
 
     fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "Input Elevation Data:\n");
-    if (options.SNOW_BAND > 1) {
-        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.SNOW_BAND);
-    }
-    else if (options.SNOW_BAND == 1) {
-        fprintf(LOG_DEST,
-                "SNOW_BAND\t\t%zu\t(no input file needed for SNOW_BAND=1)\n",
-                options.SNOW_BAND);
-    }
-    else {
-        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.SNOW_BAND);
-    }
-
-    fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Lake Data:\n");
     if (options.LAKES) {
         fprintf(LOG_DEST, "LAKES\t\tTRUE\n");
@@ -377,11 +354,6 @@ display_current_settings(int mode)
     }
     else {
         fprintf(LOG_DEST, "LAKE_PROFILE\t\tFALSE\n");
-    }
-
-    //Plugins
-    if (options.ROUTING_RVIC) {
-        fprintf(LOG_DEST, "ROUTING_RVIC\t\tTRUE\n");
     }
 
     fprintf(LOG_DEST, "\n");
@@ -414,7 +386,6 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "STATEYEAR\t\t%d\n", global_param.stateyear);
         fprintf(LOG_DEST, "STATEMONTH\t\t%d\n", global_param.statemonth);
         fprintf(LOG_DEST, "STATEDAY\t\t%d\n", global_param.stateday);
-        fprintf(LOG_DEST, "STATESEC\t\t%u\n", global_param.statesec);
         if (options.STATE_FORMAT == NETCDF3_CLASSIC) {
             fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_CLASSIC\n");
         }

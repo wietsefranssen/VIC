@@ -25,8 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
-#include <routing_rvic.h>
+#include <vic_driver_classic.h>
 
 /******************************************************************************
  * @brief    Display the current settings of options defined in the header
@@ -41,7 +40,6 @@ display_current_settings(int mode)
     extern filenames_struct    filenames;
 
     int                        file_num;
-
 
     print_version(VIC_DRIVER);
 
@@ -75,12 +73,6 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "MAX_SUBDAILY_STEPS_PER_DAY %d\n",
             MAX_SUBDAILY_STEPS_PER_DAY);
     fprintf(LOG_DEST, "\n");
-
-    fprintf(LOG_DEST, "Extensions:\n");
-    fprintf(LOG_DEST, "-----------\n");
-    fprintf(LOG_DEST, "ROUTING\t\t\t%2s\n", ROUT_EXT);
-    fprintf(LOG_DEST, "\n");
-
     if (mode == DISP_COMPILE_TIME) {
         return;
     }
@@ -101,10 +93,11 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "MODEL_DT\t\t%f\n", global_param.dt);
     fprintf(LOG_DEST, "SNOW_DT\t\t%f\n", global_param.snow_dt);
     fprintf(LOG_DEST, "RUNOFF_DT\t\t%f\n", global_param.runoff_dt);
+    fprintf(LOG_DEST, "ATMOS_DT\t\t%f\n", global_param.atmos_dt);
     fprintf(LOG_DEST, "STARTYEAR\t\t%d\n", global_param.startyear);
     fprintf(LOG_DEST, "STARTMONTH\t\t%d\n", global_param.startmonth);
     fprintf(LOG_DEST, "STARTDAY\t\t%d\n", global_param.startday);
-    fprintf(LOG_DEST, "STARTSEC\t\t%d\n", global_param.startsec);
+    fprintf(LOG_DEST, "STARTSEC\t\t%u\n", global_param.startsec);
     if (global_param.nrecs > 0) {
         fprintf(LOG_DEST, "NRECS\t\t%zu\n", global_param.nrecs);
     }
@@ -259,21 +252,31 @@ display_current_settings(int mode)
                     global_param.forcemonth[file_num]);
             fprintf(LOG_DEST, "FORCEDAY\t\t%d\n",
                     global_param.forceday[file_num]);
-            fprintf(LOG_DEST, "FORCESEC\t\t%d\n",
+            fprintf(LOG_DEST, "FORCESEC\t\t%u\n",
                     global_param.forcesec[file_num]);
             fprintf(LOG_DEST, "N_TYPES\t\t\t%zu\n",
                     param_set.N_TYPES[file_num]);
             fprintf(LOG_DEST, "FORCE_DT\t\t%f\n", param_set.FORCE_DT[file_num]);
+            if (param_set.FORCE_ENDIAN[file_num] == LITTLE) {
+                fprintf(LOG_DEST, "FORCE_ENDIAN\t\tLITTLE\n");
+            }
+            else {
+                fprintf(LOG_DEST, "FORCE_ENDIAN\t\tBIG\n");
+            }
+            if (param_set.FORCE_FORMAT[file_num] == BINARY) {
+                fprintf(LOG_DEST, "FORCE_FORMAT\t\tBINARY\n");
+            }
+            else {
+                fprintf(LOG_DEST, "FORCE_FORMAT\t\tASCII\n");
+            }
         }
     }
-
-    fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "Input Domain Data:\n");
-    fprintf(LOG_DEST, "Domain file\t\t%s\n", filenames.domain.nc_filename);
+    fprintf(LOG_DEST, "GRID_DECIMAL\t\t%d\n", options.GRID_DECIMAL);
 
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Constants File\t\t%s\n", filenames.constants);
-    fprintf(LOG_DEST, "Parameters file\t\t%s\n", filenames.params.nc_filename);
+    fprintf(LOG_DEST, "Input Soil Data:\n");
+    fprintf(LOG_DEST, "Soil file\t\t%s\n", filenames.soil);
     if (options.BASEFLOW == ARNO) {
         fprintf(LOG_DEST, "BASEFLOW\t\tARNO\n");
     }
@@ -294,12 +297,21 @@ display_current_settings(int mode)
     }
 
     fprintf(LOG_DEST, "\n");
+    fprintf(LOG_DEST, "Input Veg Data:\n");
+    fprintf(LOG_DEST, "Veg library file\t%s\n", filenames.veglib);
     if (options.VEGLIB_PHOTO) {
         fprintf(LOG_DEST, "VEGLIB_PHOTO\t\tTRUE\n");
     }
     else {
         fprintf(LOG_DEST, "VEGLIB_PHOTO\t\tFALSE\n");
     }
+    if (options.VEGLIB_FCAN) {
+        fprintf(LOG_DEST, "VEGLIB_FCAN\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "VEGLIB_FCAN\t\tFALSE\n");
+    }
+    fprintf(LOG_DEST, "Veg param file\t\t%s\n", filenames.veg);
     fprintf(LOG_DEST, "ROOT_ZONES\t\t%zu\n", options.ROOT_ZONES);
     if (options.VEGPARAM_LAI) {
         fprintf(LOG_DEST, "VEGPARAM_LAI\t\tTRUE\n");
@@ -353,7 +365,8 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Elevation Data:\n");
     if (options.SNOW_BAND > 1) {
-        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.SNOW_BAND);
+        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\t%s\n", options.SNOW_BAND,
+                filenames.snowband);
     }
     else if (options.SNOW_BAND == 1) {
         fprintf(LOG_DEST,
@@ -367,7 +380,7 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Lake Data:\n");
     if (options.LAKES) {
-        fprintf(LOG_DEST, "LAKES\t\tTRUE\n");
+        fprintf(LOG_DEST, "LAKES\t\tTRUE\t%s\n", filenames.lakeparam);
     }
     else {
         fprintf(LOG_DEST, "LAKES\t\tFALSE\n");
@@ -379,27 +392,15 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "LAKE_PROFILE\t\tFALSE\n");
     }
 
-    //Plugins
-    if (options.ROUTING_RVIC) {
-        fprintf(LOG_DEST, "ROUTING_RVIC\t\tTRUE\n");
-    }
-
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input State File:\n");
     if (options.INIT_STATE) {
-        fprintf(LOG_DEST, "INIT_STATE\t\tTRUE\t%s\n",
-                filenames.init_state.nc_filename);
-        if (options.STATE_FORMAT == NETCDF3_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_CLASSIC\n");
+        fprintf(LOG_DEST, "INIT_STATE\t\tTRUE\t%s\n", filenames.init_state);
+        if (options.STATE_FORMAT == ASCII) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tASCII\n");
         }
-        else if (options.STATE_FORMAT == NETCDF3_64BIT_OFFSET) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_64BIT_OFFSET\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4_CLASSIC\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4\n");
+        else if (options.STATE_FORMAT == BINARY) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tBINARY\n");
         }
     }
     else {
@@ -415,17 +416,11 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "STATEMONTH\t\t%d\n", global_param.statemonth);
         fprintf(LOG_DEST, "STATEDAY\t\t%d\n", global_param.stateday);
         fprintf(LOG_DEST, "STATESEC\t\t%u\n", global_param.statesec);
-        if (options.STATE_FORMAT == NETCDF3_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_CLASSIC\n");
+        if (options.STATE_FORMAT == BINARY) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tBINARY\n");
         }
-        else if (options.STATE_FORMAT == NETCDF3_64BIT_OFFSET) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_64BIT_OFFSET\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4_CLASSIC\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4\n");
+        else if (options.STATE_FORMAT == ASCII) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tASCII\n");
         }
     }
     else {
@@ -435,5 +430,6 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Output Data:\n");
     fprintf(LOG_DEST, "Result dir:\t\t%s\n", filenames.result_dir);
+    fprintf(LOG_DEST, "Noutstreams:\t\t%zu\n", options.Noutstreams);
     fprintf(LOG_DEST, "\n");
 }

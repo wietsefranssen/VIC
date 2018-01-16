@@ -25,8 +25,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
 
-#include <vic.h>
-#include <routing_rvic.h>
+#include <vic_driver_python.h>
 
 /******************************************************************************
  * @brief    Display the current settings of options defined in the header
@@ -38,10 +37,6 @@ display_current_settings(int mode)
     extern option_struct       options;
     extern param_set_struct    param_set;
     extern global_param_struct global_param;
-    extern filenames_struct    filenames;
-
-    int                        file_num;
-
 
     print_version(VIC_DRIVER);
 
@@ -57,11 +52,9 @@ display_current_settings(int mode)
 
     fprintf(LOG_DEST, "VIC_DRIVER:\t\t%s\n", VIC_DRIVER);
     fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "LOG_LEVEL:\t\t%d\n", LOG_LVL);
-    fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Maximum Array Sizes:\n");
     fprintf(LOG_DEST, "MAX_FRONTS\t\t%2d\n", MAX_FRONTS);
-    fprintf(LOG_DEST, "MAX_FROST_AREAS\t\t%2d\n", MAX_FROST_AREAS);
+    fprintf(LOG_DEST, "MAX_FROST_AREAS\t\t\t%2d\n", MAX_FROST_AREAS);
     fprintf(LOG_DEST, "MAX_LAKE_NODES\t\t%2d\n", MAX_LAKE_NODES);
     fprintf(LOG_DEST, "MAX_ZWTVMOIST\t\t%2d\n", MAX_ZWTVMOIST);
     fprintf(LOG_DEST, "MAX_LAYERS\t\t%2d\n", MAX_LAYERS);
@@ -74,11 +67,6 @@ display_current_settings(int mode)
             MIN_SUBDAILY_STEPS_PER_DAY);
     fprintf(LOG_DEST, "MAX_SUBDAILY_STEPS_PER_DAY %d\n",
             MAX_SUBDAILY_STEPS_PER_DAY);
-    fprintf(LOG_DEST, "\n");
-
-    fprintf(LOG_DEST, "Extensions:\n");
-    fprintf(LOG_DEST, "-----------\n");
-    fprintf(LOG_DEST, "ROUTING\t\t\t%2s\n", ROUT_EXT);
     fprintf(LOG_DEST, "\n");
 
     if (mode == DISP_COMPILE_TIME) {
@@ -248,32 +236,9 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "Ncanopy\t\t%zu\n", options.Ncanopy);
 
     fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "Input Forcing Data:\n");
-    for (file_num = 0; file_num < 2; file_num++) {
-        if (global_param.forceyear[file_num] > 0) {
-            fprintf(LOG_DEST, "Forcing File %d:\t\t%s*\n", file_num + 1,
-                    filenames.f_path_pfx[file_num]);
-            fprintf(LOG_DEST, "FORCEYEAR\t\t%d\n",
-                    global_param.forceyear[file_num]);
-            fprintf(LOG_DEST, "FORCEMONTH\t\t%d\n",
-                    global_param.forcemonth[file_num]);
-            fprintf(LOG_DEST, "FORCEDAY\t\t%d\n",
-                    global_param.forceday[file_num]);
-            fprintf(LOG_DEST, "FORCESEC\t\t%d\n",
-                    global_param.forcesec[file_num]);
-            fprintf(LOG_DEST, "N_TYPES\t\t\t%zu\n",
-                    param_set.N_TYPES[file_num]);
-            fprintf(LOG_DEST, "FORCE_DT\t\t%f\n", param_set.FORCE_DT[file_num]);
-        }
-    }
+    fprintf(LOG_DEST, "GRID_DECIMAL\t\t%hu\n", options.GRID_DECIMAL);
 
     fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "Input Domain Data:\n");
-    fprintf(LOG_DEST, "Domain file\t\t%s\n", filenames.domain.nc_filename);
-
-    fprintf(LOG_DEST, "\n");
-    fprintf(LOG_DEST, "Constants File\t\t%s\n", filenames.constants);
-    fprintf(LOG_DEST, "Parameters file\t\t%s\n", filenames.params.nc_filename);
     if (options.BASEFLOW == ARNO) {
         fprintf(LOG_DEST, "BASEFLOW\t\tARNO\n");
     }
@@ -379,27 +344,15 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "LAKE_PROFILE\t\tFALSE\n");
     }
 
-    //Plugins
-    if (options.ROUTING_RVIC) {
-        fprintf(LOG_DEST, "ROUTING_RVIC\t\tTRUE\n");
-    }
-
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input State File:\n");
     if (options.INIT_STATE) {
-        fprintf(LOG_DEST, "INIT_STATE\t\tTRUE\t%s\n",
-                filenames.init_state.nc_filename);
-        if (options.STATE_FORMAT == NETCDF3_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_CLASSIC\n");
+        fprintf(LOG_DEST, "INIT_STATE\t\tTRUE\n");
+        if (options.STATE_FORMAT == BINARY) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tBINARY\n");
         }
-        else if (options.STATE_FORMAT == NETCDF3_64BIT_OFFSET) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_64BIT_OFFSET\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4_CLASSIC\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4\n");
+        else if (options.STATE_FORMAT == ASCII) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tASCII\n");
         }
     }
     else {
@@ -410,22 +363,14 @@ display_current_settings(int mode)
     fprintf(LOG_DEST, "Output State File:\n");
     if (options.SAVE_STATE) {
         fprintf(LOG_DEST, "SAVE_STATE\t\tTRUE\n");
-        fprintf(LOG_DEST, "STATENAME\t\t%s\n", filenames.statefile);
         fprintf(LOG_DEST, "STATEYEAR\t\t%d\n", global_param.stateyear);
         fprintf(LOG_DEST, "STATEMONTH\t\t%d\n", global_param.statemonth);
         fprintf(LOG_DEST, "STATEDAY\t\t%d\n", global_param.stateday);
-        fprintf(LOG_DEST, "STATESEC\t\t%u\n", global_param.statesec);
-        if (options.STATE_FORMAT == NETCDF3_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_CLASSIC\n");
+        if (options.STATE_FORMAT == BINARY) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tBINARY\n");
         }
-        else if (options.STATE_FORMAT == NETCDF3_64BIT_OFFSET) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF3_64BIT_OFFSET\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4_CLASSIC) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4_CLASSIC\n");
-        }
-        else if (options.STATE_FORMAT == NETCDF4) {
-            fprintf(LOG_DEST, "STATE_FORMAT\t\tNETCDF4\n");
+        else if (options.STATE_FORMAT == ASCII) {
+            fprintf(LOG_DEST, "STATE_FORMAT\tASCII\n");
         }
     }
     else {
@@ -434,6 +379,5 @@ display_current_settings(int mode)
 
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Output Data:\n");
-    fprintf(LOG_DEST, "Result dir:\t\t%s\n", filenames.result_dir);
     fprintf(LOG_DEST, "\n");
 }
