@@ -52,6 +52,9 @@ finalize_general(void)
     extern veg_con_struct    **veg_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
+    extern metadata_struct    *out_metadata;
+    extern metadata_struct    *state_metadata;
+
     extern MPI_Datatype        mpi_global_struct_type;
     extern MPI_Datatype        mpi_filenames_struct_type;
     extern MPI_Datatype        mpi_location_struct_type;
@@ -121,6 +124,8 @@ finalize_general(void)
         free(mpi_map_global_array_offsets);
         free(mpi_map_mapping_array);
     }
+    free(out_metadata);
+    free(state_metadata);
 
     MPI_Type_free(&mpi_global_struct_type);
     MPI_Type_free(&mpi_filenames_struct_type);
