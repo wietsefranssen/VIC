@@ -36,12 +36,14 @@ veg_lib_struct *vic_run_veg_lib;
 int
 vic_run(force_data_struct   *force,
         all_vars_struct     *all_vars,
+        gw_var_struct      **gw_var,
         dmy_struct          *dmy,
         global_param_struct *gp,
         lake_con_struct     *lake_con,
         soil_con_struct     *soil_con,
         veg_con_struct      *veg_con,
-        veg_lib_struct      *veg_lib)
+        veg_lib_struct      *veg_lib,
+        gw_con_struct       *gw_con)
 {
     extern option_struct     options;
     extern parameters_struct param;
@@ -337,7 +339,8 @@ vic_run(force_data_struct   *force,
                                                &(energy[iveg][band]), gp,
                                                &(cell[iveg][band]),
                                                &(snow[iveg][band]),
-                                               soil_con, &(veg_var[iveg][band]),
+                                               &(gw_var[iveg][band]),
+                                               soil_con, gw_con, &(veg_var[iveg][band]),
                                                lag_one, sigma_slope, fetch,
                                                veg_con[iveg].CanopLayerBnd);
 

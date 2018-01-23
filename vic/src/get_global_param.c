@@ -70,8 +70,15 @@ get_global_param(FILE *gp)
             /*************************************
                Get Model Global Parameters from plugins
             *************************************/
-            if (routing_rvic_get_global_param(optstr, flgstr, cmdstr)) {}
-            else if (routing_lohmann_get_global_param(optstr, flgstr, cmdstr)) {}
+            if (routing_rvic_get_global_param(cmdstr)) {}
+            else if (routing_lohmann_get_global_param(cmdstr)) {}
+            else if (dam_get_global_parameters(cmdstr)) {}
+            else if (efr_get_global_parameters(cmdstr)) {}
+            else if (wu_get_global_parameters(cmdstr)) {}
+            else if (gw_get_global_parameters(cmdstr)) {}
+            else if (rout_get_global_parameters(cmdstr)) {}
+            else if (irr_get_global_parameters(cmdstr)) {}
+            else if (mpi_get_global_parameters(cmdstr)) {}
             
             /*************************************
                Get Model Global Parameters
@@ -285,7 +292,7 @@ get_global_param(FILE *gp)
                     log_err("Unknown RC_MODE option: %s", flgstr);
                 }
             }
-
+            
             /*************************************
                Define log directory
             *************************************/
@@ -389,6 +396,7 @@ get_global_param(FILE *gp)
             else if (strcasecmp("PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.params.nc_filename);
             }
+            
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("TRUE", flgstr) == 0) {
@@ -501,7 +509,8 @@ get_global_param(FILE *gp)
                 sscanf(cmdstr, "%*s %s", flgstr);
                 options.LAKE_PROFILE = str_to_bool(flgstr);
             }
-
+            
+            
             /*************************************
                Define output files
             *************************************/
@@ -551,7 +560,6 @@ get_global_param(FILE *gp)
                 log_err("OUTPUT_FORCE is not a valid option for this driver.  "
                         "Update your global parameter file accordingly.");
             }
-
             /***********************************
                Unrecognized Global Parameter Flag
             ***********************************/
@@ -566,7 +574,25 @@ get_global_param(FILE *gp)
     /******************************************
        Check for undefined required parameters
     ******************************************/
-
+    if (options.DAMS) {
+        dam_validate_global_parameters();
+    }
+    if (options.ROUTING) {
+        rout_validate_global_parameters();
+    }
+    if (options.EFR) {
+        efr_validate_global_parameters();
+    }
+    if (options.WATER_USE) {
+        wu_validate_global_parameters();
+    }
+    if (options.IRRIGATION) {
+        irr_validate_global_parameters();
+    }
+    if (options.GROUNDWATER) {
+        gw_validate_global_parameters();
+    }
+   
     // Validate model time step
     if (global_param.model_steps_per_day == 0) {
         log_err("Model time steps per day has not been defined.  Make sure "
@@ -1011,7 +1037,7 @@ get_global_param(FILE *gp)
     if (options.SAVE_STATE && options.STATE_FORMAT == UNSET_FILE_FORMAT) {
         options.STATE_FORMAT = NETCDF4_CLASSIC;
     }
-
+    
     /*********************************
        Output major options
     *********************************/

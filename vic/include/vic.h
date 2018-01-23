@@ -36,10 +36,9 @@
 #include <netcdf.h>
 
 #include <vic_general.h>
-
-// plugins
-#include <routing_rvic.h>
+#include <vic_support.h>
 #include <routing_lohmann.h>
+#include <routing_rvic.h>
 
 typedef struct node {
     int   id;

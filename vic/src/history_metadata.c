@@ -53,10 +53,29 @@ set_output_met_data_info()
         out_metadata[v].nelem = 1;
     }
 
-    // STATE_ROUT_RING
+    // Plugins
     if (options.ROUTING_RVIC) {
         routing_rvic_output_metadata();
     }
+    if (options.DAMS) {
+        dam_output_metadata();
+    }
+    if (options.ROUTING) {
+        rout_output_metadata();
+    }
+    if (options.IRRIGATION) {
+        irr_output_metadata();
+    }
+    if (options.EFR) {
+        efr_output_metadata();
+    }
+    if (options.WATER_USE) {
+        wu_output_metadata();
+    }
+    if (options.GROUNDWATER) {
+        gw_output_metadata();
+    }
+
     // Water Balance Terms - state variables
     /* saturated area fraction */
     strcpy(out_metadata[OUT_ASAT].varname, "OUT_ASAT");
@@ -239,6 +258,14 @@ set_output_met_data_info()
     strcpy(out_metadata[OUT_SOIL_MOIST].units, "mm");
     strcpy(out_metadata[OUT_SOIL_MOIST].description,
            "soil total moisture content");
+    
+    /* soil effective saturation [-] for each soil layer */
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].varname, "OUT_SOIL_EFF_SAT");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].long_name, "soil_effective_saturation");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].standard_name, "soil_effective_saturation");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].units, "-");
+    strcpy(out_metadata[OUT_SOIL_EFF_SAT].description,
+           "soil effective saturation");
 
     /* vertical average of (soil moisture - wilting point)/(maximum soil moisture - wilting point) [mm/mm] */
     strcpy(out_metadata[OUT_SOIL_WET].varname, "OUT_SOIL_WET");
@@ -1493,6 +1520,7 @@ set_output_met_data_info()
     out_metadata[OUT_SOIL_LIQ].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_ICE_FRAC].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_LIQ_FRAC].nelem = options.Nlayer;
+    out_metadata[OUT_SOIL_EFF_SAT].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_MOIST].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_TEMP].nelem = options.Nlayer;
     out_metadata[OUT_SOIL_TNODE].nelem = options.Nnode;

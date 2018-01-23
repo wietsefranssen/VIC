@@ -51,6 +51,7 @@ int                *mpi_map_local_array_sizes = NULL;
 int                *mpi_map_global_array_offsets = NULL;
 int                 mpi_rank;
 int                 mpi_size;
+int                 mpi_decomposition;
 option_struct       options;
 parameters_struct   param;
 param_set_struct    param_set;
@@ -138,6 +139,9 @@ main(int    argc,
         // read forcing data
         timer_continue(&(global_timers[TIMER_VIC_FORCE]));
         vic_force();
+        if(options.WATER_USE){
+            wu_force();
+        }
         timer_stop(&(global_timers[TIMER_VIC_FORCE]));
 
         // run vic over the domain

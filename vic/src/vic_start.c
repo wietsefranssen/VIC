@@ -54,6 +54,7 @@ vic_start(void)
     extern int                *mpi_map_global_array_offsets;
     extern int                 mpi_rank;
     extern int                 mpi_size;
+    extern int                 mpi_decomposition;
     extern option_struct       options;
     extern parameters_struct   param;
     size_t                     j;
@@ -67,7 +68,6 @@ vic_start(void)
         get_global_param(filep.globalparam);
     }
 
-    
     status = MPI_Bcast(&filenames, 1, mpi_filenames_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
@@ -105,15 +105,10 @@ vic_start(void)
         // global domain struct. This just makes life easier
         add_nveg_to_global_domain(&(filenames.params), &global_domain);
 
-        // decompose the mask
-        mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
-                              &mpi_map_local_array_sizes,
-                              &mpi_map_global_array_offsets,
-                              &mpi_map_mapping_array);
-
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *
-                                     sizeof(*filter_active_cells));
+                                     sizeof(*filter_active_cells)); 
+        check_alloc_status(filter_active_cells, "Memory allocation error");
 
         j = 0;
         for (i = 0; i < global_domain.ncells_total; i++) {
@@ -121,6 +116,21 @@ vic_start(void)
                 filter_active_cells[j] = global_domain.locations[i].io_idx;
                 j++;
             }
+        }
+                if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
+            // decompose the mask
+            mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
+                              &mpi_map_local_array_sizes,
+                              &mpi_map_global_array_offsets,
+                              &mpi_map_mapping_array);
+        }else if (mpi_decomposition == MPI_DECOMPOSITION_BASIN){
+            // decompose the mask
+            mpi_map_decomp_domain_basin(global_domain.ncells_active, mpi_size,
+                              &mpi_map_local_array_sizes,
+                              &mpi_map_global_array_offsets,
+                              &mpi_map_mapping_array);
+        } else{
+            log_err("Unknown mpi decomposition method");
         }
 
         // get dimensions (number of vegetation types, soil zones, etc)
@@ -146,6 +156,9 @@ vic_start(void)
     check_mpi_status(status, "MPI error.");
 
     status = MPI_Bcast(&NR, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
+    check_mpi_status(status, "MPI error.");
+
+    status = MPI_Bcast(&mpi_decomposition, 1, MPI_INT, VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
 
     status = MPI_Bcast(&global_param, 1, mpi_global_struct_type,

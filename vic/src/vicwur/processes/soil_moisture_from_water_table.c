@@ -86,7 +86,7 @@ soil_moisture_from_water_table(soil_con_struct *soil_con,
     // Individual layers
     tmp_depth = 0;
     for (j = 0; j < nlayers; j++) {
-        b = 0.5 * (soil_con->expt[j] - 3);
+        b = 0.5 * (soil_con->K_expt[j] - 3);
         bubble = soil_con->bubble[j];
         tmp_resid_moist = soil_con->resid_moist[j] *
                           soil_con->depth[j] * MM_PER_M; // mm
@@ -122,7 +122,7 @@ soil_moisture_from_water_table(soil_con_struct *soil_con,
     tmp_max_moist = 0;
     tmp_resid_moist = 0;
     for (j = 0; j < nlayers - 1; j++) {
-        b += 0.5 * (soil_con->expt[j] - 3) * soil_con->depth[j];
+        b += 0.5 * (soil_con->K_expt[j] - 3) * soil_con->depth[j];
         bubble += soil_con->bubble[j] * soil_con->depth[j];
         tmp_max_moist += soil_con->max_moist[j];   // total max_moist
         // total resid_moist in mm
@@ -183,7 +183,7 @@ soil_moisture_from_water_table(soil_con_struct *soil_con,
             w_avg =
                 (tmp_depth2 * CM_PER_M + soil_con->depth[j] * CM_PER_M -
                  zwt_prime) / (soil_con->depth[j] * CM_PER_M);
-            b = 0.5 * (soil_con->expt[j] - 3);
+            b = 0.5 * (soil_con->K_expt[j] - 3);
             bubble = soil_con->bubble[j];
             tmp_resid_moist = soil_con->resid_moist[j] * soil_con->depth[j] *
                               MM_PER_M;
@@ -199,7 +199,7 @@ soil_moisture_from_water_table(soil_con_struct *soil_con,
             while (j > 0) {
                 j--;
                 tmp_depth2 -= soil_con->depth[j];
-                b = 0.5 * (soil_con->expt[j] - 3);
+                b = 0.5 * (soil_con->K_expt[j] - 3);
                 bubble = soil_con->bubble[j];
                 tmp_resid_moist =
                     soil_con->resid_moist[j] * soil_con->depth[j] * MM_PER_M;

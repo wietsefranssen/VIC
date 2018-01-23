@@ -314,6 +314,13 @@ initialize_history_file(nc_file_struct *nc,
                         &(nc->veg_dimid));
     check_nc_status(status, "Error defining veg_class dimension in %s",
                     stream->filename);
+    
+    if(options.WATER_USE){
+        wu_write_def_dim();
+    }
+    if(options.DAMS){
+        dam_write_def_dim();
+    }
 
     status = nc_def_dim(nc->nc_id, "time", nc->time_size,
                         &(nc->time_dimid));
@@ -702,6 +709,14 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->time_size = NC_UNLIMITED;
     nc_file->veg_size = options.NVEGTYPES;
 
+    
+    if(options.WATER_USE){
+        wu_set_nc_output_file_info();
+    }
+    if(options.DAMS){
+        dam_set_nc_output_file_info();
+    }
+    
     // allocate memory for nc_vars
     nc_file->nc_vars = calloc(nvars, sizeof(*(nc_file->nc_vars)));
     check_alloc_status(nc_file->nc_vars, "Memory allocation error.");

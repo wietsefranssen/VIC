@@ -34,7 +34,6 @@ get_global_domain(nameid_struct *domain_nc_nameid,
                   nameid_struct *param_nc_nameid,
                   domain_struct *global_domain)
 {
-    int    *run = NULL;
     int    *mask = NULL;
     int typeid;
     double *var = NULL;
@@ -59,8 +58,6 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     // allocate memory for mask and cells to be run
     mask = malloc(global_domain->ncells_total * sizeof(*mask));
     check_alloc_status(mask, "Memory allocation error.");
-    run = malloc(global_domain->ncells_total * sizeof(*run));
-    check_alloc_status(run, "Memory allocation error.");
 
     // Get mask variable from the domain file
     // (check whether mask variable is int type)
@@ -72,26 +69,9 @@ get_global_domain(nameid_struct *domain_nc_nameid,
                      d2count,
                      mask);
 
-    // Get run_cell variable from the parameter file
-    // (check whether run_cell variable is int type)
-    typeid = get_nc_var_type(param_nc_nameid, "run_cell");
-    if (typeid != NC_INT) {
-        log_err("Run_cell variable in the parameter file must be integer type.");
-    }
-    get_nc_field_int(param_nc_nameid, "run_cell", d2start, d2count,
-                     run);
-
-    // Check whether cells with run_cell == 1 are all within the mask domain
-    for (i = 0; i < global_domain->ncells_total; i++) {
-        if (run[i] == 1 && mask[i] != 1) {
-            log_err("Run_cell = 1 should only appear within the mask of the "
-                    "domain file.");
-        }
-    }
-
     // Store active cell information into variables
     for (i = 0; i < global_domain->ncells_total; i++) {
-        if (run[i] == 1) {
+        if (mask[i] == 1) {
             global_domain->ncells_active++;
         }
     }
@@ -106,13 +86,13 @@ get_global_domain(nameid_struct *domain_nc_nameid,
     }
 
     for (i = 0; i < global_domain->ncells_total; i++) {
-        if (run[i] == 1) {
+        if (mask[i] == 1) {
             global_domain->locations[i].run = true;
         }
     }
 
     for (i = 0, j = 0; i < global_domain->ncells_total; i++) {
-        if (run[i] == 1) {
+        if (mask[i] == 1) {
             global_domain->locations[i].io_idx = i;
             global_domain->locations[i].global_idx = j;
             j++;
@@ -148,7 +128,6 @@ get_global_domain(nameid_struct *domain_nc_nameid,
 
     // free memory
     free(var);
-    free(run);
     free(mask);
 
     return global_domain->ncells_active;

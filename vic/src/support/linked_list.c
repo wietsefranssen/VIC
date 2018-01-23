@@ -83,6 +83,7 @@ int list_search_id(node* head, char *name) {
         cursor = cursor->next;
     }
     return 999;
+    //TODO give error instead of 999
 }
 
 /*
@@ -195,7 +196,6 @@ void list_print(node* head) {
 node* list_add_ids(node* head, int start) {
     node* cursor = head;
     int counter = start;
-    printf("-------Adding Ids------- \n");
 
     while (cursor != NULL) {
         cursor->id = counter;

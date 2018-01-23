@@ -354,7 +354,6 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(filenames_struct, log_path);
     mpi_types[i++] = MPI_CHAR;
 
-
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);
@@ -488,7 +487,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in option_struct
-    nitems = 53;
+    nitems = 73;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -718,6 +717,76 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(option_struct, SAVE_STATE);
     mpi_types[i++] = MPI_C_BOOL;
 
+    // bool ROUTING_RVIC;
+    offsets[i] = offsetof(option_struct, ROUTING_RVIC);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool ROUTING_LOHMANN;
+    offsets[i] = offsetof(option_struct, ROUTING_LOHMANN);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool GROUNDWATER;
+    offsets[i] = offsetof(option_struct, GROUNDWATER);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool ROUTING;
+    offsets[i] = offsetof(option_struct, ROUTING);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool WATER_USE;
+    offsets[i] = offsetof(option_struct, WATER_USE);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool IRRIGATION;
+    offsets[i] = offsetof(option_struct, IRRIGATION);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool EFR;
+    offsets[i] = offsetof(option_struct, EFR);
+    mpi_types[i++] = MPI_C_BOOL;
+    // bool DAMS;
+    offsets[i] = offsetof(option_struct, DAMS);
+    mpi_types[i++] = MPI_C_BOOL;
+    
+    // bool GW_INIT_FROM_FILE; 
+    offsets[i] = offsetof(option_struct, GW_INIT_FROM_FILE);
+    mpi_types[i++] = MPI_C_BOOL; 
+    
+    // size_t RIRF_NSTEPS;
+    offsets[i] = offsetof(option_struct, RIRF_NSTEPS);
+    mpi_types[i++] = MPI_AINT;
+    // size_t GIRF_NSTEPS;
+    offsets[i] = offsetof(option_struct, GIRF_NSTEPS);
+    mpi_types[i++] = MPI_AINT;
+    
+    // int WU_INPUT_FREQUENCY;
+    offsets[i] = offsetof(option_struct, WU_INPUT_FREQUENCY);
+    mpi_types[i++] = MPI_INT;
+    // int WU_INPUT_LOCATION[WU_NSECTORS];
+    offsets[i] = offsetof(option_struct, WU_INPUT_LOCATION);
+    mpi_types[i++] = MPI_INT;
+    blocklengths[i] = WU_NSECTORS;
+    // int WU_RETURN_LOCATION[WU_NSECTORS];
+    offsets[i] = offsetof(option_struct, WU_RETURN_LOCATION);
+    mpi_types[i++] = MPI_INT;
+    blocklengths[i] = WU_NSECTORS;
+    // int WU_COMPENSATION_TIME[WU_NSECTORS];
+    offsets[i] = offsetof(option_struct, WU_COMPENSATION_TIME);
+    mpi_types[i++] = MPI_INT;
+    blocklengths[i] = WU_NSECTORS;
+    // size_t WU_NINPUT_FROM_FILE;
+    offsets[i] = offsetof(option_struct, WU_NINPUT_FROM_FILE);
+    mpi_types[i++] = MPI_AINT;
+    
+    // int NIRRTYPES;
+    offsets[i] = offsetof(option_struct, NIRRTYPES);
+    mpi_types[i++] = MPI_INT;
+    // int NIRRSEASONS;
+    offsets[i] = offsetof(option_struct, NIRRSEASONS);
+    mpi_types[i++] = MPI_INT;
+    
+    // int MAXDAMS;
+    offsets[i] = offsetof(option_struct, MAXDAMS);
+    mpi_types[i++] = MPI_INT;
+    
+    // size_t wu_force_offset;
+    offsets[i] = offsetof(option_struct, wu_force_offset);
+    mpi_types[i++] = MPI_AINT;
+    
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);
@@ -1617,6 +1686,7 @@ map(size_t  size,
         }
     }
 }
+
 
 /******************************************************************************
  * @brief   Decompose the domain for MPI operations

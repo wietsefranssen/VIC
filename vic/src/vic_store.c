@@ -1547,6 +1547,8 @@ set_nc_state_var_info(nc_file_struct *nc)
             log_err("Too many dimensions specified in variable %zu", i);
         }
     }
+
+    // Plugins
     if (options.ROUTING_RVIC) {
         routing_rvic_set_nc_state_var_info(nc);
     }

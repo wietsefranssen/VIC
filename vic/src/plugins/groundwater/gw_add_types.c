@@ -31,17 +31,17 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-routing_rvic_output_metadata() {
-    extern metadata_struct *out_metadata;
-    extern node            *outvar_types;
+gw_add_types(void) {
 
-    /* river discharge [m3 s-1] */
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].varname, "OUT_DISCHARGE");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].long_name,
-            "water_volume_transport_in_river_channel");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].standard_name, "river_discharge");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].units, "m3 s-1");
-    strcpy(
-            out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].description,
-            "The water flux or volume transport in rivers is the amount of water flowing in the river channel and flood plain. 'Water' means water in all phases");
+    extern node    *outvar_types;
+
+    // add outvar_types
+    outvar_types = list_prepend(outvar_types, "OUT_GW_ZWT");
+    outvar_types = list_prepend(outvar_types, "OUT_GW_RECHARGE");
+    outvar_types = list_prepend(outvar_types, "OUT_GW_WA");
+    outvar_types = list_prepend(outvar_types, "OUT_GW_WT");
+    outvar_types = list_prepend(outvar_types, "OUT_GW_WS");
+
+    outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
+    N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;
 }

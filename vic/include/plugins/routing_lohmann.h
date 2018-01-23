@@ -23,10 +23,8 @@
  * this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *****************************************************************************/
-#ifndef ROUTING_RVIC_H
-#define ROUTING_RVIC_H
-
-#define ROUT_EXT "rout_rvic"
+#ifndef ROUTING_LOHMANN_H
+#define ROUTING_LOHMANN_H
 
 #include <vic_def.h>
 #include <vic.h>
@@ -51,35 +49,17 @@ typedef struct {
     int *source_time_offset;                  /*1d array - source time offset*/
     double *unit_hydrograph;                  /*2d array[times][sources] - unit hydrographs*/
     double *aggrunin;                         /*2d array[ysize][xsize] - vic runoff flux*/
-} routing_rvic_param_struct;
+} routing_lohmann_param_struct;
 
 /******************************************************************************
  * @brief   main routing Struct
  *****************************************************************************/
 typedef struct {
-    routing_rvic_param_struct rout_param;
+    routing_lohmann_param_struct rout_param;
     double *ring;
     double *discharge;
-} routing_rvic_struct;
+} routing_lohmann_struct;
 
-/******************************************************************************
- * @brief   Function prototypes for the rout_rvic extension
- *****************************************************************************/
-void routing_rvic_alloc(void);                 // allocate memory
-void routing_rvic_init(void);                  // initialize model parameters from parameter files
-void routing_rvic_run(void);                   // run routing over the domain
-void routing_rvic_finalize(void);              // clean up routine for routing
-void routing_rvic_convolution(double *, double *);  // convolution over the domain
-void routing_rvic_store(nc_file_struct *);
-void routing_rvic_restore(nameid_struct *, metadata_struct *);
-void routing_rvic_state_metadata();
-void routing_rvic_set_nc_state_file_info(nc_file_struct *);
-void routing_rvic_set_nc_state_var_info(nc_file_struct *);
-void routing_rvic_initialize_state_file(char *, nc_file_struct *);
-void routing_rvic_add_types(void);
-bool routing_rvic_get_global_param(char *, char *, char *);
-void routing_rvic_output_metadata(void);
-
-routing_rvic_struct         routing_rvic;
+bool routing_lohmann_get_global_param(char *);
 
 #endif

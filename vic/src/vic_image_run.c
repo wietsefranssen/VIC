@@ -25,7 +25,6 @@
  *****************************************************************************/
 
 #include <vic.h>
-#include <routing_rvic.h>
 
 /******************************************************************************
  * @brief    Run VIC for one timestep and store output data
@@ -35,6 +34,7 @@ vic_image_run(dmy_struct *dmy_current)
 {
     extern size_t              current;
     extern all_vars_struct    *all_vars;
+    extern gw_var_struct    ***gw_var;
     extern force_data_struct  *force;
     extern domain_struct       local_domain;
     extern option_struct       options;
@@ -45,11 +45,13 @@ vic_image_run(dmy_struct *dmy_current)
     extern save_data_struct   *save_data;
     extern soil_con_struct    *soil_con;
     extern veg_con_struct    **veg_con;
+    extern gw_con_struct      *gw_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
 
     char                       dmy_str[MAXSTRING];
     size_t                     i;
+    size_t                     cur_cell;
     timer_struct               timer;
 
     // Print the current timestep info before running vic_run
@@ -71,18 +73,67 @@ vic_image_run(dmy_struct *dmy_current)
         update_step_vars(&(all_vars[i]), veg_con[i], veg_hist[i]);
 
         timer_start(&timer);
-        vic_run(&(force[i]), &(all_vars[i]), dmy_current, &global_param,
-                &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
+        vic_run(&(force[i]), &(all_vars[i]), gw_var[i], 
+                dmy_current, &global_param,
+                &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
+                &(gw_con[i]));
         timer_stop(&timer);
+        
+    }
+    
+    if (options.ROUTING) {
+        for(i = 0; i < local_domain.ncells_active; i++){
+            cur_cell = routing_order[i];
 
+            // Plugins
+            if(options.ROUTING){
+                rout_run(cur_cell);
+            } 
+            if(options.IRRIGATION){
+                irr_run1(cur_cell);
+            } 
+            if(options.EFR){
+                efr_run(cur_cell);
+            }
+            if(options.DAMS){
+                dam_run(cur_cell);
+            }
+            if(options.WATER_USE){
+                wu_run(cur_cell);
+            }
+            if(options.IRRIGATION){
+                irr_run2(cur_cell);
+            }
+        }
+    }
+        
+    for (i = 0; i < local_domain.ncells_active; i++) {
         put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
                  veg_lib[i], &lake_con, out_data[i], &(save_data[i]),
                  &timer);
     }
 
-    // run routing over the domain
     if (options.ROUTING_RVIC) {
-        routing_rvic_run();     // Routing routine (extension)
+        routing_rvic_run();
+    }
+
+    if(options.GROUNDWATER){
+        gw_put_data();
+    }
+    if(options.ROUTING){
+        rout_put_data();
+    }
+    if(options.EFR){
+        efr_put_data();
+    }
+    if(options.IRRIGATION){
+        irr_put_data();
+    }
+    if(options.WATER_USE){
+        wu_put_data();
+    }
+    if(options.DAMS){
+        dam_put_data();
     }
     
     for (i = 0; i < options.Noutstreams; i++) {

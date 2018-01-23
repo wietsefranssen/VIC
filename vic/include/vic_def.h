@@ -49,6 +49,14 @@
 #include <vic_physical_constants.h>
 #include <vic_log.h>
 
+#include <water_use.h>
+#include <routing.h>
+#include <irrigation.h>
+#include <groundwater.h>
+#include <dams.h>
+#include <efr.h>
+#include <ext_mpi.h>
+
 /***** Model Constants *****/
 #define MAXSTRING    2048
 #define MISSING      -99999.   /**< missing value */
@@ -59,7 +67,7 @@
 #define ERROR        -999      /**< Error Flag returned by subroutines */
 
 /***** Define maximum array sizes for model source code *****/
-#define MAX_VEG         12     /**< maximum number of vegetation types per cell */
+#define MAX_VEG         37     /**< maximum number of vegetation types per cell */
 #define MAX_LAYERS      3      /**< maximum number of soil moisture layers */
 #define MAX_NODES       50     /**< maximum number of soil thermal nodes */
 #define MAX_BANDS       10     /**< maximum number of snow bands */
@@ -159,6 +167,19 @@ enum
 {
     PHOTO_C3,
     PHOTO_C4
+};
+
+/******************************************************************************
+ * @brief   Water use sectors
+ *****************************************************************************/
+enum{
+    WU_IRRIGATION,
+    WU_DOMESTIC,
+    WU_INDUSTRIAL,
+    WU_ENERGY,
+    WU_LIVESTOCK,
+    WU_ENVIRONMENTAL,
+    WU_NSECTORS
 };
 
 /***** Data Structures *****/
@@ -295,6 +316,33 @@ typedef struct {
     // plugins
     bool ROUTING_RVIC;      /**< TRUE = Use RVIC routing scheme */
     bool ROUTING_LOHMANN;   /**< TRUE = Use LOHMANN routing scheme */
+    bool GROUNDWATER;
+    bool ROUTING;
+    bool WATER_USE;
+    bool IRRIGATION;
+    bool EFR;
+    bool DAMS;
+    
+    // Groundwater options
+    bool GW_INIT_FROM_FILE;    
+    // Routing options
+    size_t RIRF_NSTEPS;
+    size_t GIRF_NSTEPS;
+    // Water use options
+    int WU_INPUT_FREQUENCY;
+    int WU_INPUT_LOCATION[WU_NSECTORS];
+    int WU_RETURN_LOCATION[WU_NSECTORS];
+    int WU_COMPENSATION_TIME[WU_NSECTORS];
+    size_t WU_NINPUT_FROM_FILE;
+    // Irrigation options
+    int NIRRTYPES;
+    int NIRRSEASONS;
+    // EFR options
+    // Dam options
+    int MAXDAMS;
+    
+    // Variable global parameters
+    size_t wu_force_offset;
 } option_struct;
 
 /******************************************************************************
@@ -576,8 +624,8 @@ typedef struct {
     double dp;                        /**< soil thermal damping depth (m) */
     double dz_node[MAX_NODES];        /**< thermal node thickness (m) */
     double Zsum_node[MAX_NODES];      /**< thermal node depth (m) */
-    double expt[MAX_LAYERS];          /**< layer-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
-    double expt_node[MAX_NODES];      /**< node-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
+    double K_expt[MAX_LAYERS];        /**< layer-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
+    double K_expt_node[MAX_NODES];      /**< node-specific exponent n (=3+2/lambda) in Campbell's eqn for hydraulic conductivity, HBH 5.6 */
     double frost_fract[MAX_FROST_AREAS]; /**< spatially distributed frost coverage fractions */
     double frost_slope;               /**< slope of frost distribution */
     double gamma[MAX_NODES];          /**< thermal solution constant */
@@ -773,6 +821,8 @@ typedef struct {
                                layer (W/m/K) */
     double moist;           /**< moisture content of the unfrozen sublayer
                                (mm) */
+    double eff_saturation;  /**< effective saturation of the unfrozen sublayer
+                               (-) */
     double phi;             /**< moisture diffusion parameter */
     double zwt;             /**< water table position relative to soil surface within the layer (cm) */
     // Fluxes

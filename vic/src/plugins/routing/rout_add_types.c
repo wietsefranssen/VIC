@@ -31,19 +31,15 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-routing_rvic_state_metadata()
-{
-    extern metadata_struct *state_metadata;
-    extern node            *state_vars;
+rout_add_types(void) {
+
+    extern node    *outvar_types;
+    extern int      N_OUTVAR_TYPES_ALL;
     
-    // STATE_ROUT_RING
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
-           "STATE_ROUT_RING");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].long_name,
-           "routing_ring");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].standard_name,
-           "routing_ring");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].units, "-");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].description,
-           "unit hydrographs in the routing ring");
+    // add outvar_types
+    outvar_types = list_prepend(outvar_types, "OUT_DISCHARGE");
+    outvar_types = list_prepend(outvar_types, "OUT_NAT_DISCHARGE");
+    
+    outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
+    N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;
 }

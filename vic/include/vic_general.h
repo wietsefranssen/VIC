@@ -27,6 +27,8 @@
 #ifndef VIC_GENERAL_H
 #define VIC_GENERAL_H
 
+#include <vic_mpi.h>
+
 #define VIC_DRIVER "Image"
 
 #define MAXDIMS 10
@@ -147,6 +149,7 @@ enum
     OUT_SOIL_ICE_FRAC,    /**< soil ice content fraction of column volume [1] for each soil layer */
     OUT_SOIL_LIQ_FRAC,    /**< soil liquid content fraction of column volume [1] for each soil layer */
     OUT_SOIL_MOIST,       /**< soil total moisture content  [mm] for each soil layer */
+    OUT_SOIL_EFF_SAT,     /**< soil effective saturation [-] for each soil layer */
     OUT_SOIL_WET,         /**< vertical average of (soil moisture - wilting point)/(maximum soil moisture - wilting point) [mm/mm] */
     OUT_SURFSTOR,         /**< storage of liquid water and ice (not snow) on surface (ponding) [mm] */
     OUT_SURF_FROST_FRAC,  /**< fraction of soil surface that is frozen [fraction] */
@@ -296,6 +299,7 @@ enum
     // Timing and Profiling Terms
     OUT_TIME_VICRUN_WALL, /**< Wall time spent inside vic_run [seconds] */
     OUT_TIME_VICRUN_CPU,  /**< Wall time spent inside vic_run [seconds] */
+    
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum
     N_OUTVAR_TYPES        /**< used as a loop counter*/
@@ -369,6 +373,7 @@ enum
     STATE_LAKE_ICE_SNOW_ALBEDO,        /**<  lake ice snow albedo: lake_var.SAlbedo */
     STATE_LAKE_ICE_SNOW_DEPTH,         /**<  lake ice snow depth: lake_var.sdepth */
     STATE_AVG_ALBEDO,                  /**<  gridcell-averaged albedo: gridcell_avg.avg_albedo */
+        
     // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
     // used as a loop counter and must be >= the largest value in this enum
     N_STATE_VARS                       /**< used as a loop counter*/
@@ -690,6 +695,12 @@ typedef struct {
     size_t root_zone_size;
     size_t time_size;
     size_t veg_size;
+    
+    int sector_dimid;
+    int dam_dimid;
+    size_t sector_size;
+    size_t dam_size;
+    
     bool open;
     nc_var_struct *nc_vars;
 } nc_file_struct;
@@ -729,11 +740,20 @@ typedef struct {
     nameid_struct domain;       /**< domain file name and nc_id*/
     char constants[MAXSTRING];  /**< model constants file name */
     nameid_struct params;       /**< model parameters file name and nc_id */
-    nameid_struct rout_params;  /**< routing parameters file name and nc_id */
     nameid_struct init_state;   /**< initial model state file name and nc_id */
     char result_dir[MAXSTRING]; /**< result directory */
     char statefile[MAXSTRING];  /**< name of model state file */
     char log_path[MAXSTRING];   /**< Location to write log file to */
+    
+    // Plugins
+    nameid_struct groundwater;
+    nameid_struct routing;
+    nameid_struct rout_params;  /**< routing parameters file name and nc_id */
+    char water_use_forcing_pfx[MAXSTRING];
+    nameid_struct water_use;
+    nameid_struct irrigation;
+    nameid_struct dams;
+    
 } filenames_struct;
 
 double air_density(double t, double p);

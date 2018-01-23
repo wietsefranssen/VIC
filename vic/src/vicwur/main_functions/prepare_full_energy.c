@@ -72,7 +72,7 @@ prepare_full_energy(int              iveg,
                                                         (soil_con->depth[0] *
                                                          MM_PER_M),
                                                         soil_con->bubble[0],
-                                                        soil_con->expt[0]);
+                                                        soil_con->K_expt[0]);
                     if (ice0[band] < 0.) {
                         ice0[band] = 0.;
                     }

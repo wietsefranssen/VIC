@@ -214,7 +214,7 @@ calc_surf_energy_bal(double             Le,
     delta_t = dt;
     max_moist = soil_con->max_moist[0] / (soil_con->depth[0] * MM_PER_M);
     bubble = soil_con->bubble[0];
-    expt = soil_con->expt[0];
+    expt = soil_con->K_expt[0];
     Tsnow_surf = snow->surf_temp;
     Wdew = veg_var->Wdew;
     FIRST_SOLN[0] = true;
@@ -248,7 +248,7 @@ calc_surf_energy_bal(double             Le,
     *************************************************************/
 
     bubble_node = soil_con->bubble_node;
-    expt_node = soil_con->expt_node;
+    expt_node = soil_con->K_expt_node;
     max_moist_node = soil_con->max_moist_node;
     alpha = soil_con->alpha;
     beta = soil_con->beta;

@@ -31,9 +31,9 @@
 # VIC PATHS
 MAINPATH	    = .
 VICPATH		    = vicwur
-MAINFUNCTIONSPATH    = ${VICPATH}/main_functions
+MAINFUNCTIONSPATH   = ${VICPATH}/main_functions
 PROCESSESPATH	    = ${VICPATH}/processes
-GENERALFUNCTIONSPATH = general_functions
+SUPPORTPATH         = support
 PLUGINPATH	    = plugins
 ROUTINGRVICPATH	    = routing_rvic
 ROUTINGLOHMANNPATH  = routing_lohmann
@@ -71,7 +71,9 @@ HOSTNAME := $(shell uname -n)
 LOG_LVL = 15
 
 # set includes
-INCLUDES = -I ${MAINPATH}/include
+INCLUDES = -I ${MAINPATH}/include \
+           -I ${MAINPATH}/include/${PLUGINPATH} \
+           -I ${MAINPATH}/include/${SUPPORTPATH}
 
 # Uncomment to include debugging information
 CFLAGS  =  ${INCLUDES} ${NC_CFLAGS} -ggdb -O0 -Wall -Wextra -std=c99 \
@@ -97,17 +99,20 @@ EXT = .exe
 # -----------------------------------------------------------------------
 
 HDRS = \
-	$(wildcard ${MAINPATH}/include/*.h)
+	$(wildcard ${MAINPATH}/include/*.h) \
+        $(wildcard ${MAINPATH}/include/${PLUGINPATH}/*.h) \
+        $(wildcard ${MAINPATH}/include/${SUPPORTPATH}/*.h)
 
 SRCS = \
 	$(wildcard ${MAINPATH}/src/*.c) \
 	$(wildcard ${MAINPATH}/src/${VICPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${GENERALFUNCTIONSPATH}/*.c) \
+	$(wildcard ${MAINPATH}/src/${SUPPORTPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${MAINFUNCTIONSPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${PROCESSESPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGLOHMANNPATH}/*.c)
-
+	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/**/*.c) \
+#	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
+#	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGLOHMANNPATH}/*.c)
+#
 OBJS = $(SRCS:%.o=%.c)
 
 all:

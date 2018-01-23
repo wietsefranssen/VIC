@@ -29,6 +29,9 @@ xliblnd.a
 vic_timing_*txt
 massif.out.*
 vic_call_graph_*
+samples_wur/
+nbproject/
+jobscripts/
 
 vic_call_graph*
 gmon.out

@@ -62,7 +62,9 @@ surface_fluxes(bool                 overstory,
                global_param_struct *gp,
                cell_data_struct    *cell,
                snow_data_struct    *snow,
+               gw_var_struct       *gw_var,
                soil_con_struct     *soil_con,
+               gw_con_struct       *gw_con,
                veg_var_struct      *veg_var,
                double               lag_one,
                double               sigma_slope,
@@ -1085,9 +1087,14 @@ surface_fluxes(bool                 overstory,
     ********************************************************/
 
     (*inflow) = ppt;
-
-    ErrorFlag = runoff(cell, energy, soil_con, ppt, soil_con->frost_fract,
-                       options.Nnode);
+    
+    if(options.GROUNDWATER){
+        ErrorFlag = runoff_gw(cell, energy, gw_var, soil_con, gw_con, ppt, soil_con->frost_fract,
+                           options.Nnode);
+    }else{
+        ErrorFlag = runoff(cell, energy, soil_con, ppt, soil_con->frost_fract,
+                           options.Nnode);
+    }
 
     return(ErrorFlag);
 }

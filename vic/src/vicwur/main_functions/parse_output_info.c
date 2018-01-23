@@ -229,7 +229,7 @@ parse_output_info(FILE           *gp,
                 agg_type = str_to_agg_type(aggstr);
                 type = str_to_out_type(typestr);
                 mult = str_to_out_mult(multstr);
-
+                
                 // Add OUTVAR to stream
                 set_output_var(&((*streams)[streamnum]), varname, outvarnum,
                                format, type, mult, agg_type);

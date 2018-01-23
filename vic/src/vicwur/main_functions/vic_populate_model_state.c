@@ -61,6 +61,16 @@ vic_populate_model_state(dmy_struct *dmy_current)
                                             lake_con[i]);
             }
         }
+        
+        if (options.DAMS) {
+            dam_generate_default_state();
+        }
+        if (options.IRRIGATION) {
+            irr_generate_default_state();
+        }
+        if (options.GROUNDWATER) {
+            gw_generate_default_state();
+        }
     }
 
     // compute those state variables that are derived from the others

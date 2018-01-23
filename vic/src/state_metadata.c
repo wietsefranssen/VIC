@@ -711,6 +711,6 @@ set_state_meta_data_info()
                "lake_ice_snow_depth");
         strcpy(state_metadata[STATE_LAKE_ICE_SNOW_DEPTH].units, "m");
         strcpy(state_metadata[STATE_LAKE_ICE_SNOW_DEPTH].description,
-               "depth of snow on lake ice");
+               "depth of snow on lake ice");        
     }
 }

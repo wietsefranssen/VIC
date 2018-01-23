@@ -974,12 +974,12 @@ print_soil_con(soil_con_struct *scon,
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "\texpt                  :");
     for (i = 0; i < nlayers; i++) {
-        fprintf(LOG_DEST, "\t%f", scon->expt[i]);
+        fprintf(LOG_DEST, "\t%f", scon->K_expt[i]);
     }
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "\texpt_node             :");
     for (i = 0; i < nnodes; i++) {
-        fprintf(LOG_DEST, "\t%f", scon->expt_node[i]);
+        fprintf(LOG_DEST, "\t%f", scon->K_expt_node[i]);
     }
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "\tfrost_fract           :");
