@@ -237,6 +237,11 @@ vic_start(void)
         local_domain.locations[i].local_idx = i;
     }
 
+    // plugins
+    if (options.ROUTING) {
+        rout_start();
+    }
+    
     // cleanup
     if (mpi_rank == VIC_MPI_ROOT) {
         free(mapped_locations);
