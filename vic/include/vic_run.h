@@ -294,7 +294,7 @@ double StabilityCorrection(double, double, double, double, double, double);
 double sub_with_height(double z, double es, double Wind, double AirDens,
                        double ZO, double EactAir, double F, double hsalt,
                        double phi_r, double ushear, double Zrh);
-int surface_fluxes(bool, double, double, double, double, double *, double *,
+int surface_fluxes_gw(bool, double, double, double, double, double *, double *,
                    double *, double *, double *, double *, double *, double *,
                    double *, double *, double *, double *, double *, size_t,
                    size_t, unsigned short int, double, unsigned short int,
@@ -302,6 +302,15 @@ int surface_fluxes(bool, double, double, double, double, double *, double *,
                    energy_bal_struct *, global_param_struct *,
                    cell_data_struct *, snow_data_struct *, gw_var_struct *,
                    soil_con_struct *, gw_con_struct *,
+                   veg_var_struct *, double, double, double, double *);
+int surface_fluxes(bool, double, double, double, double, double *, double *,
+                   double *, double *, double *, double *, double *, double *,
+                   double *, double *, double *, double *, double *, size_t,
+                   size_t, unsigned short int, double, unsigned short int,
+                   unsigned short int, force_data_struct *, dmy_struct *,
+                   energy_bal_struct *, global_param_struct *,
+                   cell_data_struct *, snow_data_struct *,
+                   soil_con_struct *,
                    veg_var_struct *, double, double, double, double *);
 double svp(double);
 double svp_slope(double);
@@ -321,7 +330,11 @@ double trapzd(
     int n);
 void tridia(int, double *, double *, double *, double *, double *);
 void tridiag(double *, double *, double *, double *, unsigned int);
-int vic_run(force_data_struct *, all_vars_struct *, gw_var_struct **,
+int vic_run(force_data_struct *, all_vars_struct *,
+        dmy_struct *,
+            global_param_struct *, lake_con_struct *, soil_con_struct *,
+            veg_con_struct *, veg_lib_struct *);
+int vic_run_gw(force_data_struct *, all_vars_struct *, gw_var_struct **,
         dmy_struct *,
             global_param_struct *, lake_con_struct *, soil_con_struct *,
             veg_con_struct *, veg_lib_struct *, gw_con_struct *);

@@ -57,7 +57,7 @@ void get_basins(basin_struct *basins){
                 break;
             }
 
-            get_downstream_global(cur_cell, cur_direction);
+            next_cell = get_downstream_global(cur_cell, cur_direction);
             
             if(next_cell == cur_cell){
                 for(j=0;j<Nriver;j++){

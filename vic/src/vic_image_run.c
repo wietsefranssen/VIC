@@ -73,10 +73,16 @@ vic_image_run(dmy_struct *dmy_current)
         update_step_vars(&(all_vars[i]), veg_con[i], veg_hist[i]);
 
         timer_start(&timer);
-        vic_run(&(force[i]), &(all_vars[i]), gw_var[i], 
-                dmy_current, &global_param,
-                &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
-                &(gw_con[i]));
+        if(options.GROUNDWATER){
+            vic_run_gw(&(force[i]), &(all_vars[i]), gw_var[i], 
+                    dmy_current, &global_param,
+                    &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
+                    &(gw_con[i]));
+        }else{
+            vic_run(&(force[i]), &(all_vars[i]), 
+                    dmy_current, &global_param,
+                    &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
+        }
         timer_stop(&timer);
         
     }

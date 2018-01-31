@@ -44,7 +44,7 @@ void rout_finalize(void);
 void rout_add_types(void);
 
 size_t get_downstream_global(size_t id, int direction);
-size_t get_downstream_local(size_t id, int direction);
+size_t get_downstream_local(size_t id, int direction, size_t);
 void rout(double quantity, double *uh, double *discharge, size_t length);
 
 size_t *routing_order;
