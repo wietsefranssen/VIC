@@ -109,10 +109,8 @@ SRCS = \
 	$(wildcard ${MAINPATH}/src/${SUPPORTPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${MAINFUNCTIONSPATH}/*.c) \
 	$(wildcard ${MAINPATH}/src/${PROCESSESPATH}/*.c) \
-	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/**/*.c) \
-#	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGRVICPATH}/*.c) \
-#	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/${ROUTINGLOHMANNPATH}/*.c)
-#
+	$(wildcard ${MAINPATH}/src/${PLUGINPATH}/**/*.c)
+	
 OBJS = $(SRCS:%.o=%.c)
 
 all:
