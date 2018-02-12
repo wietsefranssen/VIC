@@ -91,7 +91,7 @@ endif
 
 LIBRARY = -lm ${NC_LIBS}
 
-COMPEXE = vic
+COMPEXE = vicwur
 EXT = .exe
 
 # -----------------------------------------------------------------------

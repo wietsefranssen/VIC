@@ -29,7 +29,7 @@
 
 #include <vic_mpi.h>
 
-#define VIC_DRIVER "Image"
+#define VIC_DRIVER "VIC-WUR"
 
 #define MAXDIMS 10
 #define AREA_SUM_ERROR_THRESH 1e-20

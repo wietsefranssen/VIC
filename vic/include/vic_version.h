@@ -31,7 +31,7 @@
 #define STR(x) STR_HELPER(x)
 
 #ifndef VERSION
-#define VERSION "5.0.1 February 1, 2017"
+#define VERSION "5.0.1 February 1, 2018"
 #endif
 
 #ifndef SHORT_VERSION

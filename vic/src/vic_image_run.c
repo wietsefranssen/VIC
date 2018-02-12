@@ -48,21 +48,22 @@ vic_image_run(dmy_struct *dmy_current)
     extern gw_con_struct      *gw_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
-
+    extern int                 mpi_rank;
     char                       dmy_str[MAXSTRING];
     size_t                     i;
     size_t                     cur_cell;
     timer_struct               timer;
 
-    // Print the current timestep info before running vic_run
-    printf("Running timestep: %zu (%02i-%02i-%2i, %02i:00)\n", 
-            current, 
-            dmy_current->day, 
-            dmy_current->month, 
-            dmy_current->year,
-            dmy_current->dayseconds/SEC_PER_HOUR);
-
-
+    if (mpi_rank == VIC_MPI_ROOT) {
+        // Print the current timestep info before running vic_run
+        printf("Running timestep: %zu (%02i-%02i-%2i, %02i:00)\n", 
+                current, 
+                dmy_current->day, 
+                dmy_current->month, 
+                dmy_current->year,
+                dmy_current->dayseconds/SEC_PER_HOUR);
+    }
+        
     // If running with OpenMP, run this for loop using multiple threads
     #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for (i = 0; i < local_domain.ncells_active; i++) {
@@ -88,6 +89,8 @@ vic_image_run(dmy_struct *dmy_current)
     }
     
     if (options.ROUTING) {
+        // If running with OpenMP, run this for loop using multiple threads
+        #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
         for(i = 0; i < local_domain.ncells_active; i++){
             cur_cell = routing_order[i];
 
@@ -113,6 +116,8 @@ vic_image_run(dmy_struct *dmy_current)
         }
     }
         
+    // If running with OpenMP, run this for loop using multiple threads
+    #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for (i = 0; i < local_domain.ncells_active; i++) {
         put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
                  veg_lib[i], &lake_con, out_data[i], &(save_data[i]),
