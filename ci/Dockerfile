@@ -17,8 +17,10 @@ RUN apt-get update -q && \
         git \
         cdo \
         nco \
+        gdal-bin \
         make \
         zsh \
+        dos2unix \
         wget && \
         apt-get clean
 
