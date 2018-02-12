@@ -5,8 +5,6 @@ ENV WORKDIR=$HOME/workdir
 ENV PATH=$PATH:/VIC/vic
 
 # Get the basic VIC dependencies
-#        libopenmpi-dev \
-#        openmpi-bin \
 RUN apt-get update -q && \
     apt-get install -y -q --no-install-recommends \
         ca-certificates \
@@ -14,13 +12,15 @@ RUN apt-get update -q && \
         ssh \
         netcdf-bin \
         libnetcdf-dev \
-        mpich \
+        openmpi-bin \
+        libmpich-dev \
         git \
         cdo \
         nco \
         make \
         zsh \
-        wget
+        wget && \
+        apt-get clean
 
 # Install oh-my-zsh
 RUN /bin/bash -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" && \
@@ -35,14 +35,6 @@ RUN git clone https://github.com/wietsefranssen/VIC.git && \
     make
 
 # Command to run when this image is "run", just build the classic and image drivers
-#CMD git checkout develop && \
-#    git pull origin develop && \
-#    cd VIC/vic/drivers/classic && \
-#    make && \
-#    ./vic_classic.exe -o && \
-#    cd ../image && \
-#    make && \
-#    ./vic_image.exe -o
 CMD echo "Welcome..." && \
     cd $WORKDIR && \
     zsh
