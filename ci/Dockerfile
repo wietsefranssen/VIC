@@ -22,7 +22,7 @@ RUN apt-get update -q && \
         make \
         zsh \
         dos2unix \
-        curl && \
+        curl \
         wget && \
         apt-get clean
 
