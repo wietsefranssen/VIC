@@ -117,8 +117,8 @@ void
 print_version(char *driver)
 {
     fprintf(stdout, "VIC Driver  : %s\n", driver);
-    fprintf(stdout, "VIC Version : %s\n", VERSION);
-    fprintf(stdout, "VIC Git Tag : %s\n", GIT_VERSION);
+    fprintf(stdout, "VIC Version : %s\n", SHORT_VERSION);
+    fprintf(stdout, "VIC Git Tag : %s (%s)\n", GIT_VERSION, GIT_COMMIT_DATE);
     fprintf(stdout, "Compiled    : by %s on %s (%s) %s %s\n",
             USERNAME, HOSTNAME, PLATFORM, BUILD_DATE, BUILD_TIME);
     fprintf(stdout, "Compiler    : %s\n", COMPILER);

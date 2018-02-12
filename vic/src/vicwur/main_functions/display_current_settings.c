@@ -78,11 +78,6 @@ display_current_settings(int mode)
             MAX_SUBDAILY_STEPS_PER_DAY);
     fprintf(LOG_DEST, "\n");
 
-    fprintf(LOG_DEST, "Extensions:\n");
-    fprintf(LOG_DEST, "-----------\n");
-    fprintf(LOG_DEST, "ROUTING\t\t\t%2s\n", ROUT_EXT);
-    fprintf(LOG_DEST, "\n");
-
     if (mode == DISP_COMPILE_TIME) {
         return;
     }
