@@ -31,9 +31,9 @@ RUN /bin/bash -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zs
 
 # Put the UW-Hydro version of VIC in the container
 RUN git clone https://github.com/wietsefranssen/VIC.git && \
+    cd VIC && \
     git remote add upstream  https://github.com/UW-Hydro/VIC.git && \
     git fetch upstream && \
-    cd VIC && \
     git checkout vicwur/docker && \
     cd ./vic && \
     make clean && \
