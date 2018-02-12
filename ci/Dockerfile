@@ -3,6 +3,7 @@ FROM ubuntu:xenial
 # Dedicated work directory for output
 ENV WORKDIR=$HOME/workdir
 ENV PATH=$PATH:/VIC/vic
+ENV USER="wietsefranssen_docker"
 
 # Get the basic VIC dependencies
 RUN apt-get update -q && \
@@ -37,6 +38,16 @@ RUN git clone https://github.com/wietsefranssen/VIC.git && \
     make
 
 # Command to run when this image is "run", just build the classic and image drivers
-CMD echo "Welcome..." && \
+CMD echo "#####################################################" && \
+    echo "##" && \
+    echo "## Welcome to the VIC-WUR environment!" && \
+    echo "##" && \
+    echo "## 'vicwur.exe' is compiled and ready to use" && \
+    echo "## '/VIC' is the source-code folder"&& \
+    echo "## '$WORKDIR' can be used as shared folder" && \
+    echo "##" && \
+    echo "## tools like cdo, nco & git are also ready to use" && \
+    echo "##" && \
+    echo "#####################################################" && \
     cd $WORKDIR && \
     zsh

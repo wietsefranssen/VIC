@@ -26,7 +26,7 @@
 #ifndef ROUTING_RVIC_H
 #define ROUTING_RVIC_H
 
-#define ROUT_EXT "rout_rvic"
+//#define ROUT_EXT "rout_rvic"
 
 #include <vic_def.h>
 #include <vic.h>
