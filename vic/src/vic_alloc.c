@@ -61,8 +61,8 @@ vic_alloc(void) {
     if (options.GROUNDWATER) {
         gw_add_types();
     }
-    list_print(outvar_types);
-    list_print(state_vars);
+    //list_print(outvar_types);
+    //list_print(state_vars);
 
     // Allocate memory for all non specific VIC structures
     alloc_general();

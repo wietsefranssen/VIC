@@ -1,10 +1,12 @@
 FROM ubuntu:xenial
 
 # Dedicated work directory for output
-ENV WORKDIR $HOME/workdir
+ENV WORKDIR=$HOME/workdir
 ENV PATH=$PATH:/VIC/vic
 
 # Get the basic VIC dependencies
+#        libopenmpi-dev \
+#        openmpi-bin \
 RUN apt-get update -q && \
     apt-get install -y -q --no-install-recommends \
         ca-certificates \
@@ -12,8 +14,7 @@ RUN apt-get update -q && \
         ssh \
         netcdf-bin \
         libnetcdf-dev \
-        libopenmpi-dev \
-        openmpi-bin \
+        mpich \
         git \
         cdo \
         nco \
