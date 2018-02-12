@@ -38,6 +38,10 @@
 #define SHORT_VERSION "5.0.1"
 #endif
 
+#ifndef GIT_COMMIT_DATE
+#define GIT_COMMIT_DATE "unset"
+#endif
+
 #ifndef GIT_VERSION
 #define GIT_VERSION "unset"
 #endif

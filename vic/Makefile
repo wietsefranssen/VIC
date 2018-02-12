@@ -57,6 +57,7 @@ endif
 $(info $$MPICC is [${MPICC}])
 
 GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
+GIT_COMMIT_DATE := $(shell git log -1 --format=%cd --date=format:"%d-%b-%Y")
 UNAME_S := $(shell uname -s)
 HOSTNAME := $(shell uname -n)
 
@@ -81,6 +82,7 @@ CFLAGS  =  ${INCLUDES} ${NC_CFLAGS} -ggdb -O0 -Wall -Wextra -std=c99 \
 					 -fopenmp \
 					 -DLOG_LVL=$(LOG_LVL) \
 					 -DGIT_VERSION=\"$(GIT_VERSION)\" \
+					 -DGIT_COMMIT_DATE=\"$(GIT_COMMIT_DATE)\" \
 					 -DUSERNAME=\"$(USER)\" \
 					 -DHOSTNAME=\"$(HOSTNAME)\"
 
