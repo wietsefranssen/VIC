@@ -30,7 +30,9 @@ RUN /bin/bash -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zs
     mkdir -p $WORKDIR
 
 # Put the UW-Hydro version of VIC in the container
-RUN git clone https://github.com/wietsefranssen/VIC.git && \
+    ARG SHA=LATEST
+    RUN SHA=$(curl -s 'https://github.com/wietsefranssen/VIC/commits' | grep sha | head -1) && \
+    git clone https://github.com/wietsefranssen/VIC.git && \
     cd VIC && \
     git remote add upstream  https://github.com/UW-Hydro/VIC.git && \
     git fetch upstream && \
