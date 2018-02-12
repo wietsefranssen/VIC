@@ -24,7 +24,7 @@ vic_headers.py
 *.mod
 
 vicNl
-vic.exe
+vicwur.exe
 xliblnd.a
 vic_timing_*txt
 massif.out.*
