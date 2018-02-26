@@ -11,6 +11,7 @@ RUN apt-get update -q && \
         ca-certificates \
         build-essential \
         ssh \
+        csh \
         netcdf-bin \
         libnetcdf-dev \
         openmpi-bin \
