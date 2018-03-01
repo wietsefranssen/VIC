@@ -205,7 +205,7 @@ runoff(cell_data_struct  *cell,
                                         resid_moist[lindex]) /
                                        (soil_con->max_moist[lindex] -
                                         resid_moist[lindex])),
-                                      soil_con->K_expt[lindex]);
+                                        soil_con->expt[lindex]);
                 }
                 else {
                     Q12[lindex] = 0.;
@@ -411,7 +411,7 @@ runoff(cell_data_struct  *cell,
                                                         soil_con->Zsum_node,
                                                         energy->T,
                                                         soil_con->max_moist_node,
-                                                        soil_con->K_expt_node,
+                                                        soil_con->expt_node,
                                                         soil_con->bubble_node,
                                                         moist, soil_con->depth,
                                                         soil_con->soil_dens_min,

@@ -92,7 +92,7 @@ soil_carbon_balance(soil_con_struct   *soil_con,
 
     // Compute node relative moistures based on lumped water table depth
     for (i = 0; i < Nnodes; i++) {
-        b = 0.5 * (soil_con->K_expt_node[i] - 3);
+        b = 0.5 * (soil_con->expt_node[i] - 3);
         wtd = -(cell->zwt_lumped) * 10; // mm, positive downwards
         if (wtd > dZCum[i]) {
             if (i > 0) {

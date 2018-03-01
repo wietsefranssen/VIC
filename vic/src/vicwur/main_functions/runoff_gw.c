@@ -142,7 +142,7 @@ runoff_gw(cell_data_struct  *cell,
         tmp_z += soil_con->depth[lindex];
         z[lindex] = tmp_z; 
         /** Set Matric Potential Exponent (Burdine model 1953) **/
-        matric_expt[lindex] = (soil_con->K_expt[lindex] - 3.0) / 2.0;
+        matric_expt[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
     }
 
     cell->runoff = 0.0;
@@ -334,7 +334,7 @@ runoff_gw(cell_data_struct  *cell,
                     Kl[lindex] = calc_Q12(Ksat[lindex], tmp_liq,
                                                     resid_moist[lindex],
                                                     max_moist[lindex],
-                                                    soil_con->K_expt[lindex]);
+                                                    soil_con->expt[lindex]);
                 }
                 else {
                     Kl[lindex] = 0.0;
@@ -600,7 +600,7 @@ runoff_gw(cell_data_struct  *cell,
                                                         soil_con->Zsum_node,
                                                         energy->T,
                                                         soil_con->max_moist_node,
-                                                        soil_con->K_expt_node,
+                                                        soil_con->expt_node,
                                                         soil_con->bubble_node,
                                                         moist, soil_con->depth,
                                                         soil_con->soil_dens_min,

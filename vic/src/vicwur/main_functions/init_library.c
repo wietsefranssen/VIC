@@ -72,7 +72,7 @@ initialize_soil_con(soil_con_struct *soil_con)
         soil_con->bulk_dens_min[i] = 0.;
         soil_con->bulk_dens_org[i] = 0.;
         soil_con->depth[i] = 0.;
-        soil_con->K_expt[i] = 0.;
+        soil_con->expt[i] = 0.;
         soil_con->init_moist[i] = 0.;
         soil_con->Ksat[i] = 0.;
         soil_con->max_moist[i] = 0.;
@@ -94,7 +94,7 @@ initialize_soil_con(soil_con_struct *soil_con)
         soil_con->bubble_node[i] = 0.;
         soil_con->dz_node[i] = 0.;
         soil_con->Zsum_node[i] = 0.;
-        soil_con->K_expt_node[i] = 0.;
+        soil_con->expt_node[i] = 0.;
         soil_con->gamma[i] = 0.;
         soil_con->max_moist_node[i] = 0.;
     }
