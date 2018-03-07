@@ -313,15 +313,16 @@ typedef struct {
     // output options
     size_t Noutstreams;  /**< Number of output stream */
 
-    // plugins
-    bool ROUTING_RVIC;      /**< TRUE = Use RVIC routing scheme */
-    bool ROUTING_LOHMANN;   /**< TRUE = Use LOHMANN routing scheme */
+    // Plugins
     bool GROUNDWATER;
     bool ROUTING;
+    bool ROUTING_RVIC;
+    bool ROUTING_LOHMANN;
     bool WATER_USE;
     bool IRRIGATION;
     bool EFR;
     bool DAMS;
+    bool MATRIC;
     
     // Groundwater options
     bool GW_INIT_FROM_FILE;    
@@ -823,6 +824,7 @@ typedef struct {
                                (mm) */
     double eff_saturation;  /**< effective saturation of the unfrozen sublayer
                                (-) */
+    double Ksat;
     double phi;             /**< moisture diffusion parameter */
     double zwt;             /**< water table position relative to soil surface within the layer (cm) */
     // Fluxes

@@ -1,7 +1,7 @@
 #include <vic.h>
 
 void
-efr_output_metadata(void)
+efr_set_output_meta_data_info(void)
 {    
     extern metadata_struct *out_metadata;
     extern node            *outvar_types;

@@ -47,6 +47,7 @@ irr_set_mapping(void)
     int *ivar;
     int status;
     size_t nirr;
+    int cur_veg;
     
     size_t i;
     size_t j;
@@ -75,12 +76,13 @@ irr_set_mapping(void)
         
         nirr = 0;
         for(j = 0; j < (size_t)options.NIRRTYPES; j++){
+            cur_veg = veg_con_map[i].vidx[ivar[j] - 1];
             if(veg_con_map[i].vidx[ivar[j] - 1] != NODATA_VEG){                
                 if(nirr >= irr_con_map[i].ni_active){
                     log_err("Number of irrigated vegetation classes does not match vegetation classes");
                 }
                 
-                irr_con_map[i].vidx[j] = veg_con_map[i].vidx[ivar[j] - 1];
+                irr_con_map[i].vidx[j] = cur_veg;
                 irr_con_map[i].iidx[j] = nirr;
                 nirr ++;                
             } else {

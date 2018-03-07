@@ -1,7 +1,7 @@
 #include <vic.h>
 
 void
-dam_output_metadata(void)
+dam_set_output_meta_data_info(void)
 {    
     extern metadata_struct *out_metadata;
     extern node            *outvar_types;

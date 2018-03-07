@@ -1,7 +1,7 @@
 #include <vic.h>
 
 void
-irr_output_metadata(void)
+irr_set_output_meta_data_info(void)
 {    
     extern metadata_struct *out_metadata;
     extern node            *outvar_types;
@@ -37,6 +37,14 @@ irr_output_metadata(void)
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].units, "mm");
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].description,
            "irrigation_leftover");
+    
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_SHORTAGE")].varname, "OUT_IRR_SHORTAGE");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_SHORTAGE")].long_name, "irrigation_shortage");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_SHORTAGE")].standard_name,
+           "irrigation_shortage");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_SHORTAGE")].units, "mm");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_SHORTAGE")].description,
+           "irrigation_shortage");
 }
 
 void

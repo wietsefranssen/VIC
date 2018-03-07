@@ -41,6 +41,7 @@ gw_add_types(void) {
     outvar_types = list_prepend(outvar_types, "OUT_GW_WA");
     outvar_types = list_prepend(outvar_types, "OUT_GW_WT");
     outvar_types = list_prepend(outvar_types, "OUT_GW_WS");
+    outvar_types = list_prepend(outvar_types, "OUT_GW_AVAIL");
 
     outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
     N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;

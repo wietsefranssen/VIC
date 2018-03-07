@@ -1,8 +1,6 @@
 #ifndef ROUTING_H
 #define ROUTING_H
 
-#include <stddef.h>
-
 #include <stdbool.h>
 
 #define MAX_UPSTREAM 8
@@ -36,15 +34,15 @@ void rout_start(void);
 void rout_alloc(void);
 void initialize_rout_local_structures(void);
 void rout_init(void);
-void rout_output_metadata(void);
-void rout_state_metadata(void);
+void rout_set_output_meta_data_info(void);
+void rout_set_state_meta_data_info(void);
 void rout_run(size_t cur_cell);
 void rout_put_data(void);
 void rout_finalize(void);
 void rout_add_types(void);
 
 size_t get_downstream_global(size_t id, int direction);
-size_t get_downstream_local(size_t id, int direction, size_t);
+size_t get_downstream_local(size_t id, int direction, size_t n_nx);
 void rout(double quantity, double *uh, double *discharge, size_t length);
 
 size_t *routing_order;

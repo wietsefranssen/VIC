@@ -316,10 +316,10 @@ initialize_history_file(nc_file_struct *nc,
                     stream->filename);
     
     if(options.WATER_USE){
-        wu_write_def_dim();
+//TODO        wu_write_def_dim();
     }
     if(options.DAMS){
-        dam_write_def_dim();
+//TODO        dam_write_def_dim();
     }
 
     status = nc_def_dim(nc->nc_id, "time", nc->time_size,
@@ -711,10 +711,10 @@ initialize_nc_file(nc_file_struct     *nc_file,
 
     
     if(options.WATER_USE){
-        wu_set_nc_output_file_info();
+//TODO        wu_set_nc_output_file_info();
     }
     if(options.DAMS){
-        dam_set_nc_output_file_info();
+//TODO        dam_set_nc_output_file_info();
     }
     
     // allocate memory for nc_vars

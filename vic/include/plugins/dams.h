@@ -3,8 +3,6 @@
 
 #include <vic_physical_constants.h>
 #include <stdbool.h>
-#include <stddef.h>
-
 #define DAM_HIST_YEARS 3
 #define DAM_AMP_STEP 0.05
 #define DAM_PREF_VOL_FRAC 0.85
@@ -12,7 +10,6 @@
 
 #define DAYS_PER_MONTH_AVG 30.42
 #define DAYS_PER_WEEK 7
-
 
 typedef struct{
     size_t nd_active;
@@ -48,8 +45,8 @@ void dam_start(void);
 void dam_alloc(void);
 void initialize_dam_local_structures(void);
 void dam_init(void);
-void dam_output_metadata(void);
-void dam_state_metadata(void);
+void dam_set_output_meta_data_info(void);
+void dam_set_state_meta_data_info(void);
 void dam_generate_default_state(void);
 void dam_run(size_t cur_cell);
 double dam_area(double volume, double max_volume, double max_area, double max_height);

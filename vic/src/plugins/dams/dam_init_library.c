@@ -21,7 +21,7 @@ initialize_dam_var(dam_var_struct *dam_var)
         dam_var->op_discharge[i] = 0.0;
     }
     
-//TODO    initialize_dmy(&(dam_var->op_year));
+    dam_var->op_year = 0;
 }
 
 void

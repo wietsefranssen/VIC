@@ -35,29 +35,26 @@ gw_set_aquifer(void)
     for (i = 0; i < local_domain.ncells_active; i++) {
         gw_con[i].Sy = dvar[i];
     }
-        
-    free(dvar);  
-}
-
-void
-gw_set_maximum_baseflow(void)
-{
-    extern domain_struct       local_domain;
-    extern soil_con_struct    *soil_con;
-    extern gw_con_struct      *gw_con;
-    extern option_struct        options;
     
-    size_t i;
-    size_t j;
-    
+    get_scatter_nc_field_double(&(filenames.groundwater),
+            "Qb_max", d2start, d2count, dvar);
     for (i = 0; i < local_domain.ncells_active; i++) {
-        for(j = 0; j < options.Nlayer; j++){
-            if(gw_con[i].Qb_max < soil_con[i].Ksat[j]){
-                gw_con[i].Qb_max = soil_con[i].Ksat[j];
-            }
-        }
+        gw_con[i].Qb_max = dvar[i];
     }
     
+    get_scatter_nc_field_double(&(filenames.groundwater),
+            "Qb_expt", d2start, d2count, dvar);
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        gw_con[i].Qb_expt = dvar[i];
+    }
+    
+    get_scatter_nc_field_double(&(filenames.groundwater),
+            "Za_max", d2start, d2count, dvar);
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        gw_con[i].Za_max = dvar[i];
+    }
+        
+    free(dvar);  
 }
 
 void
@@ -77,7 +74,6 @@ gw_init(void)
     }
     
     gw_set_aquifer();
-    gw_set_maximum_baseflow();    
     
     // close parameter file
     if(mpi_rank == VIC_MPI_ROOT){

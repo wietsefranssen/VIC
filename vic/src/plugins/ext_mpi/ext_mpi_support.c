@@ -441,6 +441,7 @@ mpi_map_decomp_domain_basin(size_t   ncells,
                     filenames.routing.nc_filename);
     
     get_basins(&basins);
+//TODO    debug_map_nc_sizet("./debug_output/basins.nc","basin_id",basins.basin_map,MISSING_USI);
     
     // close extension routing file
     status = nc_close(filenames.routing.nc_id);
@@ -497,5 +498,10 @@ mpi_map_decomp_domain_basin(size_t   ncells,
                 }
             }
         }
+    }
+    
+    for (i = 0; i < mpi_size; i++) {
+        log_info("mpi decomposition offset & size for node %zu is %d & %d",
+                i,(*mpi_map_global_array_offsets)[i],(*mpi_map_local_array_sizes)[i]);
     }
 }

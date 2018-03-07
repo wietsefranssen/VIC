@@ -21,6 +21,7 @@ irr_put_data(void)
     int OUT_IRR_NEED = list_search_id(outvar_types, "OUT_IRR_NEED");
     int OUT_IRR_LEFTOVER = list_search_id(outvar_types, "OUT_IRR_LEFTOVER");
     int OUT_IRR_POND_STORAGE = list_search_id(outvar_types, "OUT_IRR_POND_STORAGE");
+    int OUT_IRR_SHORTAGE = list_search_id(outvar_types, "OUT_IRR_SHORTAGE");
     
     for(i = 0; i < local_domain.ncells_active; i++){ 
         for(j = 0; j < irr_con_map[i].ni_active; j++){
@@ -35,6 +36,7 @@ irr_put_data(void)
                     soil_con[i].AreaFract[j] * veg_con[i][cur_veg].Cv;
                 out_data[i][OUT_IRR_POND_STORAGE][0] += irr_var[i][j][k].pond_storage * 
                     soil_con[i].AreaFract[j] * veg_con[i][cur_veg].Cv;
+                out_data[i][OUT_IRR_SHORTAGE][0] += irr_var[i][j][k].shortage / options.SNOW_BAND;
             }
         }
     }    

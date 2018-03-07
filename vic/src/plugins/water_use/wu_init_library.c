@@ -2,22 +2,14 @@
 
 void
 initialize_wu_var(wu_var_struct *wu_var)
-{
-    extern option_struct options;
-    
+{    
     size_t i;
-    size_t j;
     
     for(i = 0; i < WU_NSECTORS; i++){
         wu_var[i].demand = 0.0;
-        wu_var[i].compensated = 0.0;
+        wu_var[i].withdrawn = 0.0;
         wu_var[i].consumed = 0.0; 
         wu_var[i].returned = 0.0; 
-        wu_var[i].withdrawn = 0.0;
-        wu_var[i].compensation_total = 0.0;
-        for(j = 0; j < (size_t)options.WU_COMPENSATION_TIME[i]; j++){
-            wu_var[i].compensation[j] = 0.0;
-        }
     }
 }
 

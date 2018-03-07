@@ -25,7 +25,7 @@ dam_generate_default_state(void)
             dam_var[i][j].height = 
                     dam_height(dam_var[i][j].area,
                     dam_con[i][j].max_height);
-//TODO            dam_var[i][j].op_year.month = dmy[current].month;
+                    dam_var[i][j].op_year = dmy[current].month;
         }
     }    
 }

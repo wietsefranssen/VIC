@@ -58,22 +58,22 @@ set_output_met_data_info()
         routing_rvic_output_metadata();
     }
     if (options.DAMS) {
-        dam_output_metadata();
+        dam_set_output_meta_data_info();
     }
     if (options.ROUTING) {
-        rout_output_metadata();
+        rout_set_output_meta_data_info();
     }
     if (options.IRRIGATION) {
-        irr_output_metadata();
+        irr_set_output_meta_data_info();
     }
     if (options.EFR) {
-        efr_output_metadata();
+        efr_set_output_meta_data_info();
     }
     if (options.WATER_USE) {
-        wu_output_metadata();
+        wu_set_output_meta_data_info();
     }
     if (options.GROUNDWATER) {
-        gw_output_metadata();
+        gw_set_output_meta_data_info();
     }
 
     // Water Balance Terms - state variables

@@ -1,6 +1,25 @@
 #include <vic.h>
 
 void
+irr_set_vegetation(void)
+{
+    extern domain_struct local_domain;
+    extern irr_con_map_struct *irr_con_map;
+    extern irr_con_struct **irr_con;
+    
+    size_t i;
+    size_t j;
+    
+    for(i = 0; i < local_domain.ncells_active; i++){
+        for(j = 0; j < irr_con_map[i].ni_types; j++){
+            if(irr_con_map[i].iidx[j] != NODATA_VEG){
+                irr_con[i][irr_con_map[i].iidx[j]].veg_index = irr_con_map[i].vidx[j];
+            }
+        }
+    }
+}
+
+void
 irr_set_seasons(void)
 {    
     extern domain_struct local_domain;
@@ -9,14 +28,17 @@ irr_set_seasons(void)
     extern option_struct options;
     extern irr_con_map_struct *irr_con_map;
     extern irr_con_struct **irr_con;
+    extern veg_con_struct **veg_con;
         
-    int *ivar;
+    double *dvar;
     
     size_t i;
     size_t j;
     size_t k;
     size_t l;
     
+    size_t  d3count[3];
+    size_t  d3start[3];
     size_t  d4count[4];
     size_t  d4start[4];
     
@@ -30,69 +52,98 @@ irr_set_seasons(void)
     d4count[2] = global_domain.n_ny;
     d4count[3] = global_domain.n_nx; 
     
-    ivar = malloc(local_domain.ncells_active * sizeof(*ivar));
-    check_alloc_status(ivar, "Memory allocation error."); 
-        
-//    for(k = 0; k < (size_t)options.NIRRSEASONS; k++){
-//        d4start[0] = k;
-//        for(j = 0; j < (size_t)options.NIRRTYPES; j++){
-//            d4start[1] = j;
-//        
-//            get_scatter_nc_field_int(&(filenames.irrigation), 
-//                    "season_start", d4start, d4count, ivar);
-//
-//TODO            for(i = 0; i < local_domain.ncells_active; i++){
-//                if(irr_con_map[i].iidx[j] != NODATA_VEG && 
-//                        k < irr_con[i][irr_con_map[i].iidx[j]].nseasons){
-//                    irr_con[i][irr_con_map[i].iidx[j]].season_start[k].day_in_year = ivar[i];
-//                }
-//            }
-//
-//            get_scatter_nc_field_int(&(filenames.irrigation), 
-//                    "season_end", d4start, d4count, ivar);
-//
-//            for(i = 0; i < local_domain.ncells_active; i++){
-//                if(irr_con_map[i].iidx[j] != NODATA_VEG && 
-//                        k < irr_con[i][irr_con_map[i].iidx[j]].nseasons){
-//                    irr_con[i][irr_con_map[i].iidx[j]].season_end[k].day_in_year = ivar[i];
-//                }
-//            }
-//        }
-//    }
-//    
-//    // Set full dmy
-//    for(i = 0; i < local_domain.ncells_active; i++){
-//        for(j = 0; j < irr_con_map[i].ni_active; j++){
-//            for(k = 0; k < irr_con[i][j].nseasons; k++){
-//                dmy_no_leap_day((double)(irr_con[i][j].season_start[k].day_in_year - 1),
-//                        &(irr_con[i][j].season_start[k]));
-//                dmy_no_leap_day((double)(irr_con[i][j].season_end[k].day_in_year - 1),
-//                        &(irr_con[i][j].season_end[k]));
-//            }
-//        }
-//    }
-//    
-//    // Check for overlap
-//    for(i = 0; i < local_domain.ncells_active; i++){
-//        for(j = 0; j < irr_con_map[i].ni_active; j++){
-//            for(k = 0; k < irr_con[i][j].nseasons; k++){
-//                for(l = 0; l < irr_con[i][j].nseasons; l++){
-//                    
-//                    if(k != l && 
-//                            (between_dmy(irr_con[i][j].season_start[l],
-//                            irr_con[i][j].season_end[l],
-//                            irr_con[i][j].season_start[k]) ||
-//                            between_dmy(irr_con[i][j].season_start[l],
-//                            irr_con[i][j].season_end[l],
-//                            irr_con[i][j].season_end[k]))){
-//                        log_err("Irrigated vegetation calendars are overlapping");
-//                    }
-//                }
-//            }
-//        }
-//    }
+    d3start[0] = 0;
+    d3start[1] = 0;
+    d3start[2] = 0;
+    d3count[0] = 1;
+    d3count[1] = global_domain.n_ny;
+    d3count[2] = global_domain.n_nx; 
     
-    free(ivar);  
+    dvar = malloc(local_domain.ncells_active * sizeof(*dvar));
+    check_alloc_status(dvar, "Memory allocation error."); 
+        
+    for(k = 0; k < (size_t)options.NIRRSEASONS; k++){
+        d4start[0] = k;
+        for(j = 0; j < (size_t)options.NIRRTYPES; j++){
+            d4start[1] = j;
+        
+            get_scatter_nc_field_double(&(filenames.irrigation), 
+                    "season_start", d4start, d4count, dvar);
+
+            for(i = 0; i < local_domain.ncells_active; i++){
+                if(irr_con_map[i].iidx[j] != NODATA_VEG && 
+                        k < irr_con[i][irr_con_map[i].iidx[j]].nseasons){
+                    irr_con[i][irr_con_map[i].iidx[j]].season_start[k] = dvar[i];
+                }
+            }
+
+            get_scatter_nc_field_double(&(filenames.irrigation), 
+                    "season_end", d4start, d4count, dvar);
+
+            for(i = 0; i < local_domain.ncells_active; i++){
+                if(irr_con_map[i].iidx[j] != NODATA_VEG && 
+                        k < irr_con[i][irr_con_map[i].iidx[j]].nseasons){
+                    irr_con[i][irr_con_map[i].iidx[j]].season_end[k] = dvar[i];
+                }
+            }
+
+            get_scatter_nc_field_double(&(filenames.irrigation), 
+                    "season_offset", d3start, d3count, dvar);
+
+            for(i = 0; i < local_domain.ncells_active; i++){
+                if(irr_con_map[i].iidx[j] != NODATA_VEG){
+                    irr_con[i][irr_con_map[i].iidx[j]].season_offset = dvar[i];
+                }
+            }
+        }
+    }
+    
+    // Apply offset
+    for(i = 0; i < local_domain.ncells_active; i++){
+        for(j = 0; j < irr_con_map[i].ni_active; j++){
+            if(irr_con[i][j].season_offset < 0.0){
+                log_err("Season offset is smaller than 0, can only be larger");
+            }
+            
+            for(k = 0; k < irr_con[i][j].nseasons; k++){
+                irr_con[i][j].season_start[k] -= irr_con[i][j].season_offset;
+                if(irr_con[i][j].season_start[k] < 0){
+                    irr_con[i][j].season_start[k] += DAYS_PER_JYEAR;
+                }
+                irr_con[i][j].season_end[k] -= irr_con[i][j].season_offset;
+                if(irr_con[i][j].season_end[k] < 0){
+                    irr_con[i][j].season_end[k] += DAYS_PER_JYEAR;
+                }
+            }
+        }
+    }
+    
+    
+    // Check for overlap
+    for(i = 0; i < local_domain.ncells_active; i++){
+        for(j = 0; j < irr_con_map[i].ni_active; j++){
+            for(k = 0; k < irr_con[i][j].nseasons; k++){
+                for(l = 0; l < irr_con[i][j].nseasons; l++){
+                    
+                    if(k != l && 
+                            (between_jday(irr_con[i][j].season_start[l],
+                            irr_con[i][j].season_end[l],
+                            irr_con[i][j].season_start[k]) > 0 ||
+                            between_jday(irr_con[i][j].season_start[l],
+                            irr_con[i][j].season_end[l],
+                            irr_con[i][j].season_end[k]) > 0)){
+                        log_info("Cell %zu; crop %zu [veg_index %d, veg_class %d]; season %zu [%.2f - %.2f] and %zu [%.2f - %.2f]",
+                                i,j,irr_con[i][j].veg_index,veg_con[i][irr_con[i][j].veg_index].veg_class,
+                                k,irr_con[i][j].season_start[k],irr_con[i][j].season_end[k],
+                                l,irr_con[i][j].season_start[l],irr_con[i][j].season_end[l]);
+                        log_err("Irrigated calendars are overlapping");
+                    }
+                }
+            }
+        }
+    }
+    
+    free(dvar);  
 }
 
 void
@@ -128,7 +179,7 @@ irr_set_ponding(void)
                 "ponded_class", &d1start, &d1count, ivar);
     }
     
-    status = MPI_Bcast(&ivar, options.NVEGTYPES, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
+    status = MPI_Bcast(ivar, options.NIRRTYPES, MPI_INT, VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
     
     // Do mapping
@@ -136,7 +187,7 @@ irr_set_ponding(void)
         for(j = 0; j < (size_t)options.NIRRTYPES; j++){
             if(ivar[j] == 1 && irr_con_map[i].iidx[j] != NODATA_VEG){
                 irr_con[i][irr_con_map[i].iidx[j]].ponding = true;
-                irr_con[i][irr_con_map[i].iidx[j]].pond_capacity = POND_DEF_CAPACITY;
+                irr_con[i][irr_con_map[i].iidx[j]].pond_capacity = POND_CAPACITY;
             }
         }
     }
@@ -160,6 +211,7 @@ irr_init(void)
                         filenames.irrigation.nc_filename);
     }
     
+    irr_set_vegetation();
     irr_set_seasons();
     irr_set_ponding();
     

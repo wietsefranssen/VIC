@@ -904,6 +904,8 @@ unsigned short int str_to_out_type(char typestr[]);
 unsigned short int str_to_timeunits(char units_chars[]);
 void strpdmy(const char *s, const char *format, dmy_struct *dmy);
 double time_delta(dmy_struct *dmy_current, unsigned short int freq, int n);
+bool between_dmy(dmy_struct, dmy_struct, dmy_struct);
+double between_jday(double, double, double);
 void timer_continue(timer_struct *t);
 void timer_init(timer_struct *t);
 void timer_start(timer_struct *t);

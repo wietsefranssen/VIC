@@ -81,6 +81,7 @@ rout_set_direction(void)
     
     free(ivar);
 }
+
 size_t
 get_downstream_global(size_t id, int direction)
 {    
@@ -138,7 +139,7 @@ get_downstream_global(size_t id, int direction)
     }
     
     if(downstream_io_idx >= global_domain.ncells_total){
-        log_err("Flow direction is going outside of total domain");      
+        downstream_io_idx = current_io_idx;
     }  
            
     if(global_domain.locations[downstream_io_idx].global_idx == MISSING_USI){
@@ -199,7 +200,7 @@ get_downstream_local(size_t id, int direction, size_t n_nx)
         }
     }
     
-    return id;    
+    return id;
 }
 
 void
@@ -281,6 +282,7 @@ rout_set_order()
     rank=0;
     while(rank < local_domain.ncells_active){
         for(i=0;i<local_domain.ncells_active;i++){
+            
             if(done_map[i]){
                continue; 
             }

@@ -41,6 +41,7 @@ runoff(cell_data_struct  *cell,
        int                Nnodes)
 {
     extern option_struct       options;
+    extern parameters_struct   param;
     extern global_param_struct global_param;
 
     size_t                     lindex;
@@ -81,6 +82,10 @@ runoff(cell_data_struct  *cell,
     layer_data_struct          tmp_layer;
     unsigned short             runoff_steps_per_dt;
 
+    double                     matric[MAX_LAYERS];
+    double                     matric_expt[MAX_LAYERS];
+    double                     avg_matric;
+
     /** Set Residual Moisture **/
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         resid_moist[lindex] = soil_con->resid_moist[lindex] *
@@ -105,6 +110,7 @@ runoff(cell_data_struct  *cell,
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
         org_moist[lindex] = layer[lindex].moist;
         layer[lindex].moist = 0;
+        layer[lindex].eff_saturation = 0;
         if (evap[lindex][0] > 0) { // if there is positive evaporation
             sum_liq = 0;
             // compute available soil moisture for each frost sub area.
@@ -148,7 +154,7 @@ runoff(cell_data_struct  *cell,
            Initialize Variables
         **************************************************/
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
-            Ksat[lindex] = soil_con->Ksat[lindex] /
+            Ksat[lindex] = cell->layer[lindex].Ksat /
                            global_param.runoff_steps_per_day;
 
             /** Set Layer Liquid Moisture Content **/
@@ -159,6 +165,11 @@ runoff(cell_data_struct  *cell,
 
             /** Set Layer Maximum Moisture Content **/
             max_moist[lindex] = soil_con->max_moist[lindex];
+            
+            if(options.MATRIC){
+                /** Set Matric Potential Exponent (Burdine model 1953) **/
+                matric_expt[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
+            }
         }
 
         /******************************************************
@@ -190,7 +201,23 @@ runoff(cell_data_struct  *cell,
             /*************************************
                Compute Drainage between Sublayers
             *************************************/
+            if(options.MATRIC){
+                // Set matric potential (based on moisture content and soil texture)
+                for (lindex = 0; lindex < options.Nlayer; lindex++) {
+                    tmp_liq = liq[lindex] - evap[lindex][fidx];
+                    if(tmp_liq > resid_moist[lindex]){
 
+                        /** Brooks & Corey relation for matric potential **/
+                        matric[lindex] = soil_con->bubble[lindex] * 
+                                pow((tmp_liq - resid_moist[lindex]) /
+                                (max_moist[lindex] - resid_moist[lindex]), 
+                                -matric_expt[lindex]);
+                    }else{
+                        matric[lindex] = param.HUGE_RESIST;
+                    }
+                }    
+            }
+            
             for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
                 /** Brooks & Corey relation for hydraulic conductivity **/
 
@@ -200,6 +227,22 @@ runoff(cell_data_struct  *cell,
                 }
 
                 if (liq[lindex] > resid_moist[lindex]) {
+                    
+                    if(options.MATRIC){
+                        if(lindex < options.Nlayer - 1){
+                            avg_matric = pow( 10, (soil_con->depth[lindex+1] 
+                                             * log10(fabs(matric[lindex]))
+                                             + soil_con->depth[lindex]
+                                             * log10(fabs(matric[lindex+1])))
+                                            / (soil_con->depth[lindex] 
+                                               + soil_con->depth[lindex+1]) );
+
+                            tmp_liq = resid_moist[lindex]
+                              + (max_moist[lindex] - resid_moist[lindex] )
+                              * pow( ( avg_matric / soil_con->bubble[lindex] ), -1/matric_expt[lindex] );
+                        }
+                    }
+                    
                     Q12[lindex] = Ksat[lindex] *
                                   pow(((tmp_liq -
                                         resid_moist[lindex]) /
@@ -388,6 +431,10 @@ runoff(cell_data_struct  *cell,
         for (lindex = 0; lindex < options.Nlayer; lindex++) {
             layer[lindex].moist +=
                 ((liq[lindex] + ice[lindex]) * frost_fract[fidx]);
+            layer[lindex].eff_saturation +=
+                ((liq[lindex] + ice[lindex]) - resid_moist[lindex]) / 
+                    (max_moist[lindex] - resid_moist[lindex])
+                    * frost_fract[fidx];                    
         }
         cell->asat += A * frost_fract[fidx];
         cell->runoff += runoff[fidx] * frost_fract[fidx];

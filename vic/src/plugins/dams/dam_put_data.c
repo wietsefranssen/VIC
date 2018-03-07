@@ -19,7 +19,7 @@ dam_put_data(void)
     int OUT_DAM_HEIGHT = list_search_id(outvar_types, "OUT_DAM_HEIGHT");
     int OUT_DAM_OP_DISCHARGE = list_search_id(outvar_types, "OUT_DAM_OP_DISCHARGE");
     int OUT_DAM_OP_VOLUME = list_search_id(outvar_types, "OUT_DAM_OP_VOLUME");
-//    int OUT_DAM_OP_MONTH = list_search_id(outvar_types, "OUT_DAM_OP_MONTH");
+    int OUT_DAM_OP_MONTH = list_search_id(outvar_types, "OUT_DAM_OP_MONTH");
 
     for(i = 0; i < local_domain.ncells_active; i++){ 
         for(j = 0; j < dam_con_map[i].nd_active; j++){
@@ -29,7 +29,7 @@ dam_put_data(void)
             out_data[i][OUT_DAM_HEIGHT][j] = dam_var[i][j].height;
             out_data[i][OUT_DAM_OP_DISCHARGE][j] = dam_var[i][j].op_discharge[0];
             out_data[i][OUT_DAM_OP_VOLUME][j] = dam_var[i][j].op_volume[0] / pow(M_PER_KM, 3);
-//TODO            out_data[i][OUT_DAM_OP_MONTH][j] = dam_var[i][j].op_year.month;
+            out_data[i][OUT_DAM_OP_MONTH][j] = dam_var[i][j].op_year;
         }
     }    
 }
