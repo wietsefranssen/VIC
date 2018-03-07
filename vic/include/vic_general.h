@@ -1013,4 +1013,9 @@ void vic_force(void);
 void vic_populate_model_state(dmy_struct *dmy_current);
 
 void cshift(double *, int, int, int, int);
+
+//TODO MOVE!! (WF)
+void dam_set_nc_output_file_info(nc_file_struct *nc_output_file);
+void dam_write_def_dim(nc_file_struct *nc_file, stream_struct *stream);
+
 #endif

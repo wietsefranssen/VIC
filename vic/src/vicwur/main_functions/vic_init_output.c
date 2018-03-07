@@ -319,7 +319,7 @@ initialize_history_file(nc_file_struct *nc,
 //TODO        wu_write_def_dim();
     }
     if(options.DAMS){
-//TODO        dam_write_def_dim();
+        dam_write_def_dim(nc, stream);
     }
 
     status = nc_def_dim(nc->nc_id, "time", nc->time_size,
@@ -714,7 +714,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
 //TODO        wu_set_nc_output_file_info();
     }
     if(options.DAMS){
-//TODO        dam_set_nc_output_file_info();
+        dam_set_nc_output_file_info(nc_file);
     }
     
     // allocate memory for nc_vars

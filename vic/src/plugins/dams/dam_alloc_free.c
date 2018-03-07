@@ -25,7 +25,7 @@ dam_set_nd_active(void)
     check_alloc_status(ivar, "Memory allocation error."); 
         
     get_scatter_nc_field_int(&(filenames.dams), 
-            "ndam", d2start, d2count, ivar);
+            "ndams", d2start, d2count, ivar);
     for (i = 0; i < local_domain.ncells_active; i++) {
         dam_con_map[i].nd_active = ivar[i];
     }
