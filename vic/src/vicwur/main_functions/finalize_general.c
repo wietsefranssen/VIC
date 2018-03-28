@@ -97,7 +97,7 @@ finalize_general(void)
             }
             free_veg_hist(&(veg_hist[i][j]));
         }
-        free_all_vars(&(all_vars[i]), veg_con_map[i].nv_active);
+        free_all_vars(&(all_vars[i]), veg_con_map[i].nv_active - 1);
         free(veg_con_map[i].vidx);
         free(veg_con_map[i].Cv);
         free(veg_con[i]);

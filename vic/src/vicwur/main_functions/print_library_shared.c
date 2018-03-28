@@ -754,6 +754,10 @@ print_parameters(parameters_struct *param)
             param->SNOW_LIQUID_WATER_CAPACITY);
     fprintf(LOG_DEST, "\tSNOW_NEW_SNOW_DENSITY: %.4f\n",
             param->SNOW_NEW_SNOW_DENSITY);
+    fprintf(LOG_DEST, "\tSNOW_NEW_SNOW_DENS_MAX: %.4f\n",
+            param->SNOW_NEW_SNOW_DENS_MAX);
+    fprintf(LOG_DEST, "\tSNOW_DEPTH_THRES: %.12f\n",
+            param->SNOW_DEPTH_THRES);
     fprintf(LOG_DEST, "\tSNOW_DENS_DMLIMIT: %.4f\n", param->SNOW_DENS_DMLIMIT);
     fprintf(LOG_DEST, "\tSNOW_DENS_MAX_CHANGE: %.4f\n",
             param->SNOW_DENS_MAX_CHANGE);
@@ -798,6 +802,8 @@ print_parameters(parameters_struct *param)
     fprintf(LOG_DEST, "\tTOL_GRND: %.4f\n", param->TOL_GRND);
     fprintf(LOG_DEST, "\tTOL_OVER: %.4f\n", param->TOL_OVER);
     fprintf(LOG_DEST, "\tFROZEN_MAXITER: %d\n", param->FROZEN_MAXITER);
+    fprintf(LOG_DEST, "\tMAX_ITER_GRND_CANOPY: %d\n",
+            param->MAX_ITER_GRND_CANOPY);
     fprintf(LOG_DEST, "\tNEWT_RAPH_MAXTRIAL: %d\n", param->NEWT_RAPH_MAXTRIAL);
     fprintf(LOG_DEST, "\tNEWT_RAPH_TOLX: %.4f\n", param->NEWT_RAPH_TOLX);
     fprintf(LOG_DEST, "\tNEWT_RAPH_TOLF: %.4f\n", param->NEWT_RAPH_TOLF);
