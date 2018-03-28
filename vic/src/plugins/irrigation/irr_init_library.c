@@ -14,7 +14,7 @@ initialize_irr_var(irr_var_struct *irr_var)
 
 void
 initialize_irr_con(irr_con_struct *irr_con)
-{    
+{
     size_t i;
     
     irr_con->veg_index = NODATA_VEG;

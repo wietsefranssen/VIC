@@ -77,9 +77,6 @@ vic_alloc(void) {
     if (options.ROUTING) {
         rout_alloc();
     }
-    if (options.IRRIGATION) {
-        irr_alloc();
-    }
     if (options.EFR) {
         efr_alloc();
     }

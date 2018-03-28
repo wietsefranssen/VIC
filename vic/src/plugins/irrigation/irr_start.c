@@ -15,9 +15,9 @@ irr_start(void)
                     filenames.irrigation.nc_filename);
 
     options.NIRRTYPES = get_nc_dimension(&(filenames.irrigation), 
-            "nirr_dim");
+            "irr_classes");
     options.NIRRSEASONS = get_nc_dimension(&(filenames.irrigation), 
-            "nseason_dim");
+            "grow_seasons");
 
     // close routing parameter file
     status = nc_close(filenames.irrigation.nc_id);

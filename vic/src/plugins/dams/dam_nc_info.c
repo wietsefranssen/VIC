@@ -1,10 +1,16 @@
 #include <vic.h>
 
 bool 
-dam_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file)
+dam_set_nc_var_info(int varid, 
+                    unsigned short int dtype,
+                    nc_file_struct *nc_file, 
+                    nc_var_struct *nc_var)
 {
     extern node            *outvar_types;
 
+    // set datatype
+    nc_var->nc_type = get_nc_dtype(dtype);
+    
     int OUT_DAM_VOLUME = list_search_id(outvar_types, "OUT_DAM_VOLUME");
     int OUT_DAM_DISCHARGE = list_search_id(outvar_types, "OUT_DAM_DISCHARGE");
     int OUT_DAM_AREA = list_search_id(outvar_types, "OUT_DAM_AREA");
@@ -31,7 +37,7 @@ dam_set_nc_var_info(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file)
 }
 
 bool 
-dam_set_nc_var_dimids(int varid, nc_var_struct *nc_var, nc_file_struct *nc_file)
+dam_set_nc_var_dimids(int varid, nc_file_struct *nc_file, nc_var_struct *nc_var)
 {
     extern node            *outvar_types;
     

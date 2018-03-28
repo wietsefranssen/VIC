@@ -217,44 +217,44 @@ dam_run(size_t cur_cell)
             years_running = DAM_HIST_YEARS;
         }
 
-//TODO        if(current > 0 && dmy[current].month != dmy[current-1].month){
-//            // Store monthly average
-//            dam_var[cur_cell][i].history_flow[0] =
-//                    dam_var[cur_cell][i].total_flow / 
-//                    dam_var[cur_cell][i].total_steps;
-//            dam_var[cur_cell][i].total_flow = 0.0;
-//            dam_var[cur_cell][i].total_steps = 0;       
-//            
-//            // Calculate averages            
-//            if(dmy[current].month == dam_var[cur_cell][i].op_year.month){
-//                ay_flow = array_average(dam_var[cur_cell][i].history_flow,
-//                    years_running, MONTHS_PER_YEAR, 0, 0);
-//                for(j = 0; j < MONTHS_PER_YEAR; j++){
-//                    am_flow[j] = array_average(dam_var[cur_cell][i].history_flow,
-//                    years_running, 1, j, MONTHS_PER_YEAR - j - 1);
-//                }
-//                
-//                double_flip(am_flow,MONTHS_PER_YEAR);
-//                
-//                // Calculate operational year
-//                dam_var[cur_cell][i].op_year.month = 
-//                        dam_get_op_year_month(ay_flow, am_flow,
-//                        dam_var[cur_cell][i].op_year.month);
-//
-//                // Calculate operation discharge and volume
-//                dam_get_operation(ay_flow, am_flow, 
-//                        dam_var[cur_cell][i].volume,
-//                        dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
-//                        dam_con[cur_cell][i].max_volume,
-//                        dam_var[cur_cell][i].op_discharge,
-//                        dam_var[cur_cell][i].op_volume);
-//            }
-//
-//            // Shift array
-//            cshift(dam_var[cur_cell][i].history_flow, 1, DAM_HIST_YEARS * MONTHS_PER_YEAR, 1, -1);
-//            cshift(dam_var[cur_cell][i].op_discharge, 1, MONTHS_PER_YEAR, 1, 1);
-//            cshift(dam_var[cur_cell][i].op_volume, 1, MONTHS_PER_YEAR, 1, 1);    
-//        }
+        if(current > 0 && dmy[current].month != dmy[current-1].month){
+            // Store monthly average
+            dam_var[cur_cell][i].history_flow[0] =
+                    dam_var[cur_cell][i].total_flow / 
+                    dam_var[cur_cell][i].total_steps;
+            dam_var[cur_cell][i].total_flow = 0.0;
+            dam_var[cur_cell][i].total_steps = 0;       
+            
+            // Calculate averages            
+            if(dmy[current].month == dam_var[cur_cell][i].op_year){
+                ay_flow = array_average(dam_var[cur_cell][i].history_flow,
+                    years_running, MONTHS_PER_YEAR, 0, 0);
+                for(j = 0; j < MONTHS_PER_YEAR; j++){
+                    am_flow[j] = array_average(dam_var[cur_cell][i].history_flow,
+                    years_running, 1, j, MONTHS_PER_YEAR - j - 1);
+                }
+                
+                double_flip(am_flow,MONTHS_PER_YEAR);
+                
+                // Calculate operational year
+                dam_var[cur_cell][i].op_year = 
+                        dam_get_op_year_month(ay_flow, am_flow,
+                        dam_var[cur_cell][i].op_year);
+
+                // Calculate operation discharge and volume
+                dam_get_operation(ay_flow, am_flow, 
+                        dam_var[cur_cell][i].volume,
+                        dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
+                        dam_con[cur_cell][i].max_volume,
+                        dam_var[cur_cell][i].op_discharge,
+                        dam_var[cur_cell][i].op_volume);
+            }
+
+            // Shift array
+            cshift(dam_var[cur_cell][i].history_flow, 1, DAM_HIST_YEARS * MONTHS_PER_YEAR, 1, -1);
+            cshift(dam_var[cur_cell][i].op_discharge, 1, MONTHS_PER_YEAR, 1, 1);
+            cshift(dam_var[cur_cell][i].op_volume, 1, MONTHS_PER_YEAR, 1, 1);    
+        }
 
         dam_var[cur_cell][i].total_flow += 
                 rout_var[cur_cell].nat_discharge[0];

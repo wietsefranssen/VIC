@@ -56,6 +56,7 @@ vic_init(void)
         initialize_wu_local_structures();
     }
     if (options.IRRIGATION) {
+        irr_alloc();
         initialize_irr_local_structures();
         irr_init();
     }

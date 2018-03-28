@@ -65,19 +65,20 @@ irr_set_mapping(void)
     // Gather irrigated vegetation classes
     if(mpi_rank == VIC_MPI_ROOT){    
         get_nc_field_int(&(filenames.irrigation), 
-                "irrigated_class", &d1start, &d1count, ivar);
+                "irr_veg_class", &d1start, &d1count, ivar);
     }
     
-    status = MPI_Bcast(&ivar, options.NIRRTYPES, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
+    status = MPI_Bcast(ivar, options.NIRRTYPES, MPI_INT, VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
     
     // Do mapping
     for(i = 0; i < local_domain.ncells_active; i++){
         
         nirr = 0;
-        for(j = 0; j < (size_t)options.NIRRTYPES; j++){
+        for(j = 0; j < irr_con_map[i].ni_types; j++){
+
             cur_veg = veg_con_map[i].vidx[ivar[j] - 1];
-            if(veg_con_map[i].vidx[ivar[j] - 1] != NODATA_VEG){                
+            if(cur_veg != NODATA_VEG){                
                 if(nirr >= irr_con_map[i].ni_active){
                     log_err("Number of irrigated vegetation classes does not match vegetation classes");
                 }

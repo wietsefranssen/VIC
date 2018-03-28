@@ -36,7 +36,7 @@ dam_set_info(void)
         d3start[0] = j;
         
         get_scatter_nc_field_int(&(filenames.dams), 
-                "dam_year", d3start, d3count, ivar);
+                "year", d3start, d3count, ivar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){
@@ -45,7 +45,7 @@ dam_set_info(void)
         }
         
         get_scatter_nc_field_double(&(filenames.dams), 
-                "dam_height", d3start, d3count, dvar);
+                "max_height", d3start, d3count, dvar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){
@@ -54,7 +54,7 @@ dam_set_info(void)
         }
         
         get_scatter_nc_field_double(&(filenames.dams), 
-                "dam_area", d3start, d3count, dvar);
+                "max_area", d3start, d3count, dvar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){
@@ -63,7 +63,7 @@ dam_set_info(void)
         }
         
         get_scatter_nc_field_double(&(filenames.dams), 
-                "dam_volume", d3start, d3count, dvar);
+                "max_volume", d3start, d3count, dvar);
         
         for(i = 0; i < local_domain.ncells_active; i++){
             if(j < dam_con_map[i].nd_active){

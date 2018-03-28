@@ -15,7 +15,7 @@ dam_start(void)
                     filenames.dams.nc_filename);
 
     options.MAXDAMS = get_nc_dimension(&(filenames.dams), 
-            "ndam_dim");
+            "dam_class");
 
     // close routing parameter file
     status = nc_close(filenames.dams.nc_id);

@@ -1017,5 +1017,11 @@ void cshift(double *, int, int, int, int);
 //TODO MOVE!! (WF)
 void dam_set_nc_output_file_info(nc_file_struct *nc_output_file);
 void dam_write_def_dim(nc_file_struct *nc_file, stream_struct *stream);
+bool dam_set_nc_var_dimids(int varid, nc_file_struct *nc_file, nc_var_struct *nc_var);
+bool dam_set_nc_var_info(int varid, unsigned short int dtype, nc_file_struct *nc_file, nc_var_struct *nc_var);
+void wu_set_nc_output_file_info(nc_file_struct *nc_output_file);
+void wu_write_def_dim(nc_file_struct *nc_file, stream_struct *stream);
+bool wu_set_nc_var_dimids(int varid, nc_file_struct *nc_file, nc_var_struct *nc_var);
+bool wu_set_nc_var_info(int varid, unsigned short int dtype, nc_file_struct *nc_file, nc_var_struct *nc_var);
 
 #endif

@@ -316,7 +316,7 @@ initialize_history_file(nc_file_struct *nc,
                     stream->filename);
     
     if(options.WATER_USE){
-//TODO        wu_write_def_dim();
+        wu_write_def_dim(nc, stream);
     }
     if(options.DAMS){
         dam_write_def_dim(nc, stream);
@@ -445,8 +445,14 @@ initialize_history_file(nc_file_struct *nc,
     // create output variables
     for (j = 0; j < stream->nvars; j++) {
         varid = stream->varid[j];
-
+        
         set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
+        if(options.DAMS){
+            dam_set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
+        }
+        if(options.WATER_USE){
+            wu_set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
+        }
 
         // define the variable
         status = nc_def_var(nc->nc_id,
@@ -711,7 +717,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
 
     
     if(options.WATER_USE){
-//TODO        wu_set_nc_output_file_info();
+        wu_set_nc_output_file_info(nc_file);
     }
     if(options.DAMS){
         dam_set_nc_output_file_info(nc_file);
@@ -723,5 +729,11 @@ initialize_nc_file(nc_file_struct     *nc_file,
 
     for (i = 0; i < nvars; i++) {
         set_nc_var_info(varids[i], dtypes[i], nc_file, &(nc_file->nc_vars[i]));
+        if(options.DAMS){
+            dam_set_nc_var_info(varids[i], dtypes[i], nc_file, &(nc_file->nc_vars[i]));
+        }
+        if(options.WATER_USE){
+            wu_set_nc_var_info(varids[i], dtypes[i], nc_file, &(nc_file->nc_vars[i]));
+        }
     }
 }

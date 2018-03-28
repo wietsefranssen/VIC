@@ -210,7 +210,7 @@ irr_run2(size_t cur_cell)
     size_t j;
     
     for(i = 0; i < irr_con_map[cur_cell].ni_active; i++){
-        cur_veg = irr_con_map[cur_cell].vidx[i];
+        cur_veg = irr_con[cur_cell][i].veg_index;
         
         for(j = 0; j < options.SNOW_BAND; j++){    
             

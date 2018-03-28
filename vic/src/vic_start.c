@@ -241,7 +241,14 @@ vic_start(void)
     if (options.ROUTING) {
         rout_start();
     }
-    
+    if (mpi_rank == VIC_MPI_ROOT) {
+        if (options.DAMS) {
+            dam_start();
+        }
+        if (options.IRRIGATION) {
+            irr_start();
+        }
+    }    
     // cleanup
     if (mpi_rank == VIC_MPI_ROOT) {
         free(mapped_locations);
