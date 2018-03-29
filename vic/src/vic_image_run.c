@@ -65,7 +65,7 @@ vic_image_run(dmy_struct *dmy_current)
     }
         
     // If running with OpenMP, run this for loop using multiple threads
-    #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for (i = 0; i < local_domain.ncells_active; i++) {
         // Set global reference string (for debugging inside vic_run)
         sprintf(vic_run_ref_str, "Gridcell io_idx: %zu, timestep info: %s",
@@ -90,7 +90,7 @@ vic_image_run(dmy_struct *dmy_current)
     
     if (options.ROUTING) {
         // If running with OpenMP, run this for loop using multiple threads
-        #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+        //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
         for(i = 0; i < local_domain.ncells_active; i++){
             cur_cell = routing_order[i];
 
@@ -117,7 +117,7 @@ vic_image_run(dmy_struct *dmy_current)
     }
         
     // If running with OpenMP, run this for loop using multiple threads
-    #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for (i = 0; i < local_domain.ncells_active; i++) {
         put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
                  veg_lib[i], &lake_con, out_data[i], &(save_data[i]),

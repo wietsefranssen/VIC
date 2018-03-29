@@ -102,7 +102,6 @@ runoff_gw(cell_data_struct  *cell,
     double Qb_max;    
     double delta_z;
     
-    double Kl[MAX_LAYERS];
     double Qb[MAX_LAYERS];
     double z[MAX_LAYERS];
     double eff_porosity[MAX_LAYERS];
@@ -238,11 +237,9 @@ runoff_gw(cell_data_struct  *cell,
         **************************************************/
 
         dt_inflow = inflow / (double) runoff_steps_per_dt;
+        
         Qb_max = gw_con->Qb_max / global_param.runoff_steps_per_day;
-
-        /**************************************************
-           Compute Flow Between Soil Layers
-        **************************************************/
+        
         for (time_step = 0; time_step < runoff_steps_per_dt; time_step++) { 
             inflow = dt_inflow;
             
@@ -300,9 +297,9 @@ runoff_gw(cell_data_struct  *cell,
                 }
             } 
             
-            /**************************************************
-               Compute matric potential
-            **************************************************/     
+            /*************************************
+               Compute Drainage between Sublayers
+            *************************************/
             if(options.MATRIC){
                 // Set matric potential (based on moisture content and soil texture)
                 for (lindex = 0; lindex < options.Nlayer; lindex++) {
@@ -320,10 +317,7 @@ runoff_gw(cell_data_struct  *cell,
                 }
             }
             
-            /*************************************
-               Compute Hydraulic Conductivity of Sublayers
-            *************************************/
-            for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
+            for (lindex = 0; lindex < options.Nlayer; lindex++) {
                 /** Brooks & Corey relation for hydraulic conductivity **/
 
                 if ((tmp_liq = liq[lindex] - evap[lindex][fidx] - Qb[lindex]) <
@@ -348,7 +342,7 @@ runoff_gw(cell_data_struct  *cell,
                         }
                     }
                     
-                    Kl[lindex] = Ksat[lindex] *
+                    Q12[lindex] = Ksat[lindex] *
                                   pow(((tmp_liq -
                                         resid_moist[lindex]) /
                                        (soil_con->max_moist[lindex] -
@@ -356,41 +350,22 @@ runoff_gw(cell_data_struct  *cell,
                                       soil_con->expt[lindex]);
                 }
                 else {
-                    Kl[lindex] = 0.0;
+                    Q12[lindex] = 0.;
                 }
             }
             
-            /** Compute hydraulic conductivity of lowest layer **/ 
+            /** Recompute hydraulic conductivity of lowest layer:
+            * Exponential decay in drainage if water table is 
+            * below soil column (Equation 7 - Niu et al., 2007)
+            * and no drainage if water table is in soil column **/
             lindex = options.Nlayer - 1;
-            if ((tmp_liq = liq[lindex] - evap[lindex][fidx] - Qb[lindex]) <
-                resid_moist[lindex]) {
-                tmp_liq = resid_moist[lindex];
-            }
-            
-            if (liq[lindex] > resid_moist[lindex]) {
-                if(delta_z == 0){
-                    Kl[lindex] = Kl[lindex - 1];
-                }else{
-                    Kl[lindex] = Kl[lindex - 1] * 
-                            (1 - exp(-gw_con->Ka_expt * delta_z)) / 
-                            (gw_con->Ka_expt * delta_z);
-                }
-            } else {
-                Kl[lindex] = 0.0;
-            }
-            
-            /*************************************
-               Compute Drainage between Sublayers
-            *************************************/
-            for (lindex = 0; lindex < options.Nlayer; lindex++) {
-                Q12[lindex] = Kl[lindex];
-            }
-            
-            /** No drainage if water table is in soil column **/
-            lindex = options.Nlayer - 1;          
-            if(lwt != -1){
-                Q12[lindex] = 0.0;
-            }
+            if(lwt == -1){
+                Q12[lindex] = Q12[lindex] *
+                        (1 - exp(-gw_con->Ka_expt * delta_z)) / 
+                        (gw_con->Ka_expt * delta_z);                
+            }else{                
+                Q12[lindex] = 0.;
+            }       
             
             /**************************************************
                Solve for Current Soil Layer Moisture, and
