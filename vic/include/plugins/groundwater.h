@@ -6,8 +6,7 @@
 typedef struct{
     double recharge;        /**< drainage to groundwater (mm) */
     double Wa;              /**< water stored in groundwater below soil column (compared to reference) (mm) */    
-    double Wt;              /**< total water stored in groundwater (compared to reference) (mm) */    
-    double Ws;              /**< water stored below soil column and above water table (mm) */    
+    double Wt;              /**< total water stored in groundwater (compared to reference) (mm) */
     double zwt;             /**< depth of the water table (m) */  
     double available;       /**< available water (zwt - za_max) (m) */  
 }gw_var_struct;

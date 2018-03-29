@@ -38,14 +38,6 @@ gw_set_output_meta_data_info(void)
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_WT")].description,
            "Reference groundwater storage (aquifer and soil layers combined)");
         
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_WS")].varname, "OUT_GW_WS");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_WS")].long_name, "Water storage");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_WS")].standard_name,
-           "Water storage");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_WS")].units, "mm");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_WS")].description,
-           "Water storage (between soil column and water table)");
-        
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_AVAIL")].varname, "OUT_GW_AVAIL");
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_AVAIL")].long_name, "Available groundwater");
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_GW_AVAIL")].standard_name,
@@ -58,7 +50,7 @@ gw_set_output_meta_data_info(void)
     out_metadata[list_search_id(outvar_types, "OUT_GW_RECHARGE")].nelem = 1;
     out_metadata[list_search_id(outvar_types, "OUT_GW_WA")].nelem = 1;
     out_metadata[list_search_id(outvar_types, "OUT_GW_WT")].nelem = 1;
-    out_metadata[list_search_id(outvar_types, "OUT_GW_WS")].nelem = 1;
+    out_metadata[list_search_id(outvar_types, "OUT_GW_AVAIL")].nelem = 1;
 }
 
 void
