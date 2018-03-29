@@ -314,7 +314,7 @@ typedef struct {
 
     // Plugins
     bool GROUNDWATER;
-    bool ROUTING;
+    int ROUTING;
     bool ROUTING_RVIC;
     bool ROUTING_LOHMANN;
     bool WATER_USE;
