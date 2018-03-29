@@ -10,11 +10,13 @@ initialize_dam_var(dam_var_struct *dam_var)
     dam_var->volume = 0.0;
     dam_var->discharge = 0.0;
     dam_var->total_flow = 0.0;
+    dam_var->total_demand = 0.0;
     dam_var->total_steps = 0;
     dam_var->months_running = 0;
     
     for(i = 0; i < DAM_HIST_YEARS * MONTHS_PER_YEAR; i++){
         dam_var->history_flow[i] = 0.0;
+        dam_var->history_demand[i] = 0.0;
     }    
     for(i = 0; i < MONTHS_PER_YEAR; i++){
         dam_var->op_volume[i] = 0.0;
@@ -28,6 +30,7 @@ void
 initialize_dam_con(dam_con_struct *dam_con)
 {    
     dam_con->year = 0;
+    dam_con->function = DAM_FUN_FLO;
     dam_con->max_area = 0;
     dam_con->max_height = 0;
     dam_con->max_volume = 0;
