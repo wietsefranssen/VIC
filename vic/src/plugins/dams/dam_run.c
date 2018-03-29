@@ -429,8 +429,13 @@ double
 dam_area(double volume, double max_volume, double max_area, double max_height){
     // Calculate surface area based on Kaveh et al 2013
     double N = ( 2 * max_volume ) / ( max_height * max_area );
+    double area = max_area * pow(( volume / max_volume ), ((2-N)/N));
     
-    return max_area * pow(( volume / max_volume ), ((2-N)/2));
+    if(area > max_area){
+        area=max_area;
+    }
+    
+    return area;        
 }
 
 double
