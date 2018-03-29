@@ -679,23 +679,23 @@ runoff_gw(cell_data_struct  *cell,
     }
     return (0);
 }
-
-/******************************************************************************
-* @brief    Calculate drainage between two layers
-******************************************************************************/
-double
-calc_Q12(double Ksat,
-         double init_moist,
-         double resid_moist,
-         double max_moist,
-         double expt)
-{
-    double Q12;
-
-    Q12 = init_moist - pow(pow(init_moist - resid_moist, 1.0 - expt) -
-                           Ksat /
-                           pow(max_moist - resid_moist, expt) * (1.0 - expt),
-                           1.0 / (1.0 - expt)) - resid_moist;
-
-    return Q12;
-}
+//
+///******************************************************************************
+//* @brief    Calculate drainage between two layers
+//******************************************************************************/
+//double
+//calc_Q12(double Ksat,
+//         double init_moist,
+//         double resid_moist,
+//         double max_moist,
+//         double expt)
+//{
+//    double Q12;
+//
+//    Q12 = init_moist - pow(pow(init_moist - resid_moist, 1.0 - expt) -
+//                           Ksat /
+//                           pow(max_moist - resid_moist, expt) * (1.0 - expt),
+//                           1.0 / (1.0 - expt)) - resid_moist;
+//
+//    return Q12;
+//}
