@@ -241,7 +241,57 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "SHARE_LAYER_MOIST\t\tFALSE\n");
     }
     fprintf(LOG_DEST, "Ncanopy\t\t%zu\n", options.Ncanopy);
-
+    
+    // Plugins    
+    if (options.MATRIC) {
+        fprintf(LOG_DEST, "MATRIC\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "MATRIC\t\tFALSE\n");
+    }
+    if (options.GROUNDWATER) {
+        fprintf(LOG_DEST, "GROUNDWATER\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "GROUNDWATER\t\tFALSE\n");
+    }
+    if (options.ROUTING) {
+        fprintf(LOG_DEST, "ROUTING\t\tTRUE\n");
+    }
+    else if (options.ROUTING_LOHMANN) {
+        fprintf(LOG_DEST, "ROUTING_LOHMANN\t\tTRUE\n");
+    }
+    else if (options.ROUTING_RVIC) {
+        fprintf(LOG_DEST, "ROUTING_RVIC\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "ROUTING\t\tFALSE\n");
+    }
+    if (options.DAMS) {
+        fprintf(LOG_DEST, "DAMS\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "DAMS\t\tFALSE\n");
+    }
+    if (options.IRRIGATION) {
+        fprintf(LOG_DEST, "IRRIGATION\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "IRRIGATION\t\tFALSE\n");
+    }
+    if (options.EFR) {
+        fprintf(LOG_DEST, "EFR\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "EFR\t\tFALSE\n");
+    }
+    if (options.WATER_USE) {
+        fprintf(LOG_DEST, "WATER_USE\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "WATER_USE\t\tFALSE\n");
+    }
+    
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Forcing Data:\n");
     for (file_num = 0; file_num < 2; file_num++) {

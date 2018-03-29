@@ -50,6 +50,7 @@
 #include <vic_log.h>
 
 #include <water_use.h>
+#include <matric.h>
 #include <routing.h>
 #include <irrigation.h>
 #include <groundwater.h>
