@@ -321,21 +321,21 @@ dam_run(size_t cur_cell)
                         dam_var[cur_cell][i].op_year);
 
                 // Calculate operation discharge and volume
-                if(dam_con[cur_cell][j].function == DAM_FUN_IRR){
+                if(dam_con[cur_cell][i].function == DAM_FUN_IRR){
                     dam_get_operation_flo(ay_flow, am_flow,
                             dam_var[cur_cell][i].volume,
                             dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
                             dam_con[cur_cell][i].max_volume,
                             dam_var[cur_cell][i].op_discharge,
                             dam_var[cur_cell][i].op_volume);
-                }else if(dam_con[cur_cell][j].function == DAM_FUN_FLO){
+                }else if(dam_con[cur_cell][i].function == DAM_FUN_FLO){
                     dam_get_operation_flo(ay_flow, am_flow, 
                             dam_var[cur_cell][i].volume,
                             dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
                             dam_con[cur_cell][i].max_volume,
                             dam_var[cur_cell][i].op_discharge,
                             dam_var[cur_cell][i].op_volume);
-                }else if(dam_con[cur_cell][j].function == DAM_FUN_HYD){ 
+                }else if(dam_con[cur_cell][i].function == DAM_FUN_HYD){ 
                     dam_get_operation_hyd(am_flow, 
                             dam_var[cur_cell][i].volume,
                             dam_con[cur_cell][i].max_volume * DAM_PREF_VOL_FRAC,
