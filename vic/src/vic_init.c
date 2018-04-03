@@ -36,7 +36,6 @@ vic_init(void)
 
     // Initialize all non specific VIC structures
     init_general();
-    
     // Initialize routing
     if (options.ROUTING_RVIC) {
         routing_rvic_init();
@@ -46,8 +45,10 @@ vic_init(void)
         dam_init();
     }
     if (options.ROUTING) {
+        log_warn("start rout");
         initialize_rout_local_structures();
         rout_init();
+        log_warn("finish rout");
     }
     if (options.EFR) {
         initialize_efr_local_structures();
@@ -61,7 +62,9 @@ vic_init(void)
         irr_init();
     }
     if (options.GROUNDWATER) {
+        log_warn("start gw");
         initialize_gw_local_structures();
         gw_init();
+        log_warn("finish gw");
     }
 }

@@ -117,7 +117,7 @@ vic_start(void)
                 j++;
             }
         }
-                if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
+        if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
             // decompose the mask
             mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
                               &mpi_map_local_array_sizes,
@@ -131,6 +131,11 @@ vic_start(void)
                               &mpi_map_mapping_array);
         } else{
             log_err("Unknown mpi decomposition method");
+        }
+    
+        for (i = 0; i < (size_t)mpi_size; i++) {
+            log_info("mpi decomposition offset & size for node %zu is %d & %d",
+                    i,mpi_map_global_array_offsets[i],mpi_map_local_array_sizes[i]);
         }
 
         // get dimensions (number of vegetation types, soil zones, etc)
@@ -238,10 +243,10 @@ vic_start(void)
     }
 
     // plugins
-    if (options.ROUTING) {
-        rout_start();
-    }
     if (mpi_rank == VIC_MPI_ROOT) {
+        if (options.ROUTING) {
+            rout_start();
+        }
         if (options.DAMS) {
             dam_start();
         }

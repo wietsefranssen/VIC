@@ -73,11 +73,14 @@ rout_set_direction(void)
     d2count[0] = global_domain.n_ny;
     d2count[1] = global_domain.n_nx; 
     
+    log_warn("scatter dir: start %zu %zu; count %zu %zu; name %s",
+            d2start[0],d2start[1],d2count[0],d2count[1],filenames.routing.nc_filename);
     get_scatter_nc_field_int(&(filenames.routing), 
             "flow_direction", d2start, d2count, ivar);
     for (i = 0; i < local_domain.ncells_active; i++) {
         rout_con[i].direction = ivar[i];
     }
+    log_warn("finished scatter dir");
     
     free(ivar);
 }
@@ -624,8 +627,10 @@ rout_init(void)
                         filenames.routing.nc_filename);
     }
     
+    log_warn("start uh and direction %d",mpi_rank);
     rout_set_uh();
     rout_set_direction();
+    log_warn("done uh and direction %d",mpi_rank);
     
     if(options.ROUTING == ROUTING_LOCAL){
         rout_set_downstream();

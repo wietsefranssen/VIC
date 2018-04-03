@@ -1258,7 +1258,7 @@ init_general(void)
             }
         }
     }
-
+    
     // read blowing snow parameters
     if (options.BLOWING) {
         // sigma_slope
@@ -1590,7 +1590,6 @@ init_general(void)
         // do not iterate to close energy balance
         param.MAX_ITER_GRND_CANOPY = 0;
     }
-
     // set state metadata structure
     set_state_meta_data_info();
 
