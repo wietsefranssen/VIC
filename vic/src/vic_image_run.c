@@ -84,8 +84,11 @@ vic_image_run(dmy_struct *dmy_current)
                     dmy_current, &global_param,
                     &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
         }
+            
+        if(options.IRRIGATION){
+            irr_run1(i);
+        } 
         timer_stop(&timer);
-        
     }
     
     if (options.ROUTING) {
@@ -95,12 +98,7 @@ vic_image_run(dmy_struct *dmy_current)
             cur_cell = routing_order[i];
 
             // Plugins
-            if(options.ROUTING){
-                rout_run(cur_cell);
-            } 
-            if(options.IRRIGATION){
-                irr_run1(cur_cell);
-            } 
+            rout_run(cur_cell);
             if(options.EFR){
                 efr_run(cur_cell);
             }

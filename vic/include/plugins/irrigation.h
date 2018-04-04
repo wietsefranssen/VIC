@@ -4,10 +4,10 @@
 #include <stdbool.h>
 
 #define FIELD_CAP_FRAC 0.7
-#define IRR_CRIT_FRAC 0.94
+#define IRR_CRIT_FRAC 0.9
 
 #define POND_IRR_CRIT_FRAC 0.25
-#define POND_CAPACITY 300
+#define POND_CAPACITY 100
 #define POND_KSAT_FRAC 0.05
 
 typedef struct{
@@ -39,7 +39,7 @@ typedef struct{
     
     double requirement;
     double need;
-    bool shortage;
+    double shortage;
 }irr_var_struct;
 
 bool irr_get_global_parameters(char *cmdstr);
