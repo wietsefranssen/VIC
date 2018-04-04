@@ -472,6 +472,27 @@ print_option(option_struct *option)
             option->JULY_TAVG_SUPPLIED ? "true" : "false");
     fprintf(LOG_DEST, "\tLAKES                : %s\n",
             option->LAKES ? "true" : "false");
+    
+    // Plugins    
+    fprintf(LOG_DEST, "\tMATRIC                : %s\n",
+            option->MATRIC ? "true" : "false");
+    fprintf(LOG_DEST, "\tGROUNDWATER                : %s\n",
+            option->GROUNDWATER ? "true" : "false");
+    fprintf(LOG_DEST, "\tROUTING                : %s\n",
+            option->ROUTING ? "true" : "false");
+    fprintf(LOG_DEST, "\tROUTING_LOHMANN                : %s\n",
+            option->ROUTING_LOHMANN ? "true" : "false");
+    fprintf(LOG_DEST, "\tROUTING_RVIC                : %s\n",
+            option->ROUTING_RVIC ? "true" : "false");
+    fprintf(LOG_DEST, "\tDAMS                : %s\n",
+            option->DAMS ? "true" : "false");
+    fprintf(LOG_DEST, "\tEFR                : %s\n",
+            option->IRRIGATION ? "true" : "false");
+    fprintf(LOG_DEST, "\tEFR                : %s\n",
+            option->EFR ? "true" : "false");
+    fprintf(LOG_DEST, "\tWATER_USE                : %s\n",
+            option->WATER_USE ? "true" : "false");
+    
     fprintf(LOG_DEST, "\tNcanopy              : %zu\n", option->Ncanopy);
     fprintf(LOG_DEST, "\tNfrost               : %zu\n", option->Nfrost);
     fprintf(LOG_DEST, "\tNlakenode            : %zu\n", option->Nlakenode);

@@ -50,6 +50,7 @@
 #include <vic_log.h>
 
 #include <water_use.h>
+#include <matric.h>
 #include <routing.h>
 #include <irrigation.h>
 #include <groundwater.h>
@@ -313,7 +314,7 @@ typedef struct {
 
     // Plugins
     bool GROUNDWATER;
-    bool ROUTING;
+    int ROUTING;
     bool ROUTING_RVIC;
     bool ROUTING_LOHMANN;
     bool WATER_USE;

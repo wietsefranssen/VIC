@@ -63,14 +63,16 @@ void gw_calculate_derived_states(void)
                                     soil_con[i].depth[n] * 
                                     eff_porosity * MM_PER_M;
                         }
+                        
+                        break;
                     }
                 }
                 if(!in_column){
-                   gw_var[i][j][k].Wt = 
+                   gw_var[i][j][k].Wa = 
                             (gw_con[i].Za_max - gw_var[i][j][k].zwt) * 
                             gw_con[i].Sy * MM_PER_M;
-                    gw_var[i][j][k].Wa = 
-                            gw_var[i][j][k].Wt;
+                    gw_var[i][j][k].Wt +=
+                            gw_var[i][j][k].Wa;
                 }else{         
                     gw_var[i][j][k].Wa = 
                             (gw_con[i].Za_max - z_tmp) * 
@@ -134,17 +136,6 @@ gw_generate_default_state(void)
             }
         }
         
-        get_scatter_nc_field_double(&(filenames.groundwater),
-                "Ws_init", d2start, d2count, dvar);
-
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            for (j = 0; j < veg_con_map[i].nv_active; j++) {
-                for (k = 0; k < options.SNOW_BAND; k++) {
-                    gw_var[i][j][k].Ws = (double) dvar[i];
-                }
-            }
-        }
-        
         // close parameter file
         if(mpi_rank == VIC_MPI_ROOT){
             status = nc_close(filenames.groundwater.nc_id);
@@ -157,7 +148,6 @@ gw_generate_default_state(void)
             for(j=0; j<veg_con_map[i].nv_active; j++){
                 for(k=0; k<options.SNOW_BAND; k++){
                     gw_var[i][j][k].zwt = gw_con[i].Za_max;
-		    gw_var[i][j][k].Ws = 0.0;
                 }                
             }
         }

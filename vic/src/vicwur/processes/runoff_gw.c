@@ -64,7 +64,7 @@ runoff_gw(cell_data_struct  *cell,
     double                     moist[MAX_LAYERS]; // current total soil moisture (liquid and frozen) (mm)
     double                     max_moist[MAX_LAYERS]; // maximum storable moisture (liquid and frozen) (mm)
     double                     Ksat[MAX_LAYERS];
-    double                     Q12[MAX_LAYERS + 1];
+    double                     Q12[MAX_LAYERS];
     double                     tmp_inflow;
     double                     tmp_moist;
     double                     tmp_moist_for_runoff[MAX_LAYERS];
@@ -98,14 +98,11 @@ runoff_gw(cell_data_struct  *cell,
     int new_lwt;
     
     // states
-    int lwt;
-    int lbot;     
+    int lwt;  
     double Qb_max;    
     double delta_z;
-    double max_moist_a;
     
-    double Kl[MAX_LAYERS + 1];
-    double Qb[MAX_LAYERS + 1];
+    double Qb[MAX_LAYERS];
     double z[MAX_LAYERS];
     double eff_porosity[MAX_LAYERS];
     
@@ -114,7 +111,6 @@ runoff_gw(cell_data_struct  *cell,
     double zwt[MAX_FROST_AREAS];
     double Wa[MAX_FROST_AREAS];    
     double Wt[MAX_FROST_AREAS];
-    double Ws[MAX_FROST_AREAS];
 
     /** Set Residual Moisture **/
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
@@ -139,7 +135,6 @@ runoff_gw(cell_data_struct  *cell,
         zwt[fidx] = gw_var->zwt;
         Wa[fidx] = gw_var->Wa;
         Wt[fidx] = gw_var->Wt;
-        Ws[fidx] = gw_var->Ws;
     }
     
     gw_var->recharge = 0.0;
@@ -147,7 +142,6 @@ runoff_gw(cell_data_struct  *cell,
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;   
     gw_var->Wt = 0.0;
-    gw_var->Ws = 0.0;
 
     for (lindex = 0; lindex < options.Nlayer; lindex++) {
         evap[lindex][0] = layer[lindex].evap / (double) runoff_steps_per_dt;
@@ -243,11 +237,9 @@ runoff_gw(cell_data_struct  *cell,
         **************************************************/
 
         dt_inflow = inflow / (double) runoff_steps_per_dt;
+        
         Qb_max = gw_con->Qb_max / global_param.runoff_steps_per_day;
-
-        /**************************************************
-           Compute Flow Between Soil Layers
-        **************************************************/
+        
         for (time_step = 0; time_step < runoff_steps_per_dt; time_step++) { 
             inflow = dt_inflow;
             
@@ -255,15 +247,9 @@ runoff_gw(cell_data_struct  *cell,
                Compute phreatic water level
             **************************************************/
             lwt = -1;
-            lbot = options.Nlayer - 1;
             for (lindex = 0; lindex < options.Nlayer; lindex++) {
                 if(zwt[fidx] <= z[lindex]){
                     lwt=lindex;
-                    if(lindex == 0){
-                        lbot = lwt;
-                    }else{
-                        lbot = lwt - 1;
-                    }
                     break;
                 }
             }
@@ -273,14 +259,12 @@ runoff_gw(cell_data_struct  *cell,
                 delta_z = 0;
             }
             
-            max_moist_a = gw_con->Sy * delta_z * MM_PER_M;
-            
             /**************************************************
                Compute Baseflow
             **************************************************/
             dt_baseflow = Qb_max * exp(-gw_con->Qb_expt * zwt[fidx]);
             
-            for(lindex = 0; lindex < options.Nlayer + 1; lindex ++){
+            for(lindex = 0; lindex < options.Nlayer; lindex ++){
                 Qb[lindex] = 0.0;
             }            
 
@@ -288,30 +272,34 @@ runoff_gw(cell_data_struct  *cell,
                 /** Calculate average conductivity **/
                 avg_K = 0.0;
                 for(lindex = lwt; lindex < options.Nlayer; lindex ++){
-                    if((int)lindex == lwt){
-                        avg_K += (z[lindex] - zwt[fidx]) * Ksat[lindex];
-                    }else{
-                        avg_K += soil_con->depth[lindex] * Ksat[lindex];
+                    tmp_liq = liq[lindex] - resid_moist[lindex];
+                    if(tmp_liq < 0){
+                        tmp_liq = 0.0;
                     }
+                    tmp_liq = tmp_liq / (max_moist[lindex] - resid_moist[lindex]);
+                            
+                    avg_K += tmp_liq;
                 }
 
                 /** Update soil layer baseflow **/
                 for(lindex = lwt; lindex < options.Nlayer; lindex ++){
-                    if((int)lindex == lwt){
-                        Qb[lindex] += dt_baseflow * 
-                                (((z[lindex] - zwt[fidx]) * Ksat[lindex]) / 
-                                avg_K);
-                    }else{
-                        Qb[lindex] += dt_baseflow * 
-                                ((soil_con->depth[lindex] * Ksat[lindex]) / 
-                                avg_K);
+                    tmp_liq = liq[lindex] - resid_moist[lindex];
+                    if(tmp_liq < 0){
+                        tmp_liq = 0.0;
+                    }
+                    tmp_liq = tmp_liq / (max_moist[lindex] - resid_moist[lindex]);
+                    
+                    if(avg_K == 0){
+                        Qb[lindex] = dt_baseflow / (options.Nlayer - lwt);
+                    } else {
+                        Qb[lindex] = dt_baseflow * tmp_liq / avg_K;
                     }
                 }
             } 
             
-            /**************************************************
-               Compute matric potential
-            **************************************************/     
+            /*************************************
+               Compute Drainage between Sublayers
+            *************************************/
             if(options.MATRIC){
                 // Set matric potential (based on moisture content and soil texture)
                 for (lindex = 0; lindex < options.Nlayer; lindex++) {
@@ -329,9 +317,6 @@ runoff_gw(cell_data_struct  *cell,
                 }
             }
             
-            /*************************************
-               Compute Hydraulic Conductivity of Sublayers
-            *************************************/
             for (lindex = 0; lindex < options.Nlayer; lindex++) {
                 /** Brooks & Corey relation for hydraulic conductivity **/
 
@@ -357,7 +342,7 @@ runoff_gw(cell_data_struct  *cell,
                         }
                     }
                     
-                    Kl[lindex] = Ksat[lindex] *
+                    Q12[lindex] = Ksat[lindex] *
                                   pow(((tmp_liq -
                                         resid_moist[lindex]) /
                                        (soil_con->max_moist[lindex] -
@@ -365,40 +350,22 @@ runoff_gw(cell_data_struct  *cell,
                                       soil_con->expt[lindex]);
                 }
                 else {
-                    Kl[lindex] = 0.0;
+                    Q12[lindex] = 0.;
                 }
             }
             
-            /** Compute hydraulic conductivity of aquifer storage **/ 
-            lindex = options.Nlayer;
-            if ((tmp_liq = Ws[fidx]) < 0.0) {
-                tmp_liq = 0.0;
-            }
-            
-            if (tmp_liq > 0) {
-                if(delta_z == 0){
-                    Kl[lindex] = Kl[lindex - 1];
-                }else{
-                    Kl[lindex] = Kl[lindex - 1] * 
-                            (1 - exp(-gw_con->Ka_expt * delta_z)) / 
-                            (gw_con->Ka_expt * delta_z);
-                }
-            } else {
-                Kl[lindex] = 0.0;
-            }
-            
-            /*************************************
-               Compute Drainage between Sublayers
-            *************************************/
-            for (lindex = 0; lindex < options.Nlayer + 1; lindex++) {
-                Q12[lindex] = Kl[lindex];
-            }
-            
-            /** No drainage if water table is in soil column **/
-            lindex = options.Nlayer - 1;          
-            if(lwt != -1){
-                Q12[lindex] = 0.0;
-            }
+            /** Recompute hydraulic conductivity of lowest layer:
+            * Exponential decay in drainage if water table is 
+            * below soil column (Equation 7 - Niu et al., 2007)
+            * and no drainage if water table is in soil column **/
+            lindex = options.Nlayer - 1;
+            if(lwt == -1){
+                Q12[lindex] = Q12[lindex] *
+                        (1 - exp(-gw_con->Ka_expt * delta_z)) / 
+                        (gw_con->Ka_expt * delta_z);                
+            }else{                
+                Q12[lindex] = 0.;
+            }       
             
             /**************************************************
                Solve for Current Soil Layer Moisture, and
@@ -479,42 +446,15 @@ runoff_gw(cell_data_struct  *cell,
 
                 last_index++;
             } /* end loop through soil layers */
-
-            /** Update aquifer storage moisture content **/
-            lindex = options.Nlayer;
-            dt_runoff = 0.0;
-            tmp_inflow = 0.0;
-            
-            Ws[fidx] = Ws[fidx] + 
-                    (inflow - dt_runoff) - 
-                    (Q12[lindex] + Qb[lindex]);
-            
-            /** Verify that aquifer storage moisture is less than maximum **/
-            if (Ws[fidx] > max_moist_a) {
-                Q12[lindex] += Ws[fidx] - max_moist_a;
-                Ws[fidx] = max_moist_a;
-            }
-            
-            /** verify that aquifer storage moisture is greater than minimum **/
-            if (Ws[fidx] < 0) {
-                Q12[lindex] += Ws[fidx];
-                Ws[fidx] = 0.0;
-            }
-            
-            inflow = (Q12[lindex] + tmp_inflow);
-            Q12[lindex] += tmp_inflow;
-            last_index++;
                         
             /**************************************************
                Compute Recharge
             **************************************************/
-            lindex = options.Nlayer;
-            if (lwt == -1) {
+            lindex = options.Nlayer - 1;
+            if(lwt == -1){
                 dt_recharge = Q12[lindex];
-            } else if (lwt == 0) {
-                dt_recharge = dt_inflow - runoff[fidx];
-            } else {                
-                dt_recharge = Q12[lbot] + Q12[lindex]; 
+            }else{
+                dt_recharge = Q12[lindex - 1] + Q12[lindex];
             }
             
             /**************************************************
@@ -536,7 +476,7 @@ runoff_gw(cell_data_struct  *cell,
                 Wa[fidx] = (gw_con->Za_max - z[options.Nlayer - 1]) * gw_con->Sy * MM_PER_M;
                 
                 tmp_Wt = (Wt[fidx] - Wa[fidx]) / MM_PER_M;
-                for(lindex = options.Nlayer -1; (int)lindex >=0; lindex --){
+                for(lindex = options.Nlayer - 1; (int)lindex >=0; lindex --){
                     if(tmp_Wt < soil_con->depth[lindex] * eff_porosity[lindex]){
                         zwt[fidx] = z[lindex] - tmp_Wt / eff_porosity[lindex];  
                         tmp_Wt = 0.0;
@@ -640,8 +580,7 @@ runoff_gw(cell_data_struct  *cell,
         gw_var->recharge += recharge[fidx] * frost_fract[fidx];
         gw_var->zwt += zwt[fidx] * frost_fract[fidx];
         gw_var->Wa += Wa[fidx] * frost_fract[fidx];
-        gw_var->Wt += Wt[fidx] * frost_fract[fidx];
-        gw_var->Ws += Ws[fidx] * frost_fract[fidx];            
+        gw_var->Wt += Wt[fidx] * frost_fract[fidx];         
         gw_var->available += (gw_con->Za_max - zwt[fidx]) * frost_fract[fidx];
     }
 
@@ -678,24 +617,4 @@ runoff_gw(cell_data_struct  *cell,
         }
     }
     return (0);
-}
-
-/******************************************************************************
-* @brief    Calculate drainage between two layers
-******************************************************************************/
-double
-calc_Q12(double Ksat,
-         double init_moist,
-         double resid_moist,
-         double max_moist,
-         double expt)
-{
-    double Q12;
-
-    Q12 = init_moist - pow(pow(init_moist - resid_moist, 1.0 - expt) -
-                           Ksat /
-                           pow(max_moist - resid_moist, expt) * (1.0 - expt),
-                           1.0 / (1.0 - expt)) - resid_moist;
-
-    return Q12;
 }

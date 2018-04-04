@@ -1574,6 +1574,16 @@ init_general(void)
         }
         initialize_energy(all_vars[i].energy, nveg);
     }
+    
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        for(k = 0; k < veg_con_map[i].nv_active; k++){
+            for(m = 0; m < options.SNOW_BAND; m++){
+                for (j = 0; j < options.Nlayer; j++) {
+                    all_vars[i].cell[k][m].layer[j].Ksat = soil_con[i].Ksat[j];
+                }
+            }
+        }
+    }
 
     // Canopy Iterations
     if (!options.CLOSE_ENERGY) {

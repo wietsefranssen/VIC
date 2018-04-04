@@ -7,7 +7,6 @@ initialize_gw_var(gw_var_struct *gw_var)
     gw_var->zwt = 0.0;
     gw_var->Wa = 0.0;
     gw_var->Wt = 0.0;
-    gw_var->Ws = 0.0;
     gw_var->available = 0.0;
 }
 

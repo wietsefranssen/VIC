@@ -7,6 +7,7 @@ initialize_rout_var(rout_var_struct *rout_var)
     
     size_t i;
     
+    rout_var->storage = 0.0;
     for(i=0; i<options.RIRF_NSTEPS; i++){
         rout_var->discharge[i] = 0.0;
         rout_var->nat_discharge[i] = 0.0;
