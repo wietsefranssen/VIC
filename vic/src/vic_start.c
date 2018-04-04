@@ -238,10 +238,10 @@ vic_start(void)
     }
 
     // plugins
-    if (options.ROUTING) {
-        rout_start();
-    }
     if (mpi_rank == VIC_MPI_ROOT) {
+        if (options.ROUTING) {
+            rout_start();
+        }
         if (options.DAMS) {
             dam_start();
         }
