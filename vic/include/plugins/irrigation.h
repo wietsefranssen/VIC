@@ -51,6 +51,7 @@ void irr_alloc(void);
 void initialize_irr_local_structures(void);
 void irr_init(void);
 void irr_generate_default_state(void);
+bool irr_history(int, unsigned int *);
 void irr_run1(size_t cur_cell);
 void irr_run2(size_t cur_cell);
 void irr_put_data(void);

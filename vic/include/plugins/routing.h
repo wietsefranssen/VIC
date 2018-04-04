@@ -44,6 +44,7 @@ void rout_init(void);
 void rout_gl_init(void);
 void rout_set_output_meta_data_info(void);
 void rout_set_state_meta_data_info(void);
+bool rout_history(int, unsigned int *);
 void rout_run(size_t cur_cell);
 void rout_gl_run(void);
 void rout_put_data(void);

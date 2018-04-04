@@ -44,6 +44,7 @@ void wu_alloc(void);
 void initialize_wu_local_structures(void);
 void wu_set_output_meta_data_info(void);
 void wu_set_state_meta_data_info(void);
+bool wu_history(int, unsigned int *);
 void wu_force(void);
 void wu_run(size_t cur_cell);
 void wu_put_data(void);
