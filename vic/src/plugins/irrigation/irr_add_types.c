@@ -40,7 +40,7 @@ irr_add_types(void) {
     outvar_types = list_prepend(outvar_types, "OUT_IRR_REQUIREMENT");
     outvar_types = list_prepend(outvar_types, "OUT_IRR_NEED");
     outvar_types = list_prepend(outvar_types, "OUT_IRR_POND_STORAGE");
-    outvar_types = list_prepend(outvar_types, "OUT_IRR_LEFTOVER");
+    outvar_types = list_prepend(outvar_types, "OUT_IRR_DEFICIT");
     outvar_types = list_prepend(outvar_types, "OUT_IRR_SHORTAGE");
     
     outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);

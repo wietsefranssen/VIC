@@ -160,11 +160,9 @@ irr_run1(size_t cur_cell)
             irr_var[cur_cell][i][j].need = 
                     irr_var[cur_cell][i][j].requirement - 
                     irr_var[cur_cell][i][j].prev_req;
-
             if(irr_var[cur_cell][i][j].need < 0.0){
                 irr_var[cur_cell][i][j].need = 0.0;
             }
-
             irr_var[cur_cell][i][j].prev_req = 
                 irr_var[cur_cell][i][j].requirement;
             
@@ -187,6 +185,15 @@ irr_run1(size_t cur_cell)
                     }
                 }
             }
+            
+            irr_var[cur_cell][i][j].deficit =
+                    irr_var[cur_cell][i][j].shortage - 
+                    irr_var[cur_cell][i][j].prev_short;
+            if(irr_var[cur_cell][i][j].deficit < 0.0){
+                irr_var[cur_cell][i][j].deficit = 0.0;
+            }
+            irr_var[cur_cell][i][j].prev_short = 
+                irr_var[cur_cell][i][j].shortage;
         }        
     }
                 
@@ -197,10 +204,10 @@ irr_run1(size_t cur_cell)
             cur_veg = irr_con[cur_cell][i].veg_index;
 
             for(j = 0; j < options.SNOW_BAND; j++){
-		    total_demand += irr_var[cur_cell][i][j].requirement *
-			    soil_con[cur_cell].AreaFract[j] * 
-			    veg_con[cur_cell][cur_veg].Cv;
-		}
+                total_demand += irr_var[cur_cell][i][j].requirement *
+                        soil_con[cur_cell].AreaFract[j] * 
+                        veg_con[cur_cell][cur_veg].Cv;
+            }
 	}
 
         wu_con[cur_cell][WU_IRRIGATION].demand = total_demand / 

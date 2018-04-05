@@ -6,9 +6,9 @@
 #define FIELD_CAP_FRAC 0.7
 #define IRR_CRIT_FRAC 0.9
 
-#define POND_IRR_CRIT_FRAC 0.25
-#define POND_CAPACITY 100
-#define POND_KSAT_FRAC 0.05
+#define POND_IRR_CRIT_FRAC 0.1
+#define POND_CAPACITY 150
+#define POND_KSAT_FRAC 0.1
 
 typedef struct{
     size_t ni_types;
@@ -31,15 +31,18 @@ typedef struct{
 }irr_con_struct;
 
 typedef struct{
-    double pond_storage;    
+    double requirement;
+    double shortage;
+    
+    double pond_storage;
     double leftover;  
     
     double prev_req;
     double prev_store;
+    double prev_short;
     
-    double requirement;
     double need;
-    double shortage;
+    double deficit;
 }irr_var_struct;
 
 bool irr_get_global_parameters(char *cmdstr);

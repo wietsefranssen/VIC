@@ -30,12 +30,12 @@ irr_set_output_meta_data_info(void)
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_POND_STORAGE")].description,
            "irrigation_pond_storage");
     
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].varname, "OUT_IRR_LEFTOVER");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].long_name, "irrigation_leftover");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].standard_name,
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_DEFICIT")].varname, "OUT_IRR_DEFICIT");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_DEFICIT")].long_name, "irrigation_leftover");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_DEFICIT")].standard_name,
            "irrigation_leftover");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].units, "mm");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_LEFTOVER")].description,
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_DEFICIT")].units, "mm");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_DEFICIT")].description,
            "irrigation_leftover");
     
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_IRR_SHORTAGE")].varname, "OUT_IRR_SHORTAGE");

@@ -69,5 +69,5 @@ wu_run(size_t cur_cell)
         }else{
             log_err("Unknown water use return location");
         }
-    }  
+    }
 }

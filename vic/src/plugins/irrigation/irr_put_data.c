@@ -19,7 +19,7 @@ irr_put_data(void)
     
     int OUT_IRR_REQUIREMENT = list_search_id(outvar_types, "OUT_IRR_REQUIREMENT");
     int OUT_IRR_NEED = list_search_id(outvar_types, "OUT_IRR_NEED");
-    int OUT_IRR_LEFTOVER = list_search_id(outvar_types, "OUT_IRR_LEFTOVER");
+    int OUT_IRR_DEFICIT = list_search_id(outvar_types, "OUT_IRR_DEFICIT");
     int OUT_IRR_POND_STORAGE = list_search_id(outvar_types, "OUT_IRR_POND_STORAGE");
     int OUT_IRR_SHORTAGE = list_search_id(outvar_types, "OUT_IRR_SHORTAGE");
     
@@ -30,13 +30,15 @@ irr_put_data(void)
             for(k = 0; k < options.SNOW_BAND; k++){
                 out_data[i][OUT_IRR_REQUIREMENT][0] += irr_var[i][j][k].requirement * 
                     soil_con[i].AreaFract[k] * veg_con[i][cur_veg].Cv;
+                out_data[i][OUT_IRR_SHORTAGE][0] += irr_var[i][j][k].shortage * 
+                    soil_con[i].AreaFract[k] * veg_con[i][cur_veg].Cv;
+                
                 out_data[i][OUT_IRR_NEED][0] += irr_var[i][j][k].need * 
                     soil_con[i].AreaFract[k] * veg_con[i][cur_veg].Cv;
-                out_data[i][OUT_IRR_LEFTOVER][0] += irr_var[i][j][k].leftover * 
+                out_data[i][OUT_IRR_DEFICIT][0] += irr_var[i][j][k].deficit * 
                     soil_con[i].AreaFract[k] * veg_con[i][cur_veg].Cv;
+                
                 out_data[i][OUT_IRR_POND_STORAGE][0] += irr_var[i][j][k].pond_storage * 
-                    soil_con[i].AreaFract[k] * veg_con[i][cur_veg].Cv;
-                out_data[i][OUT_IRR_SHORTAGE][0] += irr_var[i][j][k].shortage * 
                     soil_con[i].AreaFract[k] * veg_con[i][cur_veg].Cv;
             }
         }

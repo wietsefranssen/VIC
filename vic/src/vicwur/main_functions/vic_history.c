@@ -236,7 +236,6 @@ get_default_outvar_aggtype(unsigned int varid)
     if(options.ROUTING && rout_history(varid, &agg_type)){
     }else if(options.GROUNDWATER && gw_history(varid, &agg_type)){
     }else if(options.IRRIGATION && irr_history(varid, &agg_type)){
-    }else if(options.WATER_USE && wu_history(varid, &agg_type)){
     }else{
         switch (varid) {
         // AGG_TYPE_END
