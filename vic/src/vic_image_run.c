@@ -137,9 +137,6 @@ vic_image_run(dmy_struct *dmy_current)
     } else if (options.ROUTING == ROUTING_GLOBAL){
         rout_gl_run();
         
-        if(options.IRRIGATION){
-            log_err("IRRIGATION is not yet available with ROUTING_GLOBAL");
-        } 
         if(options.EFR){
             log_err("EFR is not yet available with ROUTING_GLOBAL");
         }
