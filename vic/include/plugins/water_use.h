@@ -26,6 +26,12 @@ enum{
     WU_INPUT_NLOCATIONS
 };
 
+enum{
+    WU_STRATEGY_EQUAL,
+    WU_STRATEGY_PRIORITY,
+    WU_NSTRATEGY
+};
+
 typedef struct{
     double demand;
     double consumption_fraction;
