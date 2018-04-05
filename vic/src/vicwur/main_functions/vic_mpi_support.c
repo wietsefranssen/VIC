@@ -2342,20 +2342,13 @@ get_scatter_nc_field_int(nameid_struct *nc_nameid,
         free(ivar_filtered);
     }
     
-    log_info("Start %d",mpi_rank);
-    if(mpi_rank == VIC_MPI_ROOT){
-        //log_info("node %d; %p %d %d %p", mpi_rank, ivar_mapped, mpi_map_local_array_sizes[mpi_rank], mpi_map_global_array_offsets[mpi_rank], MPI_COMM_VIC);
-        //log_info("node %d; %p %d %d %p", 1, ivar_mapped, mpi_map_local_array_sizes[1], mpi_map_global_array_offsets[1], MPI_COMM_VIC);
-    }
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(ivar_mapped, mpi_map_local_array_sizes,
                           mpi_map_global_array_offsets, MPI_INT,
                           var, local_domain.ncells_active, MPI_INT,
                           VIC_MPI_ROOT, MPI_COMM_VIC);
-    log_info("%d",status);
     check_mpi_status(status, "MPI error.");
-    log_info("End %d",mpi_rank);
 
     if (mpi_rank == VIC_MPI_ROOT) {
         free(ivar_mapped);

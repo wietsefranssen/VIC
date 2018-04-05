@@ -21,6 +21,8 @@ dam_put_data(void)
     int OUT_DAM_OP_VOLUME = list_search_id(outvar_types, "OUT_DAM_OP_VOLUME");
     int OUT_DAM_OP_MONTH = list_search_id(outvar_types, "OUT_DAM_OP_MONTH");
 
+    // If running with OpenMP, run this for loop using multiple threads
+    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for(i = 0; i < local_domain.ncells_active; i++){ 
         for(j = 0; j < dam_con_map[i].nd_active; j++){
             out_data[i][OUT_DAM_VOLUME][j] = dam_var[i][j].volume / pow(M_PER_KM, 3);

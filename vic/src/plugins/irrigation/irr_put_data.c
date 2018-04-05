@@ -23,6 +23,8 @@ irr_put_data(void)
     int OUT_IRR_POND_STORAGE = list_search_id(outvar_types, "OUT_IRR_POND_STORAGE");
     int OUT_IRR_SHORTAGE = list_search_id(outvar_types, "OUT_IRR_SHORTAGE");
     
+    // If running with OpenMP, run this for loop using multiple threads
+    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for(i = 0; i < local_domain.ncells_active; i++){ 
         for(j = 0; j < irr_con_map[i].ni_active; j++){
             cur_veg = irr_con[i][j].veg_index;

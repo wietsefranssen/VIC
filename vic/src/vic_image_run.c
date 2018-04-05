@@ -90,8 +90,20 @@ vic_image_run(dmy_struct *dmy_current)
         } 
         timer_stop(&timer);
     }
-    
-    if (options.ROUTING != ROUTING_FALSE) {
+        
+    // If running with OpenMP, run this for loop using multiple threads
+    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        // TODO: set reference strings
+        put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
+                 veg_lib[i], &lake_con, out_data[i], &(save_data[i]),
+                 &timer);
+    }
+
+    if (options.ROUTING_RVIC) {
+        routing_rvic_run();
+    }    
+    if (options.ROUTING == ROUTING_LOCAL) {
         // If running with OpenMP, run this for loop using multiple threads
         //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
         for(i = 0; i < local_domain.ncells_active; i++){
@@ -122,20 +134,23 @@ vic_image_run(dmy_struct *dmy_current)
                 }
             }
         }
-    }
+    } else if (options.ROUTING == ROUTING_GLOBAL){
+        rout_gl_run();
         
-    // If running with OpenMP, run this for loop using multiple threads
-    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
-    for (i = 0; i < local_domain.ncells_active; i++) {
-        put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
-                 veg_lib[i], &lake_con, out_data[i], &(save_data[i]),
-                 &timer);
+        if(options.IRRIGATION){
+            log_err("IRRIGATION is not yet available with ROUTING_GLOBAL");
+        } 
+        if(options.EFR){
+            log_err("EFR is not yet available with ROUTING_GLOBAL");
+        }
+        if(options.DAMS){
+            log_err("DAMS is not yet available with ROUTING_GLOBAL");
+        }
+        if(options.WATER_USE){
+            log_err("WATER_USE is not yet available with ROUTING_GLOBAL");
+        }
     }
-
-    if (options.ROUTING_RVIC) {
-        routing_rvic_run();
-    }
-
+    
     if(options.GROUNDWATER){
         gw_put_data();
     }

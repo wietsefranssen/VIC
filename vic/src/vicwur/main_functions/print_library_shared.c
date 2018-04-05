@@ -474,23 +474,23 @@ print_option(option_struct *option)
             option->LAKES ? "true" : "false");
     
     // Plugins    
-    fprintf(LOG_DEST, "\tMATRIC                : %s\n",
+    fprintf(LOG_DEST, "\tMATRIC               : %s\n",
             option->MATRIC ? "true" : "false");
-    fprintf(LOG_DEST, "\tGROUNDWATER                : %s\n",
+    fprintf(LOG_DEST, "\tGROUNDWATER          : %s\n",
             option->GROUNDWATER ? "true" : "false");
-    fprintf(LOG_DEST, "\tROUTING                : %s\n",
+    fprintf(LOG_DEST, "\tROUTING              : %s\n",
             option->ROUTING ? "true" : "false");
-    fprintf(LOG_DEST, "\tROUTING_LOHMANN                : %s\n",
+    fprintf(LOG_DEST, "\tROUTING_LOHMANN      : %s\n",
             option->ROUTING_LOHMANN ? "true" : "false");
-    fprintf(LOG_DEST, "\tROUTING_RVIC                : %s\n",
+    fprintf(LOG_DEST, "\tROUTING_RVIC         : %s\n",
             option->ROUTING_RVIC ? "true" : "false");
-    fprintf(LOG_DEST, "\tDAMS                : %s\n",
+    fprintf(LOG_DEST, "\tDAMS                 : %s\n",
             option->DAMS ? "true" : "false");
-    fprintf(LOG_DEST, "\tEFR                : %s\n",
+    fprintf(LOG_DEST, "\tEFR                  : %s\n",
             option->IRRIGATION ? "true" : "false");
-    fprintf(LOG_DEST, "\tEFR                : %s\n",
+    fprintf(LOG_DEST, "\tEFR                  : %s\n",
             option->EFR ? "true" : "false");
-    fprintf(LOG_DEST, "\tWATER_USE                : %s\n",
+    fprintf(LOG_DEST, "\tWATER_USE            : %s\n",
             option->WATER_USE ? "true" : "false");
     
     fprintf(LOG_DEST, "\tNcanopy              : %zu\n", option->Ncanopy);
