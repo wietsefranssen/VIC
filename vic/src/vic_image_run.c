@@ -86,7 +86,7 @@ vic_image_run(dmy_struct *dmy_current)
         }
             
         if(options.IRRIGATION){
-            irr_run1(i);
+            irr_run(i);
         } 
         timer_stop(&timer);
     }
@@ -99,17 +99,27 @@ vic_image_run(dmy_struct *dmy_current)
 
             // Plugins
             rout_run(cur_cell);
+            
             if(options.EFR){
                 efr_run(cur_cell);
             }
             if(options.DAMS){
                 dam_run(cur_cell);
             }
+            
             if(options.WATER_USE){
+                if(options.IRRIGATION){
+                    irr_set_demand(cur_cell);
+                }
+                if(options.EFR){
+                    efr_set_demand(cur_cell);
+                }
+                
                 wu_run(cur_cell);
-            }
-            if(options.IRRIGATION){
-                irr_run2(cur_cell);
+                
+                if(options.IRRIGATION){
+                    irr_get_withdrawn(cur_cell);
+                }
             }
         }
     }

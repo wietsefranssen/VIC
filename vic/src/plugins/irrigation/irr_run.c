@@ -1,10 +1,8 @@
 #include <vic.h>
 
 void
-irr_run1(size_t cur_cell)
+irr_run(size_t cur_cell)
 {
-    extern domain_struct local_domain;
-    extern global_param_struct global_param;
     extern dmy_struct *dmy;
     extern size_t current;
     extern option_struct options;
@@ -14,13 +12,11 @@ irr_run1(size_t cur_cell)
     extern irr_var_struct ***irr_var;
     extern soil_con_struct *soil_con;
     extern veg_con_struct **veg_con;
-    extern wu_con_struct **wu_con;
     extern option_struct options;
     
     double moist[options.Nlayer];
     double total_moist;
     double total_wcr;
-    double total_demand;
     double season_day;
     size_t cur_veg;
     
@@ -28,8 +24,7 @@ irr_run1(size_t cur_cell)
     size_t j;
     size_t k;
     size_t l;       
-            
-    total_demand = 0;            
+                       
     for(i = 0; i < irr_con_map[cur_cell].ni_active; i++){
         cur_veg = irr_con[cur_cell][i].veg_index;
         
@@ -196,7 +191,24 @@ irr_run1(size_t cur_cell)
                 irr_var[cur_cell][i][j].shortage;
         }        
     }
-                
+}
+     
+void
+irr_set_demand(size_t cur_cell)
+{
+    extern domain_struct local_domain;
+    extern global_param_struct global_param;
+    extern option_struct options;
+    extern wu_con_struct **wu_con;
+    extern soil_con_struct *soil_con;
+    extern veg_con_struct **veg_con;
+    
+    double total_demand;
+    size_t cur_veg;
+    
+    size_t i;
+    size_t j;
+
     if(options.WATER_USE){
         
         total_demand = 0;            
@@ -218,7 +230,7 @@ irr_run1(size_t cur_cell)
 }
 
 void
-irr_run2(size_t cur_cell)
+irr_get_withdrawn(size_t cur_cell)
 {
     extern domain_struct local_domain;
     extern global_param_struct global_param;
