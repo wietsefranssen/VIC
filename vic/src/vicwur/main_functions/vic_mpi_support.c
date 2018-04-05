@@ -487,7 +487,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in option_struct
-    nitems = 73;
+    nitems = 75;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -728,7 +728,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     mpi_types[i++] = MPI_C_BOOL;
     // bool ROUTING;
     offsets[i] = offsetof(option_struct, ROUTING);
-    mpi_types[i++] = MPI_C_BOOL;
+    mpi_types[i++] = MPI_INT;
     // bool WATER_USE;
     offsets[i] = offsetof(option_struct, WATER_USE);
     mpi_types[i++] = MPI_C_BOOL;
@@ -2189,7 +2189,7 @@ scatter_field_double(double *dvar,
         free(dvar);
         free(dvar_filtered);
     }
-
+    
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(dvar_mapped, mpi_map_local_array_sizes,
@@ -2197,7 +2197,7 @@ scatter_field_double(double *dvar,
                           var, local_domain.ncells_active, MPI_DOUBLE,
                           VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-
+    
     if (mpi_rank == VIC_MPI_ROOT) {
         free(dvar_mapped);
     }
@@ -2341,14 +2341,21 @@ get_scatter_nc_field_int(nameid_struct *nc_nameid,
         free(ivar);
         free(ivar_filtered);
     }
-
+    
+    log_info("Start %d",mpi_rank);
+    if(mpi_rank == VIC_MPI_ROOT){
+        //log_info("node %d; %p %d %d %p", mpi_rank, ivar_mapped, mpi_map_local_array_sizes[mpi_rank], mpi_map_global_array_offsets[mpi_rank], MPI_COMM_VIC);
+        //log_info("node %d; %p %d %d %p", 1, ivar_mapped, mpi_map_local_array_sizes[1], mpi_map_global_array_offsets[1], MPI_COMM_VIC);
+    }
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(ivar_mapped, mpi_map_local_array_sizes,
                           mpi_map_global_array_offsets, MPI_INT,
                           var, local_domain.ncells_active, MPI_INT,
                           VIC_MPI_ROOT, MPI_COMM_VIC);
+    log_info("%d",status);
     check_mpi_status(status, "MPI error.");
+    log_info("End %d",mpi_rank);
 
     if (mpi_rank == VIC_MPI_ROOT) {
         free(ivar_mapped);

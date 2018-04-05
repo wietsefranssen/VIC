@@ -91,7 +91,7 @@ vic_image_run(dmy_struct *dmy_current)
         timer_stop(&timer);
     }
     
-    if (options.ROUTING) {
+    if (options.ROUTING != ROUTING_FALSE) {
         // If running with OpenMP, run this for loop using multiple threads
         //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
         for(i = 0; i < local_domain.ncells_active; i++){
@@ -139,7 +139,7 @@ vic_image_run(dmy_struct *dmy_current)
     if(options.GROUNDWATER){
         gw_put_data();
     }
-    if(options.ROUTING){
+    if(options.ROUTING != ROUTING_FALSE){
         rout_put_data();
     }
     if(options.EFR){

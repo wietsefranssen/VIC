@@ -34,7 +34,7 @@ mpi_validate_global_parameters(void)
     extern int mpi_decomposition;
     
     if(mpi_decomposition == MPI_DECOMPOSITION_BASIN){
-        if(!options.ROUTING){
+        if(options.ROUTING == ROUTING_FALSE){
             log_err("MPI_DECOMPOSITION = MPI_DECOMPOSITION_BASIN but ROUTING = FALSE");
         }
     }

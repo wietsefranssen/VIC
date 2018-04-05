@@ -134,7 +134,12 @@ vic_start(void)
         }
     
         for (i = 0; i < (size_t)mpi_size; i++) {
-            log_info("mpi decomposition offset & size for node %zu is %d & %d",
+            if(mpi_map_local_array_sizes[i]<=0){
+                log_err("Size of node %zu <= 0",i);
+            }
+        }
+        for (i = 0; i < (size_t)mpi_size; i++) {
+            log_info("Mpi decomposition offset & size for node %zu is %d & %d",
                     i,mpi_map_global_array_offsets[i],mpi_map_local_array_sizes[i]);
         }
 
@@ -149,6 +154,17 @@ vic_start(void)
         if (options.LAKES) {
             options.NLAKENODES = get_nc_dimension(&(filenames.params),
                                                   "lake_node");
+        }
+        
+        // plugins
+        if (options.ROUTING != ROUTING_FALSE) {
+            rout_start();
+        }
+        if (options.DAMS) {
+            dam_start();
+        }
+        if (options.IRRIGATION) {
+            irr_start();
         }
 
         // Check that model parameters are valid
@@ -241,19 +257,7 @@ vic_start(void)
     for (i = 0; i < (size_t) local_domain.ncells_active; i++) {
         local_domain.locations[i].local_idx = i;
     }
-
-    // plugins
-    if (mpi_rank == VIC_MPI_ROOT) {
-        if (options.ROUTING) {
-            rout_start();
-        }
-        if (options.DAMS) {
-            dam_start();
-        }
-        if (options.IRRIGATION) {
-            irr_start();
-        }
-    }    
+    
     // cleanup
     if (mpi_rank == VIC_MPI_ROOT) {
         free(mapped_locations);
