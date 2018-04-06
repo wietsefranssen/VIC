@@ -70,6 +70,15 @@ dam_set_info(void)
                 dam_con[i][j].max_volume = dvar[i] * pow(M_PER_KM, 2);
             }
         }
+        
+        get_scatter_nc_field_int(&(filenames.dams), 
+                "function", d3start, d3count, ivar);
+        
+        for(i = 0; i < local_domain.ncells_active; i++){
+            if(j < dam_con_map[i].nd_active){
+                dam_con[i][j].function = ivar[i];
+            }
+        }
     }
     
     free(ivar);
