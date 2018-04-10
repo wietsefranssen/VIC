@@ -41,7 +41,7 @@ vic_finalize(void)
     if (options.DAMS) {
         dam_finalize();
     }
-    if (options.ROUTING != ROUTING_FALSE) {
+    if (options.ROUTING) {
         rout_finalize();
     }
     if (options.IRRIGATION) {

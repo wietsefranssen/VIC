@@ -491,7 +491,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in option_struct
-    nitems = 75;
+    nitems = 76;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -732,7 +732,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     mpi_types[i++] = MPI_C_BOOL;
     // bool ROUTING;
     offsets[i] = offsetof(option_struct, ROUTING);
-    mpi_types[i++] = MPI_INT;
+    mpi_types[i++] = MPI_C_BOOL;
     // bool WATER_USE;
     offsets[i] = offsetof(option_struct, WATER_USE);
     mpi_types[i++] = MPI_C_BOOL;
@@ -750,6 +750,9 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(option_struct, GW_INIT_FROM_FILE);
     mpi_types[i++] = MPI_C_BOOL; 
     
+    // int ROUTING_TYPE;
+    offsets[i] = offsetof(option_struct, ROUTING_TYPE);
+    mpi_types[i++] = MPI_INT;
     // size_t RIRF_NSTEPS;
     offsets[i] = offsetof(option_struct, RIRF_NSTEPS);
     mpi_types[i++] = MPI_AINT;

@@ -16,8 +16,6 @@ wu_put_data(void)
     int OUT_WU_CONSUMED = list_search_id(outvar_types, "OUT_WU_CONSUMED");
     int OUT_WU_RETURNED = list_search_id(outvar_types, "OUT_WU_RETURNED");
     
-    // If running with OpenMP, run this for loop using multiple threads
-    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for(i = 0; i < local_domain.ncells_active; i++){ 
         for(j = 0; j < WU_NSECTORS; j++){
             out_data[i][OUT_WU_DEMAND][j] = wu_var[i][j].demand;

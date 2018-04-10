@@ -46,7 +46,7 @@ vic_alloc(void) {
     if (options.DAMS) {
         dam_add_types();
     }
-    if (options.ROUTING != ROUTING_FALSE) {
+    if (options.ROUTING) {
         rout_add_types();
     }
     if (options.IRRIGATION) {
@@ -74,7 +74,7 @@ vic_alloc(void) {
     if (options.DAMS) {
         dam_alloc();
     }
-    if (options.ROUTING != ROUTING_FALSE) {
+    if (options.ROUTING) {
         rout_alloc();
     }
     if (options.EFR) {

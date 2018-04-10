@@ -569,7 +569,7 @@ get_global_param(FILE *gp)
     if (options.DAMS) {
         dam_validate_global_parameters();
     }
-    if (options.ROUTING != ROUTING_FALSE) {
+    if (options.ROUTING) {
         rout_validate_global_parameters();
     }
     if (options.EFR) {

@@ -627,11 +627,11 @@ rout_init(void)
     rout_set_uh();
     rout_set_direction();
     
-    if(options.ROUTING == ROUTING_LOCAL){
+    if(options.ROUTING_TYPE == ROUTING_BASIN){
         rout_set_downstream();
         rout_set_upstream();
         rout_set_order();
-    } else if (options.ROUTING == ROUTING_GLOBAL){
+    } else if (options.ROUTING_TYPE == ROUTING_RANDOM){
         rout_gl_set_downstream();
         rout_gl_set_upstream();
         rout_gl_set_order();

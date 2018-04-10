@@ -158,7 +158,7 @@ vic_start(void)
         }
         
         // plugins
-        if (options.ROUTING != ROUTING_FALSE) {
+        if (options.ROUTING) {
             rout_start();
         }
         if (options.DAMS) {

@@ -25,8 +25,6 @@ gw_put_data(void)
     int OUT_GW_WT = list_search_id(outvar_types, "OUT_GW_WT");
     int OUT_GW_AVAIL = list_search_id(outvar_types, "OUT_GW_AVAIL");
     
-    // If running with OpenMP, run this for loop using multiple threads
-    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for(i = 0; i < local_domain.ncells_active; i++){        
         for(j=0; j < veg_con_map[i].nv_active; j++){
             veg_frac = veg_con[i][j].Cv;

@@ -60,7 +60,7 @@ set_output_met_data_info()
     if (options.DAMS) {
         dam_set_output_meta_data_info();
     }
-    if (options.ROUTING != ROUTING_FALSE) {
+    if (options.ROUTING) {
         rout_set_output_meta_data_info();
     }
     if (options.IRRIGATION) {
