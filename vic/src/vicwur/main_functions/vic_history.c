@@ -231,96 +231,102 @@ unsigned int
 get_default_outvar_aggtype(unsigned int varid)
 {
     unsigned int agg_type;
-
-    switch (varid) {
-    // AGG_TYPE_END
-    case OUT_ASAT:
-    case OUT_LAKE_AREA_FRAC:
-    case OUT_LAKE_DEPTH:
-    case OUT_LAKE_ICE:
-    case OUT_LAKE_ICE_FRACT:
-    case OUT_LAKE_ICE_HEIGHT:
-    case OUT_LAKE_MOIST:
-    case OUT_LAKE_SURF_AREA:
-    case OUT_LAKE_SWE:
-    case OUT_LAKE_SWE_V:
-    case OUT_LAKE_VOLUME:
-    case OUT_ROOTMOIST:
-    case OUT_SMFROZFRAC:
-    case OUT_SMLIQFRAC:
-    case OUT_SNOW_CANOPY:
-    case OUT_SNOW_COVER:
-    case OUT_SNOW_DEPTH:
-    case OUT_SOIL_ICE:
-    case OUT_SOIL_LIQ:
-    case OUT_SOIL_MOIST:
-    case OUT_SOIL_EFF_SAT:
-    case OUT_SOIL_WET:
-    case OUT_SURFSTOR:
-    case OUT_SURF_FROST_FRAC:
-    case OUT_SWE:
-    case OUT_WDEW:
-    case OUT_ZWT:
-    case OUT_ZWT_LUMPED:
-    case OUT_SNOW_CANOPY_BAND:
-    case OUT_SNOW_COVER_BAND:
-    case OUT_SNOW_DEPTH_BAND:
-    case OUT_SWE_BAND:
-        agg_type = AGG_TYPE_END;
-        break;
-    // AGG_TYPE_SUM
-    case OUT_BASEFLOW:
-    case OUT_DELINTERCEPT:
-    case OUT_DELSOILMOIST:
-    case OUT_DELSWE:
-    case OUT_DELSURFSTOR:
-    case OUT_EVAP:
-    case OUT_EVAP_BARE:
-    case OUT_EVAP_CANOP:
-    case OUT_INFLOW:
-    case OUT_LAKE_BF_IN:
-    case OUT_LAKE_BF_IN_V:
-    case OUT_LAKE_BF_OUT:
-    case OUT_LAKE_BF_OUT_V:
-    case OUT_LAKE_CHAN_IN:
-    case OUT_LAKE_CHAN_IN_V:
-    case OUT_LAKE_CHAN_OUT:
-    case OUT_LAKE_CHAN_OUT_V:
-    case OUT_LAKE_DSTOR:
-    case OUT_LAKE_DSTOR_V:
-    case OUT_LAKE_DSWE:
-    case OUT_LAKE_DSWE_V:
-    case OUT_LAKE_EVAP:
-    case OUT_LAKE_EVAP_V:
-    case OUT_LAKE_PREC_V:
-    case OUT_LAKE_RCHRG:
-    case OUT_LAKE_RCHRG_V:
-    case OUT_LAKE_RO_IN:
-    case OUT_LAKE_RO_IN_V:
-    case OUT_LAKE_VAPFLX:
-    case OUT_LAKE_VAPFLX_V:
-    case OUT_PET:
-    case OUT_PREC:
-    case OUT_RAINF:
-    case OUT_REFREEZE:
-    case OUT_RUNOFF:
-    case OUT_SNOWF:
-    case OUT_SUB_BLOWING:
-    case OUT_SUB_CANOP:
-    case OUT_SUB_SNOW:
-    case OUT_SUB_SURFACE:
-    case OUT_TRANSP_VEG:
-    case OUT_DELTACC_BAND:
-    case OUT_SNOW_MELT:
-    case OUT_SNOWT_FBFLAG:
-    case OUT_SOILT_FBFLAG:
-    case OUT_SURFT_FBFLAG:
-    case OUT_TCAN_FBFLAG:
-    case OUT_TFOL_FBFLAG:
-        agg_type = AGG_TYPE_SUM;
-        break;
-    default:
-        agg_type = AGG_TYPE_AVG;
+    extern option_struct options;
+    
+    if(options.ROUTING && rout_history(varid, &agg_type)){
+    }else if(options.GROUNDWATER && gw_history(varid, &agg_type)){
+    }else if(options.IRRIGATION && irr_history(varid, &agg_type)){
+    }else{
+        switch (varid) {
+        // AGG_TYPE_END
+        case OUT_ASAT:
+        case OUT_LAKE_AREA_FRAC:
+        case OUT_LAKE_DEPTH:
+        case OUT_LAKE_ICE:
+        case OUT_LAKE_ICE_FRACT:
+        case OUT_LAKE_ICE_HEIGHT:
+        case OUT_LAKE_MOIST:
+        case OUT_LAKE_SURF_AREA:
+        case OUT_LAKE_SWE:
+        case OUT_LAKE_SWE_V:
+        case OUT_LAKE_VOLUME:
+        case OUT_ROOTMOIST:
+        case OUT_SMFROZFRAC:
+        case OUT_SMLIQFRAC:
+        case OUT_SNOW_CANOPY:
+        case OUT_SNOW_COVER:
+        case OUT_SNOW_DEPTH:
+        case OUT_SOIL_ICE:
+        case OUT_SOIL_LIQ:
+        case OUT_SOIL_MOIST:
+        case OUT_SOIL_EFF_SAT:
+        case OUT_SOIL_WET:
+        case OUT_SURFSTOR:
+        case OUT_SURF_FROST_FRAC:
+        case OUT_SWE:
+        case OUT_WDEW:
+        case OUT_ZWT:
+        case OUT_ZWT_LUMPED:
+        case OUT_SNOW_CANOPY_BAND:
+        case OUT_SNOW_COVER_BAND:
+        case OUT_SNOW_DEPTH_BAND:
+        case OUT_SWE_BAND:
+            agg_type = AGG_TYPE_END;
+            break;
+        // AGG_TYPE_SUM
+        case OUT_BASEFLOW:
+        case OUT_DELINTERCEPT:
+        case OUT_DELSOILMOIST:
+        case OUT_DELSWE:
+        case OUT_DELSURFSTOR:
+        case OUT_EVAP:
+        case OUT_EVAP_BARE:
+        case OUT_EVAP_CANOP:
+        case OUT_INFLOW:
+        case OUT_LAKE_BF_IN:
+        case OUT_LAKE_BF_IN_V:
+        case OUT_LAKE_BF_OUT:
+        case OUT_LAKE_BF_OUT_V:
+        case OUT_LAKE_CHAN_IN:
+        case OUT_LAKE_CHAN_IN_V:
+        case OUT_LAKE_CHAN_OUT:
+        case OUT_LAKE_CHAN_OUT_V:
+        case OUT_LAKE_DSTOR:
+        case OUT_LAKE_DSTOR_V:
+        case OUT_LAKE_DSWE:
+        case OUT_LAKE_DSWE_V:
+        case OUT_LAKE_EVAP:
+        case OUT_LAKE_EVAP_V:
+        case OUT_LAKE_PREC_V:
+        case OUT_LAKE_RCHRG:
+        case OUT_LAKE_RCHRG_V:
+        case OUT_LAKE_RO_IN:
+        case OUT_LAKE_RO_IN_V:
+        case OUT_LAKE_VAPFLX:
+        case OUT_LAKE_VAPFLX_V:
+        case OUT_PET:
+        case OUT_PREC:
+        case OUT_RAINF:
+        case OUT_REFREEZE:
+        case OUT_RUNOFF:
+        case OUT_SNOWF:
+        case OUT_SUB_BLOWING:
+        case OUT_SUB_CANOP:
+        case OUT_SUB_SNOW:
+        case OUT_SUB_SURFACE:
+        case OUT_TRANSP_VEG:
+        case OUT_DELTACC_BAND:
+        case OUT_SNOW_MELT:
+        case OUT_SNOWT_FBFLAG:
+        case OUT_SOILT_FBFLAG:
+        case OUT_SURFT_FBFLAG:
+        case OUT_TCAN_FBFLAG:
+        case OUT_TFOL_FBFLAG:
+            agg_type = AGG_TYPE_SUM;
+            break;        
+        default:
+            agg_type = AGG_TYPE_AVG;
+        }
     }
     return agg_type;
 }

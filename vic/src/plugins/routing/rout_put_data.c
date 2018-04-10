@@ -14,6 +14,8 @@ rout_put_data(void)
     int OUT_NAT_DISCHARGE = list_search_id(outvar_types, "OUT_NAT_DISCHARGE");
     int OUT_STREAM_MOIST = list_search_id(outvar_types, "OUT_STREAM_MOIST");
     
+    // If running with OpenMP, run this for loop using multiple threads
+    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for(i = 0; i < local_domain.ncells_active; i++){ 
         out_data[i][OUT_STREAM_MOIST][0] = rout_var[i].storage;
         out_data[i][OUT_DISCHARGE][0] = rout_var[i].discharge[0];

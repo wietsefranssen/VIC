@@ -2,15 +2,33 @@
 
 #include "efr.h"
 
+double
+calc_efr(double ay_flow, double discharge)
+{
+    /* Variable Monthly Flow (VMF) method (Pastor et al., 2014) */
+    if(ay_flow > 0){
+        if(discharge < ay_flow * EFR_LOW_FLOW_FRAC){
+            return  discharge * EFR_LOW_DEMAND_FRAC;
+        }else if(discharge > ay_flow * EFR_HIGH_FLOW_FRAC){
+            return discharge * EFR_HIGH_DEMAND_FRAC;
+        }else{
+            return discharge * linear_interp(discharge,
+                    ay_flow * EFR_LOW_FLOW_FRAC,
+                    ay_flow * EFR_HIGH_FLOW_FRAC,
+                    EFR_LOW_DEMAND_FRAC, EFR_HIGH_DEMAND_FRAC);
+        }    
+    }else{
+        return 0.0;
+    }
+}
+
 void
 efr_run(size_t cur_cell)
 {
     extern dmy_struct *dmy;
     extern size_t current;
-    extern option_struct options;
     extern efr_var_struct *efr_var;
     extern rout_var_struct *rout_var;
-    extern wu_con_struct **wu_con;
     
     size_t years_running;
     
@@ -48,29 +66,18 @@ efr_run(size_t cur_cell)
                 years_running, 1, 0, MONTHS_PER_YEAR - 1);
     }
     
-    efr_var[cur_cell].total_flow += 
-            rout_var[cur_cell].nat_discharge[0];
+    efr_var[cur_cell].total_flow += rout_var[cur_cell].nat_discharge[0];
     efr_var[cur_cell].total_steps++;
     
-    efr_var[cur_cell].requirement = 0.0;
-    if(efr_var[cur_cell].ay_flow > 0){
-        if(rout_var[cur_cell].nat_discharge[0] <
-                efr_var[cur_cell].ay_flow * EFR_LOW_FLOW_FRAC){
-            efr_var[cur_cell].requirement = 
-                    rout_var[cur_cell].nat_discharge[0] * EFR_LOW_DEMAND_FRAC;
-        }else if(rout_var[cur_cell].nat_discharge[0] >
-                efr_var[cur_cell].ay_flow * EFR_HIGH_FLOW_FRAC){
-            efr_var[cur_cell].requirement = 
-                    rout_var[cur_cell].nat_discharge[0] * EFR_HIGH_DEMAND_FRAC;
-        }else{
-            efr_var[cur_cell].requirement = 
-                    linear_interp(rout_var[cur_cell].nat_discharge[0],
-                    efr_var[cur_cell].ay_flow * EFR_LOW_FLOW_FRAC,
-                    efr_var[cur_cell].ay_flow * EFR_HIGH_FLOW_FRAC,
-                    EFR_LOW_DEMAND_FRAC, EFR_HIGH_DEMAND_FRAC) *
-                    rout_var[cur_cell].nat_discharge[0];
-        }    
-    }
+    efr_var[cur_cell].requirement = calc_efr(efr_var[cur_cell].ay_flow, 
+            rout_var[cur_cell].nat_discharge[0]);
+}
+
+void
+efr_set_demand(size_t cur_cell)
+{
+    extern option_struct options;
+    extern wu_con_struct **wu_con;
     
     if(options.WATER_USE){
         wu_con[cur_cell][WU_ENVIRONMENTAL].demand = 

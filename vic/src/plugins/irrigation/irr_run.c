@@ -1,10 +1,8 @@
 #include <vic.h>
 
 void
-irr_run1(size_t cur_cell)
+irr_run(size_t cur_cell)
 {
-    extern domain_struct local_domain;
-    extern global_param_struct global_param;
     extern dmy_struct *dmy;
     extern size_t current;
     extern option_struct options;
@@ -14,28 +12,26 @@ irr_run1(size_t cur_cell)
     extern irr_var_struct ***irr_var;
     extern soil_con_struct *soil_con;
     extern veg_con_struct **veg_con;
-    extern wu_con_struct **wu_con;
     extern option_struct options;
     
     double moist[options.Nlayer];
-    double total_demand;
+    double total_moist;
+    double total_wcr;
     double season_day;
-    size_t root_layer;
     size_t cur_veg;
     
     size_t i;
     size_t j;
     size_t k;
     size_t l;       
-            
-    total_demand = 0;            
+                       
     for(i = 0; i < irr_con_map[cur_cell].ni_active; i++){
         cur_veg = irr_con[cur_cell][i].veg_index;
         
         // Reset values
         for(j = 0; j < options.SNOW_BAND; j++){     
             irr_var[cur_cell][i][j].need = 0.0;
-            irr_var[cur_cell][i][j].shortage = false;
+            irr_var[cur_cell][i][j].shortage = 0.0;
         }
         
         // Check irrigation season
@@ -62,111 +58,157 @@ irr_run1(size_t cur_cell)
         }
         
         // Run irrigated vegetation
-        for(j = 0; j < options.SNOW_BAND; j++){
+        for(j = 0; j < options.SNOW_BAND; j++){   
             
-            // Get irrigation need and demand         
+            // Get moisture content and critical moisture content of every layer
+            for(k = 0; k < options.Nlayer; k++){
+                moist[k] = 0.0;
+                for (l = 0; l < options.Nfrost; l++) {
+                    moist[k] += ((all_vars[cur_cell].cell[cur_veg][j].layer[k].moist -
+                      all_vars[cur_cell].cell[cur_veg][j].layer[k].ice[l])
+                            * soil_con[cur_cell].frost_fract[l]);
+                }
+            }
+            
+            total_moist = 0.0;
+            total_wcr = 0.0;                 
+            for(k = 0; k < options.Nlayer; k++){
+                if(veg_con[cur_cell][cur_veg].root[k] > 0.){
+                    total_moist += moist[k];
+                    total_wcr += soil_con[cur_cell].Wcr[k];
+                }
+            }
+                    
+            // Get irrigation need and demand      
             if(irr_con[cur_cell][i].ponding){
-                if(irr_var[cur_cell][i][j].pond_storage > 
-                        irr_con[cur_cell][j].pond_capacity / POND_IRR_CRIT_FRAC || 
-                        irr_var[cur_cell][i][j].pond_storage > 
-                        irr_var[cur_cell][i][j].prev_store){
-                    // moisture content is above critical OR
-                    // moisture content is below critical, but increasing           
-
-                    irr_var[cur_cell][i][j].prev_req -=
+                
+                all_vars[cur_cell].cell[cur_veg][j].layer[0].Ksat = 
+                        soil_con[cur_cell].Ksat[0] * POND_KSAT_FRAC;
+                
+                if(irr_var[cur_cell][i][j].prev_store <
+                        irr_var[cur_cell][i][j].pond_storage){
+                    irr_var[cur_cell][i][j].requirement -=
                             irr_var[cur_cell][i][j].pond_storage - 
                             irr_var[cur_cell][i][j].prev_store;
-
-                    if(irr_var[cur_cell][i][j].prev_req < 0){
-                        irr_var[cur_cell][i][j].prev_req = 0.0;
-                    }
-                } else {
-                    // moisture content is below critical, and decreasing
-
-                    irr_var[cur_cell][i][j].need = 
-                            irr_con[cur_cell][j].pond_capacity - 
-                            irr_var[cur_cell][i][j].pond_storage;
-                    irr_var[cur_cell][i][j].requirement = 
-                            irr_var[cur_cell][i][j].need - 
-                            irr_var[cur_cell][i][j].prev_req; 
-
-                    if(irr_var[cur_cell][i][j].requirement < 0){
+                    
+                    if(irr_var[cur_cell][i][j].requirement < 0.0){
                         irr_var[cur_cell][i][j].requirement = 0.0;
                     }
+                }                           
+                
+                if(irr_var[cur_cell][i][j].pond_storage < 
+                        irr_con[cur_cell][i].pond_capacity * POND_IRR_CRIT_FRAC){
+                    // moisture content is below critical  
+                    
+                    irr_var[cur_cell][i][j].requirement = 
+                            irr_con[cur_cell][i].pond_capacity - 
+                            irr_var[cur_cell][i][j].pond_storage;
+                }
+                
+                irr_var[cur_cell][i][j].prev_store = 
+                    irr_var[cur_cell][i][j].pond_storage; 
+                
+            }else{           
+                if(irr_var[cur_cell][i][j].prev_store <
+                        total_moist){
+                    irr_var[cur_cell][i][j].requirement -=
+                            total_moist - 
+                            irr_var[cur_cell][i][j].prev_store;
 
-                    irr_var[cur_cell][i][j].prev_req +=
-                            irr_var[cur_cell][i][j].requirement;                   
+                    if(irr_var[cur_cell][i][j].requirement < 0.0){
+                        irr_var[cur_cell][i][j].requirement = 0.0;
+                    }
                 } 
-            }else{
+                
                 if(options.SHARE_LAYER_MOIST){
-                    /******************************************************************
-                       CASE 1: Moisture in layers exceeds Wcr, or Moisture in
-                       layer with more than half of the roots exceeds Wcr.
+                    if(total_moist < total_wcr / IRR_CRIT_FRAC){
+                        // moisture content is below critical         
 
-                       Potential evapotranspiration not hindered by soil dryness.  If
-                       layer with less than half the roots is dryer than Wcr, extra
-                       evaporation is taken from the wetter layer. Otherwise layers
-                       contribute to evapotransipration based on root fraction.
-                    ******************************************************************/                
-                    // Get moisture content of every layer
+                        irr_var[cur_cell][i][j].requirement = 
+                                (total_wcr / FIELD_CAP_FRAC) - total_moist;
+                    }
+                }else{
+                    bool calc_req = false;
+                    
                     for(k = 0; k < options.Nlayer; k++){
-                        moist[k] = 0.0;
-                        for (l = 0; l < options.Nfrost; l++) {
-                            moist[k] += ((all_vars[cur_cell].cell[cur_veg][j].layer[k].moist -
-                              all_vars[cur_cell].cell[cur_veg][j].layer[k].ice[l])
-                                    * soil_con[cur_cell].frost_fract[l]);
+                        // TODO check if requirement should be set to zero
+                        if(veg_con[cur_cell][cur_veg].root[k] > 0.){
+                            if(moist[k] < soil_con[cur_cell].Wcr[k] / IRR_CRIT_FRAC){
+                                calc_req = true;
+                                break;
+                            }
                         }
                     }
                     
-                    // Get major root layer
-                    root_layer = 0;
-                    for(k = 0; k < options.Nlayer; k++){
-                        if(veg_con[cur_cell][cur_veg].root[k] >= 0.5){
-                            root_layer = k;
-                            break;
+                    if(calc_req){
+                        // moisture content is below critical
+                        
+                        irr_var[cur_cell][i][j].requirement = 
+                                (total_wcr / FIELD_CAP_FRAC) - total_moist;
+                    }
+                }
+                    
+                irr_var[cur_cell][i][j].prev_store = 
+                    total_moist;
+            }
+
+            irr_var[cur_cell][i][j].need = 
+                    irr_var[cur_cell][i][j].requirement - 
+                    irr_var[cur_cell][i][j].prev_req;
+            if(irr_var[cur_cell][i][j].need < 0.0){
+                irr_var[cur_cell][i][j].need = 0.0;
+            }
+            irr_var[cur_cell][i][j].prev_req = 
+                irr_var[cur_cell][i][j].requirement;
+            
+            // Calculate shortage
+            irr_var[cur_cell][i][j].shortage = 0.0;
+            if(options.SHARE_LAYER_MOIST){
+                if(total_moist < total_wcr &&
+                    season_day > irr_con[cur_cell][i].season_offset){
+                    irr_var[cur_cell][i][j].shortage +=
+                            total_wcr - total_moist;
+                }
+            }else{        
+                for(k = 0; k < options.Nlayer; k++){
+                    if(veg_con[cur_cell][cur_veg].root[k] > 0.){
+                        if(moist[k] < soil_con[cur_cell].Wcr[k] && 
+                                season_day > irr_con[cur_cell][i].season_offset){
+                            irr_var[cur_cell][i][j].shortage +=
+                                    soil_con[cur_cell].Wcr[k] - moist[k];
                         }
                     }
-
-                    if(moist[root_layer] > soil_con[cur_cell].Wcr[root_layer] / 
-                            IRR_CRIT_FRAC || moist[root_layer] > 
-                        irr_var[cur_cell][i][j].prev_store){
-                        // moisture content is above critical OR
-                        // moisture content is below critical, but increasing           
-
-                        irr_var[cur_cell][i][j].prev_req -=
-                                moist[root_layer] - 
-                                irr_var[cur_cell][i][j].prev_store;
-
-                        if(irr_var[cur_cell][i][j].prev_req < 0){
-                            irr_var[cur_cell][i][j].prev_req = 0.0;
-                        }
-                    } else {
-                        // moisture content is below critical, and decreasing
-
-                        irr_var[cur_cell][i][j].need = 
-                                (soil_con[cur_cell].Wcr[root_layer] / FIELD_CAP_FRAC) - 
-                                all_vars[cur_cell].cell[cur_veg][j].layer[root_layer].moist;
-                        irr_var[cur_cell][i][j].requirement = 
-                                irr_var[cur_cell][i][j].need - 
-                                irr_var[cur_cell][i][j].prev_req; 
-
-                        if(irr_var[cur_cell][i][j].requirement < 0){
-                            irr_var[cur_cell][i][j].requirement = 0.0;
-                        }
-
-                        irr_var[cur_cell][i][j].prev_req +=
-                                irr_var[cur_cell][i][j].requirement;                   
-                    } 
-
-                    irr_var[cur_cell][i][j].prev_store = 
-                            moist[root_layer];
-                } else {
-                    log_err("Irrigation without sharing layers not implemented yet");
                 }
             }
+            
+            irr_var[cur_cell][i][j].deficit =
+                    irr_var[cur_cell][i][j].shortage - 
+                    irr_var[cur_cell][i][j].prev_short;
+            if(irr_var[cur_cell][i][j].deficit < 0.0){
+                irr_var[cur_cell][i][j].deficit = 0.0;
+            }
+            irr_var[cur_cell][i][j].prev_short = 
+                irr_var[cur_cell][i][j].shortage;
         }        
     }
-                
+}
+     
+void
+irr_set_demand(size_t cur_cell)
+{
+    extern domain_struct local_domain;
+    extern global_param_struct global_param;
+    extern option_struct options;
+    extern wu_con_struct **wu_con;
+    extern soil_con_struct *soil_con;
+    extern veg_con_struct **veg_con;
+    
+    double total_demand;
+    size_t cur_veg;
+    
+    size_t i;
+    size_t j;
+
     if(options.WATER_USE){
         
         total_demand = 0;            
@@ -174,10 +216,10 @@ irr_run1(size_t cur_cell)
             cur_veg = irr_con[cur_cell][i].veg_index;
 
             for(j = 0; j < options.SNOW_BAND; j++){
-		    total_demand += irr_var[cur_cell][i][j].requirement *
-			    soil_con[cur_cell].AreaFract[j] * 
-			    veg_con[cur_cell][cur_veg].Cv;
-		}
+                total_demand += irr_var[cur_cell][i][j].requirement *
+                        soil_con[cur_cell].AreaFract[j] * 
+                        veg_con[cur_cell][cur_veg].Cv;
+            }
 	}
 
         wu_con[cur_cell][WU_IRRIGATION].demand = total_demand / 
@@ -188,7 +230,7 @@ irr_run1(size_t cur_cell)
 }
 
 void
-irr_run2(size_t cur_cell)
+irr_get_withdrawn(size_t cur_cell)
 {
     extern domain_struct local_domain;
     extern global_param_struct global_param;

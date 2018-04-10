@@ -27,6 +27,7 @@ void efr_set_state_meta_data_info(void);
 void efr_alloc(void);
 void initialize_efr_local_structures(void);
 void efr_run(size_t cur_cell);
+void efr_set_demand(size_t cur_cell);
 void efr_put_data(void);
 void efr_finalize(void);
 void efr_add_types(void);

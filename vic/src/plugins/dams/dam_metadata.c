@@ -11,7 +11,7 @@ dam_set_output_meta_data_info(void)
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_DAM_VOLUME")].long_name, "dam_water_volume");
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_DAM_VOLUME")].standard_name,
            "dam_water_volume");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DAM_VOLUME")].units, "km3");
+    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DAM_VOLUME")].units, "mcm");
     strcpy(out_metadata[list_search_id(outvar_types, "OUT_DAM_VOLUME")].description,
            "dam_water_volume");
 

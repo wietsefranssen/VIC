@@ -117,7 +117,7 @@ vic_start(void)
                 j++;
             }
         }
-                if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
+        if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
             // decompose the mask
             mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
                               &mpi_map_local_array_sizes,
@@ -132,6 +132,17 @@ vic_start(void)
         } else{
             log_err("Unknown mpi decomposition method");
         }
+    
+        for (i = 0; i < (size_t)mpi_size; i++) {
+            log_info("Mpi decomposition node %zu: %d - %d (%.3f) [offset - size (fraction of total)]",
+                    i,mpi_map_global_array_offsets[i],mpi_map_local_array_sizes[i],
+                    ((float)mpi_map_local_array_sizes[i] / (float)global_domain.ncells_active));
+        }
+        for (i = 0; i < (size_t)mpi_size; i++) {
+            if(mpi_map_local_array_sizes[i]<=0){
+                log_err("Mpi decomposition size node %zu <= 0; please check your decomposition method",i);
+            }
+        }
 
         // get dimensions (number of vegetation types, soil zones, etc)
         options.ROOT_ZONES = get_nc_dimension(&(filenames.params), "root_zone");
@@ -144,6 +155,17 @@ vic_start(void)
         if (options.LAKES) {
             options.NLAKENODES = get_nc_dimension(&(filenames.params),
                                                   "lake_node");
+        }
+        
+        // plugins
+        if (options.ROUTING != ROUTING_FALSE) {
+            rout_start();
+        }
+        if (options.DAMS) {
+            dam_start();
+        }
+        if (options.IRRIGATION) {
+            irr_start();
         }
 
         // Check that model parameters are valid
@@ -236,19 +258,7 @@ vic_start(void)
     for (i = 0; i < (size_t) local_domain.ncells_active; i++) {
         local_domain.locations[i].local_idx = i;
     }
-
-    // plugins
-    if (mpi_rank == VIC_MPI_ROOT) {
-        if (options.ROUTING) {
-            rout_start();
-        }
-        if (options.DAMS) {
-            dam_start();
-        }
-        if (options.IRRIGATION) {
-            irr_start();
-        }
-    }    
+    
     // cleanup
     if (mpi_rank == VIC_MPI_ROOT) {
         free(mapped_locations);

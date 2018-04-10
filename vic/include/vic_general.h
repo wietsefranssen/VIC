@@ -32,7 +32,7 @@
 #define VIC_DRIVER "VIC-WUR"
 
 #define MAXDIMS 10
-#define AREA_SUM_ERROR_THRESH 1e-20
+#define AREA_SUM_ERROR_THRESH 1e-10
 
 // Define maximum array sizes for driver level objects
 #define MAX_FORCE_FILES 2

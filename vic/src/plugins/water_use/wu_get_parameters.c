@@ -1,5 +1,26 @@
 #include <vic.h>
 
+int
+wu_get_sector_id(char *flgstr)
+{    
+    if(strcasecmp("IRR", flgstr) == 0){
+        return WU_IRRIGATION;
+    }else if(strcasecmp("DOM", flgstr) == 0){
+        return WU_DOMESTIC;
+    }else if(strcasecmp("IND", flgstr) == 0){
+        return WU_INDUSTRIAL;
+    }else if(strcasecmp("ENE", flgstr) == 0){
+        return WU_ENERGY;
+    }else if(strcasecmp("LIV", flgstr) == 0){
+        return WU_LIVESTOCK;
+    }else if(strcasecmp("ENV", flgstr) == 0){
+        return WU_ENVIRONMENTAL;
+    }else{
+        log_err("WU_SECTOR SECTOR should be IRR(IGATION), DOM(ESTIC),"
+                "IND(USTRIAL), ENE(RGY), LIV(ESTOCK) or ENV(IRONMENTAL); %s is unknown", flgstr);
+    }
+}
+
 bool
 wu_get_global_parameters(char *cmdstr)
 {    
@@ -34,22 +55,7 @@ wu_get_global_parameters(char *cmdstr)
     }
     else if (strcasecmp("WU_SECTOR", optstr) == 0) {
         sscanf(cmdstr, "%*s %s %*s %*s %*d", flgstr);
-        if(strcasecmp("IRRIGATION", flgstr) == 0){
-            cur_sector = WU_IRRIGATION;
-        }else if(strcasecmp("DOMESTIC", flgstr) == 0){
-            cur_sector = WU_DOMESTIC;
-        }else if(strcasecmp("INDUSTRIAL", flgstr) == 0){
-            cur_sector = WU_INDUSTRIAL;
-        }else if(strcasecmp("ENERGY", flgstr) == 0){
-            cur_sector = WU_ENERGY;
-        }else if(strcasecmp("LIVESTOCK", flgstr) == 0){
-            cur_sector = WU_LIVESTOCK;
-        }else if(strcasecmp("ENVIRONMENTAL", flgstr) == 0){
-            cur_sector = WU_ENVIRONMENTAL;
-        }else{
-            log_err("WU_SECTOR SECTOR should be IRRIGATION, DOMESTIC,"
-                    "INDUSTRIAL, ENERGY, LIVESTOCK or ENVIRONMENTAL; %s is unknown", flgstr);
-        }
+        cur_sector = wu_get_sector_id(flgstr);
         
         sscanf(cmdstr, "%*s %*s %s %*s %*d", flgstr);
         if(strcasecmp("CALCULATE", flgstr) == 0){
@@ -75,6 +81,30 @@ wu_get_global_parameters(char *cmdstr)
         sscanf(cmdstr, "%*s %*s %*s %*s %d", &options.WU_COMPENSATION_TIME[cur_sector]);
     }
     
+    else if (strcasecmp("WU_STRATEGY", optstr) == 0) {
+        sscanf(cmdstr, "%*s %s", flgstr);
+        if(strcasecmp("EQUAL", flgstr) == 0){
+            options.WU_STRATEGY = WU_STRATEGY_EQUAL;
+        }else if(strcasecmp("PRIORITY", flgstr) == 0){
+            options.WU_STRATEGY = WU_STRATEGY_PRIORITY;
+            
+            sscanf(cmdstr, "%*s %*s %s %*s %*s %*s %*s %*s", flgstr);
+            options.WU_PRIORITY[0] = wu_get_sector_id(flgstr);
+            sscanf(cmdstr, "%*s %*s %*s %s %*s %*s %*s %*s", flgstr);
+            options.WU_PRIORITY[1] = wu_get_sector_id(flgstr);
+            sscanf(cmdstr, "%*s %*s %*s %*s %s %*s %*s %*s", flgstr);
+            options.WU_PRIORITY[2] = wu_get_sector_id(flgstr);
+            sscanf(cmdstr, "%*s %*s %*s %*s %*s %s %*s %*s", flgstr);
+            options.WU_PRIORITY[3] = wu_get_sector_id(flgstr);
+            sscanf(cmdstr, "%*s %*s %*s %*s %*s %*s %s %*s", flgstr);
+            options.WU_PRIORITY[4] = wu_get_sector_id(flgstr);
+            sscanf(cmdstr, "%*s %*s %*s %*s %*s %*s %*s %s", flgstr);
+            options.WU_PRIORITY[5] = wu_get_sector_id(flgstr);
+        }else{
+            log_err("WU_STRATEGY should be EQUAL or PRIORITY,; %s is unknown", flgstr);
+        }
+    }    
+    
     else {
         return false;
     }
@@ -90,7 +120,7 @@ wu_validate_global_parameters(void)
     
     size_t i;
     
-    if(!options.ROUTING){
+    if(options.ROUTING == ROUTING_FALSE){
         log_err("WATER_USE = TRUE but ROUTING = FALSE");
     }
     if(strcasecmp(filenames.water_use_forcing_pfx, MISSING_S) == 0 &&

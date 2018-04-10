@@ -7,9 +7,11 @@ initialize_irr_var(irr_var_struct *irr_var)
     irr_var->leftover = 0.0;
     irr_var->prev_req = 0.0;
     irr_var->prev_store = 0.0;
+    irr_var->prev_short = 0.0;
     irr_var->requirement = 0.0;
     irr_var->need = 0.0;
-    irr_var->shortage = false;
+    irr_var->deficit = 0.0;
+    irr_var->shortage = 0.0;
 }
 
 void

@@ -491,7 +491,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in option_struct
-    nitems = 73;
+    nitems = 75;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -732,7 +732,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     mpi_types[i++] = MPI_C_BOOL;
     // bool ROUTING;
     offsets[i] = offsetof(option_struct, ROUTING);
-    mpi_types[i++] = MPI_C_BOOL;
+    mpi_types[i++] = MPI_INT;
     // bool WATER_USE;
     offsets[i] = offsetof(option_struct, WATER_USE);
     mpi_types[i++] = MPI_C_BOOL;
@@ -762,19 +762,26 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     mpi_types[i++] = MPI_INT;
     // int WU_INPUT_LOCATION[WU_NSECTORS];
     offsets[i] = offsetof(option_struct, WU_INPUT_LOCATION);
-    mpi_types[i++] = MPI_INT;
     blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_INT;
     // int WU_RETURN_LOCATION[WU_NSECTORS];
     offsets[i] = offsetof(option_struct, WU_RETURN_LOCATION);
-    mpi_types[i++] = MPI_INT;
     blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_INT;
     // int WU_COMPENSATION_TIME[WU_NSECTORS];
     offsets[i] = offsetof(option_struct, WU_COMPENSATION_TIME);
-    mpi_types[i++] = MPI_INT;
     blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_INT;
     // size_t WU_NINPUT_FROM_FILE;
     offsets[i] = offsetof(option_struct, WU_NINPUT_FROM_FILE);
-    mpi_types[i++] = MPI_AINT;
+    mpi_types[i++] = MPI_AINT;    
+    // int WU_STRATEGY;
+    offsets[i] = offsetof(option_struct, WU_STRATEGY);
+    mpi_types[i++] = MPI_INT;
+    // int WU_PRIORITY;
+    offsets[i] = offsetof(option_struct, WU_PRIORITY);
+    blocklengths[i] = WU_NSECTORS;
+    mpi_types[i++] = MPI_INT;
     
     // int NIRRTYPES;
     offsets[i] = offsetof(option_struct, NIRRTYPES);
@@ -2186,7 +2193,7 @@ scatter_field_double(double *dvar,
         free(dvar);
         free(dvar_filtered);
     }
-
+    
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(dvar_mapped, mpi_map_local_array_sizes,
@@ -2194,7 +2201,7 @@ scatter_field_double(double *dvar,
                           var, local_domain.ncells_active, MPI_DOUBLE,
                           VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-
+    
     if (mpi_rank == VIC_MPI_ROOT) {
         free(dvar_mapped);
     }
@@ -2338,7 +2345,7 @@ get_scatter_nc_field_int(nameid_struct *nc_nameid,
         free(ivar);
         free(ivar_filtered);
     }
-
+    
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(ivar_mapped, mpi_map_local_array_sizes,

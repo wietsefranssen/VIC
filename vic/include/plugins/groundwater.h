@@ -26,6 +26,7 @@ void initialize_gw_local_structures(void);
 void gw_init(void);
 void gw_set_output_meta_data_info(void);
 void gw_set_state_meta_data_info(void);
+bool gw_history(int, unsigned int *);
 void gw_generate_default_state(void);
 void gw_restore(void);
 void gw_put_data(void);

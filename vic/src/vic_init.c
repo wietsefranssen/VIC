@@ -36,7 +36,6 @@ vic_init(void)
 
     // Initialize all non specific VIC structures
     init_general();
-    
     // Initialize routing
     if (options.ROUTING_RVIC) {
         routing_rvic_init();
@@ -45,7 +44,7 @@ vic_init(void)
         initialize_dam_local_structures();
         dam_init();
     }
-    if (options.ROUTING) {
+    if (options.ROUTING != ROUTING_FALSE) {
         initialize_rout_local_structures();
         rout_init();
     }
