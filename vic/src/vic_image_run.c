@@ -65,7 +65,7 @@ vic_image_run(dmy_struct *dmy_current)
     }
         
     // If running with OpenMP, run this for loop using multiple threads
-    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+    #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for (i = 0; i < local_domain.ncells_active; i++) {
         // Set global reference string (for debugging inside vic_run)
         sprintf(vic_run_ref_str, "Gridcell io_idx: %zu, timestep info: %s",
@@ -88,13 +88,13 @@ vic_image_run(dmy_struct *dmy_current)
         if(options.IRRIGATION){
             irr_run(i);
         } 
+        
         timer_stop(&timer);
     }
         
     // If running with OpenMP, run this for loop using multiple threads
-    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+    #pragma omp parallel for default(shared) private(i)
     for (i = 0; i < local_domain.ncells_active; i++) {
-        // TODO: set reference strings
         put_data(&(all_vars[i]), &(force[i]), &(soil_con[i]), veg_con[i],
                  veg_lib[i], &lake_con, out_data[i], &(save_data[i]),
                  &timer);
@@ -103,9 +103,7 @@ vic_image_run(dmy_struct *dmy_current)
     if (options.ROUTING_RVIC) {
         routing_rvic_run();
     }    
-    if (options.ROUTING == ROUTING_LOCAL) {
-        // If running with OpenMP, run this for loop using multiple threads
-        //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
+    if (options.ROUTING_TYPE == ROUTING_BASIN) {
         for(i = 0; i < local_domain.ncells_active; i++){
             cur_cell = routing_order[i];
 
@@ -134,24 +132,25 @@ vic_image_run(dmy_struct *dmy_current)
                 }
             }
         }
-    } else if (options.ROUTING == ROUTING_GLOBAL){
+    } else if (options.ROUTING_TYPE == ROUTING_RANDOM){
+        
         rout_gl_run();
         
         if(options.EFR){
-            log_err("EFR is not yet available with ROUTING_GLOBAL");
+            log_err("EFR is not yet available with ROUTING_RANDOM");
         }
         if(options.DAMS){
-            log_err("DAMS is not yet available with ROUTING_GLOBAL");
+            log_err("DAMS is not yet available with ROUTING_RANDOM");
         }
         if(options.WATER_USE){
-            log_err("WATER_USE is not yet available with ROUTING_GLOBAL");
+            log_err("WATER_USE is not yet available with ROUTING_RANDOM");
         }
     }
     
     if(options.GROUNDWATER){
         gw_put_data();
     }
-    if(options.ROUTING != ROUTING_FALSE){
+    if(options.ROUTING){
         rout_put_data();
     }
     if(options.EFR){

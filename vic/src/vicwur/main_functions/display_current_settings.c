@@ -255,7 +255,7 @@ display_current_settings(int mode)
     else {
         fprintf(LOG_DEST, "GROUNDWATER\t\tFALSE\n");
     }
-    if (options.ROUTING != ROUTING_FALSE) {
+    if (options.ROUTING) {
         fprintf(LOG_DEST, "ROUTING\t\tTRUE\n");
     }
     else if (options.ROUTING_LOHMANN) {

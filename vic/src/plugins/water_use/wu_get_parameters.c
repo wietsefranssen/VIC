@@ -120,7 +120,7 @@ wu_validate_global_parameters(void)
     
     size_t i;
     
-    if(options.ROUTING == ROUTING_FALSE){
+    if(!options.ROUTING){
         log_err("WATER_USE = TRUE but ROUTING = FALSE");
     }
     if(strcasecmp(filenames.water_use_forcing_pfx, MISSING_S) == 0 &&

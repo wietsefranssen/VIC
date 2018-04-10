@@ -7,8 +7,8 @@
 
 enum{
     ROUTING_FALSE,
-    ROUTING_LOCAL,
-    ROUTING_GLOBAL
+    ROUTING_BASIN,
+    ROUTING_RANDOM
 };
 
 typedef struct{

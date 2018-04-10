@@ -14,15 +14,7 @@ rout_get_global_parameters(char *cmdstr)
     
     if (strcasecmp("ROUTING", optstr) == 0) {
         sscanf(cmdstr, "%*s %s", flgstr);
-        if(strcasecmp("FALSE", flgstr) == 0){
-            options.ROUTING = ROUTING_FALSE;
-        }else if(strcasecmp("LOCAL", flgstr) == 0){
-            options.ROUTING = ROUTING_LOCAL;
-        }else if(strcasecmp("GLOBAL", flgstr) == 0){
-            options.ROUTING = ROUTING_GLOBAL;
-        }else{
-            log_err("ROUTING should be FALSE, LOCAL or GLOBAL; %s is unknown", flgstr);
-        }
+        options.ROUTING = str_to_bool(flgstr);
     } 
     else if (strcasecmp("ROUTING_PARAMETERS", optstr) == 0) {
         sscanf(cmdstr, "%*s %s", filenames.routing.nc_filename);
@@ -42,9 +34,12 @@ rout_validate_global_parameters(void)
     extern filenames_struct filenames;
     extern int mpi_decomposition;
     
-    if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM && options.ROUTING == ROUTING_LOCAL){
-        log_err("ROUTING = ROUTING_LOCAL but MPI_DECOMPOSITION = MPI_DECOMPOSITION_RANDOM");
+    if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
+        options.ROUTING_TYPE = ROUTING_RANDOM;
+    } else {
+        options.ROUTING_TYPE = ROUTING_BASIN;
     }
+    
     if(strcasecmp(filenames.routing.nc_filename, MISSING_S) == 0){
         log_err("ROUTING = TRUE but ROUTING_PARAMETERS is missing");
     }  

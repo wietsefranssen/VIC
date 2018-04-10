@@ -12,8 +12,6 @@ efr_put_data(void)
 
     int OUT_EFR_REQUIREMENT = list_search_id(outvar_types, "OUT_EFR_REQUIREMENT");
     
-    // If running with OpenMP, run this for loop using multiple threads
-    //#pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for(i = 0; i < local_domain.ncells_active; i++){ 
         out_data[i][OUT_EFR_REQUIREMENT][0] = efr_var[i].requirement;
     }    

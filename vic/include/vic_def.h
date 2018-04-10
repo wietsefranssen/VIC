@@ -314,7 +314,7 @@ typedef struct {
 
     // Plugins
     bool GROUNDWATER;
-    int ROUTING;
+    bool ROUTING;
     bool ROUTING_RVIC;
     bool ROUTING_LOHMANN;
     bool WATER_USE;
@@ -326,6 +326,7 @@ typedef struct {
     // Groundwater options
     bool GW_INIT_FROM_FILE;    
     // Routing options
+    int ROUTING_TYPE;
     size_t RIRF_NSTEPS;
     size_t GIRF_NSTEPS;
     // Water use options

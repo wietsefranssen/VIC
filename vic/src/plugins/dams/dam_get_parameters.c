@@ -32,9 +32,9 @@ dam_validate_global_parameters(void)
     extern option_struct options;
     extern filenames_struct filenames;
     
-    if(options.ROUTING == ROUTING_FALSE){
+    if(!options.ROUTING){
         log_err("DAMS = TRUE but ROUTING = FALSE");
-    }  
+    }
     if(strcasecmp(filenames.dams.nc_filename, MISSING_S) == 0){
         log_err("DAMS = TRUE but DAMS_PARAMETERS is missing");
     }  
