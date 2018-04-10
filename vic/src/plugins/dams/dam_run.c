@@ -264,7 +264,6 @@ dam_run(size_t cur_cell)
     size_t years_running;
     double ay_flow;
     double am_flow[MONTHS_PER_YEAR];
-    double ay_demand;
     double am_demand[MONTHS_PER_YEAR];
     
     size_t i;
@@ -302,8 +301,6 @@ dam_run(size_t cur_cell)
             // Calculate averages            
             if(dmy[current].month == dam_var[cur_cell][i].op_year){
                 ay_flow = array_average(dam_var[cur_cell][i].history_flow,
-                    years_running, MONTHS_PER_YEAR, 0, 0);
-                ay_demand = array_average(dam_var[cur_cell][i].history_demand,
                     years_running, MONTHS_PER_YEAR, 0, 0);
                 for(j = 0; j < MONTHS_PER_YEAR; j++){
                     am_flow[j] = array_average(dam_var[cur_cell][i].history_flow,

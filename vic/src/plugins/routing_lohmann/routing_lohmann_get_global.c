@@ -36,6 +36,8 @@ routing_lohmann_get_global_param(char *cmdstr) {
     
     char                       optstr[MAXSTRING];
     char                       flgstr[MAXSTRING];
+    
+    sscanf(cmdstr, "%s", optstr);
 
     if (strcasecmp("ROUTING_LOHMANN", optstr) == 0) {
         sscanf(cmdstr, "%*s %s", flgstr);
