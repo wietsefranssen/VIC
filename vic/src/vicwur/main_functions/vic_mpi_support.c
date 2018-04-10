@@ -293,7 +293,7 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in filenames_struct
-    nitems = 10;
+    nitems = 11;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -352,6 +352,10 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
 
     // char log_path[MAXSTRING];
     offsets[i] = offsetof(filenames_struct, log_path);
+    mpi_types[i++] = MPI_CHAR;
+
+    // char log_path[MAXSTRING];
+    offsets[i] = offsetof(filenames_struct, routing);
     mpi_types[i++] = MPI_CHAR;
 
     // make sure that the we have the right number of elements
