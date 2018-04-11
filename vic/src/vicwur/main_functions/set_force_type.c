@@ -138,4 +138,5 @@ set_force_type(char *cmdstr)
     strcpy(param_set.TYPE[type].varname, ncvarname);
     param_set.TYPE[type].SUPPLIED = true;
     param_set.TYPE[type].N_ELEM = 1;
+    param_set.FORCE_FORMAT[type] = NETCDF4;
 }

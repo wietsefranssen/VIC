@@ -786,17 +786,29 @@ get_global_param(FILE *gp)
         // Validate forcing files and variables
         if (strcmp(filenames.f_path_pfx[i], "MISSING") == 0) {
             if(i == AIR_TEMP || i == LWDOWN || i == PREC || 
-                    i == PRESSURE || i == VP || i == SWDOWN || i == WIND ||
-                    (i == FCANOPY && options.FCAN_SRC == FROM_VEGHIST) || 
+                    i == PRESSURE || i == VP || i == SWDOWN || i == WIND){
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure to define forcing files for at least: "
+                        "AIR_TEMP, LWDOWN, PREC, PRESSURE, VP, SWDOWN and WIND");
+            } else if ((i == FCANOPY && options.FCAN_SRC == FROM_VEGHIST) || 
                     (i == LAI && options.LAI_SRC == FROM_VEGHIST) || 
-                    (i == ALBEDO && options.ALB_SRC == FROM_VEGHIST) || 
-                    (i == CHANNEL_IN && options.LAKES) ||
-                    (i == CATM && options.CARBON) ||
+                    (i == ALBEDO && options.ALB_SRC == FROM_VEGHIST)){
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure, if FROM_VEGHIST is selected, "
+                        "to define forcing for: "
+                        "FACANOPY, LAI and ALDBEDO");
+            } else if ((i == CHANNEL_IN && options.LAKES)) {
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure, if LAKES is selected, "
+                        "to define forcing for: "
+                        "CHANNEL_IN");
+            } else if ((i == CATM && options.CARBON) ||
                     (i == FDIR && options.CARBON) ||
                     (i == PAR && options.CARBON)){
                 log_err("Not all essential forcing files have been defined. "
-                        "Make sure to define forcing files for at least:"
-                        "AIR_TEMP, LWDOWN, PREC, PRESSURE, VP, SWDOWN and WIND");
+                        "Make sure, if CARBON is selected, "
+                        "to define forcing for: "
+                        "CATM, FDIR and PAR");
             }
         } else {
             // Get information from the forcing file(s)

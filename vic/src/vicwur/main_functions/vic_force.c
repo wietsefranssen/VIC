@@ -69,6 +69,29 @@ vic_force(void)
     dvar = malloc(local_domain.ncells_active * sizeof(*dvar));
     check_alloc_status(dvar, "Memory allocation error.");
 
+    // Initialize the veg_hist structure with the current climatological
+    // vegetation parameters.  This may be overwritten with the historical
+    // forcing time series.
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        for (v = 0; v < options.NVEGTYPES; v++) {
+            vidx = veg_con_map[i].vidx[v];
+            if (vidx != NODATA_VEG) {
+                for (j = 0; j < NF; j++) {
+                    veg_hist[i][vidx].albedo[j] =
+                        veg_con[i][vidx].albedo[dmy[current].month - 1];
+                    veg_hist[i][vidx].displacement[j] =
+                        veg_con[i][vidx].displacement[dmy[current].month - 1];
+                    veg_hist[i][vidx].fcanopy[j] =
+                        veg_con[i][vidx].fcanopy[dmy[current].month - 1];
+                    veg_hist[i][vidx].LAI[j] =
+                        veg_con[i][vidx].LAI[dmy[current].month - 1];
+                    veg_hist[i][vidx].roughness[j] =
+                        veg_con[i][vidx].roughness[dmy[current].month - 1];
+                }
+            }
+        }
+    }
+    
     // global_param.forceoffset[0] resets every year since the met file restarts
     // every year
     // global_param.forceskip[0] should also reset to 0 after the first year
@@ -115,10 +138,10 @@ vic_force(void)
         d4count[3] = global_domain.n_nx;
     
         // read variables from file
-        for (j = 0; j < NF; j++) {
-            if(f == FCANOPY || f == ALBEDO || f == LAI) {
-                d4start[0] = global_param.forceskip[1] +
-                             global_param.forceoffset[1] + j;
+        if(f == FCANOPY || f == ALBEDO || f == LAI) {
+            for (j = 0; j < NF; j++) {
+                d4start[0] = global_param.forceskip[f] +
+                             global_param.forceoffset[f] + j;
                 
                 for (v = 0; v < options.NVEGTYPES; v++) {
                     d4start[1] = v;
@@ -129,6 +152,7 @@ vic_force(void)
                     
                     for (i = 0; i < local_domain.ncells_active; i++) {
                         vidx = veg_con_map[i].vidx[v];
+                        
                         if (vidx != NODATA_VEG) {
                             if(options.FCAN_SRC == FROM_VEGHIST && f == FCANOPY){                                
                                 veg_hist[i][vidx].fcanopy[j] = (double) dvar[i];
@@ -139,10 +163,12 @@ vic_force(void)
                             }
                         }
                     }
-                }                
-            } else {
-                d3start[0] = global_param.forceskip[f] + global_param.forceoffset[f] +
-                             j;
+                }
+            }
+        } else {
+            for (j = 0; j < NF; j++) {
+                d3start[0] = global_param.forceskip[f] + 
+                        global_param.forceoffset[f] + j;
                 
                 get_scatter_nc_field_double(&(filenames.forcing[f]),
                                             param_set.TYPE[f].varname,
@@ -198,29 +224,6 @@ vic_force(void)
                     local_domain.locations[i].longitude,
                     soil_con[i].time_zone_lng, dmy[current].day_in_year,
                     dmy[current].dayseconds);
-            }
-        }
-    }
-
-    // Initialize the veg_hist structure with the current climatological
-    // vegetation parameters.  This may be overwritten with the historical
-    // forcing time series.
-    for (i = 0; i < local_domain.ncells_active; i++) {
-        for (v = 0; v < options.NVEGTYPES; v++) {
-            vidx = veg_con_map[i].vidx[v];
-            if (vidx != NODATA_VEG) {
-                for (j = 0; j < NF; j++) {
-                    veg_hist[i][vidx].albedo[j] =
-                        veg_con[i][vidx].albedo[dmy[current].month - 1];
-                    veg_hist[i][vidx].displacement[j] =
-                        veg_con[i][vidx].displacement[dmy[current].month - 1];
-                    veg_hist[i][vidx].fcanopy[j] =
-                        veg_con[i][vidx].fcanopy[dmy[current].month - 1];
-                    veg_hist[i][vidx].LAI[j] =
-                        veg_con[i][vidx].LAI[dmy[current].month - 1];
-                    veg_hist[i][vidx].roughness[j] =
-                        veg_con[i][vidx].roughness[dmy[current].month - 1];
-                }
             }
         }
     }
