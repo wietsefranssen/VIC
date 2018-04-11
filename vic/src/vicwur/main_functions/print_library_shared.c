@@ -264,7 +264,7 @@ print_global_param(global_param_struct *gp)
     fprintf(LOG_DEST, "\tendday              : %hu\n", gp->endday);
     fprintf(LOG_DEST, "\tendmonth            : %hu\n", gp->endmonth);
     fprintf(LOG_DEST, "\tendyear             : %hu\n", gp->endyear);
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < N_FORCING_TYPES; i++) {
         fprintf(LOG_DEST, "\tforceday[%zd]        : %hu\n", i, gp->forceday[i]);
         fprintf(LOG_DEST, "\tforcesec[%zd]        : %u\n", i, gp->forcesec[i]);
         fprintf(LOG_DEST, "\tforcemonth[%zd]      : %hu\n", i,

@@ -35,7 +35,6 @@
 #define AREA_SUM_ERROR_THRESH 1e-10
 
 // Define maximum array sizes for driver level objects
-#define MAX_FORCE_FILES 2
 #define MAX_OUTPUT_STREAMS 20
 
 // Output compression setting
@@ -93,31 +92,6 @@ enum
     FROM_VEGLIB,
     FROM_VEGPARAM,
     FROM_VEGHIST
-};
-
-/******************************************************************************
- * @brief   Forcing Variable Types
- *****************************************************************************/
-enum
-{
-    AIR_TEMP,    /**< air temperature per time step [C] */
-    ALBEDO,      /**< surface albedo [fraction] */
-    CATM,        /**< atmospheric CO2 concentration [ppm] */
-    CHANNEL_IN,  /**< incoming channel flow [m3] */
-    FCANOPY,     /**< fractional area covered by plant canopy [fraction] */
-    FDIR,        /**< fraction of incoming shortwave that is direct [fraction] */
-    LAI,         /**< leaf area index [m2/m2] */
-    LWDOWN,      /**< incoming longwave radiation [W/m2] */
-    PAR,         /**< incoming photosynthetically active radiation [W/m2] */
-    PREC,        /**< total precipitation (rain and snow) [mm] */
-    PRESSURE,    /**< atmospheric pressure [kPa] */
-    VP,          /**< vapor pressure [kPa] */
-    SWDOWN,      /**< incoming shortwave [W/m2] */
-    WIND,        /**< wind speed [m/s] */
-    SKIP,        /**< place holder for unused data columns */
-    // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
-    // used as a loop counter and must be >= the largest value in this enum
-    N_FORCING_TYPES  /**< Number of forcing types */
 };
 
 
@@ -495,13 +469,13 @@ typedef struct {
  *****************************************************************************/
 typedef struct {
     force_type_struct TYPE[N_FORCING_TYPES];
-    double FORCE_DT[2];    /**< forcing file time step */
-    size_t force_steps_per_day[2];    /**< forcing file timesteps per day */
-    unsigned short int FORCE_ENDIAN[2];  /**< endian-ness of input file, used for
+    double FORCE_DT[N_FORCING_TYPES];    /**< forcing file time step */
+    size_t force_steps_per_day[N_FORCING_TYPES];    /**< forcing file timesteps per day */
+    unsigned short int FORCE_ENDIAN[N_FORCING_TYPES];  /**< endian-ness of input file, used for
                                             DAILY_BINARY format */
-    int FORCE_FORMAT[2];            /**< ASCII or BINARY */
-    int FORCE_INDEX[2][N_FORCING_TYPES];
-    size_t N_TYPES[2];
+    int FORCE_FORMAT[N_FORCING_TYPES];            /**< ASCII or BINARY */
+    int FORCE_INDEX[N_FORCING_TYPES][1];
+    size_t N_TYPES[N_FORCING_TYPES];
 } param_set_struct;
 
 /******************************************************************************
@@ -733,8 +707,8 @@ typedef struct {
  * @brief   This structure stores input and output filenames.
  *****************************************************************************/
 typedef struct {
-    nameid_struct forcing[MAX_FORCE_FILES];  /**< atmospheric forcing files */
-    char f_path_pfx[MAX_FORCE_FILES][MAXSTRING]; /**< path and prefix for
+    nameid_struct forcing[N_FORCING_TYPES];  /**< atmospheric forcing files */
+    char f_path_pfx[N_FORCING_TYPES][MAXSTRING]; /**< path and prefix for
                                                     atmospheric forcing files */
     char global[MAXSTRING];     /**< global control file name */
     nameid_struct domain;       /**< domain file name and nc_id*/
@@ -817,6 +791,7 @@ void initialize_energy(energy_bal_struct **energy, size_t nveg);
 void initialize_global(void);
 void initialize_options(void);
 void initialize_parameters(void);
+void initialize_param_set(void);
 void initialize_save_data(all_vars_struct *all_vars, force_data_struct *force,
                           soil_con_struct *soil_con, veg_con_struct *veg_con,
                           veg_lib_struct *veg_lib, lake_con_struct *lake_con,
@@ -972,7 +947,7 @@ void print_nc_file(nc_file_struct *nc);
 void print_nc_var(nc_var_struct *nc_var);
 void print_veg_con_map(veg_con_map_struct *veg_con_map);
 void put_nc_attr(int nc_id, int var_id, const char *name, const char *value);
-void set_force_type(char *cmdstr, int file_num, int *field);
+void set_force_type(char *cmdstr);
 void set_global_nc_attributes(int ncid, unsigned short int file_type);
 void set_state_meta_data_info();
 void set_nc_var_dimids(unsigned int varid, nc_file_struct *nc_hist_file,
