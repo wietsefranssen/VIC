@@ -177,11 +177,7 @@ alloc_aggdata(stream_struct *stream)
         stream->aggdata[i] =
             calloc(stream->nvars, sizeof(*(stream->aggdata[i])));
         check_alloc_status(stream->aggdata[i], "Memory allocation error.");
-        for (j = 0; j < stream->nvars; j++) {
-            if(stream->varid[j] == MISSING_USI){
-                continue;
-            }
-            
+        for (j = 0; j < stream->nvars; j++) {            
             nelem = out_metadata[stream->varid[j]].nelem;
             stream->aggdata[i][j] =
                 calloc(nelem, sizeof(*(stream->aggdata[i][j])));
@@ -218,11 +214,7 @@ reset_stream(stream_struct *stream,
 
     // Set aggdata to zero
     for (i = 0; i < stream->ngridcells; i++) {
-        for (j = 0; j < stream->nvars; j++) {
-            if(stream->varid[j] == MISSING_USI){
-                continue;
-            }
-            
+        for (j = 0; j < stream->nvars; j++) {            
             varid = stream->varid[j];
             for (k = 0; k < out_metadata[varid].nelem; k++) {
                 stream->aggdata[i][j][k][0] = 0.;
@@ -343,7 +335,7 @@ get_default_outvar_aggtype(unsigned int varid)
  * @brief    This routine updates the output information for a given output
  *           variable.
  *****************************************************************************/
-void
+bool
 set_output_var(stream_struct     *stream,
                char              *varname,
                size_t             varnum,
@@ -356,11 +348,7 @@ set_output_var(stream_struct     *stream,
 
     int                    varid;
     int                    found = false;
-
-    if (varnum >= stream->nvars) {
-        log_err("Invalid varnum %zu, must be less than the number of variables "
-                "in the stream %zu", varnum, stream->nvars);
-    }
+    
     // Find the output varid by looping through out_metadata, comparing to varname
     for (varid = 0; varid < N_OUTVAR_TYPES_ALL; varid++) {
         if (strcmp(out_metadata[varid].varname, varname) == 0) {
@@ -373,9 +361,14 @@ set_output_var(stream_struct     *stream,
                 "supported output variable names. "
                 "Ignoring the output variable for now...", varname);
         
-        stream->varid[varnum] = MISSING_USI;
-        return;
+        return false;
     }
+
+    if (varnum >= stream->nvars) {
+        log_err("Invalid varnum %zu, must be less than the number of variables "
+                "in the stream %zu", varnum, stream->nvars);
+    }
+    
     // Set stream members
     stream->varid[varnum] = varid;
     // Format (ASCII only)
@@ -406,6 +399,8 @@ set_output_var(stream_struct     *stream,
     else {
         stream->aggtype[varnum] = get_default_outvar_aggtype(varid);
     }
+    
+    return true;
 }
 
 /******************************************************************************
@@ -427,11 +422,7 @@ free_streams(stream_struct **streams)
     for (streamnum = 0; streamnum < options.Noutstreams; streamnum++) {
         // Free aggdata first
         for (i = 0; i < (*streams)[streamnum].ngridcells; i++) {
-            for (j = 0; j < (*streams)[streamnum].nvars; j++) {
-                if((*streams)[streamnum].varid[j] == MISSING_USI){
-                    continue;
-                }
-                
+            for (j = 0; j < (*streams)[streamnum].nvars; j++) {                
                 varid = (*streams)[streamnum].varid[j];
                 for (k = 0; k < out_metadata[varid].nelem; k++) {
                     free((*streams)[streamnum].aggdata[i][j][k]);
