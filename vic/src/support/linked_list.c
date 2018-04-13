@@ -82,8 +82,10 @@ int list_search_id(node* head, char *name) {
             return cursor->id;
         cursor = cursor->next;
     }
-    return 999;
-    //TODO give error instead of 999
+    
+    log_err("Name %s is unknown in output or state list. "
+            "Have you correctly defined all the outputs and states "
+            "for VIC and its plugins?", name);
 }
 
 /*

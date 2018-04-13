@@ -361,9 +361,10 @@ set_output_var(stream_struct     *stream,
         }
     }
     if (!found) {
-        log_err("set_output_var: \"%s\" was not found in the list of "
-                "supported output variable names.  Please use the exact name "
-                "listed in vic_driver_shared.h.", varname);
+        log_warn("set_output_var: \"%s\" was not found in the list of "
+                "supported output variable names. "
+                "Ignoring the output variable for now...", varname);
+        return;
     }
     // Set stream members
     stream->varid[varnum] = varid;
