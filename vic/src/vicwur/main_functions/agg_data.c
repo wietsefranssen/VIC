@@ -58,6 +58,10 @@ agg_stream_data(stream_struct *stream,
 
     for (i = 0; i < stream->ngridcells; i++) {
         for (j = 0; j < stream->nvars; j++) {
+            if(stream->varid[j] == MISSING_USI){
+                continue;
+            }
+            
             varid = stream->varid[j];
             nelem = out_metadata[varid].nelem;
 

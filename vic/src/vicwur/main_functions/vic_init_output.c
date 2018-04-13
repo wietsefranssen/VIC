@@ -444,6 +444,10 @@ initialize_history_file(nc_file_struct *nc,
 
     // create output variables
     for (j = 0; j < stream->nvars; j++) {
+        if(stream->varid[j] == MISSING_USI){
+            continue;
+        }
+        
         varid = stream->varid[j];
         
         set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));

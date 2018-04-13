@@ -95,6 +95,10 @@ vic_write(stream_struct  *stream,
     }
 
     for (k = 0; k < stream->nvars; k++) {
+        if(stream->varid[k] == MISSING_USI){
+            continue;
+        }
+        
         varid = stream->varid[k];
 
         if (nc_hist_file->nc_vars[k].nc_type == NC_DOUBLE) {

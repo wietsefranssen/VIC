@@ -178,6 +178,10 @@ alloc_aggdata(stream_struct *stream)
             calloc(stream->nvars, sizeof(*(stream->aggdata[i])));
         check_alloc_status(stream->aggdata[i], "Memory allocation error.");
         for (j = 0; j < stream->nvars; j++) {
+            if(stream->varid[j] == MISSING_USI){
+                continue;
+            }
+            
             nelem = out_metadata[stream->varid[j]].nelem;
             stream->aggdata[i][j] =
                 calloc(nelem, sizeof(*(stream->aggdata[i][j])));
@@ -215,6 +219,10 @@ reset_stream(stream_struct *stream,
     // Set aggdata to zero
     for (i = 0; i < stream->ngridcells; i++) {
         for (j = 0; j < stream->nvars; j++) {
+            if(stream->varid[j] == MISSING_USI){
+                continue;
+            }
+            
             varid = stream->varid[j];
             for (k = 0; k < out_metadata[varid].nelem; k++) {
                 stream->aggdata[i][j][k][0] = 0.;
@@ -364,6 +372,8 @@ set_output_var(stream_struct     *stream,
         log_warn("set_output_var: \"%s\" was not found in the list of "
                 "supported output variable names. "
                 "Ignoring the output variable for now...", varname);
+        
+        stream->varid[varnum] = MISSING_USI;
         return;
     }
     // Set stream members
@@ -418,6 +428,10 @@ free_streams(stream_struct **streams)
         // Free aggdata first
         for (i = 0; i < (*streams)[streamnum].ngridcells; i++) {
             for (j = 0; j < (*streams)[streamnum].nvars; j++) {
+                if((*streams)[streamnum].varid[j] == MISSING_USI){
+                    continue;
+                }
+                
                 varid = (*streams)[streamnum].varid[j];
                 for (k = 0; k < out_metadata[varid].nelem; k++) {
                     free((*streams)[streamnum].aggdata[i][j][k]);
