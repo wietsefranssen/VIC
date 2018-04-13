@@ -36,6 +36,7 @@ vic_alloc(void) {
     extern int           N_OUTVAR_TYPES_ALL;
     extern node         *outvar_types;
     extern node         *state_vars;
+    extern int           mpi_rank;
 
     N_STATE_VARS_ALL   = N_STATE_VARS;
     N_OUTVAR_TYPES_ALL = N_OUTVAR_TYPES;
@@ -61,8 +62,11 @@ vic_alloc(void) {
     if (options.GROUNDWATER) {
         gw_add_types();
     }
-    list_print(outvar_types);
-    list_print(state_vars);
+    
+    if(mpi_rank == VIC_MPI_ROOT){
+        list_print(outvar_types);
+        list_print(state_vars);
+    }
 
     // Allocate memory for all non specific VIC structures
     alloc_general();
