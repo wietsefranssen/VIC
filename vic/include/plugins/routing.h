@@ -12,7 +12,7 @@ enum{
 };
 
 typedef struct{
-    size_t *basin_map;
+    int *basin_map;
     size_t *sorted_basins;
     size_t Nbasin;
     size_t *Ncells;
@@ -34,7 +34,8 @@ typedef struct{
     double *nat_discharge;
 }rout_var_struct;
 
-void get_basins(basin_struct *basins);
+void get_basins_routing(basin_struct *basins);
+void get_basins_file(basin_struct *basins);
 bool rout_get_global_parameters(char *cmdstr);
 void rout_validate_global_parameters(void);
 void rout_start(void);

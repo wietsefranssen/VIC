@@ -49,6 +49,7 @@ initialize_filenames()
         strcpy(filenames.f_path_pfx[i], "MISSING");
     }
     
+    strcpy(filenames.mpi.nc_filename, "MISSING");
     strcpy(filenames.groundwater.nc_filename, "MISSING");
     strcpy(filenames.routing.nc_filename, "MISSING");
     strcpy(filenames.rout_params.nc_filename, "MISSING");
