@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <vic.h>
 
-void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending, bool sort_cost){
+void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending){
     size_t i,j;
     size_t tmp_cost[Nelements];
     
@@ -16,9 +16,6 @@ void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending, bo
                 if(tmp_cost[j]>tmp_cost[j+1]){
                     sizet_swap(j,j+1,array);
                     sizet_swap(j,j+1,tmp_cost);
-                    if(sort_cost){
-                        sizet_swap(j,j+1,cost);
-                    }
                 }
             }
         }
@@ -28,9 +25,6 @@ void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending, bo
                 if(tmp_cost[j]<tmp_cost[j+1]){
                     sizet_swap(j,j+1,array);
                     sizet_swap(j,j+1,tmp_cost);
-                    if(sort_cost){
-                        sizet_swap(j,j+1,cost);
-                    }
                 }
             }
         }
