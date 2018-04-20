@@ -94,7 +94,7 @@ vic_write(stream_struct  *stream,
         dcount[i] = 0;
     }
 
-    for (k = 0; k < stream->nvars; k++) {        
+    for (k = 0; k < stream->nvars; k++) {
         varid = stream->varid[k];
 
         if (nc_hist_file->nc_vars[k].nc_type == NC_DOUBLE) {

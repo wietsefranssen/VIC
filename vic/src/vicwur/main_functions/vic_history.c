@@ -177,7 +177,7 @@ alloc_aggdata(stream_struct *stream)
         stream->aggdata[i] =
             calloc(stream->nvars, sizeof(*(stream->aggdata[i])));
         check_alloc_status(stream->aggdata[i], "Memory allocation error.");
-        for (j = 0; j < stream->nvars; j++) {            
+        for (j = 0; j < stream->nvars; j++) {
             nelem = out_metadata[stream->varid[j]].nelem;
             stream->aggdata[i][j] =
                 calloc(nelem, sizeof(*(stream->aggdata[i][j])));
@@ -422,7 +422,7 @@ free_streams(stream_struct **streams)
     for (streamnum = 0; streamnum < options.Noutstreams; streamnum++) {
         // Free aggdata first
         for (i = 0; i < (*streams)[streamnum].ngridcells; i++) {
-            for (j = 0; j < (*streams)[streamnum].nvars; j++) {                
+            for (j = 0; j < (*streams)[streamnum].nvars; j++) {
                 varid = (*streams)[streamnum].varid[j];
                 for (k = 0; k < out_metadata[varid].nelem; k++) {
                     free((*streams)[streamnum].aggdata[i][j][k]);

@@ -443,7 +443,7 @@ initialize_history_file(nc_file_struct *nc,
                     stream->filename);
 
     // create output variables
-    for (j = 0; j < stream->nvars; j++) {        
+    for (j = 0; j < stream->nvars; j++) {
         varid = stream->varid[j];
         
         set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
