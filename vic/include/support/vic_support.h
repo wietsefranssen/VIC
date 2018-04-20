@@ -43,9 +43,9 @@ void sizet_swap(size_t i, size_t j, size_t *array);
 void int_swap(size_t i, size_t j, int *array);
 void double_swap(size_t i, size_t j, double *array);
 
-void get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
-void get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);
-void get_active_nc_field_int(nameid_struct *, char *, size_t *, size_t *, int *);
+int get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
+int get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);
+int get_active_nc_field_int(nameid_struct *, char *, size_t *, size_t *, int *);
 
 void gather_double(double *dvar, double *var_local);
 void gather_double_2d(double **dvar, double **var_local, int depth);

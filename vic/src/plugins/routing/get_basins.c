@@ -178,7 +178,7 @@ void get_basins_file(basin_struct *basins){
     }
     
     // Sort basins by size
-    sizet_sort(basins->sorted_basins,basins->Ncells,basins->Nbasin,false,true);
+    sizet_sort(basins->sorted_basins,basins->Ncells,basins->Nbasin,false,false);
         
     basins->catchment = malloc(basins->Nbasin * sizeof(*basins->catchment));
     check_alloc_status(basins->catchment, "Memory allocation error.");

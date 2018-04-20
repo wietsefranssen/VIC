@@ -12,16 +12,5 @@ void debug_map_file_double(char *path, double *data);
 void debug_map_file_sizet(char *path, size_t *data);
 void debug_map_file_int(char *path, int *data);
 
-void debug_nupstream();
-void debug_downstream();
-void debug_upstream();
-void debug_id();
-void debug_basins();
-void debug_ndams();
-void debug_node_domain();
-void debug_uh();
-void debug_uh_file();
-void debug_order();
-
 #endif /* DEBUG_H */
 
