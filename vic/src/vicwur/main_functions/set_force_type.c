@@ -26,7 +26,7 @@
  *****************************************************************************/
 
 #include <vic.h>
-   
+
 /******************************************************************************
  * @brief    This routine determines the current forcing file data type and
  *           stores its location in the description of the current forcing file.
@@ -120,7 +120,7 @@ set_force_type(char *cmdstr)
         log_err("Undefined forcing variable TYPE %s",
                 optstr);
     }
-                
+
     if (strcasecmp("MISSING", ncvarname) == 0) {
         log_err("Must supply FORCING netCDF variable name for TYPE %s",
             optstr);
@@ -133,10 +133,8 @@ set_force_type(char *cmdstr)
         log_err("Tried to define FORCING for TYPE %s twice", 
                 optstr);
     }
-    
+
     strcpy(filenames.f_path_pfx[type], ncvarfile);
     strcpy(param_set.TYPE[type].varname, ncvarname);
     param_set.TYPE[type].SUPPLIED = true;
-    param_set.TYPE[type].N_ELEM = 1;
-    param_set.FORCE_FORMAT[type] = NETCDF4;
 }

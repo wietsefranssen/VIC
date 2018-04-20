@@ -103,7 +103,6 @@ vic_force(void)
         if (current > 0 && (dmy[current].year != dmy[current - 1].year)) {
             global_param.forceoffset[f] = 0;
             global_param.forceskip[f] = 0;
-            
             // close the forcing file for the previous year and open the forcing
             // file for the current new year
             // (forcing file for the first year should already be open in
@@ -136,23 +135,19 @@ vic_force(void)
         d4count[1] = 1;
         d4count[2] = global_domain.n_ny;
         d4count[3] = global_domain.n_nx;
-    
+
         // read variables from file
         if(f == FCANOPY || f == ALBEDO || f == LAI) {
             for (j = 0; j < NF; j++) {
                 d4start[0] = global_param.forceskip[f] +
                              global_param.forceoffset[f] + j;
-                
                 for (v = 0; v < options.NVEGTYPES; v++) {
                     d4start[1] = v;
-                    
                     get_scatter_nc_field_double(&(filenames.forcing[f]),
                                                  param_set.TYPE[f].varname, 
                                                  d4start, d4count,dvar);
-                    
                     for (i = 0; i < local_domain.ncells_active; i++) {
                         vidx = veg_con_map[i].vidx[v];
-                        
                         if (vidx != NODATA_VEG) {
                             if(options.FCAN_SRC == FROM_VEGHIST && f == FCANOPY){                                
                                 veg_hist[i][vidx].fcanopy[j] = (double) dvar[i];

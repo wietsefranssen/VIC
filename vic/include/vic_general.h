@@ -454,11 +454,7 @@ enum timers
  * @brief    Stores forcing file input information.
  *****************************************************************************/
 typedef struct {
-    size_t N_ELEM; /**< number of elements per record; for LAI and ALBEDO,
-                        1 element per veg tile; for others N_ELEM = 1; */
-    bool SIGNED;
     bool SUPPLIED;
-    double multiplier;
     char varname[MAXSTRING];
 } force_type_struct;
 
@@ -469,13 +465,7 @@ typedef struct {
  *****************************************************************************/
 typedef struct {
     force_type_struct TYPE[N_FORCING_TYPES];
-    double FORCE_DT[N_FORCING_TYPES];    /**< forcing file time step */
     size_t force_steps_per_day[N_FORCING_TYPES];    /**< forcing file timesteps per day */
-    unsigned short int FORCE_ENDIAN[N_FORCING_TYPES];  /**< endian-ness of input file, used for
-                                            DAILY_BINARY format */
-    int FORCE_FORMAT[N_FORCING_TYPES];            /**< ASCII or BINARY */
-    int FORCE_INDEX[N_FORCING_TYPES][1];
-    size_t N_TYPES[N_FORCING_TYPES];
 } param_set_struct;
 
 /******************************************************************************

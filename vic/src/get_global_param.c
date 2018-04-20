@@ -827,11 +827,7 @@ get_global_param(FILE *gp)
                         "defined.  Make sure that the global file defines "
                         "FORCE_STEPS_PER_DAY.");
             }
-            else {
-                param_set.FORCE_DT[i] = SEC_PER_DAY /
-                                        (double) param_set.force_steps_per_day[i];
-            }
-        }        
+        }    
     }
 
     // Validate result directory
