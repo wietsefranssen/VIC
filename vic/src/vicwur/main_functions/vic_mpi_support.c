@@ -173,32 +173,32 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
 
     // unsigned short forceday[2];
     offsets[i] = offsetof(global_param_struct, forceday);
-    blocklengths[i] = 2;
+    blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // unsigned int forcesec[2];
     offsets[i] = offsetof(global_param_struct, forcesec);
-    blocklengths[i] = 2;
+    blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED;
 
     // unsigned short forcemonth[2];
     offsets[i] = offsetof(global_param_struct, forcemonth);
-    blocklengths[i] = 2;
+    blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // unsigned short forceoffset[2];
     offsets[i] = offsetof(global_param_struct, forceoffset);
-    blocklengths[i] = 2;
+    blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // unsigned int forceskip[2];
     offsets[i] = offsetof(global_param_struct, forceskip);
-    blocklengths[i] = 2;
+    blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED;
 
     // unsigned short int forceyear[2];
     offsets[i] = offsetof(global_param_struct, forceyear);
-    blocklengths[i] = 2;
+    blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // size_t nrecs;
@@ -293,7 +293,7 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in filenames_struct
-    nitems = 11;
+    nitems = 7;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -312,34 +312,17 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
     // reset i
     i = 0;
 
-    // char forcing[2][MAXSTRING];
-    offsets[i] = offsetof(filenames_struct, forcing);
-    blocklengths[i] *= 2;
-    mpi_types[i++] = MPI_CHAR;
-
-    // char f_path_pfx[2][MAXSTRING];
+    // char met_forcing_pfx[MAX_FORCE_FILES][MAXSTRING];
     offsets[i] = offsetof(filenames_struct, f_path_pfx);
-    blocklengths[i] *= 2;
+    blocklengths[i] *= N_FORCING_TYPES;
     mpi_types[i++] = MPI_CHAR;
 
     // char global[MAXSTRING];
     offsets[i] = offsetof(filenames_struct, global);
     mpi_types[i++] = MPI_CHAR;
 
-    // char domain[MAXSTRING];
-    offsets[i] = offsetof(filenames_struct, domain);
-    mpi_types[i++] = MPI_CHAR;
-
     // char constants[MAXSTRING];
     offsets[i] = offsetof(filenames_struct, constants);
-    mpi_types[i++] = MPI_CHAR;
-
-    // char init_state[MAXSTRING];
-    offsets[i] = offsetof(filenames_struct, init_state);
-    mpi_types[i++] = MPI_CHAR;
-
-    // char params[MAXSTRING];
-    offsets[i] = offsetof(filenames_struct, params);
     mpi_types[i++] = MPI_CHAR;
 
     // char result_dir[MAXSTRING];
@@ -354,8 +337,8 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(filenames_struct, log_path);
     mpi_types[i++] = MPI_CHAR;
 
-    // char log_path[MAXSTRING];
-    offsets[i] = offsetof(filenames_struct, routing);
+    // char water_use_forcing_pfx[MAXSTRING];
+    offsets[i] = offsetof(filenames_struct, water_use_forcing_pfx);
     mpi_types[i++] = MPI_CHAR;
 
     // make sure that the we have the right number of elements

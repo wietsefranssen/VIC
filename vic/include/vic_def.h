@@ -115,6 +115,31 @@ enum
 };
 
 /******************************************************************************
+ * @brief   Forcing Variable Types
+ *****************************************************************************/
+enum
+{
+    AIR_TEMP,    /**< air temperature per time step [C] */
+    ALBEDO,      /**< surface albedo [fraction] */
+    CATM,        /**< atmospheric CO2 concentration [ppm] */
+    CHANNEL_IN,  /**< incoming channel flow [m3] */
+    FCANOPY,     /**< fractional area covered by plant canopy [fraction] */
+    FDIR,        /**< fraction of incoming shortwave that is direct [fraction] */
+    LAI,         /**< leaf area index [m2/m2] */
+    LWDOWN,      /**< incoming longwave radiation [W/m2] */
+    PAR,         /**< incoming photosynthetically active radiation [W/m2] */
+    PREC,        /**< total precipitation (rain and snow) [mm] */
+    PRESSURE,    /**< atmospheric pressure [kPa] */
+    VP,          /**< vapor pressure [kPa] */
+    SWDOWN,      /**< incoming shortwave [W/m2] */
+    WIND,        /**< wind speed [m/s] */
+    SKIP,        /**< place holder for unused data columns */
+    // Last value of enum - DO NOT ADD ANYTHING BELOW THIS LINE!!
+    // used as a loop counter and must be >= the largest value in this enum
+    N_FORCING_TYPES  /**< Number of forcing types */
+};
+
+/******************************************************************************
  * @brief   Baseflow parametrizations
  *****************************************************************************/
 enum
@@ -365,15 +390,15 @@ typedef struct {
     unsigned short int endday;     /**< Last day of model simulation */
     unsigned short int endmonth;   /**< Last month of model simulation */
     unsigned short int endyear;    /**< Last year of model simulation */
-    unsigned short int forceday[2];  /**< day forcing files starts */
-    unsigned int forcesec[2];          /**< seconds since midnight when forcing
+    unsigned short int forceday[N_FORCING_TYPES];  /**< day forcing files starts */
+    unsigned int forcesec[N_FORCING_TYPES];          /**< seconds since midnight when forcing
                                           files starts */
-    unsigned short int forcemonth[2];  /**< month forcing files starts */
-    unsigned short int forceoffset[2];  /**< counter to keep track of offset in reading
+    unsigned short int forcemonth[N_FORCING_TYPES];  /**< month forcing files starts */
+    unsigned short int forceoffset[N_FORCING_TYPES];  /**< counter to keep track of offset in reading
                                            forcing files; updated after every read */
-    unsigned int forceskip[2];   /**< number of model time steps to skip at
+    unsigned int forceskip[N_FORCING_TYPES];   /**< number of model time steps to skip at
                                       the start of the forcing file */
-    unsigned short int forceyear[2];  /**< year forcing files start */
+    unsigned short int forceyear[N_FORCING_TYPES];  /**< year forcing files start */
     size_t nrecs;                /**< Number of time steps simulated */
     unsigned short int startday;  /**< Starting day of the simulation */
     unsigned short int startmonth;  /**< Starting month of the simulation */

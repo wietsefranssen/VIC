@@ -55,6 +55,7 @@ vic_force(void)
     size_t                     i;
     size_t                     j;
     size_t                     v;
+    size_t                     f;
     size_t                     band;
     int                        vidx;
     int                        status;
@@ -67,193 +68,6 @@ vic_force(void)
     // allocate memory for variables to be read
     dvar = malloc(local_domain.ncells_active * sizeof(*dvar));
     check_alloc_status(dvar, "Memory allocation error.");
-
-    // global_param.forceoffset[0] resets every year since the met file restarts
-    // every year
-    // global_param.forceskip[0] should also reset to 0 after the first year
-    if (current > 0 && (dmy[current].year != dmy[current - 1].year)) {
-        global_param.forceoffset[0] = 0;
-        global_param.forceskip[0] = 0;
-        // close the forcing file for the previous year and open the forcing
-        // file for the current new year
-        // (forcing file for the first year should already be open in
-        // get_global_param)
-        if (mpi_rank == VIC_MPI_ROOT) {
-            // close previous forcing file
-            status = nc_close(filenames.forcing[0].nc_id);
-            check_nc_status(status, "Error closing %s",
-                            filenames.forcing[0].nc_filename);
-            // open new forcing file
-            sprintf(filenames.forcing[0].nc_filename, "%s%4d.nc",
-                    filenames.f_path_pfx[0], dmy[current].year);
-            status = nc_open(filenames.forcing[0].nc_filename, NC_NOWRITE,
-                             &(filenames.forcing[0].nc_id));
-            check_nc_status(status, "Error opening %s",
-                            filenames.forcing[0].nc_filename);
-        }
-    }
-
-    // only the time slice changes for the met file reads. The rest is constant
-    d3start[1] = 0;
-    d3start[2] = 0;
-    d3count[0] = 1;
-    d3count[1] = global_domain.n_ny;
-    d3count[2] = global_domain.n_nx;
-
-    // Air temperature: tas
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[AIR_TEMP].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].air_temp[j] = (double) dvar[i];
-        }
-    }
-
-    // Precipitation: prcp
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[PREC].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].prec[j] = (double) dvar[i];
-        }
-    }
-
-    // Downward solar radiation: dswrf
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[SWDOWN].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].shortwave[j] = (double) dvar[i];
-        }
-    }
-
-    // Downward longwave radiation: dlwrf
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[LWDOWN].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].longwave[j] = (double) dvar[i];
-        }
-    }
-
-    // Wind speed: wind
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[WIND].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].wind[j] = (double) dvar[i];
-        }
-    }
-
-    // vapor pressure: vp
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[VP].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].vp[j] = (double) dvar[i];
-        }
-    }
-
-    // Pressure: pressure
-    for (j = 0; j < NF; j++) {
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[PRESSURE].varname,
-                                    d3start, d3count, dvar);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            force[i].pressure[j] = (double) dvar[i];
-        }
-    }
-    // Optional inputs
-    if (options.LAKES) {
-        // Channel inflow to lake
-        d3start[0] = global_param.forceskip[0] + global_param.forceoffset[0] +
-                     j;
-        get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                    param_set.TYPE[CHANNEL_IN].varname,
-                                    d3start, d3count, dvar);
-        for (j = 0; j < NF; j++) {
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                force[i].channel_in[j] = (double) dvar[i];
-            }
-        }
-    }
-    if (options.CARBON) {
-        // Atmospheric CO2 mixing ratio
-        for (j = 0; j < NF; j++) {
-            d3start[0] = global_param.forceskip[0] +
-                         global_param.forceoffset[0] + j;
-            get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                        param_set.TYPE[CATM].varname,
-                                        d3start, d3count, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                force[i].Catm[j] = (double) dvar[i];
-            }
-        }
-        // Cosine of solar zenith angle
-        for (j = 0; j < NF; j++) {
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                force[i].coszen[j] = compute_coszen(
-                    local_domain.locations[i].latitude,
-                    local_domain.locations[i].longitude,
-                    soil_con[i].time_zone_lng, dmy[current].day_in_year,
-                    dmy[current].dayseconds);
-            }
-        }
-        // Fraction of shortwave that is direct
-        for (j = 0; j < NF; j++) {
-            d3start[0] = global_param.forceskip[0] +
-                         global_param.forceoffset[0] + j;
-            get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                        param_set.TYPE[FDIR].varname,
-                                        d3start, d3count, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                force[i].fdir[j] = (double) dvar[i];
-            }
-        }
-        // Photosynthetically active radiation
-        for (j = 0; j < NF; j++) {
-            d3start[0] = global_param.forceskip[0] +
-                         global_param.forceoffset[0] + j;
-            get_scatter_nc_field_double(&(filenames.forcing[0]),
-                                        param_set.TYPE[PAR].varname,
-                                        d3start, d3count, dvar);
-            for (i = 0; i < local_domain.ncells_active; i++) {
-                force[i].par[j] = (double) dvar[i];
-            }
-        }
-    }
-
-    if (mpi_rank == VIC_MPI_ROOT) {
-        // Close forcing file if it is the last time step
-        if (current == global_param.nrecs - 1) {
-            status = nc_close(filenames.forcing[0].nc_id);
-            check_nc_status(status, "Error closing %s",
-                            filenames.forcing[0].nc_filename);
-        }
-    }
-
-    // Update the offset counter
-    global_param.forceoffset[0] += NF;
 
     // Initialize the veg_hist structure with the current climatological
     // vegetation parameters.  This may be overwritten with the historical
@@ -277,38 +91,44 @@ vic_force(void)
             }
         }
     }
-
-    // Read veg_hist file
-    if (options.LAI_SRC == FROM_VEGHIST ||
-        options.FCAN_SRC == FROM_VEGHIST ||
-        options.ALB_SRC == FROM_VEGHIST) {
-        // global_param.forceoffset[1] resets every year since the met file restarts
-        // every year
-        // global_param.forceskip[1] should also reset to 0 after the first year
+    
+    // global_param.forceoffset[0] resets every year since the met file restarts
+    // every year
+    // global_param.forceskip[0] should also reset to 0 after the first year
+    for(f = 0; f < N_FORCING_TYPES; f++){
+        if(!param_set.TYPE[f].SUPPLIED){
+            continue;
+        }
+        
         if (current > 0 && (dmy[current].year != dmy[current - 1].year)) {
-            global_param.forceoffset[1] = 0;
-            global_param.forceskip[1] = 0;
+            global_param.forceoffset[f] = 0;
+            global_param.forceskip[f] = 0;
             // close the forcing file for the previous year and open the forcing
             // file for the current new year
             // (forcing file for the first year should already be open in
             // get_global_param)
             if (mpi_rank == VIC_MPI_ROOT) {
                 // close previous forcing file
-                status = nc_close(filenames.forcing[1].nc_id);
+                status = nc_close(filenames.forcing[f].nc_id);
                 check_nc_status(status, "Error closing %s",
-                                filenames.forcing[1].nc_filename);
+                                filenames.forcing[f].nc_filename);
                 // open new forcing file
-                sprintf(filenames.forcing[1].nc_filename, "%s%4d.nc",
-                        filenames.f_path_pfx[1],
-                        dmy[current].year);
-                status = nc_open(filenames.forcing[1].nc_filename, NC_NOWRITE,
-                                 &(filenames.forcing[1].nc_id));
+                sprintf(filenames.forcing[f].nc_filename, "%s%4d.nc",
+                        filenames.f_path_pfx[f], dmy[current].year);
+                status = nc_open(filenames.forcing[f].nc_filename, NC_NOWRITE,
+                                 &(filenames.forcing[f].nc_id));
                 check_nc_status(status, "Error opening %s",
-                                filenames.forcing[1].nc_filename);
+                                filenames.forcing[f].nc_filename);
             }
         }
 
         // only the time slice changes for the met file reads. The rest is constant
+        d3start[1] = 0;
+        d3start[2] = 0;
+        d3count[0] = 1;
+        d3count[1] = global_domain.n_ny;
+        d3count[2] = global_domain.n_nx;
+        
         d4start[2] = 0;
         d4start[3] = 0;
         d4count[0] = 1;
@@ -316,78 +136,92 @@ vic_force(void)
         d4count[2] = global_domain.n_ny;
         d4count[3] = global_domain.n_nx;
 
-        // Leaf Area Index: LAI
-        if (options.LAI_SRC == FROM_VEGHIST) {
+        // read variables from file
+        if(f == FCANOPY || f == ALBEDO || f == LAI) {
             for (j = 0; j < NF; j++) {
-                d4start[0] = global_param.forceskip[1] +
-                             global_param.forceoffset[1] + j;
+                d4start[0] = global_param.forceskip[f] +
+                             global_param.forceoffset[f] + j;
                 for (v = 0; v < options.NVEGTYPES; v++) {
                     d4start[1] = v;
-                    get_scatter_nc_field_double(&(filenames.forcing[1]), "LAI",
-                                                d4start, d4count, dvar);
+                    get_scatter_nc_field_double(&(filenames.forcing[f]),
+                                                 param_set.TYPE[f].varname, 
+                                                 d4start, d4count,dvar);
                     for (i = 0; i < local_domain.ncells_active; i++) {
                         vidx = veg_con_map[i].vidx[v];
                         if (vidx != NODATA_VEG) {
-                            veg_hist[i][vidx].LAI[j] = (double) dvar[i];
+                            if(options.FCAN_SRC == FROM_VEGHIST && f == FCANOPY){                                
+                                veg_hist[i][vidx].fcanopy[j] = (double) dvar[i];
+                            } else if(options.ALB_SRC == FROM_VEGHIST && f == ALBEDO){                                
+                                veg_hist[i][vidx].albedo[j] = (double) dvar[i];
+                            } else if(options.LAI_SRC == FROM_VEGHIST && f == LAI){                                
+                                veg_hist[i][vidx].LAI[j] = (double) dvar[i];
+                            }
                         }
                     }
                 }
             }
-        }
-
-        // Partial veg cover fraction: fcanopy
-        if (options.FCAN_SRC == FROM_VEGHIST) {
+        } else {
             for (j = 0; j < NF; j++) {
-                d4start[0] = global_param.forceskip[1] +
-                             global_param.forceoffset[1] + j;
-                for (v = 0; v < options.NVEGTYPES; v++) {
-                    d4start[1] = v;
-                    get_scatter_nc_field_double(&(filenames.forcing[1]),
-                                                "fcanopy", d4start, d4count,
-                                                dvar);
-                    for (i = 0; i < local_domain.ncells_active; i++) {
-                        vidx = veg_con_map[i].vidx[v];
-                        if (vidx != NODATA_VEG) {
-                            veg_hist[i][vidx].fcanopy[j] = (double) dvar[i];
-                        }
+                d3start[0] = global_param.forceskip[f] + 
+                        global_param.forceoffset[f] + j;
+                
+                get_scatter_nc_field_double(&(filenames.forcing[f]),
+                                            param_set.TYPE[f].varname,
+                                            d3start, d3count, dvar);
+
+                for (i = 0; i < local_domain.ncells_active; i++) {
+                    if(f == AIR_TEMP){
+                        force[i].air_temp[j] = (double) dvar[i];
+                    }else if (f == PREC){
+                        force[i].prec[j] = (double) dvar[i];
+                    }else if (f == SWDOWN){
+                        force[i].shortwave[j] = (double) dvar[i];
+                    }else if (f == LWDOWN){
+                        force[i].longwave[j] = (double) dvar[i];
+                    }else if (f == WIND){
+                        force[i].wind[j] = (double) dvar[i];
+                    }else if (f == VP){
+                        force[i].vp[j] = (double) dvar[i];
+                    }else if (f == PRESSURE){
+                        force[i].pressure[j] = (double) dvar[i];
+                    } else if (options.LAKES && f == CHANNEL_IN) {
+                        force[i].channel_in[j] = (double) dvar[i];
+                    } else if (options.CARBON && f == CATM) {
+                        force[i].Catm[j] = (double) dvar[i];
+                    } else if (options.CARBON && f == FDIR) {
+                        force[i].fdir[j] = (double) dvar[i];
+                    } else if (options.CARBON && f == PAR) {
+                        force[i].par[j] = (double) dvar[i];
                     }
                 }
             }
         }
-
-        // Albedo: albedo
-        if (options.ALB_SRC == FROM_VEGHIST) {
-            for (j = 0; j < NF; j++) {
-                d4start[0] = global_param.forceskip[1] +
-                             global_param.forceoffset[1] + j;
-                for (v = 0; v < options.NVEGTYPES; v++) {
-                    d4start[1] = v;
-                    get_scatter_nc_field_double(&(filenames.forcing[1]),
-                                                "albedo", d4start, d4count,
-                                                dvar);
-                    for (i = 0; i < local_domain.ncells_active; i++) {
-                        vidx = veg_con_map[i].vidx[v];
-                        if (vidx != NODATA_VEG) {
-                            veg_hist[i][vidx].albedo[j] = (double) dvar[i];
-                        }
-                    }
-                }
-            }
-        }
-
-        if (mpi_rank == VIC_MPI_ROOT) {
-            // Close forcing file if it is the last time step
-            if (current == global_param.nrecs - 1) {
-                status = nc_close(filenames.forcing[1].nc_id);
-                check_nc_status(status, "Error closing %s",
-                                filenames.forcing[1].nc_filename);
-            }
-        }
-
+        
         // Update the offset counter
-        global_param.forceoffset[1] += NF;
+        global_param.forceoffset[f] += NF;  
+        
+        if (current == global_param.nrecs - 1) { 
+            // Close forcing file if it is the last time step  
+            if (mpi_rank == VIC_MPI_ROOT) {
+                status = nc_close(filenames.forcing[f].nc_id);
+                check_nc_status(status, "Error closing %s",
+                                filenames.forcing[f].nc_filename);
+            }
+        }
     }
-
+    
+    // calculate derived variables
+    if (options.CARBON){
+        for (j = 0; j < NF; j++) {
+            for (i = 0; i < local_domain.ncells_active; i++) {
+                force[i].coszen[j] = compute_coszen(
+                    local_domain.locations[i].latitude,
+                    local_domain.locations[i].longitude,
+                    soil_con[i].time_zone_lng, dmy[current].day_in_year,
+                    dmy[current].dayseconds);
+            }
+        }
+    }
 
     // allocate memory for t_offset
     t_offset = malloc(local_domain.ncells_active * sizeof(*t_offset));

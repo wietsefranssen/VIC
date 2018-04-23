@@ -180,6 +180,7 @@ initialize_global_structures(void)
     mpi_decomposition = MPI_DECOMPOSITION_RANDOM;
     
     if (mpi_rank == VIC_MPI_ROOT) {
+        initialize_param_set();
         initialize_options();
         initialize_global();
         initialize_parameters();

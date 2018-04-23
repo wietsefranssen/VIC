@@ -44,13 +44,12 @@ get_global_param(FILE *gp)
     char                       optstr[MAXSTRING];
     char                       flgstr[MAXSTRING];
     char                       flgstr2[MAXSTRING];
-    size_t                     file_num;
-    int                        field;
     int                        status;
     unsigned int               tmpstartdate;
     unsigned int               tmpenddate;
     unsigned short int         lastday[MONTHS_PER_YEAR];
 
+    size_t i;
 
     /** Read through global control file to find parameters **/
 
@@ -353,30 +352,8 @@ get_global_param(FILE *gp)
             /*************************************
                Define forcing files
             *************************************/
-            else if (strcasecmp("FORCING1", optstr) == 0) {
-                if (strcmp(filenames.f_path_pfx[0], "MISSING") != 0) {
-                    log_err("Tried to define FORCING1 twice, if you want to "
-                            "use two forcing files, the second must be "
-                            "defined as FORCING2");
-                }
-                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[0]);
-                file_num = 0;
-                field = 0;
-                // count the number of forcing variables in this file
-                param_set.N_TYPES[file_num] = count_force_vars(gp);
-            }
-            else if (strcasecmp("FORCING2", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[1]);
-                if (strcasecmp("FALSE", filenames.f_path_pfx[1]) == 0) {
-                    strcpy(filenames.f_path_pfx[1], "MISSING");
-                }
-                file_num = 1;
-                field = 0;
-                // count the number of forcing variables in this file
-                param_set.N_TYPES[file_num] = count_force_vars(gp);
-            }
             else if (strcasecmp("FORCE_TYPE", optstr) == 0) {
-                set_force_type(cmdstr, file_num, &field);
+                set_force_type(cmdstr);
             }
             else if (strcasecmp("WIND_H", optstr) == 0) {
                 sscanf(cmdstr, "%*s %lf", &global_param.wind_h);
@@ -805,54 +782,52 @@ get_global_param(FILE *gp)
                 "for NRECS.", global_param.nrecs);
     }
 
-    // Validate forcing files and variables
-    if (strcmp(filenames.f_path_pfx[0], "MISSING") == 0) {
-        log_err("No forcing file has been defined.  Make sure that the global "
-                "file defines FORCING1.");
-    }
+    for(i = 0; i < N_FORCING_TYPES; i++){
+        // Validate forcing files and variables
+        if (strcmp(filenames.f_path_pfx[i], "MISSING") == 0) {
+            if(i == AIR_TEMP || i == LWDOWN || i == PREC || 
+                    i == PRESSURE || i == VP || i == SWDOWN || i == WIND){
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure to define forcing files for at least: "
+                        "AIR_TEMP, LWDOWN, PREC, PRESSURE, VP, SWDOWN and WIND");
+            } else if ((i == FCANOPY && options.FCAN_SRC == FROM_VEGHIST) || 
+                    (i == LAI && options.LAI_SRC == FROM_VEGHIST) || 
+                    (i == ALBEDO && options.ALB_SRC == FROM_VEGHIST)){
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure, if FROM_VEGHIST is selected, "
+                        "to define forcing for: "
+                        "FACANOPY, LAI and ALDBEDO");
+            } else if ((i == CHANNEL_IN && options.LAKES)) {
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure, if LAKES is selected, "
+                        "to define forcing for: "
+                        "CHANNEL_IN");
+            } else if ((i == CATM && options.CARBON) ||
+                    (i == FDIR && options.CARBON) ||
+                    (i == PAR && options.CARBON)){
+                log_err("Not all essential forcing files have been defined. "
+                        "Make sure, if CARBON is selected, "
+                        "to define forcing for: "
+                        "CATM, FDIR and PAR");
+            }
+        } else {
+            // Get information from the forcing file(s)
+            // Open first-year forcing files and get info
+            sprintf(filenames.forcing[i].nc_filename, "%s%4d.nc",
+                    filenames.f_path_pfx[i], global_param.startyear);
+            status = nc_open(filenames.forcing[i].nc_filename, NC_NOWRITE,
+                             &(filenames.forcing[i].nc_id));
+            check_nc_status(status, "Error opening %s",
+                            filenames.forcing[i].nc_filename);
 
-    // Get information from the forcing file(s)
-    // Open first-year forcing files and get info
-    sprintf(filenames.forcing[0].nc_filename, "%s%4d.nc",
-            filenames.f_path_pfx[0], global_param.startyear);
-    status = nc_open(filenames.forcing[0].nc_filename, NC_NOWRITE,
-                     &(filenames.forcing[0].nc_id));
-    check_nc_status(status, "Error opening %s",
-                    filenames.forcing[0].nc_filename);
-    get_forcing_file_info(&param_set, 0);
-    if (param_set.N_TYPES[1] != 0) {
-        sprintf(filenames.forcing[1].nc_filename, "%s%4d.nc",
-                filenames.f_path_pfx[1], global_param.startyear);
-        status = nc_open(filenames.forcing[1].nc_filename, NC_NOWRITE,
-                         &(filenames.forcing[1].nc_id));
-        check_nc_status(status, "Error opening %s",
-                        filenames.forcing[1].nc_filename);
-        get_forcing_file_info(&param_set, 1);
-    }
+            get_forcing_file_info(&param_set, i);
 
-    if (param_set.N_TYPES[1] != 0 && global_param.forceyear[1] == 0) {
-        global_param.forceyear[1] = global_param.forceyear[0];
-        global_param.forcemonth[1] = global_param.forcemonth[0];
-        global_param.forceday[1] = global_param.forceday[0];
-        global_param.forcesec[1] = global_param.forcesec[0];
-        global_param.forceskip[1] = 0;
-        global_param.forceoffset[1] = global_param.forceskip[1];
-    }
-    if (param_set.force_steps_per_day[0] == 0) {
-        log_err("Forcing file time steps per day has not been "
-                "defined.  Make sure that the global file defines "
-                "FORCE_STEPS_PER_DAY.");
-    }
-    else {
-        param_set.FORCE_DT[0] = SEC_PER_DAY /
-                                (double) param_set.force_steps_per_day[0];
-    }
-    if (param_set.force_steps_per_day[1] > 0) {
-        param_set.FORCE_DT[1] = SEC_PER_DAY /
-                                (double) param_set.force_steps_per_day[1];
-    }
-    else {
-        param_set.FORCE_DT[1] = param_set.FORCE_DT[0];
+            if (param_set.force_steps_per_day[i] == 0) {
+                log_err("Forcing file time steps per day has not been "
+                        "defined.  Make sure that the global file defines "
+                        "FORCE_STEPS_PER_DAY.");
+            }
+        }    
     }
 
     // Validate result directory
