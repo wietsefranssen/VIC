@@ -129,6 +129,12 @@ vic_start(void)
                               &mpi_map_local_array_sizes,
                               &mpi_map_global_array_offsets,
                               &mpi_map_mapping_array);
+        }else if (mpi_decomposition == MPI_DECOMPOSITION_FILE){
+            // decompose the mask
+            mpi_map_decomp_domain_file(global_domain.ncells_active, mpi_size,
+                              &mpi_map_local_array_sizes,
+                              &mpi_map_global_array_offsets,
+                              &mpi_map_mapping_array);
         } else{
             log_err("Unknown mpi decomposition method");
         }

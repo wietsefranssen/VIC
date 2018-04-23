@@ -57,6 +57,7 @@
 #include <dams.h>
 #include <efr.h>
 #include <ext_mpi.h>
+#include <ext_debug.h>
 
 /***** Model Constants *****/
 #define MAXSTRING    2048

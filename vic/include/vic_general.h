@@ -710,6 +710,7 @@ typedef struct {
     char log_path[MAXSTRING];   /**< Location to write log file to */
     
     // Plugins
+    nameid_struct mpi;
     nameid_struct groundwater;
     nameid_struct routing;
     nameid_struct rout_params;  /**< routing parameters file name and nc_id */

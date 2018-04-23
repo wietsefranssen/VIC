@@ -440,12 +440,98 @@ mpi_map_decomp_domain_basin(size_t   ncells,
     check_nc_status(status, "Error opening %s",
                     filenames.routing.nc_filename);
     
-    get_basins(&basins);
+    get_basins_routing(&basins);
     
     // close extension routing file
     status = nc_close(filenames.routing.nc_id);
     check_nc_status(status, "Error closing %s",
                     filenames.routing.nc_filename);
+    
+    node_ids = malloc(mpi_size * sizeof(*node_ids));
+    check_alloc_status(node_ids, "Memory allocation error.");
+    basin_to_node = malloc(basins.Nbasin * sizeof(*basin_to_node));
+    check_alloc_status(basin_to_node, "Memory allocation error.");
+    
+    *mpi_map_local_array_sizes = calloc(mpi_size,
+                                        sizeof(*(*mpi_map_local_array_sizes)));
+    *mpi_map_global_array_offsets = calloc(mpi_size,
+                                           sizeof(*(*
+                                                    mpi_map_global_array_offsets)));
+    *mpi_map_mapping_array = calloc(ncells, sizeof(*(*mpi_map_mapping_array)));
+    
+    for(i=0;i<mpi_size;i++){
+        (*mpi_map_local_array_sizes)[i]=0;
+        (*mpi_map_global_array_offsets)[i]=0;
+    }
+    for(i=0;i<ncells;i++){
+        (*mpi_map_mapping_array)[i]=0;
+    }
+    
+    // determine number of cells per node
+    for(i=0;i<basins.Nbasin;i++){        
+        //sort nodes by size
+        for(j=0;j<mpi_size;j++){
+            node_ids[j]=j;
+        }
+        sizet_sort2(node_ids,(*mpi_map_local_array_sizes),mpi_size,true);   
+                      
+        // find node with lowest amount of cells and add the biggest basin
+        (*mpi_map_local_array_sizes)[node_ids[0]] += basins.Ncells[basins.sorted_basins[i]];
+        basin_to_node[basins.sorted_basins[i]] = node_ids[0];
+    }
+
+    // determine offsets to use for MPI_Scatterv and MPI_Gatherv
+    for (i = 1; i < mpi_size; i++) {
+        for (j = 0; j < i; j++) {
+            (*mpi_map_global_array_offsets)[i] +=
+                (*mpi_map_local_array_sizes)[j];
+        }
+    }
+
+    // set mapping array
+    for (i = 0, l = 0; i < (size_t) mpi_size; i++) {
+        for(j=0;j<basins.Nbasin;j++){
+            if(basin_to_node[j]==i){
+                for(k=0;k<basins.Ncells[j];k++){
+                    (*mpi_map_mapping_array)[l++] = basins.catchment[j][k];
+                }
+            }
+        }
+    }
+}
+
+void
+mpi_map_decomp_domain_file(size_t   ncells,
+                      size_t   mpi_size,
+                      int    **mpi_map_local_array_sizes,
+                      int    **mpi_map_global_array_offsets,
+                      size_t **mpi_map_mapping_array)
+{    
+    extern filenames_struct filenames; 
+    
+    basin_struct basins;
+    int status;
+    
+    size_t i;
+    size_t j;
+    size_t k;
+    size_t l;
+    
+    size_t *node_ids;
+    size_t *basin_to_node;
+    
+    // open extension routing file
+    status = nc_open(filenames.mpi.nc_filename, NC_NOWRITE,
+                     &(filenames.mpi.nc_id));
+    check_nc_status(status, "Error opening %s",
+                    filenames.mpi.nc_filename);
+    
+    get_basins_file(&basins);
+    
+    // close extension routing file
+    status = nc_close(filenames.mpi.nc_id);
+    check_nc_status(status, "Error closing %s",
+                    filenames.mpi.nc_filename);
     
     node_ids = malloc(mpi_size * sizeof(*node_ids));
     check_alloc_status(node_ids, "Memory allocation error.");

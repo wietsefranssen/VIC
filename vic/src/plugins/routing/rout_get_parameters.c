@@ -36,8 +36,15 @@ rout_validate_global_parameters(void)
     
     if(mpi_decomposition == MPI_DECOMPOSITION_RANDOM){
         options.ROUTING_TYPE = ROUTING_RANDOM;
-    } else {
+    } else if(mpi_decomposition == MPI_DECOMPOSITION_BASIN){
         options.ROUTING_TYPE = ROUTING_BASIN;
+    } else if(mpi_decomposition == MPI_DECOMPOSITION_FILE){
+        log_info("MPI_DECOMPOSITION = FILE and ROUTING = TRUE; "
+                "Make sure that the decomposition file follows the routing "
+                "flow paths, otherwise errors might occur.");
+        options.ROUTING_TYPE = ROUTING_BASIN;
+    } else {
+        log_err("Unknown mpi_decomposition for routing");
     }
     
     if(strcasecmp(filenames.routing.nc_filename, MISSING_S) == 0){
