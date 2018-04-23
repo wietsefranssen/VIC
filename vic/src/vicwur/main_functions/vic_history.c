@@ -214,7 +214,7 @@ reset_stream(stream_struct *stream,
 
     // Set aggdata to zero
     for (i = 0; i < stream->ngridcells; i++) {
-        for (j = 0; j < stream->nvars; j++) {
+        for (j = 0; j < stream->nvars; j++) {            
             varid = stream->varid[j];
             for (k = 0; k < out_metadata[varid].nelem; k++) {
                 stream->aggdata[i][j][k][0] = 0.;
@@ -335,7 +335,7 @@ get_default_outvar_aggtype(unsigned int varid)
  * @brief    This routine updates the output information for a given output
  *           variable.
  *****************************************************************************/
-void
+bool
 set_output_var(stream_struct     *stream,
                char              *varname,
                size_t             varnum,
@@ -348,11 +348,7 @@ set_output_var(stream_struct     *stream,
 
     int                    varid;
     int                    found = false;
-
-    if (varnum >= stream->nvars) {
-        log_err("Invalid varnum %zu, must be less than the number of variables "
-                "in the stream %zu", varnum, stream->nvars);
-    }
+    
     // Find the output varid by looping through out_metadata, comparing to varname
     for (varid = 0; varid < N_OUTVAR_TYPES_ALL; varid++) {
         if (strcmp(out_metadata[varid].varname, varname) == 0) {
@@ -361,10 +357,18 @@ set_output_var(stream_struct     *stream,
         }
     }
     if (!found) {
-        log_err("set_output_var: \"%s\" was not found in the list of "
-                "supported output variable names.  Please use the exact name "
-                "listed in vic_driver_shared.h.", varname);
+        log_warn("set_output_var: \"%s\" was not found in the list of "
+                "supported output variable names. "
+                "Ignoring the output variable for now...", varname);
+        
+        return false;
     }
+
+    if (varnum >= stream->nvars) {
+        log_err("Invalid varnum %zu, must be less than the number of variables "
+                "in the stream %zu", varnum, stream->nvars);
+    }
+    
     // Set stream members
     stream->varid[varnum] = varid;
     // Format (ASCII only)
@@ -395,6 +399,8 @@ set_output_var(stream_struct     *stream,
     else {
         stream->aggtype[varnum] = get_default_outvar_aggtype(varid);
     }
+    
+    return true;
 }
 
 /******************************************************************************
