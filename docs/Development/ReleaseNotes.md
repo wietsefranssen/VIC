@@ -101,19 +101,41 @@ To check which release of VIC you are running:
 
 6. Cleanup of the initialization sections of the ``image`` and ``cesm`` drivers ([GH#701](https://github.com/UW-Hydro/VIC/pull/701))
 
-	Codified behavior in the initialization of the ``image`` and `cesm` drivers that requires the parameter variables `AreaFract`, `Pfactor`, `zone_fract`, and `Cv` must sum exactly to 1.0. If using the `SNOW_BAND` option, the area weighted `elevation` must match the mean grid cell elevation (`elev`). VIC will print *warnings* if any of these criteria are violated.  
+    Codified behavior in the initialization of the ``image`` and `cesm` drivers that requires the parameter variables `AreaFract`, `Pfactor`, `zone_fract`, and `Cv` must sum exactly to 1.0. If using the `SNOW_BAND` option, the area weighted `elevation` must match the mean grid cell elevation (`elev`). VIC will print *warnings* if any of these criteria are violated.  
 
 7. Added thread parallelization using OPENMP ([GH#712](https://github.com/UW-Hydro/VIC/pull/712))
 
-	The VIC image and CESM drivers now may be optionally compiled with OPENMP to enable shared memory thread parallelization. This option should improve the parallel scaling of these drivers by reducing the number of MPI messages and increasing message size.
+    The VIC image and CESM drivers now may be optionally compiled with OPENMP to enable shared memory thread parallelization. This option should improve the parallel scaling of these drivers by reducing the number of MPI messages and increasing message size.
 
 8. Added streamflow routing extensions ROUT_STUB and ROUT_RVIC for the VIC image driver ([GH#231](https://github.com/UW-Hydro/VIC/pull/231))
 
     The VIC image driver can be optionally compiled with ROUT_RVIC to enable routing in image mode (ROUT_STUB is the default extension which means no routing). With ROUT_RVIC enabled, the output variable ``OUT_DISCHARGE`` is available, and there will also be an extra state variable ``STATE_ROUT_RING`` stored in the state file.
 
+9. Moved MAX_ITER_GRND_CANOPY, which controls the maximum number of ground-canopy iterations in CLOSE_ENERGY mode for vegetation types with an overstory, to the parameters struct ([GH#771](https://github.com/UW-Hydro/VIC/pull/771))
+
+    Previously this was set in the surface_fluxes.c numerics routine for ground-canopy iterations, which meant that that routine had to be altered to change the maximum number of iterations. It has now been moved to the parameters struct so that it can be overriden in the constants file. 
+
+10. Updated new snow density function by adding a cap to new snow density that is set in the parameters struct by the parameter SNOW_NEW_SNOW_DENS_MAX ([GH#776](https://github.com/UW-Hydro/VIC/pull/776))
+
+    Previously the change in cold content of the snowpack term (deltaCC in the snow_data_struct) would get unreasonably large if the Hedstrom and Pomeroy 1998 equation used to calculate snow density, which depends only on air temperature, was calculated with air temperatures above about 2 deg C. We use this term to calculate the ground flux from the snowpack and snow depth, which resulted in extremely small snow depths and unreasonably large ground fluxes from the snowpack (and thus changes in snowpack cold content). Now there is a cap on new snow density with the new parameter SNOW_NEW_SNOW_DENS_MAX as well as a snow depth below which we disregard the ground flux from the snowpack (1.e-8). 
+
+10. Miscellaneous clean-up:
+
+    [GH#723](https://github.com/UW-Hydro/VIC/pull/723)
+
+        1. Added support for veg_hist forcings (non-climatological) in image mode
+        2. Fixed erroneous allocation of extra veg tile in image mode
+        3. Simplified looping over veg tiles and bands in vic_run() and prepare_full_energy()
+        4. Replaced lengthy data structures with local pointers in vic_run()
+        5. Simplified out_prec, out_rain, and Melt arrays
+        6. Updated names of variables and options for LAI and FCANOPY in documentation to match their new names in the code
+        7. Removed constants MAX_VEG and MAX_BANDS from code; all arrays that were declared with those lengths were replaced with dynamic allocations.  This allowed for specification of veg libraries containing more classes without recompiling the code, and more efficient memory usage.
+
 #### Bug Fixes:
 
-1.	Renamed "fcov" to "fcan" in image driver to better match variable code name ([GH#673](https://github.com/UW-Hydro/VIC/pull/673))
+1. NetCDF forcing files are now closed at the last timestep in stead of after the last timestep. ([GH#774](https://github.com/UW-Hydro/VIC/pull/774))
+
+2. Renamed "fcov" to "fcan" in image driver to better match variable code name ([GH#673](https://github.com/UW-Hydro/VIC/pull/673))
 
 ------------------------------
 
