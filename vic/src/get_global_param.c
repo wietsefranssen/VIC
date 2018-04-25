@@ -78,6 +78,7 @@ get_global_param(FILE *gp)
             else if (wu_get_global_parameters(cmdstr)) {}
             else if (rout_get_global_parameters(cmdstr)) {}
             else if (irr_get_global_parameters(cmdstr)) {}
+            else if (wofost_get_global_parameters(cmdstr)) {}
             else if (mpi_get_global_parameters(cmdstr)) {}
             
             /*************************************
@@ -560,6 +561,9 @@ get_global_param(FILE *gp)
     }
     if (options.GROUNDWATER) {
         gw_validate_global_parameters();
+    }
+    if (options.WOFOST) {
+        wofost_validate_global_parameters();
     }
    
     // Validate model time step

@@ -56,6 +56,7 @@
 #include <groundwater.h>
 #include <dams.h>
 #include <efr.h>
+#include <wofost/wofost.h>
 #include <ext_mpi.h>
 #include <ext_debug.h>
 
@@ -348,6 +349,7 @@ typedef struct {
     bool EFR;
     bool DAMS;
     bool MATRIC;
+    bool WOFOST;
     
     // Groundwater options
     bool GW_INIT_FROM_FILE;    

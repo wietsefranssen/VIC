@@ -490,6 +490,8 @@ print_option(option_struct *option)
             option->EFR ? "true" : "false");
     fprintf(LOG_DEST, "\tWATER_USE                : %s\n",
             option->WATER_USE ? "true" : "false");
+    fprintf(LOG_DEST, "\tWOFOST                : %s\n",
+            option->WOFOST ? "true" : "false");
     
     fprintf(LOG_DEST, "\tNcanopy              : %zu\n", option->Ncanopy);
     fprintf(LOG_DEST, "\tNfrost               : %zu\n", option->Nfrost);

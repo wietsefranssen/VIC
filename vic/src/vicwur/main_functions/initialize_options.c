@@ -106,6 +106,7 @@ initialize_options()
     options.IRRIGATION = false;
     options.EFR = false;
     options.DAMS = false;
+    options.WOFOST= false;
     
     // Groundwater options
     options.GW_INIT_FROM_FILE = false;

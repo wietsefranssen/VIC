@@ -290,6 +290,12 @@ display_current_settings(int mode)
     else {
         fprintf(LOG_DEST, "WATER_USE\t\tFALSE\n");
     }
+    if (options.WOFOST) {
+        fprintf(LOG_DEST, "WOFOST\t\tTRUE\n");
+    }
+    else {
+        fprintf(LOG_DEST, "WOFOST\t\tFALSE\n");
+    }
     
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Forcing Data:\n");

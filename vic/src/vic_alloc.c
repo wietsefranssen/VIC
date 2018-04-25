@@ -62,6 +62,9 @@ vic_alloc(void) {
     if (options.GROUNDWATER) {
         gw_add_types();
     }
+    if (options.WOFOST) {
+        wofost_add_types();
+    }
     
     if(mpi_rank == VIC_MPI_ROOT){
         list_print(outvar_types);

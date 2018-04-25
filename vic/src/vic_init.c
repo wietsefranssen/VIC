@@ -63,4 +63,9 @@ vic_init(void)
         initialize_gw_local_structures();
         gw_init();
     }
+    if (options.WOFOST) {
+        wofost_alloc();
+        initialize_wofost_local_structures();
+        wofost_init();
+    }
 }

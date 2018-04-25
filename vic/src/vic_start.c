@@ -173,6 +173,9 @@ vic_start(void)
         if (options.IRRIGATION) {
             irr_start();
         }
+        if (options.WOFOST) {
+            wofost_start();
+        }
 
         // Check that model parameters are valid
         validate_parameters();

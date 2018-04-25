@@ -75,6 +75,9 @@ set_output_met_data_info()
     if (options.GROUNDWATER) {
         gw_set_output_meta_data_info();
     }
+    if (options.WOFOST) {
+        wofost_set_output_meta_data_info();
+    }
 
     // Water Balance Terms - state variables
     /* saturated area fraction */

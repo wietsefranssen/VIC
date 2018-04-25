@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Finalize VIC run by freeing memory and closing open files.
+ * Save model state.
  *
  * @section LICENSE
  *
@@ -27,40 +27,17 @@
 #include <vic.h>
 
 /******************************************************************************
- * @brief    Initialize model parameters
+ * @brief    Save model state.
  *****************************************************************************/
 void
-vic_finalize(void)
-{
-    extern option_struct     options;
+wofost_add_types(void) {
 
-    // finalize routing
-    if (options.ROUTING_RVIC) {
-        routing_rvic_finalize();
-    }
-    if (options.DAMS) {
-        dam_finalize();
-    }
-    if (options.ROUTING) {
-        rout_finalize();
-    }
-    if (options.IRRIGATION) {
-        irr_finalize();
-    }
-    if (options.EFR) {
-        efr_finalize();
-    }
-    if (options.WATER_USE) {
-        wu_finalize();
-    }
-    if (options.GROUNDWATER) {
-        gw_finalize();
-    }
-    if (options.WOFOST) {
-        wofost_finalize();
-    }
+    extern node    *outvar_types;
+    extern int      N_OUTVAR_TYPES_ALL;
 
-    // Allocate memory for all non specific VIC structures
-    finalize_general();
+    // add outvar_types
+    outvar_types = list_prepend(outvar_types, "OUT_WOFOST_OUTVAR_TEST");
     
+    outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
+    N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;
 }
