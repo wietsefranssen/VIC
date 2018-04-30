@@ -34,7 +34,9 @@ bool between_dmy(dmy_struct start, dmy_struct end, dmy_struct current);
 bool between_dmy(dmy_struct start, dmy_struct end, dmy_struct current);
 dmy_struct dmy_from_diy(int diy);
 
-double array_average(double *array, size_t repetitions, size_t length, size_t offset, size_t skip);
+double array_average(double *array, size_t repetitions, size_t length,
+                     size_t offset,
+                     size_t skip);
 
 void sizet_sort(size_t *array, size_t *cost, size_t Nelements, bool acending);
 void sizet_sort2(size_t *array, int *cost, size_t Nelements, bool acending);
@@ -43,8 +45,10 @@ void sizet_swap(size_t i, size_t j, size_t *array);
 void int_swap(size_t i, size_t j, int *array);
 void double_swap(size_t i, size_t j, double *array);
 
-int get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *, double *);
-int get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *, float *);
+int get_active_nc_field_double(nameid_struct *, char *, size_t *, size_t *,
+                               double *);
+int get_active_nc_field_float(nameid_struct *, char *, size_t *, size_t *,
+                              float *);
 int get_active_nc_field_int(nameid_struct *, char *, size_t *, size_t *, int *);
 
 void gather_double(double *dvar, double *var_local);

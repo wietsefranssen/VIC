@@ -48,7 +48,7 @@ alloc_general(void)
     extern metadata_struct    *state_metadata;
 
     extern int                 N_OUTVAR_TYPES_ALL;
-    extern int                 N_STATE_VARS_ALL;        
+    extern int                 N_STATE_VARS_ALL;
     size_t                     i;
     size_t                     j;
 

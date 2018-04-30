@@ -594,32 +594,36 @@ surface_fluxes(bool                 overstory,
                    Solve Energy Balance Components at Soil Surface
                 **************************************************/
 
-                Tsurf = calc_surf_energy_bal((*Le), LongUnderIn, NetLongSnow,
-                                             NetShortGrnd, NetShortSnow,
-                                             OldTSurf,
-                                             ShortUnderIn, iter_snow.albedo,
-                                             iter_snow_energy.latent,
-                                             iter_snow_energy.latent_sub,
-                                             iter_snow_energy.sensible,
-                                             Tcanopy, VPDcanopy,
-                                             VPcanopy,
-                                             delta_coverage, dp,
-                                             ice0, step_melt_energy, moist0,
-                                             iter_snow.coverage,
-                                             (step_snow.depth + iter_snow.depth) / 2.,
-                                             BareAlbedo, surf_atten,
-                                             iter_aero_resist, iter_aero_resist_veg, iter_aero_resist_used,
-                                             displacement, &step_melt, &step_ppt,
-                                             rainfall, ref_height, roughness,
-                                             snowfall, wind, root, INCLUDE_SNOW,
-                                             UnderStory, options.Nnode, Nveg,
-                                             step_dt, hidx, iveg,
-                                             (int) overstory, veg_class,
-                                             CanopLayerBnd, &dryFrac, force,
-                                             dmy, &iter_soil_energy,
-                                             iter_layer,
-                                             &(iter_snow), soil_con,
-                                             &iter_soil_veg_var);
+                Tsurf = calc_surf_energy_bal(
+                    (*Le), LongUnderIn, NetLongSnow,
+                    NetShortGrnd, NetShortSnow,
+                    OldTSurf,
+                    ShortUnderIn, iter_snow.albedo,
+                    iter_snow_energy.latent,
+                    iter_snow_energy.latent_sub,
+                    iter_snow_energy.sensible,
+                    Tcanopy, VPDcanopy,
+                    VPcanopy,
+                    delta_coverage, dp,
+                    ice0, step_melt_energy, moist0,
+                    iter_snow.coverage,
+                    (step_snow.depth +
+                                              iter_snow.depth) / 2.,
+                    BareAlbedo, surf_atten,
+                    iter_aero_resist,
+                    iter_aero_resist_veg, iter_aero_resist_used,
+                    displacement, &step_melt,
+                    &step_ppt,
+                    rainfall, ref_height, roughness,
+                    snowfall, wind, root, INCLUDE_SNOW,
+                    UnderStory, options.Nnode, Nveg,
+                    step_dt, hidx, iveg,
+                    (int) overstory, veg_class,
+                    CanopLayerBnd, &dryFrac, force,
+                    dmy, &iter_soil_energy,
+                    iter_layer,
+                    &(iter_snow), soil_con,
+                    &iter_soil_veg_var);
 
                 if ((int) Tsurf == ERROR) {
                     // Return error flag to skip rest of grid cell
@@ -1078,7 +1082,7 @@ surface_fluxes(bool                 overstory,
     ********************************************************/
 
     (*inflow) = ppt;
-    
+
     ErrorFlag = runoff(cell, energy, soil_con, ppt, soil_con->frost_fract,
                        options.Nnode);
 

@@ -31,19 +31,27 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-routing_rvic_output_metadata() {
+routing_rvic_output_metadata()
+{
     extern metadata_struct *out_metadata;
     extern node            *outvar_types;
 
     /* river discharge [m3 s-1] */
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].varname, "OUT_DISCHARGE");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].long_name,
-            "water_volume_transport_in_river_channel");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].standard_name, "river_discharge");
-    strcpy(out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].units, "m3 s-1");
+    strcpy(out_metadata[list_search_id(outvar_types,
+                                       "OUT_DISCHARGE")].varname,
+           "OUT_DISCHARGE");
+    strcpy(out_metadata[list_search_id(outvar_types,
+                                       "OUT_DISCHARGE")].long_name,
+           "water_volume_transport_in_river_channel");
+    strcpy(out_metadata[list_search_id(outvar_types,
+                                       "OUT_DISCHARGE")].standard_name,
+           "river_discharge");
+    strcpy(out_metadata[list_search_id(outvar_types,
+                                       "OUT_DISCHARGE")].units, "m3 s-1");
     strcpy(
-            out_metadata[list_search_id(outvar_types, "OUT_DISCHARGE")].description,
-            "The water flux or volume transport in rivers is the amount of water flowing in the river channel and flood plain. 'Water' means water in all phases");
+        out_metadata[list_search_id(outvar_types,
+                                    "OUT_DISCHARGE")].description,
+        "The water flux or volume transport in rivers is the amount of water flowing in the river channel and flood plain. 'Water' means water in all phases");
 }
 
 /******************************************************************************
@@ -54,15 +62,20 @@ routing_rvic_state_metadata()
 {
     extern metadata_struct *state_metadata;
     extern node            *state_vars;
-    
+
     // STATE_ROUT_RING
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
+    strcpy(state_metadata[list_search_id(state_vars,
+                                         "STATE_ROUT_RING")].varname,
            "STATE_ROUT_RING");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].long_name,
+    strcpy(state_metadata[list_search_id(state_vars,
+                                         "STATE_ROUT_RING")].long_name,
            "routing_ring");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].standard_name,
+    strcpy(state_metadata[list_search_id(state_vars,
+                                         "STATE_ROUT_RING")].standard_name,
            "routing_ring");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].units, "-");
-    strcpy(state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].description,
+    strcpy(state_metadata[list_search_id(state_vars,
+                                         "STATE_ROUT_RING")].units, "-");
+    strcpy(state_metadata[list_search_id(state_vars,
+                                         "STATE_ROUT_RING")].description,
            "unit hydrographs in the routing ring");
 }

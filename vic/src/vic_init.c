@@ -32,7 +32,7 @@
 void
 vic_init(void)
 {
-    extern option_struct     options;
+    extern option_struct options;
 
     // Initialize all non specific VIC structures
     init_general();

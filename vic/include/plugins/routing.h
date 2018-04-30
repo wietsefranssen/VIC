@@ -5,34 +5,34 @@
 
 #define MAX_UPSTREAM 8
 
-enum{
+enum {
     ROUTING_FALSE,
     ROUTING_BASIN,
     ROUTING_RANDOM
 };
 
-typedef struct{
+typedef struct {
     int *basin_map;
     size_t *sorted_basins;
     size_t Nbasin;
     size_t *Ncells;
     size_t **catchment;
-}basin_struct;
+} basin_struct;
 
-typedef struct{
+typedef struct {
     int direction;
-    size_t downstream;    
+    size_t downstream;
     size_t Nupstream;
-    size_t *upstream;    
+    size_t *upstream;
     double *river_irf;
     double *grid_irf;
-}rout_con_struct;
+} rout_con_struct;
 
-typedef struct{    
+typedef struct {
     double storage;
     double *discharge;
     double *nat_discharge;
-}rout_var_struct;
+} rout_var_struct;
 
 void get_basins_routing(basin_struct *basins);
 void get_basins_file(basin_struct *basins);
@@ -56,7 +56,7 @@ size_t get_downstream_global(size_t id, int direction);
 size_t get_downstream_local(size_t id, int direction, size_t n_nx);
 void rout(double quantity, double *uh, double *discharge, size_t length);
 
-size_t *routing_order;
+size_t          *routing_order;
 
 rout_var_struct *rout_var;
 rout_con_struct *rout_con;

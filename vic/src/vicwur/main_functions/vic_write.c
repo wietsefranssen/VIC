@@ -58,10 +58,10 @@ vic_write(stream_struct  *stream,
           nc_file_struct *nc_hist_file,
           dmy_struct     *dmy_current)
 {
-    extern global_param_struct  global_param;
-    extern domain_struct        local_domain;
-    extern int                  mpi_rank;
-    extern metadata_struct     *out_metadata;
+    extern global_param_struct global_param;
+    extern domain_struct       local_domain;
+    extern int                 mpi_rank;
+    extern metadata_struct    *out_metadata;
 
     size_t                     i;
     size_t                     j;
@@ -148,7 +148,7 @@ vic_write(stream_struct  *stream,
             dcount[j] = nc_hist_file->nc_vars[k].nc_counts[j];
         }
         dstart[0] = stream->write_alarm.count;  // Position in the time dimensions
-        
+
         for (j = 0; j < out_metadata[varid].nelem; j++) {
             // if there is more than one layer, then dstart needs to advance
             dstart[1] = j;
@@ -161,10 +161,10 @@ vic_write(stream_struct  *stream,
                                            nc_hist_file->d_fillvalue,
                                            dstart, dcount, dvar);
             }
-            else if (nc_hist_file->nc_vars[k].nc_type == NC_FLOAT) {                
+            else if (nc_hist_file->nc_vars[k].nc_type == NC_FLOAT) {
                 for (i = 0; i < local_domain.ncells_active; i++) {
-                    fvar[i] = (float) stream->aggdata[i][k][j][0];        
-                }                                 
+                    fvar[i] = (float) stream->aggdata[i][k][j][0];
+                }
                 gather_put_nc_field_float(nc_hist_file->nc_id,
                                           nc_hist_file->nc_vars[k].nc_varid,
                                           nc_hist_file->f_fillvalue,

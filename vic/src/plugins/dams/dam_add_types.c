@@ -31,10 +31,10 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-dam_add_types(void) {
-
-    extern node    *outvar_types;
-    extern int      N_OUTVAR_TYPES_ALL;
+dam_add_types(void)
+{
+    extern node *outvar_types;
+    extern int   N_OUTVAR_TYPES_ALL;
 
     // add outvar_types
     outvar_types = list_prepend(outvar_types, "OUT_DAM_VOLUME");

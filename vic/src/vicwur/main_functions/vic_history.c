@@ -36,8 +36,8 @@ alloc_out_data(size_t    ngridcells,
     extern metadata_struct *out_metadata;
     extern int              N_OUTVAR_TYPES_ALL;
 
-    size_t                 i;
-    int                    j;
+    size_t                  i;
+    int                     j;
 
     for (i = 0; i < ngridcells; i++) {
         out_data[i] = calloc(N_OUTVAR_TYPES_ALL, sizeof(*(out_data[i])));
@@ -165,10 +165,10 @@ alloc_aggdata(stream_struct *stream)
 {
     extern metadata_struct *out_metadata;
 
-    size_t                 i;
-    size_t                 j;
-    size_t                 k;
-    size_t                 nelem;
+    size_t                  i;
+    size_t                  j;
+    size_t                  k;
+    size_t                  nelem;
 
     stream->aggdata = calloc(stream->ngridcells, sizeof(*(stream->aggdata)));
     check_alloc_status(stream->aggdata, "Memory allocation error.");
@@ -204,17 +204,17 @@ reset_stream(stream_struct *stream,
 {
     extern metadata_struct *out_metadata;
 
-    size_t                 i;
-    size_t                 j;
-    size_t                 k;
-    size_t                 varid;
+    size_t                  i;
+    size_t                  j;
+    size_t                  k;
+    size_t                  varid;
 
     // Reset alarm to next agg period
     reset_alarm(&(stream->agg_alarm), dmy_current);
 
     // Set aggdata to zero
     for (i = 0; i < stream->ngridcells; i++) {
-        for (j = 0; j < stream->nvars; j++) {            
+        for (j = 0; j < stream->nvars; j++) {
             varid = stream->varid[j];
             for (k = 0; k < out_metadata[varid].nelem; k++) {
                 stream->aggdata[i][j][k][0] = 0.;
@@ -230,13 +230,16 @@ reset_stream(stream_struct *stream,
 unsigned int
 get_default_outvar_aggtype(unsigned int varid)
 {
-    unsigned int agg_type;
+    unsigned int         agg_type;
     extern option_struct options;
-    
-    if(options.ROUTING && rout_history(varid, &agg_type)){
-    }else if(options.GROUNDWATER && gw_history(varid, &agg_type)){
-    }else if(options.IRRIGATION && irr_history(varid, &agg_type)){
-    }else{
+
+    if (options.ROUTING && rout_history(varid, &agg_type)) {
+    }
+    else if (options.GROUNDWATER && gw_history(varid, &agg_type)) {
+    }
+    else if (options.IRRIGATION && irr_history(varid, &agg_type)) {
+    }
+    else {
         switch (varid) {
         // AGG_TYPE_END
         case OUT_ASAT:
@@ -323,7 +326,7 @@ get_default_outvar_aggtype(unsigned int varid)
         case OUT_TCAN_FBFLAG:
         case OUT_TFOL_FBFLAG:
             agg_type = AGG_TYPE_SUM;
-            break;        
+            break;
         default:
             agg_type = AGG_TYPE_AVG;
         }
@@ -346,9 +349,9 @@ set_output_var(stream_struct     *stream,
 {
     extern metadata_struct *out_metadata;
 
-    int                    varid;
-    int                    found = false;
-    
+    int                     varid;
+    int                     found = false;
+
     // Find the output varid by looping through out_metadata, comparing to varname
     for (varid = 0; varid < N_OUTVAR_TYPES_ALL; varid++) {
         if (strcmp(out_metadata[varid].varname, varname) == 0) {
@@ -358,17 +361,18 @@ set_output_var(stream_struct     *stream,
     }
     if (!found) {
         log_warn("set_output_var: \"%s\" was not found in the list of "
-                "supported output variable names. "
-                "Ignoring the output variable for now...", varname);
-        
+                 "supported output variable names. "
+                 "Ignoring the output variable for now...", varname);
+
         return false;
     }
 
     if (varnum >= stream->nvars) {
-        log_err("Invalid varnum %zu, must be less than the number of variables "
-                "in the stream %zu", varnum, stream->nvars);
+        log_err(
+            "Invalid varnum %zu, must be less than the number of variables "
+            "in the stream %zu", varnum, stream->nvars);
     }
-    
+
     // Set stream members
     stream->varid[varnum] = varid;
     // Format (ASCII only)
@@ -399,7 +403,7 @@ set_output_var(stream_struct     *stream,
     else {
         stream->aggtype[varnum] = get_default_outvar_aggtype(varid);
     }
-    
+
     return true;
 }
 
@@ -409,14 +413,14 @@ set_output_var(stream_struct     *stream,
 void
 free_streams(stream_struct **streams)
 {
-    extern option_struct   options;
+    extern option_struct    options;
     extern metadata_struct *out_metadata;
 
-    size_t                 streamnum;
-    size_t                 i;
-    size_t                 j;
-    size_t                 k;
-    size_t                 varid;
+    size_t                  streamnum;
+    size_t                  i;
+    size_t                  j;
+    size_t                  k;
+    size_t                  varid;
 
     // free output streams
     for (streamnum = 0; streamnum < options.Noutstreams; streamnum++) {
@@ -452,9 +456,9 @@ void
 free_out_data(size_t    ngridcells,
               double ***out_data)
 {
-    size_t i;
-    int j;
-    extern int                 N_OUTVAR_TYPES_ALL;
+    size_t     i;
+    int        j;
+    extern int N_OUTVAR_TYPES_ALL;
 
 
     if (out_data == NULL) {

@@ -31,9 +31,9 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-gw_add_types(void) {
-
-    extern node    *outvar_types;
+gw_add_types(void)
+{
+    extern node *outvar_types;
 
     // add outvar_types
     outvar_types = list_prepend(outvar_types, "OUT_GW_ZWT");

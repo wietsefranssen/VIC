@@ -31,12 +31,13 @@
  *           global parameters, model options, and debugging controls.
  *****************************************************************************/
 bool
-routing_rvic_get_global_param(char *cmdstr) {
-    extern option_struct options;
-    extern filenames_struct    filenames;
-    
-    char                       optstr[MAXSTRING];
-    char                       flgstr[MAXSTRING];
+routing_rvic_get_global_param(char *cmdstr)
+{
+    extern option_struct    options;
+    extern filenames_struct filenames;
+
+    char                    optstr[MAXSTRING];
+    char                    flgstr[MAXSTRING];
 
     sscanf(cmdstr, "%s", optstr);
 

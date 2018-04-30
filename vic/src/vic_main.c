@@ -107,10 +107,10 @@ main(int    argc,
     if (mpi_rank == VIC_MPI_ROOT) {
         cmd_proc(argc, argv, filenames.global);
     }
-    
+
     // read global parameters
     vic_start();
-    
+
     // allocate memory
     vic_alloc();
 
@@ -134,13 +134,13 @@ main(int    argc,
     timer_stop(&(global_timers[TIMER_VIC_INIT]));
     // start vic run timer
     timer_start(&(global_timers[TIMER_VIC_RUN]));
-    
+
     // loop over all timesteps
     for (current = 0; current < global_param.nrecs; current++) {
         // read forcing data
         timer_continue(&(global_timers[TIMER_VIC_FORCE]));
         vic_force();
-        if(options.WATER_USE){
+        if (options.WATER_USE) {
             wu_force();
         }
         timer_stop(&(global_timers[TIMER_VIC_FORCE]));
@@ -164,7 +164,7 @@ main(int    argc,
     timer_stop(&(global_timers[TIMER_VIC_RUN]));
     // start vic final timer
     timer_start(&(global_timers[TIMER_VIC_FINAL]));
-    
+
     // clean up
     vic_finalize();
 

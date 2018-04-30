@@ -427,9 +427,10 @@ init_general(void)
                 options.Nlayer);
     }
     if (options.Nlayer > MAX_LAYERS) {
-        log_err("Global file wants more soil moisture layers (%zu) than "
-                "are defined by MAX_LAYERS (%d).  Edit vic_driver_shared.h and "
-                "recompile.", options.Nlayer, MAX_LAYERS);
+        log_err(
+            "Global file wants more soil moisture layers (%zu) than "
+            "are defined by MAX_LAYERS (%d).  Edit vic_driver_shared.h and "
+            "recompile.", options.Nlayer, MAX_LAYERS);
     }
 
     // latitude and longitude
@@ -1221,7 +1222,8 @@ init_general(void)
                 for (k = 0; k < options.ROOT_ZONES; k++) {
                     sum += veg_con[i][vidx].zone_fract[k];
                 }
-                if (!assert_close_double(sum, 1.0, 0., AREA_SUM_ERROR_THRESH)) {
+                if (!assert_close_double(sum, 1.0, 0.,
+                                         AREA_SUM_ERROR_THRESH)) {
                     sprint_location(locstr, &(local_domain.locations[i]));
                     log_warn("Sum of root zone fractions !=  1.0 (%.16f) at "
                              "grid cell %zd. Normalizing fractions. If the "
@@ -1235,7 +1237,8 @@ init_general(void)
                 // library
                 found = false;
                 for (k = 0; k < options.NVEGTYPES; k++) {
-                    if (veg_con[i][vidx].veg_class == veg_lib[i][k].veg_class) {
+                    if (veg_con[i][vidx].veg_class ==
+                        veg_lib[i][k].veg_class) {
                         found = true;
                         break;
                     }
@@ -1274,7 +1277,7 @@ init_general(void)
             }
         }
     }
-    
+
     // read blowing snow parameters
     if (options.BLOWING) {
         // sigma_slope
@@ -1590,10 +1593,10 @@ init_general(void)
         }
         initialize_energy(all_vars[i].energy, nveg);
     }
-    
+
     for (i = 0; i < local_domain.ncells_active; i++) {
-        for(k = 0; k < veg_con_map[i].nv_active; k++){
-            for(m = 0; m < options.SNOW_BAND; m++){
+        for (k = 0; k < veg_con_map[i].nv_active; k++) {
+            for (m = 0; m < options.SNOW_BAND; m++) {
                 for (j = 0; j < options.Nlayer; j++) {
                     all_vars[i].cell[k][m].layer[j].Ksat = soil_con[i].Ksat[j];
                 }

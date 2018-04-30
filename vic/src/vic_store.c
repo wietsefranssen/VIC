@@ -1334,7 +1334,7 @@ set_nc_state_file_info(nc_file_struct *nc_state_file)
     if (options.ROUTING_RVIC) {
         routing_rvic_set_nc_state_file_info(nc_state_file);
     }
-        
+
     // allocate memory for nc_vars
     nc_state_file->nc_vars =
         calloc(N_STATE_VARS_ALL,
@@ -1349,8 +1349,8 @@ void
 set_nc_state_var_info(nc_file_struct *nc)
 {
     extern option_struct options;
-    size_t i;
-    size_t j;
+    size_t               i;
+    size_t               j;
 
     for (i = 0; i < N_STATE_VARS; i++) {
         nc->nc_vars[i].nc_varid = i;
@@ -1697,7 +1697,7 @@ initialize_state_file(char           *filename,
         if (options.ROUTING_RVIC) {
             routing_rvic_initialize_state_file(filename, nc_state_file);
         }
- 
+
         set_nc_state_var_info(nc_state_file);
     }
 
@@ -1737,11 +1737,14 @@ initialize_state_file(char           *filename,
                             NC_DOUBLE, ndims, dimids, &(lon_var_id));
         check_nc_status(status, "Error defining lon variable in %s", filename);
 
-        status = nc_put_att_text(nc_state_file->nc_id, lon_var_id, "long_name", strlen(
-                                     "longitude"), "longitude");
+        status =
+            nc_put_att_text(nc_state_file->nc_id, lon_var_id, "long_name",
+                            strlen(
+                                "longitude"), "longitude");
         check_nc_status(status, "Error adding attribute in %s", filename);
-        status = nc_put_att_text(nc_state_file->nc_id, lon_var_id, "units", strlen(
-                                     "degrees_east"), "degrees_east");
+        status =
+            nc_put_att_text(nc_state_file->nc_id, lon_var_id, "units", strlen(
+                                "degrees_east"), "degrees_east");
         check_nc_status(status, "Error adding attribute in %s", filename);
         status = nc_put_att_text(nc_state_file->nc_id, lon_var_id,
                                  "standard_name", strlen(
@@ -1758,11 +1761,14 @@ initialize_state_file(char           *filename,
                             NC_DOUBLE, ndims, dimids, &(lat_var_id));
         check_nc_status(status, "Error defining lat variable (%s) in %s",
                         global_domain.info.lat_var, filename);
-        status = nc_put_att_text(nc_state_file->nc_id, lat_var_id, "long_name", strlen(
-                                     "latitude"), "latitude");
+        status =
+            nc_put_att_text(nc_state_file->nc_id, lat_var_id, "long_name",
+                            strlen(
+                                "latitude"), "latitude");
         check_nc_status(status, "Error adding attribute in %s", filename);
-        status = nc_put_att_text(nc_state_file->nc_id, lat_var_id, "units", strlen(
-                                     "degrees_north"), "degrees_north");
+        status =
+            nc_put_att_text(nc_state_file->nc_id, lat_var_id, "units", strlen(
+                                "degrees_north"), "degrees_north");
         check_nc_status(status, "Error adding attribute in %s", filename);
         status = nc_put_att_text(nc_state_file->nc_id, lat_var_id,
                                  "standard_name", strlen("latitude"),
@@ -1915,20 +1921,23 @@ initialize_state_file(char           *filename,
             }
 
             // create the variable
-            status = nc_def_var(nc_state_file->nc_id, state_metadata[i_var].varname,
-                                nc_state_file->nc_vars[i_var].nc_type,
-                                nc_state_file->nc_vars[i_var].nc_dims,
-                                nc_state_file->nc_vars[i_var].nc_dimids,
-                                &(nc_state_file->nc_vars[i_var].nc_varid));
+            status =
+                nc_def_var(nc_state_file->nc_id, state_metadata[i_var].varname,
+                           nc_state_file->nc_vars[i_var].nc_type,
+                           nc_state_file->nc_vars[i_var].nc_dims,
+                           nc_state_file->nc_vars[i_var].nc_dimids,
+                           &(nc_state_file->nc_vars[i_var].nc_varid));
             check_nc_status(status, "Error defining state variable %s in %s",
                             state_metadata[i_var].varname, filename);
 
             // set the fill value attribute
             if (nc_state_file->nc_vars[i_var].nc_type == NC_DOUBLE) {
-                status = nc_put_att_double(nc_state_file->nc_id,
-                                           nc_state_file->nc_vars[i_var].nc_varid,
-                                           "_FillValue", NC_DOUBLE, 1,
-                                           &(nc_state_file->d_fillvalue));
+                status = nc_put_att_double(
+                    nc_state_file->nc_id,
+                    nc_state_file->nc_vars[i_var].
+                    nc_varid,
+                    "_FillValue", NC_DOUBLE, 1,
+                    &(nc_state_file->d_fillvalue));
             }
             else if (nc_state_file->nc_vars[i_var].nc_type == NC_INT) {
                 status = nc_put_att_int(nc_state_file->nc_id,

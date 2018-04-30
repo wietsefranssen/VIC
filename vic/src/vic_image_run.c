@@ -56,14 +56,14 @@ vic_image_run(dmy_struct *dmy_current)
 
     if (mpi_rank == VIC_MPI_ROOT) {
         // Print the current timestep info before running vic_run
-        printf("Running timestep: %zu (%02i-%02i-%2i, %02i:00)\n", 
-                current, 
-                dmy_current->day, 
-                dmy_current->month, 
-                dmy_current->year,
-                dmy_current->dayseconds/SEC_PER_HOUR);
+        printf("Running timestep: %zu (%02i-%02i-%2i, %02i:00)\n",
+               current,
+               dmy_current->day,
+               dmy_current->month,
+               dmy_current->year,
+               dmy_current->dayseconds / SEC_PER_HOUR);
     }
-        
+
     // If running with OpenMP, run this for loop using multiple threads
     #pragma omp parallel for default(shared) private(i, timer, vic_run_ref_str)
     for (i = 0; i < local_domain.ncells_active; i++) {
@@ -74,24 +74,25 @@ vic_image_run(dmy_struct *dmy_current)
         update_step_vars(&(all_vars[i]), veg_con[i], veg_hist[i]);
 
         timer_start(&timer);
-        if(options.GROUNDWATER){
-            vic_run_gw(&(force[i]), &(all_vars[i]), gw_var[i], 
-                    dmy_current, &global_param,
-                    &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
-                    &(gw_con[i]));
-        }else{
-            vic_run(&(force[i]), &(all_vars[i]), 
+        if (options.GROUNDWATER) {
+            vic_run_gw(&(force[i]), &(all_vars[i]), gw_var[i],
+                       dmy_current, &global_param,
+                       &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
+                       &(gw_con[i]));
+        }
+        else {
+            vic_run(&(force[i]), &(all_vars[i]),
                     dmy_current, &global_param,
                     &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
         }
-            
-        if(options.IRRIGATION){
+
+        if (options.IRRIGATION) {
             irr_run(i);
-        } 
-        
+        }
+
         timer_stop(&timer);
     }
-        
+
     // If running with OpenMP, run this for loop using multiple threads
     #pragma omp parallel for default(shared) private(i)
     for (i = 0; i < local_domain.ncells_active; i++) {
@@ -102,70 +103,70 @@ vic_image_run(dmy_struct *dmy_current)
 
     if (options.ROUTING_RVIC) {
         routing_rvic_run();
-    }    
+    }
     if (options.ROUTING_TYPE == ROUTING_BASIN) {
-        for(i = 0; i < local_domain.ncells_active; i++){
+        for (i = 0; i < local_domain.ncells_active; i++) {
             cur_cell = routing_order[i];
 
             // Plugins
             rout_run(cur_cell);
-            
-            if(options.EFR){
+
+            if (options.EFR) {
                 efr_run(cur_cell);
             }
-            if(options.DAMS){
+            if (options.DAMS) {
                 dam_run(cur_cell);
             }
-            
-            if(options.WATER_USE){
-                if(options.IRRIGATION){
+
+            if (options.WATER_USE) {
+                if (options.IRRIGATION) {
                     irr_set_demand(cur_cell);
                 }
-                if(options.EFR){
+                if (options.EFR) {
                     efr_set_demand(cur_cell);
                 }
-                
+
                 wu_run(cur_cell);
-                
-                if(options.IRRIGATION){
+
+                if (options.IRRIGATION) {
                     irr_get_withdrawn(cur_cell);
                 }
             }
         }
-    } else if (options.ROUTING_TYPE == ROUTING_RANDOM){
-        
+    }
+    else if (options.ROUTING_TYPE == ROUTING_RANDOM) {
         rout_gl_run();
-        
-        if(options.EFR){
+
+        if (options.EFR) {
             log_err("EFR is not yet available with ROUTING_RANDOM");
         }
-        if(options.DAMS){
+        if (options.DAMS) {
             log_err("DAMS is not yet available with ROUTING_RANDOM");
         }
-        if(options.WATER_USE){
+        if (options.WATER_USE) {
             log_err("WATER_USE is not yet available with ROUTING_RANDOM");
         }
     }
-    
-    if(options.GROUNDWATER){
+
+    if (options.GROUNDWATER) {
         gw_put_data();
     }
-    if(options.ROUTING){
+    if (options.ROUTING) {
         rout_put_data();
     }
-    if(options.EFR){
+    if (options.EFR) {
         efr_put_data();
     }
-    if(options.IRRIGATION){
+    if (options.IRRIGATION) {
         irr_put_data();
     }
-    if(options.WATER_USE){
+    if (options.WATER_USE) {
         wu_put_data();
     }
-    if(options.DAMS){
+    if (options.DAMS) {
         dam_put_data();
     }
-    
+
     for (i = 0; i < options.Noutstreams; i++) {
         agg_stream_data(&(output_streams[i]), dmy_current, out_data);
     }

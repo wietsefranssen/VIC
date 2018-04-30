@@ -6,4 +6,3 @@
 bool matric_get_global_parameters(char *cmdstr);
 
 #endif /* MATRIC_H */
-

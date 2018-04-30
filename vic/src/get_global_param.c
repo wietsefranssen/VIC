@@ -49,7 +49,7 @@ get_global_param(FILE *gp)
     unsigned int               tmpenddate;
     unsigned short int         lastday[MONTHS_PER_YEAR];
 
-    size_t i;
+    size_t                     i;
 
     /** Read through global control file to find parameters **/
 
@@ -69,17 +69,27 @@ get_global_param(FILE *gp)
             /*************************************
                Get Model Global Parameters from plugins
             *************************************/
-            if (routing_rvic_get_global_param(cmdstr)) {}
-            else if (routing_lohmann_get_global_param(cmdstr)) {}
-            else if (matric_get_global_parameters(cmdstr)) {}
-            else if (gw_get_global_parameters(cmdstr)) {}
-            else if (dam_get_global_parameters(cmdstr)) {}
-            else if (efr_get_global_parameters(cmdstr)) {}
-            else if (wu_get_global_parameters(cmdstr)) {}
-            else if (rout_get_global_parameters(cmdstr)) {}
-            else if (irr_get_global_parameters(cmdstr)) {}
-            else if (mpi_get_global_parameters(cmdstr)) {}
-            
+            if (routing_rvic_get_global_param(cmdstr)) {
+            }
+            else if (routing_lohmann_get_global_param(cmdstr)) {
+            }
+            else if (matric_get_global_parameters(cmdstr)) {
+            }
+            else if (gw_get_global_parameters(cmdstr)) {
+            }
+            else if (dam_get_global_parameters(cmdstr)) {
+            }
+            else if (efr_get_global_parameters(cmdstr)) {
+            }
+            else if (wu_get_global_parameters(cmdstr)) {
+            }
+            else if (rout_get_global_parameters(cmdstr)) {
+            }
+            else if (irr_get_global_parameters(cmdstr)) {
+            }
+            else if (mpi_get_global_parameters(cmdstr)) {
+            }
+
             /*************************************
                Get Model Global Parameters
             *************************************/
@@ -292,7 +302,7 @@ get_global_param(FILE *gp)
                     log_err("Unknown RC_MODE option: %s", flgstr);
                 }
             }
-            
+
             /*************************************
                Define log directory
             *************************************/
@@ -344,8 +354,9 @@ get_global_param(FILE *gp)
                     options.STATE_FORMAT = NETCDF4;
                 }
                 else {
-                    log_err("STATE_FORMAT must be either NETCDF3_CLASSIC, "
-                            "NETCDF3_64BIT_OFFSET, NETCDF4_CLASSIC, or NETCDF4.");
+                    log_err(
+                        "STATE_FORMAT must be either NETCDF3_CLASSIC, "
+                        "NETCDF3_64BIT_OFFSET, NETCDF4_CLASSIC, or NETCDF4.");
                 }
             }
 
@@ -374,7 +385,6 @@ get_global_param(FILE *gp)
             else if (strcasecmp("PARAMETERS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", filenames.params.nc_filename);
             }
-            
             else if (strcasecmp("ARNO_PARAMS", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", flgstr);
                 if (strcasecmp("TRUE", flgstr) == 0) {
@@ -382,8 +392,9 @@ get_global_param(FILE *gp)
                             "NIJSSEN2001\" in your global parameter file.");
                 }
                 else {
-                    log_err("Please change \"ARNO_PARAMS FALSE\" to \"BASEFLOW "
-                            "ARNO\" in your global parameter file.");
+                    log_err(
+                        "Please change \"ARNO_PARAMS FALSE\" to \"BASEFLOW "
+                        "ARNO\" in your global parameter file.");
                 }
             }
             else if (strcasecmp("NIJSSEN2001_BASEFLOW", optstr) == 0) {
@@ -487,8 +498,7 @@ get_global_param(FILE *gp)
                 sscanf(cmdstr, "%*s %s", flgstr);
                 options.LAKE_PROFILE = str_to_bool(flgstr);
             }
-            
-            
+
             /*************************************
                Define output files
             *************************************/
@@ -522,13 +532,15 @@ get_global_param(FILE *gp)
                Fail when classic driver specific options are used
             *************************************/
             else if (strcasecmp("ATMOS_STEPS_PER_DAY", optstr) == 0) {
-                log_err("ATMOS_STEPS_PER_DAY is not a valid option for this "
-                        "driver.  Update your global parameter file accordingly.");
+                log_err(
+                    "ATMOS_STEPS_PER_DAY is not a valid option for this "
+                    "driver.  Update your global parameter file accordingly.");
             }
             else if (strcasecmp("OUTPUT_FORCE", optstr) == 0) {
                 log_err("OUTPUT_FORCE is not a valid option for this driver.  "
                         "Update your global parameter file accordingly.");
             }
+
             /***********************************
                Unrecognized Global Parameter Flag
             ***********************************/
@@ -561,7 +573,7 @@ get_global_param(FILE *gp)
     if (options.GROUNDWATER) {
         gw_validate_global_parameters();
     }
-   
+
     // Validate model time step
     if (global_param.model_steps_per_day == 0) {
         log_err("Model time steps per day has not been defined.  Make sure "
@@ -722,10 +734,11 @@ get_global_param(FILE *gp)
         global_param.startsec = 0;
     }
     else if (global_param.startsec > SEC_PER_DAY) {
-        log_err("The specified simulation start second (%u) > 86400  Make sure "
-                "that the global file defines a positive integer "
-                "for STARTSEC.",
-                global_param.startsec);
+        log_err(
+            "The specified simulation start second (%u) > 86400  Make sure "
+            "that the global file defines a positive integer "
+            "for STARTSEC.",
+            global_param.startsec);
     }
 
     // Validate simulation end date and/or number of timesteps
@@ -782,35 +795,39 @@ get_global_param(FILE *gp)
                 "for NRECS.", global_param.nrecs);
     }
 
-    for(i = 0; i < N_FORCING_TYPES; i++){
+    for (i = 0; i < N_FORCING_TYPES; i++) {
         // Validate forcing files and variables
         if (strcmp(filenames.f_path_pfx[i], "MISSING") == 0) {
-            if(i == AIR_TEMP || i == LWDOWN || i == PREC || 
-                    i == PRESSURE || i == VP || i == SWDOWN || i == WIND){
+            if (i == AIR_TEMP || i == LWDOWN || i == PREC ||
+                i == PRESSURE || i == VP || i == SWDOWN || i == WIND) {
                 log_err("Not all essential forcing files have been defined. "
                         "Make sure to define forcing files for at least: "
                         "AIR_TEMP, LWDOWN, PREC, PRESSURE, VP, SWDOWN and WIND");
-            } else if ((i == FCANOPY && options.FCAN_SRC == FROM_VEGHIST) || 
-                    (i == LAI && options.LAI_SRC == FROM_VEGHIST) || 
-                    (i == ALBEDO && options.ALB_SRC == FROM_VEGHIST)){
+            }
+            else if ((i == FCANOPY && options.FCAN_SRC == FROM_VEGHIST) ||
+                     (i == LAI && options.LAI_SRC == FROM_VEGHIST) ||
+                     (i == ALBEDO && options.ALB_SRC == FROM_VEGHIST)) {
                 log_err("Not all essential forcing files have been defined. "
                         "Make sure, if FROM_VEGHIST is selected, "
                         "to define forcing for: "
                         "FACANOPY, LAI and ALDBEDO");
-            } else if ((i == CHANNEL_IN && options.LAKES)) {
+            }
+            else if ((i == CHANNEL_IN && options.LAKES)) {
                 log_err("Not all essential forcing files have been defined. "
                         "Make sure, if LAKES is selected, "
                         "to define forcing for: "
                         "CHANNEL_IN");
-            } else if ((i == CATM && options.CARBON) ||
-                    (i == FDIR && options.CARBON) ||
-                    (i == PAR && options.CARBON)){
+            }
+            else if ((i == CATM && options.CARBON) ||
+                     (i == FDIR && options.CARBON) ||
+                     (i == PAR && options.CARBON)) {
                 log_err("Not all essential forcing files have been defined. "
                         "Make sure, if CARBON is selected, "
                         "to define forcing for: "
                         "CATM, FDIR and PAR");
             }
-        } else {
+        }
+        else {
             // Get information from the forcing file(s)
             // Open first-year forcing files and get info
             sprintf(filenames.forcing[i].nc_filename, "%s%4d.nc",
@@ -827,7 +844,7 @@ get_global_param(FILE *gp)
                         "defined.  Make sure that the global file defines "
                         "FORCE_STEPS_PER_DAY.");
             }
-        }    
+        }
     }
 
     // Validate result directory
@@ -839,9 +856,10 @@ get_global_param(FILE *gp)
 
     // Validate parameter file information
     if (strcmp(filenames.params.nc_filename, "MISSING") == 0) {
-        log_err("A parameters file has not been defined.  Make sure that the "
-                "global file defines the parameters parameter file on the line "
-                "that begins with \"PARAMETERS\".");
+        log_err(
+            "A parameters file has not been defined.  Make sure that the "
+            "global file defines the parameters parameter file on the line "
+            "that begins with \"PARAMETERS\".");
     }
 
     // Validate SPATIAL_FROST information
@@ -908,7 +926,8 @@ get_global_param(FILE *gp)
                      lastday);
         if (global_param.stateday > lastday[global_param.statemonth - 1] ||
             global_param.statemonth < 1 ||
-            global_param.statemonth > MONTHS_PER_YEAR ||
+                                      global_param.statemonth > MONTHS_PER_YEAR
+            ||
             global_param.stateday < 1 || global_param.stateday > 31 ||
             global_param.statesec > SEC_PER_DAY) {
             log_err("Unusual specification of the date to save state "
@@ -1004,7 +1023,7 @@ get_global_param(FILE *gp)
     if (options.SAVE_STATE && options.STATE_FORMAT == UNSET_FILE_FORMAT) {
         options.STATE_FORMAT = NETCDF4_CLASSIC;
     }
-    
+
     /*********************************
        Output major options
     *********************************/

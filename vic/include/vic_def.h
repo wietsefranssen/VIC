@@ -199,7 +199,7 @@ enum
 /******************************************************************************
  * @brief   Water use sectors
  *****************************************************************************/
-enum{
+enum {
     WU_IRRIGATION,
     WU_DOMESTIC,
     WU_INDUSTRIAL,
@@ -348,9 +348,9 @@ typedef struct {
     bool EFR;
     bool DAMS;
     bool MATRIC;
-    
+
     // Groundwater options
-    bool GW_INIT_FROM_FILE;    
+    bool GW_INIT_FROM_FILE;
     // Routing options
     int ROUTING_TYPE;
     size_t RIRF_NSTEPS;
@@ -369,7 +369,7 @@ typedef struct {
     // EFR options
     // Dam options
     int MAXDAMS;
-    
+
     // Variable global parameters
     size_t wu_force_offset;
 } option_struct;
@@ -393,12 +393,12 @@ typedef struct {
     unsigned short int endyear;    /**< Last year of model simulation */
     unsigned short int forceday[N_FORCING_TYPES];  /**< day forcing files starts */
     unsigned int forcesec[N_FORCING_TYPES];          /**< seconds since midnight when forcing
-                                          files starts */
+                                                        files starts */
     unsigned short int forcemonth[N_FORCING_TYPES];  /**< month forcing files starts */
     unsigned short int forceoffset[N_FORCING_TYPES];  /**< counter to keep track of offset in reading
-                                           forcing files; updated after every read */
+                                                         forcing files; updated after every read */
     unsigned int forceskip[N_FORCING_TYPES];   /**< number of model time steps to skip at
-                                      the start of the forcing file */
+                                                  the start of the forcing file */
     unsigned short int forceyear[N_FORCING_TYPES];  /**< year forcing files start */
     size_t nrecs;                /**< Number of time steps simulated */
     unsigned short int startday;  /**< Starting day of the simulation */

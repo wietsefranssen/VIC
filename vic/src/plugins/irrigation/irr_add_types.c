@@ -31,10 +31,10 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-irr_add_types(void) {
-
-    extern node    *outvar_types;
-    extern int      N_OUTVAR_TYPES_ALL;
+irr_add_types(void)
+{
+    extern node *outvar_types;
+    extern int   N_OUTVAR_TYPES_ALL;
 
     // add outvar_types
     outvar_types = list_prepend(outvar_types, "OUT_IRR_REQUIREMENT");
@@ -42,7 +42,7 @@ irr_add_types(void) {
     outvar_types = list_prepend(outvar_types, "OUT_IRR_POND_STORAGE");
     outvar_types = list_prepend(outvar_types, "OUT_IRR_DEFICIT");
     outvar_types = list_prepend(outvar_types, "OUT_IRR_SHORTAGE");
-    
+
     outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
     N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;
 }

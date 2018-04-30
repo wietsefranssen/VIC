@@ -35,8 +35,8 @@ void
 initialize_options()
 {
     extern option_struct options;
-    
-    size_t i;
+
+    size_t               i;
     /** Initialize model option flags **/
 
     // simulation modes
@@ -96,7 +96,7 @@ initialize_options()
     options.SAVE_STATE = false;
     // output options
     options.Noutstreams = 2;
-    
+
     // plugins
     options.ROUTING_RVIC = false;
     options.ROUTING_LOHMANN = false;
@@ -106,7 +106,7 @@ initialize_options()
     options.IRRIGATION = false;
     options.EFR = false;
     options.DAMS = false;
-    
+
     // Groundwater options
     options.GW_INIT_FROM_FILE = false;
     // Routing options
@@ -115,7 +115,7 @@ initialize_options()
     options.GIRF_NSTEPS = 0;
     // Water use options
     options.WU_INPUT_FREQUENCY = WU_INPUT_MONTHLY;
-    for(i = 0; i < WU_NSECTORS; i++){
+    for (i = 0; i < WU_NSECTORS; i++) {
         options.WU_INPUT_LOCATION[i] = WU_INPUT_NONE;
         options.WU_RETURN_LOCATION[i] = WU_RETURN_SURFACEWATER;
         options.WU_COMPENSATION_TIME[i] = 0;
@@ -128,5 +128,4 @@ initialize_options()
     // EFR options
     // Dam options
     options.MAXDAMS = 0;
-    
 }

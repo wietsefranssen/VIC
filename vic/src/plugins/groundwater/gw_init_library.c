@@ -23,21 +23,21 @@ initialize_gw_con(gw_con_struct *gw_con)
 void
 initialize_gw_local_structures(void)
 {
-    extern domain_struct local_domain;
+    extern domain_struct       local_domain;
     extern veg_con_map_struct *veg_con_map;
-    extern option_struct options;
-    extern gw_var_struct ***gw_var;
-    extern gw_con_struct *gw_con;
-    
-    size_t i;
-    size_t j;
-    size_t k;
-    
-    for(i=0; i < local_domain.ncells_active; i++){
+    extern option_struct       options;
+    extern gw_var_struct    ***gw_var;
+    extern gw_con_struct      *gw_con;
+
+    size_t                     i;
+    size_t                     j;
+    size_t                     k;
+
+    for (i = 0; i < local_domain.ncells_active; i++) {
         initialize_gw_con(&gw_con[i]);
-        
-        for(j=0; j < veg_con_map[i].nv_active; j++){
-            for(k=0; k < options.SNOW_BAND; k++){
+
+        for (j = 0; j < veg_con_map[i].nv_active; j++) {
+            for (k = 0; k < options.SNOW_BAND; k++) {
                 initialize_gw_var(&(gw_var[i][j][k]));
             }
         }
