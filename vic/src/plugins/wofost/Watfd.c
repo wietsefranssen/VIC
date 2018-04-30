@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "wofost/extern.h"
+
 #include "wofost/penman.h"
-#include "wofost.h"
+#include "vic.h"
 
 
 /*------------------------------------------------*/

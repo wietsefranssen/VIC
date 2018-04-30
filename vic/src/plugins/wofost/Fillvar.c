@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "wofost.h"
+#include "vic.h"
 
 /* ---------------------------------------------------------------------------*/
 /*  function FillCropVariables(float *Variable)                               */

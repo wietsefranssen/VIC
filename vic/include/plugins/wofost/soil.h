@@ -22,7 +22,5 @@ char *SoilParam2[]={
                     "NULL"
 		    };
 
-extern int FillSoilVariables();
-extern int FillAfgenTables();
 
 #endif //SOIL_H

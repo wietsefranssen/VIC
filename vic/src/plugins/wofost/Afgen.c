@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
-#include "wofost.h"
+#include "vic.h"
 
 /* ---------------------------------------------------------------------------*/
 /*  function Afgen()                                                          */

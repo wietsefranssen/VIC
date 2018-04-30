@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <float.h>
-#include "wofost.h"
-#include "wofost/extern.h"
+#include "vic.h"
+
 #include <time.h>
 
 int wofost() {

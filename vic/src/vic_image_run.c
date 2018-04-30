@@ -89,6 +89,10 @@ vic_image_run(dmy_struct *dmy_current)
         if (options.IRRIGATION) {
             irr_run(i);
         }
+        
+        if (options.WOFOST) {
+            wofost_run();
+        }
 
         timer_stop(&timer);
     }

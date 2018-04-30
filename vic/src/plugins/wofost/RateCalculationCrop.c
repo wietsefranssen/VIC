@@ -3,8 +3,8 @@
 #include <ctype.h>
 #include <float.h>
 #include <math.h>
-#include "wofost.h"
-#include "wofost/extern.h"
+#include "vic.h"
+
 
 /* ---------------------------------------------------------------------------*/
 /*  function RateCalculationCrop()                                            */

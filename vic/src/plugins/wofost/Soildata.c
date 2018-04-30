@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "wofost.h"
+#include "vic.h"
 #include "wofost/soil.h"
 
 

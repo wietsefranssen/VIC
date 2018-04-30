@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "wofost.h"
+#include "vic.h"
 
 /* ---------------------------------------------------------------*/
 /*  function Clean()                                              */

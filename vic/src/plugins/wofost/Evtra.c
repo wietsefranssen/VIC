@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "wofost/penman.h"
-#include "wofost.h"
-#include "wofost/extern.h"
+#include "vic.h"
+
 
 /* ---------------------------------------------------------------*/
 /*  function sweaf()                                              */
@@ -73,7 +73,9 @@ void EvapTra() {
         
         /* Count days since start oxygen shortage (up to 4 days) */
         if (WatBal->st.Moisture >= SoilMoistureAeration) {
+//            float Cr = Crop->DaysOxygenStress++;
             Crop->DaysOxygenStress = min(Crop->DaysOxygenStress++, 4.);
+//            Crop->DaysOxygenStress = min(Cr, 4.);
         }
         else 
         {

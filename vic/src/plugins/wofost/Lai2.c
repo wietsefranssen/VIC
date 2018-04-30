@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "wofost.h"
-#include "wofost/extern.h"
+#include "vic.h"
+
 
 /* -----------------------------------------------------------------------*/
 /*  function LeaveAreaIndex()                                             */
