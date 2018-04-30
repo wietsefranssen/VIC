@@ -165,8 +165,8 @@ runoff(cell_data_struct  *cell,
 
             /** Set Layer Maximum Moisture Content **/
             max_moist[lindex] = soil_con->max_moist[lindex];
-            
-            if(options.MATRIC){
+
+            if (options.MATRIC) {
                 /** Set Matric Potential Exponent (Burdine model 1953) **/
                 matric_expt[lindex] = (soil_con->expt[lindex] - 3.0) / 2.0;
             }
@@ -201,23 +201,24 @@ runoff(cell_data_struct  *cell,
             /*************************************
                Compute Drainage between Sublayers
             *************************************/
-            if(options.MATRIC){
+            if (options.MATRIC) {
                 // Set matric potential (based on moisture content and soil texture)
                 for (lindex = 0; lindex < options.Nlayer; lindex++) {
                     tmp_liq = liq[lindex] - evap[lindex][fidx];
-                    if(tmp_liq > resid_moist[lindex]){
-
+                    if (tmp_liq > resid_moist[lindex]) {
                         /** Brooks & Corey relation for matric potential **/
-                        matric[lindex] = soil_con->bubble[lindex] * 
-                                pow((tmp_liq - resid_moist[lindex]) /
-                                (max_moist[lindex] - resid_moist[lindex]), 
-                                -matric_expt[lindex]);
-                    }else{
+                        matric[lindex] = soil_con->bubble[lindex] *
+                                         pow((tmp_liq - resid_moist[lindex]) /
+                                             (max_moist[lindex] -
+                                              resid_moist[lindex]),
+                                             -matric_expt[lindex]);
+                    }
+                    else {
                         matric[lindex] = param.HUGE_RESIST;
                     }
-                }    
+                }
             }
-            
+
             for (lindex = 0; lindex < options.Nlayer - 1; lindex++) {
                 /** Brooks & Corey relation for hydraulic conductivity **/
 
@@ -227,28 +228,33 @@ runoff(cell_data_struct  *cell,
                 }
 
                 if (liq[lindex] > resid_moist[lindex]) {
-                    
-                    if(options.MATRIC){
-                        if(lindex < options.Nlayer - 1){
-                            avg_matric = pow( 10, (soil_con->depth[lindex+1] 
-                                             * log10(fabs(matric[lindex]))
-                                             + soil_con->depth[lindex]
-                                             * log10(fabs(matric[lindex+1])))
-                                            / (soil_con->depth[lindex] 
-                                               + soil_con->depth[lindex+1]) );
+                    if (options.MATRIC) {
+                        if (lindex < options.Nlayer - 1) {
+                            avg_matric = pow(10, (soil_con->depth[lindex + 1] *
+                                                  log10(fabs(matric[lindex])) +
+                                                  soil_con->depth[lindex] *
+                                                  log10(fabs(
+                                                            matric[lindex +
+                                                                   1]))) /
+                                             (soil_con->depth[lindex] +
+                                              soil_con->depth[lindex + 1]));
 
-                            tmp_liq = resid_moist[lindex]
-                              + (max_moist[lindex] - resid_moist[lindex] )
-                              * pow( ( avg_matric / soil_con->bubble[lindex] ), -1/matric_expt[lindex] );
+                            tmp_liq = resid_moist[lindex] +
+                                      (max_moist[lindex] -
+                                       resid_moist[lindex]) *
+                                      pow(
+                                (avg_matric /
+                            soil_con->bubble[lindex]), -1 /
+                                matric_expt[lindex]);
                         }
                     }
-                    
+
                     Q12[lindex] = Ksat[lindex] *
                                   pow(((tmp_liq -
                                         resid_moist[lindex]) /
                                        (soil_con->max_moist[lindex] -
                                         resid_moist[lindex])),
-                                        soil_con->expt[lindex]);
+                                      soil_con->expt[lindex]);
                 }
                 else {
                     Q12[lindex] = 0.;
@@ -432,9 +438,9 @@ runoff(cell_data_struct  *cell,
             layer[lindex].moist +=
                 ((liq[lindex] + ice[lindex]) * frost_fract[fidx]);
             layer[lindex].eff_saturation +=
-                ((liq[lindex] + ice[lindex]) - resid_moist[lindex]) / 
-                    (max_moist[lindex] - resid_moist[lindex])
-                    * frost_fract[fidx];                    
+                ((liq[lindex] + ice[lindex]) - resid_moist[lindex]) /
+                (max_moist[lindex] - resid_moist[lindex]) *
+                frost_fract[fidx];
         }
         cell->asat += A * frost_fract[fidx];
         cell->runoff += runoff[fidx] * frost_fract[fidx];
@@ -451,24 +457,27 @@ runoff(cell_data_struct  *cell,
             moist[lindex] = tmp_layer.moist;
         }
 
-        ErrorFlag = distribute_node_moisture_properties(energy->moist,
-                                                        energy->ice,
-                                                        energy->kappa_node,
-                                                        energy->Cs_node,
-                                                        soil_con->Zsum_node,
-                                                        energy->T,
-                                                        soil_con->max_moist_node,
-                                                        soil_con->expt_node,
-                                                        soil_con->bubble_node,
-                                                        moist, soil_con->depth,
-                                                        soil_con->soil_dens_min,
-                                                        soil_con->bulk_dens_min,
-                                                        soil_con->quartz,
-                                                        soil_con->soil_density,
-                                                        soil_con->bulk_density,
-                                                        soil_con->organic, Nnodes,
-                                                        options.Nlayer,
-                                                        soil_con->FS_ACTIVE);
+        ErrorFlag = distribute_node_moisture_properties(
+            energy->moist,
+            energy->ice,
+            energy->kappa_node,
+            energy->Cs_node,
+            soil_con->Zsum_node,
+            energy->T,
+            soil_con->
+            max_moist_node,
+            soil_con->expt_node,
+            soil_con->bubble_node,
+            moist, soil_con->depth,
+            soil_con->soil_dens_min,
+            soil_con->bulk_dens_min,
+            soil_con->quartz,
+            soil_con->soil_density,
+            soil_con->bulk_density,
+            soil_con->organic,
+            Nnodes,
+            options.Nlayer,
+            soil_con->FS_ACTIVE);
         if (ErrorFlag == ERROR) {
             return (ERROR);
         }

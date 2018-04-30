@@ -30,7 +30,8 @@
  * @brief    Allocate memory for VIC structures.
  *****************************************************************************/
 void
-vic_alloc(void) {
+vic_alloc(void)
+{
     extern option_struct options;
     extern int           N_STATE_VARS_ALL;
     extern int           N_OUTVAR_TYPES_ALL;
@@ -38,9 +39,9 @@ vic_alloc(void) {
     extern node         *state_vars;
     extern int           mpi_rank;
 
-    N_STATE_VARS_ALL   = N_STATE_VARS;
+    N_STATE_VARS_ALL = N_STATE_VARS;
     N_OUTVAR_TYPES_ALL = N_OUTVAR_TYPES;
-    
+
     if (options.ROUTING_RVIC) {
         routing_rvic_add_types();
     }
@@ -65,8 +66,8 @@ vic_alloc(void) {
     if (options.WOFOST) {
         wofost_add_types();
     }
-    
-    if(mpi_rank == VIC_MPI_ROOT){
+
+    if (mpi_rank == VIC_MPI_ROOT) {
         list_print(outvar_types);
         list_print(state_vars);
     }

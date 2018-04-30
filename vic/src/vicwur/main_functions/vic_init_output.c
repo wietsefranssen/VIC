@@ -314,11 +314,11 @@ initialize_history_file(nc_file_struct *nc,
                         &(nc->veg_dimid));
     check_nc_status(status, "Error defining veg_class dimension in %s",
                     stream->filename);
-    
-    if(options.WATER_USE){
+
+    if (options.WATER_USE) {
         wu_write_def_dim(nc, stream);
     }
-    if(options.DAMS){
+    if (options.DAMS) {
         dam_write_def_dim(nc, stream);
     }
 
@@ -445,12 +445,12 @@ initialize_history_file(nc_file_struct *nc,
     // create output variables
     for (j = 0; j < stream->nvars; j++) {
         varid = stream->varid[j];
-        
+
         set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
-        if(options.DAMS){
+        if (options.DAMS) {
             dam_set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
         }
-        if(options.WATER_USE){
+        if (options.WATER_USE) {
             wu_set_nc_var_dimids(varid, nc, &(nc->nc_vars[j]));
         }
 
@@ -715,25 +715,27 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->time_size = NC_UNLIMITED;
     nc_file->veg_size = options.NVEGTYPES;
 
-    
-    if(options.WATER_USE){
+
+    if (options.WATER_USE) {
         wu_set_nc_output_file_info(nc_file);
     }
-    if(options.DAMS){
+    if (options.DAMS) {
         dam_set_nc_output_file_info(nc_file);
     }
-    
+
     // allocate memory for nc_vars
     nc_file->nc_vars = calloc(nvars, sizeof(*(nc_file->nc_vars)));
     check_alloc_status(nc_file->nc_vars, "Memory allocation error.");
 
     for (i = 0; i < nvars; i++) {
         set_nc_var_info(varids[i], dtypes[i], nc_file, &(nc_file->nc_vars[i]));
-        if(options.DAMS){
-            dam_set_nc_var_info(varids[i], dtypes[i], nc_file, &(nc_file->nc_vars[i]));
+        if (options.DAMS) {
+            dam_set_nc_var_info(varids[i], dtypes[i], nc_file,
+                                &(nc_file->nc_vars[i]));
         }
-        if(options.WATER_USE){
-            wu_set_nc_var_info(varids[i], dtypes[i], nc_file, &(nc_file->nc_vars[i]));
+        if (options.WATER_USE) {
+            wu_set_nc_var_info(varids[i], dtypes[i], nc_file,
+                               &(nc_file->nc_vars[i]));
         }
     }
 }

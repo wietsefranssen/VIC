@@ -123,14 +123,14 @@ set_force_type(char *cmdstr)
 
     if (strcasecmp("MISSING", ncvarname) == 0) {
         log_err("Must supply FORCING netCDF variable name for TYPE %s",
-            optstr);
-    }         
+                optstr);
+    }
     if (strcasecmp("MISSING", ncvarfile) == 0) {
         log_err("Must supply FORCING netCDF file name for TYPE %s",
-            optstr);
+                optstr);
     }
     if (strcmp(filenames.f_path_pfx[type], "MISSING") != 0) {
-        log_err("Tried to define FORCING for TYPE %s twice", 
+        log_err("Tried to define FORCING for TYPE %s twice",
                 optstr);
     }
 

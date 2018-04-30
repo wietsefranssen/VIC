@@ -3,21 +3,21 @@
 
 #include <stdbool.h>
 
-typedef struct{
+typedef struct {
     double recharge;        /**< drainage to groundwater (mm) */
-    double Wa;              /**< water stored in groundwater below soil column (compared to reference) (mm) */    
+    double Wa;              /**< water stored in groundwater below soil column (compared to reference) (mm) */
     double Wt;              /**< total water stored in groundwater (compared to reference) (mm) */
-    double zwt;             /**< depth of the water table (m) */  
-    double available;       /**< available water (zwt - za_max) (m) */  
-}gw_var_struct;
+    double zwt;             /**< depth of the water table (m) */
+    double available;       /**< available water (zwt - za_max) (m) */
+} gw_var_struct;
 
-typedef struct{
-    double Qb_max;          /**< maximum subsurface flow rate (mm/day) */    
-    double Ka_expt;         /**< exponent a in Niu et al. eqn (2007) for conductivity in groundwater aquifer */ 
-    double Qb_expt;         /**< exponent a in Niu et al. eqn (2007) for baseflow */ 
+typedef struct {
+    double Qb_max;          /**< maximum subsurface flow rate (mm/day) */
+    double Ka_expt;         /**< exponent a in Niu et al. eqn (2007) for conductivity in groundwater aquifer */
+    double Qb_expt;         /**< exponent a in Niu et al. eqn (2007) for baseflow */
     double Sy;              /**< specific yield of aquifer (m/m) */
     double Za_max;          /**< maximum depth of aquifer (m) */
-}gw_con_struct;
+} gw_con_struct;
 
 bool gw_get_global_parameters(char *cmdstr);
 void gw_validate_global_parameters(void);
@@ -34,7 +34,6 @@ void gw_finalize(void);
 void gw_add_types(void);
 
 gw_var_struct ***gw_var;
-gw_con_struct *gw_con;
+gw_con_struct   *gw_con;
 
 #endif
-

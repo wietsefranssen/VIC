@@ -33,7 +33,7 @@
 void
 set_state_meta_data_info()
 {
-    int                  v;
+    int                     v;
 
     extern option_struct    options;
     extern metadata_struct *state_metadata;
@@ -147,8 +147,9 @@ set_state_meta_data_info()
            "snow_melting_phase");
     strcpy(state_metadata[STATE_SNOW_MELT_STATE].units,
            "1 melting, 0 not melting");
-    strcpy(state_metadata[STATE_SNOW_MELT_STATE].description,
-           "flag to indicate whether snowpack is in accumulation or melting phase");
+    strcpy(
+        state_metadata[STATE_SNOW_MELT_STATE].description,
+        "flag to indicate whether snowpack is in accumulation or melting phase");
 
     // STATE_SNOW_COVERAGE
     strcpy(state_metadata[STATE_SNOW_COVERAGE].varname, "STATE_SNOW_COVERAGE");
@@ -366,8 +367,9 @@ set_state_meta_data_info()
                "lake_snow_melting_phase");
         strcpy(state_metadata[STATE_LAKE_SNOW_MELT_STATE].units,
                "1 melting, 0 not melting");
-        strcpy(state_metadata[STATE_LAKE_SNOW_MELT_STATE].description,
-               "flag to indicate whether snowpack is in accumulation or melting phase on lake ice");
+        strcpy(
+            state_metadata[STATE_LAKE_SNOW_MELT_STATE].description,
+            "flag to indicate whether snowpack is in accumulation or melting phase on lake ice");
 
         // STATE_LAKE_SNOW_COVERAGE
         strcpy(state_metadata[STATE_LAKE_SNOW_COVERAGE].varname,
@@ -487,8 +489,9 @@ set_state_meta_data_info()
         strcpy(state_metadata[STATE_LAKE_ACTIVE_LAYERS].standard_name,
                "lake_active_layers");
         strcpy(state_metadata[STATE_LAKE_ACTIVE_LAYERS].units, "-");
-        strcpy(state_metadata[STATE_LAKE_ACTIVE_LAYERS].description,
-               "number of nodes whose corresponding layers currently contain water");
+        strcpy(
+            state_metadata[STATE_LAKE_ACTIVE_LAYERS].description,
+            "number of nodes whose corresponding layers currently contain water");
 
         // STATE_LAKE_LAYER_DZ
         strcpy(state_metadata[STATE_LAKE_LAYER_DZ].varname,
@@ -497,8 +500,9 @@ set_state_meta_data_info()
         strcpy(state_metadata[STATE_LAKE_LAYER_DZ].standard_name,
                "lake_thickness_layer_below_surface");
         strcpy(state_metadata[STATE_LAKE_LAYER_DZ].units, "m");
-        strcpy(state_metadata[STATE_LAKE_LAYER_DZ].description,
-               "vertical thickness of all horizontal lake water layers below the surface layer");
+        strcpy(
+            state_metadata[STATE_LAKE_LAYER_DZ].description,
+            "vertical thickness of all horizontal lake water layers below the surface layer");
 
         // STATE_LAKE_SURF_LAYER_DZ
         strcpy(state_metadata[STATE_LAKE_SURF_LAYER_DZ].varname,
@@ -547,8 +551,9 @@ set_state_meta_data_info()
         strcpy(state_metadata[STATE_LAKE_VOLUME].long_name, "lake_volume");
         strcpy(state_metadata[STATE_LAKE_VOLUME].standard_name, "lake_volume");
         strcpy(state_metadata[STATE_LAKE_VOLUME].units, "m3");
-        strcpy(state_metadata[STATE_LAKE_VOLUME].description,
-               "lake total volume including liquid water equivalent of lake ice");
+        strcpy(
+            state_metadata[STATE_LAKE_VOLUME].description,
+            "lake total volume including liquid water equivalent of lake ice");
 
         // STATE_LAKE_LAYER_TEMP
         strcpy(state_metadata[STATE_LAKE_LAYER_TEMP].varname,
@@ -711,6 +716,6 @@ set_state_meta_data_info()
                "lake_ice_snow_depth");
         strcpy(state_metadata[STATE_LAKE_ICE_SNOW_DEPTH].units, "m");
         strcpy(state_metadata[STATE_LAKE_ICE_SNOW_DEPTH].description,
-               "depth of snow on lake ice");        
+               "depth of snow on lake ice");
     }
 }

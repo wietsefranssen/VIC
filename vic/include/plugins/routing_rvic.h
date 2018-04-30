@@ -78,6 +78,6 @@ void routing_rvic_add_types(void);
 bool routing_rvic_get_global_param(char *);
 void routing_rvic_output_metadata(void);
 
-routing_rvic_struct         routing_rvic;
+routing_rvic_struct routing_rvic;
 
 #endif

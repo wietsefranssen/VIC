@@ -91,15 +91,15 @@ vic_force(void)
             }
         }
     }
-    
+
     // global_param.forceoffset[0] resets every year since the met file restarts
     // every year
     // global_param.forceskip[0] should also reset to 0 after the first year
-    for(f = 0; f < N_FORCING_TYPES; f++){
-        if(!param_set.TYPE[f].SUPPLIED){
+    for (f = 0; f < N_FORCING_TYPES; f++) {
+        if (!param_set.TYPE[f].SUPPLIED) {
             continue;
         }
-        
+
         if (current > 0 && (dmy[current].year != dmy[current - 1].year)) {
             global_param.forceoffset[f] = 0;
             global_param.forceskip[f] = 0;
@@ -128,7 +128,7 @@ vic_force(void)
         d3count[0] = 1;
         d3count[1] = global_domain.n_ny;
         d3count[2] = global_domain.n_nx;
-        
+
         d4start[2] = 0;
         d4start[3] = 0;
         d4count[0] = 1;
@@ -137,71 +137,87 @@ vic_force(void)
         d4count[3] = global_domain.n_nx;
 
         // read variables from file
-        if(f == FCANOPY || f == ALBEDO || f == LAI) {
+        if (f == FCANOPY || f == ALBEDO || f == LAI) {
             for (j = 0; j < NF; j++) {
                 d4start[0] = global_param.forceskip[f] +
                              global_param.forceoffset[f] + j;
                 for (v = 0; v < options.NVEGTYPES; v++) {
                     d4start[1] = v;
                     get_scatter_nc_field_double(&(filenames.forcing[f]),
-                                                 param_set.TYPE[f].varname, 
-                                                 d4start, d4count,dvar);
+                                                param_set.TYPE[f].varname,
+                                                d4start, d4count, dvar);
                     for (i = 0; i < local_domain.ncells_active; i++) {
                         vidx = veg_con_map[i].vidx[v];
                         if (vidx != NODATA_VEG) {
-                            if(options.FCAN_SRC == FROM_VEGHIST && f == FCANOPY){                                
+                            if (options.FCAN_SRC == FROM_VEGHIST && f ==
+                                FCANOPY) {
                                 veg_hist[i][vidx].fcanopy[j] = (double) dvar[i];
-                            } else if(options.ALB_SRC == FROM_VEGHIST && f == ALBEDO){                                
+                            }
+                            else if (options.ALB_SRC == FROM_VEGHIST && f ==
+                                     ALBEDO) {
                                 veg_hist[i][vidx].albedo[j] = (double) dvar[i];
-                            } else if(options.LAI_SRC == FROM_VEGHIST && f == LAI){                                
+                            }
+                            else if (options.LAI_SRC == FROM_VEGHIST && f ==
+                                     LAI) {
                                 veg_hist[i][vidx].LAI[j] = (double) dvar[i];
                             }
                         }
                     }
                 }
             }
-        } else {
+        }
+        else {
             for (j = 0; j < NF; j++) {
-                d3start[0] = global_param.forceskip[f] + 
-                        global_param.forceoffset[f] + j;
-                
+                d3start[0] = global_param.forceskip[f] +
+                             global_param.forceoffset[f] + j;
+
                 get_scatter_nc_field_double(&(filenames.forcing[f]),
                                             param_set.TYPE[f].varname,
                                             d3start, d3count, dvar);
 
                 for (i = 0; i < local_domain.ncells_active; i++) {
-                    if(f == AIR_TEMP){
+                    if (f == AIR_TEMP) {
                         force[i].air_temp[j] = (double) dvar[i];
-                    }else if (f == PREC){
+                    }
+                    else if (f == PREC) {
                         force[i].prec[j] = (double) dvar[i];
-                    }else if (f == SWDOWN){
+                    }
+                    else if (f == SWDOWN) {
                         force[i].shortwave[j] = (double) dvar[i];
-                    }else if (f == LWDOWN){
+                    }
+                    else if (f == LWDOWN) {
                         force[i].longwave[j] = (double) dvar[i];
-                    }else if (f == WIND){
+                    }
+                    else if (f == WIND) {
                         force[i].wind[j] = (double) dvar[i];
-                    }else if (f == VP){
+                    }
+                    else if (f == VP) {
                         force[i].vp[j] = (double) dvar[i];
-                    }else if (f == PRESSURE){
+                    }
+                    else if (f == PRESSURE) {
                         force[i].pressure[j] = (double) dvar[i];
-                    } else if (options.LAKES && f == CHANNEL_IN) {
+                    }
+                    else if (options.LAKES && f == CHANNEL_IN) {
                         force[i].channel_in[j] = (double) dvar[i];
-                    } else if (options.CARBON && f == CATM) {
+                    }
+                    else if (options.CARBON && f == CATM) {
                         force[i].Catm[j] = (double) dvar[i];
-                    } else if (options.CARBON && f == FDIR) {
+                    }
+                    else if (options.CARBON && f == FDIR) {
                         force[i].fdir[j] = (double) dvar[i];
-                    } else if (options.CARBON && f == PAR) {
+                    }
+                    else if (options.CARBON && f == PAR) {
                         force[i].par[j] = (double) dvar[i];
                     }
                 }
             }
         }
-        
+
         // Update the offset counter
-        global_param.forceoffset[f] += NF;  
-        
-        if (current == global_param.nrecs - 1) { 
-            // Close forcing file if it is the last time step  
+        global_param.forceoffset[f] += NF;
+
+        if (current == global_param.nrecs - 1) {
+            // Close forcing file if it is the last time step
             if (mpi_rank == VIC_MPI_ROOT) {
                 status = nc_close(filenames.forcing[f].nc_id);
                 check_nc_status(status, "Error closing %s",
@@ -209,9 +225,9 @@ vic_force(void)
             }
         }
     }
-    
+
     // calculate derived variables
-    if (options.CARBON){
+    if (options.CARBON) {
         for (j = 0; j < NF; j++) {
             for (i = 0; i < local_domain.ncells_active; i++) {
                 force[i].coszen[j] = compute_coszen(
@@ -273,7 +289,8 @@ vic_force(void)
                          (options.FCAN_SRC == FROM_VEGHIST))) {
                         // Only issue this warning once if not using veg hist fractions
                         log_warn(
-                            "cell %zu, veg` %d substep %zu fcanopy %f < minimum of %f; setting = %f", i, vidx, j,
+                            "cell %zu, veg` %d substep %zu fcanopy %f < minimum of %f; setting = %f",
+                            i, vidx, j,
                             veg_hist[i][vidx].fcanopy[j], MIN_FCANOPY,
                             MIN_FCANOPY);
                         veg_hist[i][vidx].fcanopy[j] = MIN_FCANOPY;

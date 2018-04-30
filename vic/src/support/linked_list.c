@@ -32,16 +32,19 @@
 /*
     create a new node
     initialize the data and next field
- 
+
     return the newly created node
  */
-node* list_create(node* next, char *name) {
-    node* new_node = (node*) malloc(sizeof (node));
+node*
+list_create(node *next,
+            char *name)
+{
+    node*new_node = (node*) malloc(sizeof(node));
     if (new_node == NULL) {
         printf("Error creating a new node.\n");
         exit(0);
     }
-    strcpy(new_node->name,name);
+    strcpy(new_node->name, name);
     new_node->next = next;
 
     return new_node;
@@ -50,39 +53,47 @@ node* list_create(node* next, char *name) {
 /*
     add a new node at the beginning of the list
  */
-node* list_prepend(node* head, char *name) {
-    node* new_node = list_create(head, name);
+node*
+list_prepend(node *head,
+             char *name)
+{
+    node*new_node = list_create(head, name);
     head = new_node;
     return head;
 }
 
 /*
     Search for a specific node with input data
- 
+
     return the first matched node that stores the input data,
     otherwise return NULL
  */
-node* list_search(node* head, int id) {
-
+node*
+list_search(node*head,
+            int  id)
+{
     node *cursor = head;
     while (cursor != NULL) {
-        if (cursor->id == id)
+        if (cursor->id == id) {
             return cursor;
+        }
         cursor = cursor->next;
     }
     return NULL;
 }
 
-int list_search_id(node* head, char *name) {
-
+int
+list_search_id(node *head,
+               char *name)
+{
     node *cursor = head;
     while (cursor != NULL) {
-
-        if (!strcmp(cursor->name, name))
+        if (!strcmp(cursor->name, name)) {
             return cursor->id;
+        }
         cursor = cursor->next;
     }
-    
+
     log_err("Name %s is unknown in output or state list. "
             "Have you correctly defined all the outputs and states "
             "for VIC and its plugins?", name);
@@ -91,7 +102,9 @@ int list_search_id(node* head, char *name) {
 /*
     remove all element of the list
  */
-void list_dispose(node *head) {
+void
+list_dispose(node *head)
+{
     node *cursor, *tmp;
 
     if (head != NULL) {
@@ -109,23 +122,25 @@ void list_dispose(node *head) {
 /*
     completely free a list
  */
-void list_free(struct node *head)
+void
+list_free(struct node *head)
 {
     node *tmp;
-   while (head != NULL)
-    {
-       tmp = head;
-       head = head->next;
-       free(tmp);
+    while (head != NULL) {
+        tmp = head;
+        head = head->next;
+        free(tmp);
     }
 }
 
 /*
     return the number of elements in the list
  */
-int list_count(node *head) {
+int
+list_count(node *head)
+{
     node *cursor = head;
-    int c = 0;
+    int   c = 0;
     while (cursor != NULL) {
         c++;
         cursor = cursor->next;
@@ -136,7 +151,9 @@ int list_count(node *head) {
 /*
     sort the linked list using insertion sort
  */
-node* list_insertion_sort(node* head) {
+node*
+list_insertion_sort(node*head)
+{
     node *x, *y, *e;
 
     x = head;
@@ -153,11 +170,13 @@ node* list_insertion_sort(node* head) {
                 }
                 e->next = y->next;
                 y->next = e;
-            } else {
+            }
+            else {
                 e->next = head;
                 head = e;
             }
-        } else {
+        }
+        else {
             e->next = NULL;
             head = e;
         }
@@ -168,10 +187,12 @@ node* list_insertion_sort(node* head) {
 /*
     reverse the linked list
  */
-node* list_reverse(node* head) {
-    node* prev = NULL;
-    node* current = head;
-    node* next;
+node*
+list_reverse(node*head)
+{
+    node*prev = NULL;
+    node*current = head;
+    node*next;
     while (current != NULL) {
         next = current->next;
         current->next = prev;
@@ -182,22 +203,27 @@ node* list_reverse(node* head) {
     return head;
 }
 
-void list_print(node* head) {
-    node* cursor = head;
+void
+list_print(node*head)
+{
+    node*cursor = head;
     printf("-------Printing list Start------- \n");
 
     while (cursor != NULL) {
         printf("%d, %s\n",
-                cursor->id,
-                cursor->name);
+               cursor->id,
+               cursor->name);
 
         cursor = cursor->next;
     }
 }
 
-node* list_add_ids(node* head, int start) {
-    node* cursor = head;
-    int counter = start;
+node*
+list_add_ids(node*head,
+             int  start)
+{
+    node*cursor = head;
+    int  counter = start;
 
     while (cursor != NULL) {
         cursor->id = counter;

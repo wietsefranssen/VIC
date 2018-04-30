@@ -32,7 +32,7 @@
 void
 vic_finalize(void)
 {
-    extern option_struct     options;
+    extern option_struct options;
 
     // finalize routing
     if (options.ROUTING_RVIC) {
@@ -62,5 +62,4 @@ vic_finalize(void)
 
     // Allocate memory for all non specific VIC structures
     finalize_general();
-    
 }

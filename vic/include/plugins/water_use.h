@@ -6,43 +6,43 @@
 #define MAX_RETURN_STEPS 50
 #define MAX_COMPENSATION_STEPS 100
 
-enum{
+enum {
     WU_RETURN_GROUNDWATER,
     WU_RETURN_SURFACEWATER,
     WU_RETURN_NLOCATIONS
 };
 
-enum{
+enum {
     WU_INPUT_YEARLY,
     WU_INPUT_MONTHLY,
     WU_INPUT_DAILY,
     WU_INPUT_NFREQUENCIES
 };
 
-enum{
+enum {
     WU_INPUT_FROM_FILE,
     WU_INPUT_CALCULATE,
     WU_INPUT_NONE,
     WU_INPUT_NLOCATIONS
 };
 
-enum{
+enum {
     WU_STRATEGY_EQUAL,
     WU_STRATEGY_PRIORITY,
     WU_NSTRATEGY
 };
 
-typedef struct{
+typedef struct {
     double demand;
     double consumption_fraction;
-}wu_con_struct;
+} wu_con_struct;
 
-typedef struct{
+typedef struct {
     double demand;
     double withdrawn;
-    double consumed;    
+    double consumed;
     double returned;
-}wu_var_struct;
+} wu_var_struct;
 
 bool wu_get_global_parameters(char *cmdstr);
 void wu_validate_global_parameters(void);

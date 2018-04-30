@@ -31,16 +31,16 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-rout_add_types(void) {
+rout_add_types(void)
+{
+    extern node *outvar_types;
+    extern int   N_OUTVAR_TYPES_ALL;
 
-    extern node    *outvar_types;
-    extern int      N_OUTVAR_TYPES_ALL;
-    
     // add outvar_types
     outvar_types = list_prepend(outvar_types, "OUT_DISCHARGE");
     outvar_types = list_prepend(outvar_types, "OUT_NAT_DISCHARGE");
     outvar_types = list_prepend(outvar_types, "OUT_STREAM_MOIST");
-    
+
     outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
     N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;
 }

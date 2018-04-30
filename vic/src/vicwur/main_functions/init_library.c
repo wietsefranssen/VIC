@@ -178,7 +178,7 @@ initialize_global_structures(void)
 
     initialize_domain_info(&local_domain.info);
     mpi_decomposition = MPI_DECOMPOSITION_RANDOM;
-    
+
     if (mpi_rank == VIC_MPI_ROOT) {
         initialize_param_set();
         initialize_options();

@@ -31,12 +31,12 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-routing_rvic_add_types(void) {
-
-    extern node    *outvar_types;
-    extern node    *state_vars;
-    extern int      N_STATE_VARS_ALL;
-    extern int      N_OUTVAR_TYPES_ALL;
+routing_rvic_add_types(void)
+{
+    extern node *outvar_types;
+    extern node *state_vars;
+    extern int   N_STATE_VARS_ALL;
+    extern int   N_OUTVAR_TYPES_ALL;
 
     // add outvar_types
     outvar_types = list_prepend(outvar_types, "OUT_DISCHARGE");

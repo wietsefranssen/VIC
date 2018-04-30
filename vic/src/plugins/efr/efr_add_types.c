@@ -31,11 +31,11 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-efr_add_types(void) {
+efr_add_types(void)
+{
+    extern node *outvar_types;
+    extern int   N_OUTVAR_TYPES_ALL;
 
-    extern node    *outvar_types;
-    extern int      N_OUTVAR_TYPES_ALL;
- 
     // add outvar_types
     outvar_types = list_prepend(outvar_types, "OUT_EFR_REQUIREMENT");
 

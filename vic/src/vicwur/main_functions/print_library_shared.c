@@ -470,8 +470,8 @@ print_option(option_struct *option)
             option->JULY_TAVG_SUPPLIED ? "true" : "false");
     fprintf(LOG_DEST, "\tLAKES                : %s\n",
             option->LAKES ? "true" : "false");
-    
-    // Plugins    
+
+    // Plugins
     fprintf(LOG_DEST, "\tMATRIC                : %s\n",
             option->MATRIC ? "true" : "false");
     fprintf(LOG_DEST, "\tGROUNDWATER                : %s\n",
@@ -492,7 +492,7 @@ print_option(option_struct *option)
             option->WATER_USE ? "true" : "false");
     fprintf(LOG_DEST, "\tWOFOST                : %s\n",
             option->WOFOST ? "true" : "false");
-    
+
     fprintf(LOG_DEST, "\tNcanopy              : %zu\n", option->Ncanopy);
     fprintf(LOG_DEST, "\tNfrost               : %zu\n", option->Nfrost);
     fprintf(LOG_DEST, "\tNlakenode            : %zu\n", option->Nlakenode);
@@ -551,9 +551,9 @@ void
 print_out_data(double         **out_data,
                metadata_struct *metadata)
 {
-    int    i;
-    size_t j;
-    extern int                 N_OUTVAR_TYPES_ALL;
+    int        i;
+    size_t     j;
+    extern int N_OUTVAR_TYPES_ALL;
 
     fprintf(LOG_DEST, "out_data:\n");
 
@@ -589,8 +589,9 @@ print_stream(stream_struct   *stream,
     fprintf(LOG_DEST, "\tngridcells: %zu\n", stream->ngridcells);
     fprintf(LOG_DEST, "\tagg_alarm:\n    ");
     print_alarm(&(stream->agg_alarm));
-    fprintf(LOG_DEST,
-            "\t# \tVARID        \tVARNAME \tTYPE \tMULT \tFORMAT        \tAGGTYPE\n");
+    fprintf(
+        LOG_DEST,
+        "\t# \tVARID        \tVARNAME \tTYPE \tMULT \tFORMAT        \tAGGTYPE\n");
     for (i = 0; i < stream->nvars; i++) {
         varid = stream->varid[i];
         fprintf(LOG_DEST, "\t%zu \t%u \t%20s \t%hu \t%f \t%10s \t%hu\n",
@@ -655,7 +656,7 @@ print_param_set(param_set_struct *param_set)
     fprintf(LOG_DEST, "param_set:\n");
     for (i = 0; i < N_FORCING_TYPES; i++) {
         print_force_type(&(param_set->TYPE[i]));
-        fprintf(LOG_DEST, "\force_steps_per_day : %zu\n", 
+        fprintf(LOG_DEST, "\force_steps_per_day : %zu\n",
                 param_set->force_steps_per_day[i]);
     }
 }

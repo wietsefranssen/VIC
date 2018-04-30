@@ -31,12 +31,13 @@
  *           global parameters, model options, and debugging controls.
  *****************************************************************************/
 bool
-routing_lohmann_get_global_param(char *cmdstr) {
+routing_lohmann_get_global_param(char *cmdstr)
+{
     extern option_struct options;
-    
-    char                       optstr[MAXSTRING];
-    char                       flgstr[MAXSTRING];
-    
+
+    char                 optstr[MAXSTRING];
+    char                 flgstr[MAXSTRING];
+
     sscanf(cmdstr, "%s", optstr);
 
     if (strcasecmp("ROUTING_LOHMANN", optstr) == 0) {
@@ -44,10 +45,12 @@ routing_lohmann_get_global_param(char *cmdstr) {
         if (strcasecmp("LOHMANN", flgstr) == 0) {
             options.ROUTING_LOHMANN = true;
             return 1;
-        } else if (strcasecmp("OFF", flgstr) == 0) {
+        }
+        else if (strcasecmp("OFF", flgstr) == 0) {
             options.ROUTING_LOHMANN = false;
             return 1;
-        } else {
+        }
+        else {
             return 0;
         }
     }

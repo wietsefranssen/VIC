@@ -53,14 +53,14 @@ count_nstreams_nvars(FILE   *gp,
                      size_t  nvars[])
 {
     extern metadata_struct *out_metadata;
-    
-    unsigned long start_position;
-    char          cmdstr[MAXSTRING];
-    char          optstr[MAXSTRING];
-    char          varname[MAXSTRING];
-    size_t        i;
-    int           varid;
-    bool          found;
+
+    unsigned long           start_position;
+    char                    cmdstr[MAXSTRING];
+    char                    optstr[MAXSTRING];
+    char                    varname[MAXSTRING];
+    size_t                  i;
+    int                     varid;
+    bool                    found;
 
     // Figure out where we are in the input file
     fflush(gp);
@@ -92,7 +92,7 @@ count_nstreams_nvars(FILE   *gp,
             // if the line starts with OUTVAR, add another variable to nvars
             if (strcasecmp("OUTVAR", optstr) == 0) {
                 sscanf(cmdstr, "%*s %s", varname);
-                
+
                 found = false;
                 for (varid = 0; varid < N_OUTVAR_TYPES_ALL; varid++) {
                     if (strcmp(out_metadata[varid].varname, varname) == 0) {
@@ -100,8 +100,8 @@ count_nstreams_nvars(FILE   *gp,
                         break;
                     }
                 }
-                
-                if(found){
+
+                if (found) {
                     nvars[*nstreams - 1]++;
                 }
             }

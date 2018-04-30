@@ -31,26 +31,29 @@
  * @brief    Save model state.
  *****************************************************************************/
 void
-routing_rvic_store(nc_file_struct *nc_state_file) {
-    extern int                  mpi_rank;
-    extern routing_rvic_struct  routing_rvic;
-    extern node                *state_vars;
+routing_rvic_store(nc_file_struct *nc_state_file)
+{
+    extern int                 mpi_rank;
+    extern routing_rvic_struct routing_rvic;
+    extern node               *state_vars;
 
-    int            status;
-    size_t         d2start[2];
-    nc_var_struct *nc_var;
+    int                        status;
+    size_t                     d2start[2];
+    nc_var_struct             *nc_var;
 
     // write state variables
     // routing ring
     if (mpi_rank == VIC_MPI_ROOT) {
         d2start[0] = 0;
         d2start[1] = 0;
-        nc_var = &(nc_state_file->nc_vars[list_search_id(state_vars, "STATE_ROUT_RING")]);
+        nc_var =
+            &(nc_state_file->nc_vars[list_search_id(state_vars,
+                                                    "STATE_ROUT_RING")]);
 
         status =
-                nc_put_vara_double(nc_state_file->nc_id, nc_var->nc_varid, d2start,
-                nc_var->nc_counts,
-                routing_rvic.ring);
+            nc_put_vara_double(nc_state_file->nc_id, nc_var->nc_varid, d2start,
+                               nc_var->nc_counts,
+                               routing_rvic.ring);
         check_nc_status(status, "Error writing values.");
     }
 }
@@ -59,7 +62,8 @@ routing_rvic_store(nc_file_struct *nc_state_file) {
  * @brief   Setup state file netcdf structure
  *****************************************************************************/
 void
-routing_rvic_set_nc_state_file_info(nc_file_struct *nc_state_file) {
+routing_rvic_set_nc_state_file_info(nc_file_struct *nc_state_file)
+{
     extern routing_rvic_struct routing_rvic;
 
     // set ids to MISSING
@@ -68,17 +72,19 @@ routing_rvic_set_nc_state_file_info(nc_file_struct *nc_state_file) {
 
     // set dimension sizes
     nc_state_file->outlet_size = routing_rvic.rout_param.n_outlets;
-    nc_state_file->routing_timestep_size = routing_rvic.rout_param.full_time_length;
+    nc_state_file->routing_timestep_size =
+        routing_rvic.rout_param.full_time_length;
 }
 
 /******************************************************************************
  * @brief   Setup state variable dimensions, types, etc.
  *****************************************************************************/
 void
-routing_rvic_set_nc_state_var_info(nc_file_struct *nc) {
-    size_t j;
+routing_rvic_set_nc_state_var_info(nc_file_struct *nc)
+{
+    size_t       j;
     extern node *state_vars;
-    int STATE_ROUT_RING = list_search_id(state_vars, "STATE_ROUT_RING");
+    int          STATE_ROUT_RING = list_search_id(state_vars, "STATE_ROUT_RING");
 
     nc->nc_vars[STATE_ROUT_RING].nc_varid = STATE_ROUT_RING;
     for (j = 0; j < MAXDIMS; j++) {
@@ -103,18 +109,19 @@ routing_rvic_set_nc_state_var_info(nc_file_struct *nc) {
             and adding metadata.
  *****************************************************************************/
 void
-routing_rvic_initialize_state_file(char *filename,
-        nc_file_struct *nc_state_file) {
+routing_rvic_initialize_state_file(char           *filename,
+                                   nc_file_struct *nc_state_file)
+{
     int status;
 
     // Add routing dimensions
     status = nc_def_dim(nc_state_file->nc_id, "outlet",
-            nc_state_file->outlet_size,
-            &(nc_state_file->outlet_dimid));
+                        nc_state_file->outlet_size,
+                        &(nc_state_file->outlet_dimid));
     check_nc_status(status, "Error defining outlet in %s", filename);
 
     status = nc_def_dim(nc_state_file->nc_id, "routing_timestep",
-            nc_state_file->routing_timestep_size,
-            &(nc_state_file->routing_timestep_dimid));
+                        nc_state_file->routing_timestep_size,
+                        &(nc_state_file->routing_timestep_dimid));
     check_nc_status(status, "Error defining routing_timestep in %s", filename);
 }

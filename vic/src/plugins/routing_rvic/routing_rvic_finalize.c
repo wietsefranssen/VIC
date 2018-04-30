@@ -50,7 +50,7 @@ routing_rvic_finalize(void)
     free(routing_rvic.rout_param.aggrunin);
     free(routing_rvic.discharge);
     free(routing_rvic.ring);
-    
+
     list_free(state_vars);
     list_free(outvar_types);
 }

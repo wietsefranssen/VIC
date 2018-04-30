@@ -728,11 +728,11 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     // bool DAMS;
     offsets[i] = offsetof(option_struct, DAMS);
     mpi_types[i++] = MPI_C_BOOL;
-    
-    // bool GW_INIT_FROM_FILE; 
+
+    // bool GW_INIT_FROM_FILE;
     offsets[i] = offsetof(option_struct, GW_INIT_FROM_FILE);
-    mpi_types[i++] = MPI_C_BOOL; 
-    
+    mpi_types[i++] = MPI_C_BOOL;
+
     // int ROUTING_TYPE;
     offsets[i] = offsetof(option_struct, ROUTING_TYPE);
     mpi_types[i++] = MPI_INT;
@@ -742,7 +742,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     // size_t GIRF_NSTEPS;
     offsets[i] = offsetof(option_struct, GIRF_NSTEPS);
     mpi_types[i++] = MPI_AINT;
-    
+
     // int WU_INPUT_FREQUENCY;
     offsets[i] = offsetof(option_struct, WU_INPUT_FREQUENCY);
     mpi_types[i++] = MPI_INT;
@@ -760,7 +760,7 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     mpi_types[i++] = MPI_INT;
     // size_t WU_NINPUT_FROM_FILE;
     offsets[i] = offsetof(option_struct, WU_NINPUT_FROM_FILE);
-    mpi_types[i++] = MPI_AINT;    
+    mpi_types[i++] = MPI_AINT;
     // int WU_STRATEGY;
     offsets[i] = offsetof(option_struct, WU_STRATEGY);
     mpi_types[i++] = MPI_INT;
@@ -768,22 +768,22 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(option_struct, WU_PRIORITY);
     blocklengths[i] = WU_NSECTORS;
     mpi_types[i++] = MPI_INT;
-    
+
     // int NIRRTYPES;
     offsets[i] = offsetof(option_struct, NIRRTYPES);
     mpi_types[i++] = MPI_INT;
     // int NIRRSEASONS;
     offsets[i] = offsetof(option_struct, NIRRSEASONS);
     mpi_types[i++] = MPI_INT;
-    
+
     // int MAXDAMS;
     offsets[i] = offsetof(option_struct, MAXDAMS);
     mpi_types[i++] = MPI_INT;
-    
+
     // size_t wu_force_offset;
     offsets[i] = offsetof(option_struct, wu_force_offset);
     mpi_types[i++] = MPI_AINT;
-    
+
     // make sure that the we have the right number of elements
     if (i != (size_t) nitems) {
         log_err("Miscount: %zd not equal to %d.", i, nitems);
@@ -1696,7 +1696,6 @@ map(size_t  size,
     }
 }
 
-
 /******************************************************************************
  * @brief   Decompose the domain for MPI operations
  * @details This function sets up the arrays needed to scatter and gather
@@ -2179,7 +2178,7 @@ scatter_field_double(double *dvar,
         free(dvar);
         free(dvar_filtered);
     }
-    
+
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(dvar_mapped, mpi_map_local_array_sizes,
@@ -2187,7 +2186,7 @@ scatter_field_double(double *dvar,
                           var, local_domain.ncells_active, MPI_DOUBLE,
                           VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-    
+
     if (mpi_rank == VIC_MPI_ROOT) {
         free(dvar_mapped);
     }
@@ -2331,7 +2330,7 @@ get_scatter_nc_field_int(nameid_struct *nc_nameid,
         free(ivar);
         free(ivar_filtered);
     }
-    
+
     // Scatter the results to the nodes, result for the local node is in the
     // array *var (which is a function argument)
     status = MPI_Scatterv(ivar_mapped, mpi_map_local_array_sizes,

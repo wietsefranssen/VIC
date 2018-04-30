@@ -240,8 +240,8 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "SHARE_LAYER_MOIST\t\tFALSE\n");
     }
     fprintf(LOG_DEST, "Ncanopy\t\t%zu\n", options.Ncanopy);
-    
-    // Plugins    
+
+    // Plugins
     if (options.MATRIC) {
         fprintf(LOG_DEST, "MATRIC\t\tTRUE\n");
     }
@@ -296,7 +296,7 @@ display_current_settings(int mode)
     else {
         fprintf(LOG_DEST, "WOFOST\t\tFALSE\n");
     }
-    
+
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Forcing Data:\n");
     for (file_num = 0; file_num < N_FORCING_TYPES; file_num++) {
@@ -426,7 +426,7 @@ display_current_settings(int mode)
         fprintf(LOG_DEST, "LAKE_PROFILE\t\tFALSE\n");
     }
 
-    //Plugins
+    // Plugins
     if (options.ROUTING_RVIC) {
         fprintf(LOG_DEST, "ROUTING_RVIC\t\tTRUE\n");
     }

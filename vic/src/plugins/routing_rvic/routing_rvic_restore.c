@@ -32,14 +32,14 @@
  *****************************************************************************/
 void
 routing_rvic_restore(nameid_struct   *init_state_file,
-                           metadata_struct *state_metadata)
+                     metadata_struct *state_metadata)
 {
-    extern int          mpi_rank;
+    extern int                 mpi_rank;
     extern routing_rvic_struct routing_rvic;
-    extern node        *state_vars;
- 
-    size_t             d2start[2];
-    size_t             d2count[2];
+    extern node               *state_vars;
+
+    size_t                     d2start[2];
+    size_t                     d2count[2];
 
     // write state variables
 
@@ -52,7 +52,8 @@ routing_rvic_restore(nameid_struct   *init_state_file,
 
         get_nc_field_double(
             init_state_file,
-            state_metadata[list_search_id(state_vars, "STATE_ROUT_RING")].varname,
+            state_metadata[list_search_id(state_vars,
+                                          "STATE_ROUT_RING")].varname,
             d2start, d2count, routing_rvic.ring);
     }
 }

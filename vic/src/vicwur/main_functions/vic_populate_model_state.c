@@ -61,7 +61,7 @@ vic_populate_model_state(dmy_struct *dmy_current)
                                             lake_con[i]);
             }
         }
-        
+
         if (options.DAMS) {
             dam_generate_default_state();
         }

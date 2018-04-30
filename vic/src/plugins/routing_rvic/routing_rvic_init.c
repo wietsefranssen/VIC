@@ -32,11 +32,11 @@
 void
 routing_rvic_init(void)
 {
-    extern int              mpi_rank;
-    extern routing_rvic_struct      routing_rvic;
-    extern domain_struct    global_domain;
-    extern filenames_struct filenames;
-    int                     status;
+    extern int                 mpi_rank;
+    extern routing_rvic_struct routing_rvic;
+    extern domain_struct       global_domain;
+    extern filenames_struct    filenames;
+    int                        status;
 
     if (mpi_rank == VIC_MPI_ROOT) {
         int    *ivar = NULL;
@@ -63,14 +63,16 @@ routing_rvic_init(void)
 
         // allocate memory for variables to be read
         dvar = malloc(
-            routing_rvic.rout_param.n_timesteps * routing_rvic.rout_param.n_sources *
+            routing_rvic.rout_param.n_timesteps *
+            routing_rvic.rout_param.n_sources *
             sizeof(*dvar));
         check_alloc_status(dvar, "Memory allocation error.");
 
         // The Ring
         for (j = 0; j < routing_rvic.rout_param.n_outlets; j++) {
             for (i = 0; i < routing_rvic.rout_param.n_timesteps; i++) {
-                routing_rvic.ring[j * routing_rvic.rout_param.n_timesteps + i] = 0.0;
+                routing_rvic.ring[j * routing_rvic.rout_param.n_timesteps +
+                                  i] = 0.0;
             }
         }
 
@@ -148,7 +150,9 @@ routing_rvic_init(void)
                             "unit_hydrograph",
                             d3start, d3count, dvar);
         for (i = 0;
-             i < (routing_rvic.rout_param.n_timesteps * routing_rvic.rout_param.n_sources);
+             i <
+             (routing_rvic.rout_param.n_timesteps *
+              routing_rvic.rout_param.n_sources);
              i++) {
             routing_rvic.rout_param.unit_hydrograph[i] = (double) dvar[i];
         }
@@ -156,7 +160,9 @@ routing_rvic_init(void)
         // TODO: add check: what to do in case no VIC gridcell exists for a rout source?
         // Mapping: Let the routing-source index numbers correspond to the VIC index numbers
         size_t i_source;
-        for (i_source = 0; i_source < routing_rvic.rout_param.n_sources; i_source++) {
+        for (i_source = 0;
+             i_source < routing_rvic.rout_param.n_sources;
+             i_source++) {
             for (i = 0; i < global_domain.ncells_total; i++) {
                 if (routing_rvic.rout_param.source_lat[i_source] ==
                     global_domain.locations[i].latitude &&
@@ -168,8 +174,11 @@ routing_rvic_init(void)
         }
 
         // Check source index of VIC gridcell
-        for (i_source = 0; i_source < routing_rvic.rout_param.n_sources; i_source++) {
-            if ((size_t)routing_rvic.rout_param.source_VIC_index[i_source] < 0 ||
+        for (i_source = 0;
+             i_source < routing_rvic.rout_param.n_sources;
+             i_source++) {
+            if ((size_t)routing_rvic.rout_param.source_VIC_index[i_source] <
+                0 ||
                 (size_t)routing_rvic.rout_param.source_VIC_index[i_source] >
                 global_domain.ncells_total) {
                 log_err("invalid source, index of VIC gridcell");
@@ -178,7 +187,9 @@ routing_rvic_init(void)
 
         // Mapping: Let i_outlet the routing-outlet index numbers correspond to the VIC index numbers
         size_t i_outlet;
-        for (i_outlet = 0; i_outlet < routing_rvic.rout_param.n_outlets; i_outlet++) {
+        for (i_outlet = 0;
+             i_outlet < routing_rvic.rout_param.n_outlets;
+             i_outlet++) {
             for (i = 0; i < global_domain.ncells_total; i++) {
                 if (routing_rvic.rout_param.outlet_lat[i_outlet] ==
                     global_domain.locations[i].latitude &&
@@ -190,8 +201,11 @@ routing_rvic_init(void)
         }
 
         // Check outlet index of VIC gridcell
-        for (i_outlet = 0; i_outlet < routing_rvic.rout_param.n_outlets; i_outlet++) {
-            if ((size_t)routing_rvic.rout_param.outlet_VIC_index[i_outlet] < 0 ||
+        for (i_outlet = 0;
+             i_outlet < routing_rvic.rout_param.n_outlets;
+             i_outlet++) {
+            if ((size_t)routing_rvic.rout_param.outlet_VIC_index[i_outlet] <
+                0 ||
                 (size_t)routing_rvic.rout_param.outlet_VIC_index[i_outlet] >
                 global_domain.ncells_total) {
                 log_err("invalid outlet, index of VIC gridcell");
