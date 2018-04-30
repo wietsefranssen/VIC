@@ -62,6 +62,9 @@ finalize_general(void)
     extern MPI_Datatype        mpi_option_struct_type;
     extern MPI_Datatype        mpi_param_struct_type;
 
+    extern node               *state_vars;
+    extern node               *outvar_types;
+
     size_t                     i;
     size_t                     j;
     int                        status;
@@ -133,5 +136,9 @@ finalize_general(void)
     MPI_Type_free(&mpi_alarm_struct_type);
     MPI_Type_free(&mpi_option_struct_type);
     MPI_Type_free(&mpi_param_struct_type);
+    
+    list_free(state_vars);
+    list_free(outvar_types);
+
     finalize_logging();
 }
