@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "wofost/extern.h"
-#include "wofost/wofost.h"
+#include "wofost.h"
 
 /* ----------------------------------------------------------------------------*/
 /*  function GetDevelopmentStage()                                             */

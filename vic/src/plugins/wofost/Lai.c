@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "wofost/extern.h"
-#include "wofost/wofost.h"
+#include "wofost.h"
 
 /* ---------------------------------------------------------------------------*/
 /*  function LeaveGrowth(float LAIExp, float NewLeaves)                       */

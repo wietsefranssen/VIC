@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "wofost/extern.h"
-#include "wofost/wofost.h"
+#include "wofost.h"
 
 #define  ANGLE  -4.0
 #define  PI     3.1415926

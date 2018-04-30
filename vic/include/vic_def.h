@@ -56,7 +56,7 @@
 #include <groundwater.h>
 #include <dams.h>
 #include <efr.h>
-#include <wofost/wofost.h>
+#include <wofost.h>
 #include <ext_mpi.h>
 #include <ext_debug.h>
 

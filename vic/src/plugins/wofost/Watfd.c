@@ -3,7 +3,7 @@
 #include <math.h>
 #include "wofost/extern.h"
 #include "wofost/penman.h"
-#include "wofost/wofost.h"
+#include "wofost.h"
 
 
 /*------------------------------------------------*/

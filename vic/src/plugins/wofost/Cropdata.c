@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "wofost/crop.h"
-#include "wofost/wofost.h"
+#include "wofost.h"
 #include "wofost/extern.h"
 
 /* ------------------------------------------------------------------------*/

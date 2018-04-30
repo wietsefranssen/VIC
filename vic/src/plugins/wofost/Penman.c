@@ -6,7 +6,7 @@
 #include <math.h>
 #include "wofost/extern.h"
 #include "wofost/penman.h"
-#include "wofost/wofost.h"
+#include "wofost.h"
 
 #define PSYCON  0.67    // psychrometric instrument constant (mbar/Celsius-1)
 #define REFCFW  0.05    // albedo for a water surface                        
