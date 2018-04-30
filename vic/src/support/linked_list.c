@@ -39,7 +39,7 @@ node*
 list_create(node *next,
             char *name)
 {
-    node*new_node = (node*) malloc(sizeof(node));
+    node *new_node = (node*) malloc(sizeof(node));
     if (new_node == NULL) {
         printf("Error creating a new node.\n");
         exit(0);
@@ -57,7 +57,7 @@ node*
 list_prepend(node *head,
              char *name)
 {
-    node*new_node = list_create(head, name);
+    node *new_node = list_create(head, name);
     head = new_node;
     return head;
 }

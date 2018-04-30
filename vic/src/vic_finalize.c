@@ -60,6 +60,6 @@ vic_finalize(void)
         wofost_finalize();
     }
 
-    // Allocate memory for all non specific VIC structures
+    // Free memory for all non specific VIC structures
     finalize_general();
 }
