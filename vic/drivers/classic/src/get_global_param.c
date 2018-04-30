@@ -671,6 +671,16 @@ get_global_param(FILE *gp)
                 log_err("SKIPYEAR has been deprecated. To avoid writing output"
                         "to history files, set AGGFREQ == FREQ_NEVER");
             }
+            else if (strcasecmp("MAX_SNOW_TEMP", optstr) == 0) {
+                log_err("MAX_SNOW_TEMP has been deprecated. To"
+                        "specify a maximum snow temperature, use the option"
+                        "SNOW_MAX_SNOW_TEMP in the vic constants file.")
+            }
+            else if (strcasecmp("MIN_RAIN_TEMP", optstr) == 0) {
+                log_err("MIN_RAIN_TEMP has been deprecated. To"
+                        "specify a minimum rain temperature, use the option"
+                        "SNOW_MIN_RAIN_TEMP in the vic constants file.")
+            }
 
             /***********************************
                Unrecognized Global Parameter Flag
@@ -891,7 +901,7 @@ get_global_param(FILE *gp)
 
 
     // Validate simulation end date and/or number of timesteps
-    make_lastday(global_param.endyear, global_param.calendar, lastday);
+    make_lastday(global_param.calendar, global_param.endyear, lastday);
 
     if (global_param.nrecs == 0 && global_param.endyear == 0 &&
         global_param.endmonth == 0 && global_param.endday == 0) {
@@ -1028,13 +1038,13 @@ get_global_param(FILE *gp)
         log_err("ROOT_ZONES must be defined to a positive integer greater "
                 "than 0, in the global control file.");
     }
-    if (options.LAI_SRC == FROM_VEGHIST && !param_set.TYPE[LAI_IN].SUPPLIED) {
+    if (options.LAI_SRC == FROM_VEGHIST && !param_set.TYPE[LAI].SUPPLIED) {
         log_err("\"LAI_SRC\" was specified as \"FROM_VEGHIST\", but "
-                "\"LAI_IN\" was not specified as an input forcing in the "
+                "\"LAI\" was not specified as an input forcing in the "
                 "global parameter file.  If you want VIC to read LAI "
                 "values from the veg_hist file, you MUST make sure the veg "
-                "hist file contains Nveg columns of LAI_IN values, 1 for "
-                "each veg tile in the grid cell, AND specify LAI_IN as a "
+                "hist file contains Nveg columns of LAI values, 1 for "
+                "each veg tile in the grid cell, AND specify LAI as a "
                 "forcing variable in the veg_hist forcing file in the "
                 "global parameter file.");
     }
@@ -1160,12 +1170,6 @@ get_global_param(FILE *gp)
                     "file on the line that begins with \"SNOW_BAND\" "
                     "(after the number of bands).", options.SNOW_BAND);
         }
-        if (options.SNOW_BAND > MAX_BANDS) {
-            log_err("Global file wants more snow bands (%zu) than are "
-                    "defined by MAX_BANDS (%d).  Edit vic_run/include/vic_def.h "
-                    "and recompile.", options.SNOW_BAND,
-                    MAX_BANDS);
-        }
     }
     else if (options.SNOW_BAND <= 0) {
         log_err("Invalid number of elevation bands specified in global "
@@ -1204,7 +1208,7 @@ get_global_param(FILE *gp)
                     global_param.statesec);
         }
         // Check for month, day in range
-        make_lastday(global_param.stateyear, global_param.calendar,
+        make_lastday(global_param.calendar, global_param.stateyear,
                      lastday);
         if (global_param.stateday > lastday[global_param.statemonth - 1] ||
             global_param.statemonth < 1 ||
