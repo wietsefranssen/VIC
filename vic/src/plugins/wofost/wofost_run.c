@@ -24,7 +24,10 @@ wofost_cell(wofost_simUnit *Grid) {
     int Emergence;
     int Start;
     int CycleLength   = 300;
-    int count;
+
+    wofost_simUnit *initial = NULL;
+
+    initial = Grid; 
 
 //    /* Get the meteodata */
 //    GetMeteoData(path, dateString, place);
@@ -97,6 +100,8 @@ wofost_cell(wofost_simUnit *Grid) {
         Grid = Grid->next;
     }
 
+    /* Set Grid back to the initial address */
+    Grid = initial; 
     /* Update time */
 //    simTime.tm_mday++;
 //    mktime(&simTime);

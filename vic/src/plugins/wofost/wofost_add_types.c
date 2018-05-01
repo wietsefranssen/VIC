@@ -36,7 +36,7 @@ wofost_add_types(void) {
     extern int      N_OUTVAR_TYPES_ALL;
 
     // add outvar_types
-    outvar_types = list_prepend(outvar_types, "OUT_WOFOST_OUTVAR_TEST");
+    outvar_types = list_prepend(outvar_types, "OUT_WOFOST_STEMS");
     
     outvar_types = list_add_ids(outvar_types, N_OUTVAR_TYPES);
     N_OUTVAR_TYPES_ALL = list_count(outvar_types) + N_OUTVAR_TYPES;

@@ -88,15 +88,16 @@ vic_image_run(dmy_struct *dmy_current)
 
         if (options.IRRIGATION) {
             irr_run(i);
-        }
-        
-        if (options.WOFOST) {
-            wofost_run();
-        }
+        }        
 
         timer_stop(&timer);
     }
 
+    extern wofost_simUnit **wofost_var;
+    if (options.WOFOST) {
+        wofost_run();
+    }
+ 
     // If running with OpenMP, run this for loop using multiple threads
     #pragma omp parallel for default(shared) private(i)
     for (i = 0; i < local_domain.ncells_active; i++) {
@@ -152,6 +153,9 @@ vic_image_run(dmy_struct *dmy_current)
         }
     }
 
+    if (options.WOFOST) {
+        wofost_put_data();
+    }
     if (options.GROUNDWATER) {
         gw_put_data();
     }
