@@ -49,6 +49,7 @@ put_data(all_vars_struct   *all_vars,
     size_t                     veg;
     size_t                     index;
     size_t                     band;
+    size_t                     Nelev;
     size_t                     Nbands;
     bool                       overstory;
     bool                       HasVeg;
@@ -91,11 +92,13 @@ put_data(all_vars_struct   *all_vars,
     frost_fract = soil_con->frost_fract;
     frost_slope = soil_con->frost_slope;
     dt_sec = global_param.dt;
-
+    
+    Nelev = soil_con->elev_band_num;
+    
     // Compute treeline adjustment factors
-    TreeAdjustFactor = calloc(options.SNOW_BAND, sizeof(*TreeAdjustFactor));
+    TreeAdjustFactor = calloc(Nelev, sizeof(*TreeAdjustFactor));
     check_alloc_status(TreeAdjustFactor, "Memory allocation error.");
-    for (band = 0; band < options.SNOW_BAND; band++) {
+    for (band = 0; band < Nelev; band++) {
         if (AboveTreeLine[band]) {
             Cv = 0;
             for (veg = 0; veg < veg_con[0].vegetat_type_num; veg++) {
@@ -170,7 +173,7 @@ put_data(all_vars_struct   *all_vars,
     for (veg = 0; veg <= veg_con[0].vegetat_type_num; veg++) {
         Cv = veg_con[veg].Cv;
         Clake = 0;
-        Nbands = options.SNOW_BAND;
+        Nbands = Nelev;
         IsWet = false;
 
         if (veg < veg_con[0].vegetat_type_num) {

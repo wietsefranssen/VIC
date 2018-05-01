@@ -244,10 +244,10 @@ vic_force(void)
     check_alloc_status(t_offset, "Memory allocation error.");
 
     for (i = 0; i < local_domain.ncells_active; i++) {
-        if (options.SNOW_BAND > 1) {
+        if (options.ELEV_BAND > 1) {
             Tfactor = soil_con[i].Tfactor;
             t_offset[i] = Tfactor[0];
-            for (band = 1; band < options.SNOW_BAND; band++) {
+            for (band = 1; band < options.ELEV_BAND; band++) {
                 if (Tfactor[band] < t_offset[i]) {
                     t_offset[i] = Tfactor[band];
                 }

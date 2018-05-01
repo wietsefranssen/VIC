@@ -576,6 +576,7 @@ typedef struct {
     double area; /**< area of grid cell */
     double frac; /**< fraction of grid cell that is active */
     size_t nveg; /**< number of vegetation type according to parameter file */
+    size_t nelev; /**< number of elevation bands according to parameter file */
     size_t global_idx; /**< index of grid cell in global list of grid cells */
     size_t io_idx; /**< index of cell in 1-D I/O arrays */
     size_t local_idx; /**< index of grid cell in local list of grid cells */
@@ -685,6 +686,14 @@ typedef struct {
 } veg_con_map_struct;
 
 /******************************************************************************
+ * @brief    Structure for mapping the elevation bands for each grid cell as
+ *           stored in VIC's elev_con_map_struct to a regular array.
+ *****************************************************************************/
+typedef struct {
+    size_t ne_active; /**< number of active elevation bands */
+} elev_con_map_struct;
+
+/******************************************************************************
  * @brief   file structures
  *****************************************************************************/
 typedef struct {
@@ -743,7 +752,7 @@ void collect_wb_terms(cell_data_struct, veg_var_struct, snow_data_struct,
 void compute_derived_state_vars(all_vars_struct *, soil_con_struct *,
                                 veg_con_struct *);
 void compute_lake_params(lake_con_struct *, soil_con_struct);
-void compute_treeline(force_data_struct *, dmy_struct *, double, double *,
+void compute_treeline(force_data_struct *, dmy_struct *, size_t, double, double *,
                       bool *);
 size_t count_force_vars(FILE *gp);
 void count_nstreams_nvars(FILE *gp, size_t *nstreams, size_t nvars[]);
@@ -765,7 +774,7 @@ void dt_seconds_to_time_units(unsigned short int time_units, double dt_seconds,
                               double *dt_time_units);
 void display_current_settings(int);
 double fractional_day_from_dmy(dmy_struct *dmy);
-void free_all_vars(all_vars_struct *all_vars, int Nveg);
+void free_all_vars(all_vars_struct *all_vars, int Nveg, int nelev);
 void free_dmy(dmy_struct **dmy);
 void free_out_data(size_t ngridcells, double ***out_data);
 void free_streams(stream_struct **streams);
@@ -779,7 +788,7 @@ void get_default_nstreams_nvars(size_t *nstreams, size_t nvars[]);
 void get_parameters(FILE *paramfile);
 void init_output_list(double **out_data, int write, char *format, int type,
                       double mult);
-void initialize_energy(energy_bal_struct **energy, size_t nveg);
+void initialize_energy(energy_bal_struct **energy, size_t nveg, size_t nelev);
 void initialize_global(void);
 void initialize_options(void);
 void initialize_parameters(void);
@@ -790,20 +799,20 @@ void initialize_save_data(all_vars_struct *all_vars, force_data_struct *force,
                           lake_con_struct *lake_con, double **out_data,
                           save_data_struct *save_data,
                           timer_struct *timer);
-void initialize_snow(snow_data_struct **snow, size_t veg_num);
-void initialize_soil(cell_data_struct **cell, size_t veg_num);
+void initialize_snow(snow_data_struct **snow, size_t veg_num, size_t nelev);
+void initialize_soil(cell_data_struct **cell, size_t veg_num, size_t nelev);
 void initialize_time(void);
-void initialize_veg(veg_var_struct **veg_var, size_t nveg);
+void initialize_veg(veg_var_struct **veg_var, size_t nveg, size_t nelev);
 double julian_day_from_dmy(dmy_struct *dmy, unsigned short int calendar);
 bool leap_year(unsigned short int year, unsigned short int calendar);
-all_vars_struct make_all_vars(size_t nveg);
-cell_data_struct **make_cell_data(size_t veg_type_num);
+all_vars_struct make_all_vars(size_t nveg, size_t nelev);
+cell_data_struct **make_cell_data(size_t veg_type_num, size_t nelev);
 dmy_struct *make_dmy(global_param_struct *global);
-energy_bal_struct **make_energy_bal(size_t nveg);
+energy_bal_struct **make_energy_bal(size_t nveg, size_t nelev);
 void make_lastday(unsigned short int calendar, unsigned short int year,
                   unsigned short int lastday[]);
-snow_data_struct **make_snow_data(size_t nveg);
-veg_var_struct **make_veg_var(size_t veg_type_num);
+snow_data_struct **make_snow_data(size_t nveg, size_t nelev);
+veg_var_struct **make_veg_var(size_t veg_type_num, size_t nelev);
 double no_leap_day_from_dmy(dmy_struct *dmy);
 void num2date(double origin, double time_value, double tzoffset,
               unsigned short int calendar, unsigned short int time_units,
@@ -883,7 +892,7 @@ void timer_continue(timer_struct *t);
 void timer_init(timer_struct *t);
 void timer_start(timer_struct *t);
 void timer_stop(timer_struct *t);
-int update_step_vars(all_vars_struct *, veg_con_struct *, veg_hist_struct *);
+int update_step_vars(all_vars_struct *, veg_con_struct *, soil_con_struct *, veg_hist_struct *);
 int invalid_date(unsigned short int calendar, dmy_struct *dmy);
 void validate_parameters(void);
 void validate_streams(stream_struct **stream);
@@ -893,6 +902,8 @@ char will_it_snow(double *t, double t_offset, double max_snow_temp,
 void zero_output_list(double **);
 
 void add_nveg_to_global_domain(nameid_struct *nc_nameid,
+                               domain_struct *global_domain);
+void add_nelev_to_global_domain(nameid_struct *nc_nameid,
                                domain_struct *global_domain);
 void alloc_force(force_data_struct *force);
 void alloc_veg_hist(veg_hist_struct *veg_hist);
@@ -950,6 +961,7 @@ void print_location(location_struct *location);
 void print_nc_file(nc_file_struct *nc);
 void print_nc_var(nc_var_struct *nc_var);
 void print_veg_con_map(veg_con_map_struct *veg_con_map);
+void print_elev_con_map(elev_con_map_struct *elev_con_map);
 void put_nc_attr(int nc_id, int var_id, const char *name, const char *value);
 void set_force_type(char *cmdstr);
 void set_global_nc_attributes(int ncid, unsigned short int file_type);

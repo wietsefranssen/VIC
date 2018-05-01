@@ -130,7 +130,7 @@ vic_restore(void)
     // total soil moisture
     for (m = 0; m < options.NVEGTYPES; m++) {
         d5start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d5start[1] = k;
             for (j = 0; j < options.Nlayer; j++) {
                 d5start[2] = j;
@@ -152,7 +152,7 @@ vic_restore(void)
     // ice content
     for (m = 0; m < options.NVEGTYPES; m++) {
         d6start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d6start[1] = k;
             for (j = 0; j < options.Nlayer; j++) {
                 d6start[2] = j;
@@ -177,7 +177,7 @@ vic_restore(void)
     // dew storage: tmpval = veg_var[veg][band].Wdew;
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -197,7 +197,7 @@ vic_restore(void)
         // cumulative NPP: tmpval = veg_var[veg][band].AnnualNPP;
         for (m = 0; m < options.NVEGTYPES; m++) {
             d4start[0] = m;
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < options.ELEV_BAND; k++) {
                 d4start[1] = k;
                 get_scatter_nc_field_double(
                     &(filenames.init_state),
@@ -216,7 +216,7 @@ vic_restore(void)
         // previous NPP: tmpval = veg_var[veg][band].AnnualNPPPrev;
         for (m = 0; m < options.NVEGTYPES; m++) {
             d4start[0] = m;
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < options.ELEV_BAND; k++) {
                 d4start[1] = k;
                 get_scatter_nc_field_double(
                     &(filenames.init_state),
@@ -235,7 +235,7 @@ vic_restore(void)
         // litter carbon: tmpval = cell[veg][band].CLitter;
         for (m = 0; m < options.NVEGTYPES; m++) {
             d4start[0] = m;
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < options.ELEV_BAND; k++) {
                 d4start[1] = k;
                 get_scatter_nc_field_double(
                     &(filenames.init_state),
@@ -254,7 +254,7 @@ vic_restore(void)
         // intermediate carbon: tmpval = cell[veg][band].CInter;
         for (m = 0; m < options.NVEGTYPES; m++) {
             d4start[0] = m;
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < options.ELEV_BAND; k++) {
                 d4start[1] = k;
                 get_scatter_nc_field_double(
                     &(filenames.init_state),
@@ -273,7 +273,7 @@ vic_restore(void)
         // slow carbon: tmpval = cell[veg][band].CSlow;
         for (m = 0; m < options.NVEGTYPES; m++) {
             d4start[0] = m;
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < options.ELEV_BAND; k++) {
                 d4start[1] = k;
                 get_scatter_nc_field_double(&(filenames.init_state),
                                             state_metadata[STATE_CSLOW].varname,
@@ -291,7 +291,7 @@ vic_restore(void)
     // snow age: snow[veg][band].last_snow
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_int(&(filenames.init_state),
                                      state_metadata[STATE_SNOW_AGE].varname,
@@ -308,7 +308,7 @@ vic_restore(void)
     // melting state: (int)snow[veg][band].MELTING
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_int(
                 &(filenames.init_state),
@@ -327,7 +327,7 @@ vic_restore(void)
     // snow covered fraction: snow[veg][band].coverage
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -346,7 +346,7 @@ vic_restore(void)
     // snow water equivalent: snow[veg][band].swq
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -366,7 +366,7 @@ vic_restore(void)
     // snow surface temperature: snow[veg][band].surf_temp
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -385,7 +385,7 @@ vic_restore(void)
     // snow surface water: snow[veg][band].surf_water
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -404,7 +404,7 @@ vic_restore(void)
     // snow pack temperature: snow[veg][band].pack_temp
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -423,7 +423,7 @@ vic_restore(void)
     // snow pack water: snow[veg][band].pack_water
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -442,7 +442,7 @@ vic_restore(void)
     // snow density: snow[veg][band].density
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -461,7 +461,7 @@ vic_restore(void)
     // snow cold content: snow[veg][band].coldcontent
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -480,7 +480,7 @@ vic_restore(void)
     // snow canopy storage: snow[veg][band].snow_canopy
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -507,7 +507,7 @@ vic_restore(void)
     // soil node temperatures: energy[veg][band].T[nidx]
     for (m = 0; m < options.NVEGTYPES; m++) {
         d5start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d5start[1] = k;
             for (j = 0; j < options.Nnode; j++) {
                 d5start[2] = j;
@@ -529,7 +529,7 @@ vic_restore(void)
     // Foliage temperature: energy[veg][band].Tfoliage
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(&(filenames.init_state),
                                         state_metadata[
@@ -548,7 +548,7 @@ vic_restore(void)
     // This is a flux. Saving it to state file is a temporary solution!!
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(&(filenames.init_state),
                                         state_metadata[
@@ -567,7 +567,7 @@ vic_restore(void)
     // This is a flux. Saving it to state file is a temporary solution!!
     for (m = 0; m < options.NVEGTYPES; m++) {
         d4start[0] = m;
-        for (k = 0; k < options.SNOW_BAND; k++) {
+        for (k = 0; k < options.ELEV_BAND; k++) {
             d4start[1] = k;
             get_scatter_nc_field_double(
                 &(filenames.init_state),
@@ -1046,7 +1046,7 @@ check_init_state_file(void)
                     "match parameter file");
         }
         dimlen = get_nc_dimension(&(filenames.init_state), "snow_band");
-        if (dimlen != options.SNOW_BAND) {
+        if (dimlen != options.ELEV_BAND) {
             log_err("Number of snow bands in state file does not "
                     "match parameter file");
         }

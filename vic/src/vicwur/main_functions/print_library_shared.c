@@ -508,7 +508,7 @@ print_option(option_struct *option)
     fprintf(LOG_DEST, "\tSHARE_LAYER_MOIST    : %s\n",
             option->SHARE_LAYER_MOIST ? "true" : "false");
     fprintf(LOG_DEST, "\tSNOW_DENSITY         : %d\n", option->SNOW_DENSITY);
-    fprintf(LOG_DEST, "\tSNOW_BAND            : %zu\n", option->SNOW_BAND);
+    fprintf(LOG_DEST, "\tSNOW_BAND            : %zu\n", option->ELEV_BAND);
     fprintf(LOG_DEST, "\tSPATIAL_FROST        : %s\n",
             option->SPATIAL_FROST ? "true" : "false");
     fprintf(LOG_DEST, "\tSPATIAL_SNOW         : %s\n",

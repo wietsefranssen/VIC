@@ -104,6 +104,9 @@ vic_start(void)
         // add the number of vegetation type to the location info in the
         // global domain struct. This just makes life easier
         add_nveg_to_global_domain(&(filenames.params), &global_domain);
+        // add the number of elevation bands to the location info in the
+        // global domain struct. This just makes life easier
+        add_nelev_to_global_domain(&(filenames.params), &global_domain);
 
         // get the indices for the active cells (used in reading and writing)
         filter_active_cells = malloc(global_domain.ncells_active *
@@ -162,9 +165,9 @@ vic_start(void)
         options.ROOT_ZONES = get_nc_dimension(&(filenames.params), "root_zone");
         options.Nlayer = get_nc_dimension(&(filenames.params), "nlayer");
         options.NVEGTYPES = get_nc_dimension(&(filenames.params), "veg_class");
-        if (options.SNOW_BAND == SNOW_BAND_TRUE_BUT_UNSET) {
-            options.SNOW_BAND = get_nc_dimension(&(filenames.params),
-                                                 "snow_band");
+        if (options.ELEV_BAND == SNOW_BAND_TRUE_BUT_UNSET) {
+            options.ELEV_BAND = get_nc_dimension(&(filenames.params),
+                                                 "elev_band");
         }
         if (options.LAKES) {
             options.NLAKENODES = get_nc_dimension(&(filenames.params),

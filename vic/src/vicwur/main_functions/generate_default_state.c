@@ -41,6 +41,7 @@ generate_default_state(all_vars_struct *all_vars,
     extern parameters_struct param;
 
     size_t                   Nveg;
+    size_t                   Nelev;
     size_t                   veg;
     size_t                   band;
     size_t                   lidx;
@@ -68,6 +69,7 @@ generate_default_state(all_vars_struct *all_vars,
     cell = all_vars->cell;
     energy = all_vars->energy;
     Nveg = veg_con[0].vegetat_type_num;
+    Nelev = soil_con->elev_band_num;
 
     // allocate memory for tmpT and tmpZ
     malloc_3d_double(tmpTshape, &tmpT);
@@ -84,7 +86,7 @@ generate_default_state(all_vars_struct *all_vars,
     for (veg = 0; veg <= Nveg; veg++) {
         Cv = veg_con[veg].Cv;
         if (Cv > 0) {
-            for (band = 0; band < options.SNOW_BAND; band++) {
+            for (band = 0; band < Nelev; band++) {
                 if (soil_con->AreaFract[band] > 0.) {
                     /* Initialize soil moistures */
                     for (lidx = 0; lidx < options.Nlayer; lidx++) {
@@ -108,7 +110,7 @@ generate_default_state(all_vars_struct *all_vars,
     for (veg = 0; veg <= Nveg; veg++) {
         Cv = veg_con[veg].Cv;
         if (Cv > 0) {
-            for (band = 0; band < options.SNOW_BAND; band++) {
+            for (band = 0; band < Nelev; band++) {
                 if (soil_con->AreaFract[band] > 0.) {
                     /* Initialize soil node temperatures */
                     for (k = 0; k < options.Nnode; k++) {
@@ -165,7 +167,7 @@ generate_default_state(all_vars_struct *all_vars,
     for (veg = 0; veg <= Nveg; veg++) {
         Cv = veg_con[veg].Cv;
         if (Cv > 0) {
-            for (band = 0; band < options.SNOW_BAND; band++) {
+            for (band = 0; band < Nelev; band++) {
                 if (soil_con->AreaFract[band] > 0.) {
                     if (options.QUICK_FLUX) {
                         // TBD: calculation of layer ice content for quick flux

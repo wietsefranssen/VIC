@@ -34,12 +34,12 @@
  *****************************************************************************/
 void
 free_all_vars(all_vars_struct *all_vars,
-              int              Nveg)
+              int              Nveg,
+              int              Nelev)
 {
     extern option_struct options;
 
-    int                  i, j, Nitems;
-    size_t               k;
+    int                  i, j, k, Nitems;
 
     Nitems = Nveg + 1;
 
@@ -49,7 +49,7 @@ free_all_vars(all_vars_struct *all_vars,
     free((char *) all_vars[0].cell);
     for (j = 0; j < Nitems; j++) {
         if (options.CARBON) {
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < Nelev; k++) {
                 free((char *) all_vars[0].veg_var[j][k].NscaleFactor);
                 free((char *) all_vars[0].veg_var[j][k].aPARLayer);
                 free((char *) all_vars[0].veg_var[j][k].CiLayer);

@@ -43,11 +43,12 @@ compute_derived_state_vars(all_vars_struct *all_vars,
 
     char                       FIRST_VEG;
     size_t                     Nveg;
+    size_t                     Nelev;
     size_t                     veg;
     size_t                     lidx;
     size_t                     band;
     size_t                     tmpMshape[] = {
-        options.NVEGTYPES + 1, options.SNOW_BAND,
+        options.NVEGTYPES + 1, options.ELEV_BAND,
         options.Nlayer
     };
     size_t                     tmpTshape[] = {
@@ -73,6 +74,7 @@ compute_derived_state_vars(all_vars_struct *all_vars,
     energy = all_vars->energy;
     snow = all_vars->snow;
     Nveg = veg_con[0].vegetat_type_num;
+    Nelev = soil_con->elev_band_num;
 
     // allocate memory for tmp* arrays
     malloc_3d_double(tmpMshape, &tmpM);
@@ -89,7 +91,7 @@ compute_derived_state_vars(all_vars_struct *all_vars,
         Cv = veg_con[veg].Cv;
 
         if (Cv > 0) {
-            for (band = 0; band < options.SNOW_BAND; band++) {
+            for (band = 0; band < Nelev; band++) {
                 // Initialize soil for existing snow elevation bands
                 if (soil_con->AreaFract[band] > 0.) {
                     // set up temporary moist array
@@ -112,7 +114,7 @@ compute_derived_state_vars(all_vars_struct *all_vars,
        Compute derived soil snow state vars
     ******************************************/
     for (veg = 0; veg <= Nveg; veg++) {
-        for (band = 0; band < options.SNOW_BAND; band++) {
+        for (band = 0; band < Nelev; band++) {
             if (snow[veg][band].density > 0.) {
                 snow[veg][band].depth = CONST_RHOFW * snow[veg][band].swq /
                                         snow[veg][band].density;
@@ -129,7 +131,7 @@ compute_derived_state_vars(all_vars_struct *all_vars,
         Cv = veg_con[veg].Cv;
 
         if (Cv > 0) {
-            for (band = 0; band < options.SNOW_BAND; band++) {
+            for (band = 0; band < Nelev; band++) {
                 // Initialize soil for existing snow elevation bands
                 if (soil_con->AreaFract[band] > 0.) {
                     /** Set soil properties for all soil nodes **/

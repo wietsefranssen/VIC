@@ -34,10 +34,9 @@
 int
 update_step_vars(all_vars_struct *all_vars,
                  veg_con_struct  *veg_con,
+                 soil_con_struct *soil_con,
                  veg_hist_struct *veg_hist)
 {
-    extern option_struct options;
-
     unsigned short       iveg;
     size_t               Nveg;
     unsigned short       band;
@@ -47,7 +46,8 @@ update_step_vars(all_vars_struct *all_vars,
     /* set local pointers */
     veg_var = all_vars->veg_var;
 
-    Nbands = options.SNOW_BAND;
+    /* Set number of elevation bands */
+    Nbands = soil_con->elev_band_num;
 
     /* Set number of vegetation types */
     Nveg = veg_con[0].vegetat_type_num;

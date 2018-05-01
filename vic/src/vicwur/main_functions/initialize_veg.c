@@ -31,14 +31,15 @@
  *****************************************************************************/
 void
 initialize_veg(veg_var_struct **veg_var,
-               size_t           Nveg)
+               size_t           Nveg,
+               size_t           nelev)
 {
     extern option_struct options;
 
     size_t               i, j, k;
 
     for (i = 0; i < Nveg; i++) {
-        for (j = 0; j < options.SNOW_BAND; j++) {
+        for (j = 0; j < nelev; j++) {
             // Prognostic states
             veg_var[i][j].albedo = 0.0;
             veg_var[i][j].displacement = 0.0;
@@ -52,7 +53,7 @@ initialize_veg(veg_var_struct **veg_var,
             veg_var[i][j].throughfall = 0.0;
         }
         if (options.CARBON) {
-            for (j = 0; j < options.SNOW_BAND; j++) {
+            for (j = 0; j < nelev; j++) {
                 // Carbon states
                 veg_var[i][j].AnnualNPP = 0.0;
                 veg_var[i][j].AnnualNPPPrev = 0.0;

@@ -49,6 +49,7 @@ finalize_general(void)
     extern save_data_struct   *save_data;
     extern soil_con_struct    *soil_con;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern veg_con_struct    **veg_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
@@ -100,7 +101,7 @@ finalize_general(void)
             }
             free_veg_hist(&(veg_hist[i][j]));
         }
-        free_all_vars(&(all_vars[i]), veg_con_map[i].nv_active - 1);
+        free_all_vars(&(all_vars[i]), veg_con_map[i].nv_active - 1, elev_con_map[i].ne_active);
         free(veg_con_map[i].vidx);
         free(veg_con_map[i].Cv);
         free(veg_con[i]);

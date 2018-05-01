@@ -32,10 +32,8 @@
  *           vegetation type plus bare soil.
  *****************************************************************************/
 snow_data_struct **
-make_snow_data(size_t nveg)
+make_snow_data(size_t nveg, size_t nelev)
 {
-    extern option_struct options;
-
     size_t               i;
     snow_data_struct   **temp = NULL;
 
@@ -44,7 +42,7 @@ make_snow_data(size_t nveg)
     check_alloc_status(temp, "Memory allocation error.");
 
     for (i = 0; i < nveg; i++) {
-        temp[i] = calloc(options.SNOW_BAND, sizeof(*(temp[i])));
+        temp[i] = calloc(nelev, sizeof(*(temp[i])));
         check_alloc_status(temp[i], "Memory allocation error.");
     }
 

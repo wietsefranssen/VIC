@@ -704,7 +704,7 @@ initialize_nc_file(nc_file_struct     *nc_file,
     nc_file->veg_dimid = MISSING;
 
     // Set dimension sizes
-    nc_file->band_size = options.SNOW_BAND;
+    nc_file->band_size = options.ELEV_BAND;
     nc_file->front_size = MAX_FRONTS;
     nc_file->frost_size = options.Nfrost;
     nc_file->layer_size = options.Nlayer;

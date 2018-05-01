@@ -36,13 +36,13 @@ void
 calc_gridcell_avg_albedo(double             *albedo,
                          double              shortwave,
                          size_t              Nveg,
+                         size_t              Nelev,
                          bool                overstory,
                          energy_bal_struct **energy,
                          snow_data_struct  **snow,
                          veg_con_struct     *veg_con,
                          soil_con_struct    *soil_con)
 {
-    extern option_struct options;
     size_t               veg;
     size_t               band;
     double               Cv;
@@ -57,7 +57,7 @@ calc_gridcell_avg_albedo(double             *albedo,
     for (veg = 0; veg <= Nveg; veg++) {
         Cv = veg_con[veg].Cv;
         if (Cv > 0) {
-            for (band = 0; band < options.SNOW_BAND; band++) {
+            for (band = 0; band < Nelev; band++) {
                 if (soil_con->AreaFract[band] > 0.) {
                     // TO-DO: account for treeline and lake factors
                     AreaFactor = (Cv * soil_con->AreaFract[band] *
@@ -78,7 +78,7 @@ calc_gridcell_avg_albedo(double             *albedo,
         for (veg = 0; veg <= Nveg; veg++) {
             Cv = veg_con[veg].Cv;
             if (Cv > 0) {
-                for (band = 0; band < options.SNOW_BAND; band++) {
+                for (band = 0; band < Nelev; band++) {
                     if (soil_con->AreaFract[band] > 0.) {
                         // TO-DO: account for treeline and lake factors
                         AreaFactor = (Cv * soil_con->AreaFract[band] *

@@ -151,6 +151,7 @@ irr_alloc(void)
     extern filenames_struct    filenames;
     extern irr_var_struct   ***irr_var;
     extern irr_con_map_struct *irr_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern irr_con_struct    **irr_con;
     extern int                 mpi_rank;
 
@@ -194,7 +195,7 @@ irr_alloc(void)
         irr_var[i] = malloc(irr_con_map[i].ni_active * sizeof(*irr_var[i]));
         check_alloc_status(irr_var[i], "Memory allocation error");
         for (j = 0; j < irr_con_map[i].ni_active; j++) {
-            irr_var[i][j] = malloc(options.SNOW_BAND * sizeof(*irr_var[i][j]));
+            irr_var[i][j] = malloc(elev_con_map[i].ne_active * sizeof(*irr_var[i][j]));
             check_alloc_status(irr_var[i][j], "Memory allocation error");
         }
     }
