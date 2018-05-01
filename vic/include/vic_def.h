@@ -695,8 +695,7 @@ typedef struct {
     double aspect;
     double ehoriz;
     double whoriz;
-    size_t elev_band_num; /**< number of elevation bands in the grid
-                                cell */
+    size_t elev_band_num;             /**< number of elevation bands in the grid cell */
 } soil_con_struct;
 
 /******************************************************************************
