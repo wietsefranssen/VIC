@@ -54,9 +54,8 @@ efr_run(size_t cur_cell)
         // Shift array
         efr_var[cur_cell].history_flow[EFR_HIST_YEARS * MONTHS_PER_YEAR -
                                        1] = 0.0;
-        cshift(efr_var[cur_cell].history_flow, 1, EFR_HIST_YEARS *
-               MONTHS_PER_YEAR, 1,
-               -1);
+        cshift(efr_var[cur_cell].history_flow, EFR_HIST_YEARS *
+               MONTHS_PER_YEAR, 1, 0, -1);
 
         // Store monthly average
         efr_var[cur_cell].history_flow[0] =
