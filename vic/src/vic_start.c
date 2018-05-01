@@ -167,7 +167,7 @@ vic_start(void)
         options.NVEGTYPES = get_nc_dimension(&(filenames.params), "veg_class");
         if (options.ELEV_BAND == SNOW_BAND_TRUE_BUT_UNSET) {
             options.ELEV_BAND = get_nc_dimension(&(filenames.params),
-                                                 "elev_band");
+                                                 "snow_band");
         }
         if (options.LAKES) {
             options.NLAKENODES = get_nc_dimension(&(filenames.params),

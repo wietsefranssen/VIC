@@ -115,6 +115,7 @@ finalize_general(void)
     free(force);
     free(soil_con);
     free(veg_con_map);
+    free(elev_con_map);
     free(veg_con);
     free(veg_hist);
     free(veg_lib);
