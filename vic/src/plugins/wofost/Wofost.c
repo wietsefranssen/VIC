@@ -10,8 +10,8 @@ int wofost() {
     FILE *ifp;
     FILE **output;
     
-    SimUnit *Grid = NULL;
-    SimUnit *initial = NULL;
+    wofost_simUnit *Grid = NULL;
+    wofost_simUnit *initial = NULL;
        
     int Emergence;
     int Start;
@@ -60,11 +60,11 @@ int wofost() {
         /* number is the index number of the list of file pointers */
         if (initial == NULL) 
         {
-            Grid = initial =  malloc(sizeof(SimUnit));
-            GetCropData(Grid->crp   = malloc(sizeof(Plant)), cropfile); 
-            GetSiteData(Grid->ste   = malloc(sizeof(Field)), sitefile);
-            GetManagement(Grid->mng = malloc(sizeof(Management)), management);
-            GetSoilData(Grid->soil  = malloc(sizeof(Soil)), soilfile);
+            Grid = initial =  malloc(sizeof(wofost_simUnit));
+            GetCropData(Grid->crp   = malloc(sizeof(wofost_plant)), cropfile); 
+            GetSiteData(Grid->ste   = malloc(sizeof(wofost_field)), sitefile);
+            GetManagement(Grid->mng = malloc(sizeof(wofost_management)), management);
+            GetSoilData(Grid->soil  = malloc(sizeof(wofost_soil)), soilfile);
             
             Grid->start = Start;
             Grid->file = count++;
@@ -74,12 +74,12 @@ int wofost() {
         }
         else 
         {
-            Grid->next = malloc(sizeof(SimUnit));
+            Grid->next = malloc(sizeof(wofost_simUnit));
             Grid = Grid->next;
-            GetCropData(Grid->crp   = malloc(sizeof(Plant)), cropfile); 
-            GetSiteData(Grid->ste   = malloc(sizeof(Field)), sitefile);
-            GetManagement(Grid->mng = malloc(sizeof(Management)), management);
-            GetSoilData(Grid->soil  = malloc(sizeof(Soil)), soilfile);
+            GetCropData(Grid->crp   = malloc(sizeof(wofost_plant)), cropfile); 
+            GetSiteData(Grid->ste   = malloc(sizeof(wofost_field)), sitefile);
+            GetManagement(Grid->mng = malloc(sizeof(wofost_management)), management);
+            GetSoilData(Grid->soil  = malloc(sizeof(wofost_soil)), soilfile);
             
             Grid->start = Start;            // Start day (=day number)
             Grid->file  = count++;          // number of elements in Grid carousel

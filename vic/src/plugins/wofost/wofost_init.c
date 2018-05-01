@@ -1,13 +1,24 @@
 #include <vic.h>
 
-
 void
 wofost_init(void)
 {    
+    extern domain_struct       local_domain;
+    extern wofost_simUnit            **wofost_var;
+    size_t                     i;
+   
+    for (i = 0; i < local_domain.ncells_active; i++) {
+        wofost_var[i] = wofost_read_data(i);
+    }    
+}
+
+wofost_simUnit*
+wofost_read_data(size_t cur_cell)
+{    
     FILE *ifp;
     
-    extern SimUnit *Grid;
-    extern SimUnit *initial;
+    wofost_simUnit *Grid;
+    wofost_simUnit *initial;
        
     int Emergence;
     int Start;
@@ -56,11 +67,11 @@ wofost_init(void)
         /* number is the index number of the list of file pointers */
         if (initial == NULL) 
         {
-            Grid = initial =  malloc(sizeof(SimUnit));
-            GetCropData(Grid->crp   = malloc(sizeof(Plant)), cropfile); 
-            GetSiteData(Grid->ste   = malloc(sizeof(Field)), sitefile);
-            GetManagement(Grid->mng = malloc(sizeof(Management)), management);
-            GetSoilData(Grid->soil  = malloc(sizeof(Soil)), soilfile);
+            Grid = initial =  malloc(sizeof(wofost_simUnit));
+            GetCropData(Grid->crp   = malloc(sizeof(wofost_plant)), cropfile); 
+            GetSiteData(Grid->ste   = malloc(sizeof(wofost_field)), sitefile);
+            GetManagement(Grid->mng = malloc(sizeof(wofost_management)), management);
+            GetSoilData(Grid->soil  = malloc(sizeof(wofost_soil)), soilfile);
             
             Grid->start = Start;
             Grid->file = count++;
@@ -70,12 +81,12 @@ wofost_init(void)
         }
         else 
         {
-            Grid->next = malloc(sizeof(SimUnit));
+            Grid->next = malloc(sizeof(wofost_simUnit));
             Grid = Grid->next;
-            GetCropData(Grid->crp   = malloc(sizeof(Plant)), cropfile); 
-            GetSiteData(Grid->ste   = malloc(sizeof(Field)), sitefile);
-            GetManagement(Grid->mng = malloc(sizeof(Management)), management);
-            GetSoilData(Grid->soil  = malloc(sizeof(Soil)), soilfile);
+            GetCropData(Grid->crp   = malloc(sizeof(wofost_plant)), cropfile); 
+            GetSiteData(Grid->ste   = malloc(sizeof(wofost_field)), sitefile);
+            GetManagement(Grid->mng = malloc(sizeof(wofost_management)), management);
+            GetSoilData(Grid->soil  = malloc(sizeof(wofost_soil)), soilfile);
             
             Grid->start = Start;            // Start day (=day number)
             Grid->file  = count++;          // number of elements in Grid carousel
@@ -89,6 +100,7 @@ wofost_init(void)
     fclose(ifp);
     
     /* Set Grid back to the initial address */
-    Grid = initial;   
+    Grid = initial; 
     
+    return(Grid);
 }

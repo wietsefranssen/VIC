@@ -10,7 +10,7 @@
 float LeaveAreaIndex()
 {
     float LAISum = 0.;
-    Green *LeaveProperties;
+    wofost_green *LeaveProperties;
 
     /* Store the initial address */
     LeaveProperties = Crop->LeaveProperties;

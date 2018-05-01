@@ -13,7 +13,7 @@
 void IntegrationCrop()	    
 {
     float PhysAgeing;
-    Green *LeaveProperties;
+    wofost_green *LeaveProperties;
     
     Crop->st.roots    += Crop->rt.roots;
     Crop->st.stems    += Crop->rt.stems;

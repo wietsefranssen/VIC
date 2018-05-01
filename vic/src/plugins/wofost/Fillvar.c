@@ -6,7 +6,7 @@
 /*  Purpose: Fill the crop parameters that are read by GetCropData()          */
 /* ---------------------------------------------------------------------------*/
 
-void FillCropVariables(Plant *CROP, float *Variable)
+void FillCropVariables(wofost_plant *CROP, float *Variable)
 {
     int i;
     CROP->prm.TempBaseEmergence        = Variable[0];
@@ -119,7 +119,7 @@ void FillCropVariables(Plant *CROP, float *Variable)
 /*  Purpose: Fill the soil parameters that are read by GetSoilData()          */
 /* ---------------------------------------------------------------------------*/
 
-void FillSoilVariables(Soil *SOIL, float *Variable) {
+void FillSoilVariables(wofost_soil *SOIL, float *Variable) {
     int i;
     
     SOIL->ct.MoistureWP       = Variable[0];
@@ -145,7 +145,7 @@ void FillSoilVariables(Soil *SOIL, float *Variable) {
 /*  Purpose: Fill the site parameters that are read by GetSiteData()          */
 /* ---------------------------------------------------------------------------*/
 
-void FillSiteVariables(Field *SITE, float *Variable) {
+void FillSiteVariables(wofost_field *SITE, float *Variable) {
     int i;
    
     SITE->FlagGroundWater                 = Variable[0];
@@ -174,7 +174,7 @@ void FillSiteVariables(Field *SITE, float *Variable) {
 /*  Purpose: Fill the management parameters that are read by GetManagement()  */
 /* ---------------------------------------------------------------------------*/
 
-void FillManageVariables(Management *MNG, float *Variable) {
+void FillManageVariables(wofost_management *MNG, float *Variable) {
     int i;
     
     MNG->N_Mins                          = Variable[0];

@@ -66,7 +66,7 @@ void InitializeCrop()
            Crop->st.storage*Crop->prm.SpecificPodArea;
     
     /* Initialize the leaves */
-    Crop->LeaveProperties         = malloc(sizeof (Green));
+    Crop->LeaveProperties         = malloc(sizeof (wofost_green));
     Crop->LeaveProperties->age    = 0.;
     Crop->LeaveProperties->weight = Crop->st.leaves;
     Crop->LeaveProperties->area   = Afgen(Crop->prm.SpecificLeaveArea, &(Crop->DevelopmentStage));

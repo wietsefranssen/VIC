@@ -5,9 +5,9 @@
 #include "wofost/soil.h"
 
 
-void GetSoilData(Soil *SOIL, char *soilfile)
+void GetSoilData(wofost_soil *SOIL, char *soilfile)
 {
-  AFGEN *Table[NR_TABLES_SOIL], *start;
+  wofost_afgen *Table[NR_TABLES_SOIL], *start;
   
   int i, c;
   float Variable[100], XValue, YValue;
@@ -47,14 +47,14 @@ void GetSoilData(Soil *SOIL, char *soilfile)
   {
     if (!strcmp(word, SoilParam2[i])) 
     {
-        Table[i] = start= malloc(sizeof(AFGEN));
+        Table[i] = start= malloc(sizeof(wofost_afgen));
 	fscanf(fq,"%s %f %s  %f", x, &Table[i]->x, xx, &Table[i]->y);
         Table[i]->next = NULL;				     
 			       
 	while ((c=fgetc(fq)) !='\n');
 	while (fscanf(fq," %f %s  %f",  &XValue, xx, &YValue) > 0)  
         {
-	    Table[i]->next = malloc(sizeof(AFGEN));
+	    Table[i]->next = malloc(sizeof(wofost_afgen));
             Table[i] = Table[i]->next; 
             Table[i]->next = NULL;
 	    Table[i]->x = XValue;

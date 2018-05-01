@@ -4,9 +4,9 @@
 #include "vic.h"
 #include "wofost/manage.h"
        
-void GetManagement(Management *MNG, char *management)
+void GetManagement(wofost_management *MNG, char *management)
 {
-  AFGEN *Table[NR_TABLES_MANAGEMENT], *start;
+  wofost_afgen *Table[NR_TABLES_MANAGEMENT], *start;
   
   int i, c;
   float Variable[100], XValue, YValue;
@@ -41,13 +41,13 @@ void GetManagement(Management *MNG, char *management)
   while ((c=fscanf(fq,"%s",word)) != EOF) 
   {
     if (!strcmp(word, ManageParam2[i])) {
-        Table[i] = start = malloc(sizeof(AFGEN));
+        Table[i] = start = malloc(sizeof(wofost_afgen));
 	fscanf(fq,"%s %f %s  %f", x, &Table[i]->x, xx, &Table[i]->y);
         Table[i]->next = NULL;				     
 			       
 	while ((c=fgetc(fq)) !='\n');
 	while (fscanf(fq," %f %s  %f",  &XValue, xx, &YValue) > 0)  {
-	    Table[i]->next = malloc(sizeof(AFGEN));
+	    Table[i]->next = malloc(sizeof(wofost_afgen));
             Table[i] = Table[i]->next; 
             Table[i]->next = NULL;
 	    Table[i]->x = XValue;

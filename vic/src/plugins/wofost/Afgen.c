@@ -7,7 +7,7 @@
 /*  Purpose: Get the interpolated value of a user provided input table        */
 /* ---------------------------------------------------------------------------*/
 
-float Afgen(AFGEN *Table, float *X)
+float Afgen(wofost_afgen *Table, float *X)
 {
 if (*X <= Table->x)  return Table->y;
 

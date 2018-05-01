@@ -17,8 +17,8 @@ float LeaveGrowth(float LAIExp, float NewLeaves)
     float SpecLeafArea; 
     float Stress;
 
-    Green *New = NULL;
-    Green *LeaveProperties = NULL;
+    wofost_green *New = NULL;
+    wofost_green *LeaveProperties = NULL;
 
 
     /* Specific Leaf area(m2/g), as dependent on NPK stress */
@@ -54,7 +54,7 @@ float LeaveGrowth(float LAIExp, float NewLeaves)
     }
     
         
-    New         = malloc(sizeof(Green));
+    New         = malloc(sizeof(wofost_green));
     New->weight = NewLeaves;
     New->age    = 0.;
     New->area   = SpecLeafArea;

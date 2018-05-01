@@ -7,11 +7,11 @@
 /*  Purpose: free all the allocated memory and set nodes to NULL  */
 /* ---------------------------------------------------------------*/ 
 
-void Clean(SimUnit *Grid)
+void Clean(wofost_simUnit *Grid)
 {
-    SimUnit *initial, *GridHead;
-    Green *LeaveProperties;
-    AFGEN *head;
+    wofost_simUnit *initial, *GridHead;
+    wofost_green *LeaveProperties;
+    wofost_afgen *head;
     
     /* Store pointer of the beginning of the list */
     initial = Grid;

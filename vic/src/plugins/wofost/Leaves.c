@@ -15,7 +15,7 @@ float DyingLeaves()
     float tiny = 0.001;
     float Death, Death1, Death2, DeathStress, DeathAge;
     float CriticalLAI;
-    Green *wipe;
+    wofost_green *wipe;
 
     /* Dying rate of leaves due to water stress or high LAI */
     CriticalLAI = 3.2/Afgen(Crop->prm.KDiffuseTb, &(Crop->DevelopmentStage));

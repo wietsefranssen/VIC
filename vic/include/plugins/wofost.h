@@ -21,17 +21,17 @@ typedef struct TABLE {
 	float x;
 	float y;
 	struct TABLE *next;
-	} AFGEN;
+	} wofost_afgen;
 
 typedef struct MANAGEMENT {
         /** Tables for fertilizer application and recovery fraction **/
-        AFGEN *N_Fert_table;
-        AFGEN *P_Fert_table;
-        AFGEN *K_Fert_table;
-        AFGEN *N_Uptake_frac;
-        AFGEN *P_Uptake_frac;
-        AFGEN *K_Uptake_frac;
-        AFGEN *Irrigation;
+        wofost_afgen *N_Fert_table;
+        wofost_afgen *P_Fert_table;
+        wofost_afgen *K_Fert_table;
+        wofost_afgen *N_Uptake_frac;
+        wofost_afgen *P_Uptake_frac;
+        wofost_afgen *K_Uptake_frac;
+        wofost_afgen *Irrigation;
         
         float N_Mins;
         float NRecoveryFrac;
@@ -39,8 +39,8 @@ typedef struct MANAGEMENT {
         float PRecoveryFrac;
         float K_Mins; 
         float KRecoveryFrac;
-        } Management;
-Management *Mng;
+        } wofost_management;
+wofost_management *Mng;
 
 typedef struct CONSTANTS {
         float MaxEvapWater;
@@ -56,33 +56,33 @@ typedef struct CONSTANTS {
 
 typedef struct PARAMETERS {
           /** Tables for the Crop simulations **/
-        AFGEN *Roots;
-        AFGEN *Stems;
-        AFGEN *Leaves;
-        AFGEN *Storage;
+        wofost_afgen *Roots;
+        wofost_afgen *Stems;
+        wofost_afgen *Leaves;
+        wofost_afgen *Storage;
 
-        AFGEN *VernalizationRate;
-        AFGEN *DeltaTempSum;
-        AFGEN *SpecificLeaveArea;
-        AFGEN *SpecificStemArea;
-        AFGEN *KDiffuseTb;
-        AFGEN *EFFTb;
-        AFGEN *MaxAssimRate; 
-        AFGEN *FactorAssimRateTemp;
-        AFGEN *FactorGrossAssimTemp;
-        AFGEN *FactorSenescence;
-        AFGEN *DeathRateStems;
-        AFGEN *DeathRateRoots; 
+        wofost_afgen *VernalizationRate;
+        wofost_afgen *DeltaTempSum;
+        wofost_afgen *SpecificLeaveArea;
+        wofost_afgen *SpecificStemArea;
+        wofost_afgen *KDiffuseTb;
+        wofost_afgen *EFFTb;
+        wofost_afgen *MaxAssimRate; 
+        wofost_afgen *FactorAssimRateTemp;
+        wofost_afgen *FactorGrossAssimTemp;
+        wofost_afgen *FactorSenescence;
+        wofost_afgen *DeathRateStems;
+        wofost_afgen *DeathRateRoots; 
         
         /** Tables to account for the atmospheric CO2 concentration **/
-        AFGEN *CO2AMAXTB;
-        AFGEN *CO2EFFTB;
-        AFGEN *CO2TRATB;
+        wofost_afgen *CO2AMAXTB;
+        wofost_afgen *CO2EFFTB;
+        wofost_afgen *CO2TRATB;
 
         /** Tables for the maximum nutrient content in leaves as a function of DVS **/
-        AFGEN *N_MaxLeaves;
-        AFGEN *P_MaxLeaves;
-        AFGEN *K_MaxLeaves;
+        wofost_afgen *N_MaxLeaves;
+        wofost_afgen *P_MaxLeaves;
+        wofost_afgen *K_MaxLeaves;
 
         /** Static Variables  **/
         /**  Emergence  **/
@@ -171,7 +171,7 @@ typedef struct PARAMETERS {
         float TCPT;   
         float TCKT;   
         float N_fixation; 
-        } Parameters;
+        } wofost_parameters;
 
 
 typedef struct STATES {
@@ -189,7 +189,7 @@ typedef struct STATES {
         float SurfaceStorage;
         float Transpiration;
         float WaterRootExt;
-        } States;
+        } wofost_states;
         
 
 typedef struct RATES {
@@ -206,7 +206,7 @@ typedef struct RATES {
         float SurfaceStorage;
         float Transpiration;
         float WaterRootExt;
-        } Rates;
+        } wofost_rates;
         
  
 typedef struct NUTRIENT_RATES {
@@ -229,7 +229,7 @@ typedef struct NUTRIENT_RATES {
         float death_lv;
         float death_st;
         float death_ro;
-        } nutrient_rates;
+        } wofost_nutrient_rates;
         
 
 typedef struct NUTRIENT_STATES {
@@ -251,7 +251,7 @@ typedef struct NUTRIENT_STATES {
         float death_lv;
         float death_st;
         float death_ro;
-        } nutrient_states;
+        } wofost_nutrient_states;
         
 
 typedef struct GROWTH_RATES {
@@ -261,7 +261,7 @@ typedef struct GROWTH_RATES {
         float LAIExp;
         float storage;
         float vernalization;
-} growth_rates;
+} wofost_growth_rates;
 
 typedef struct GROWTH_STATES {
         float roots;
@@ -271,14 +271,14 @@ typedef struct GROWTH_STATES {
         float LAIExp;
         float storage;
         float vernalization;
-        } growth_states;
+        } wofost_growth_states;
 
         
 typedef struct DYING_RATES {
         float roots;
         float stems;
         float leaves;
-        } dying_rates; 
+        } wofost_dying_rates; 
 
 
 typedef struct GREEN {
@@ -286,7 +286,7 @@ typedef struct GREEN {
 	float age;
 	float area;
 	struct GREEN *next;
-	} Green;
+	} wofost_green;
         
 
 typedef struct PLANT {
@@ -300,23 +300,23 @@ typedef struct PLANT {
         float DaysOxygenStress;
         float TSumEmergence;
         
-        Parameters prm;
+        wofost_parameters prm;
         
-        growth_rates  rt;
-        growth_states st;
-        dying_rates   drt;
+        wofost_growth_rates  rt;
+        wofost_growth_states st;
+        wofost_dying_rates   drt;
         
-        nutrient_states N_st;
-	nutrient_states P_st;
-        nutrient_states K_st;
+        wofost_nutrient_states N_st;
+	wofost_nutrient_states P_st;
+        wofost_nutrient_states K_st;
         
-        nutrient_rates N_rt;
-	nutrient_rates P_rt;
-        nutrient_rates K_rt;            
+        wofost_nutrient_rates N_rt;
+	wofost_nutrient_rates P_rt;
+        wofost_nutrient_rates K_rt;            
         
-        Green *LeaveProperties;
-	} Plant;    
-Plant *Crop; /* Place holder for the current crop simulations */
+        wofost_green *LeaveProperties;
+	} wofost_plant;    
+wofost_plant *Crop; /* Place holder for the current crop simulations */
 
 
 typedef struct SOIL {
@@ -325,14 +325,14 @@ typedef struct SOIL {
         float WaterStress;
         
         /* Tables for Soil */
-        AFGEN *VolumetricSoilMoisture;
-        AFGEN *HydraulicConductivity; /* currently not used */
+        wofost_afgen *VolumetricSoilMoisture;
+        wofost_afgen *HydraulicConductivity; /* currently not used */
         
         Constants ct;
-        States st;
-        Rates rt;
-        } Soil;
-Soil *WatBal; /* Place holder for the current water balance simulations */
+        wofost_states st;
+        wofost_rates rt;
+        } wofost_soil;
+wofost_soil *WatBal; /* Place holder for the current water balance simulations */
 
 
 typedef struct FIELD {
@@ -367,9 +367,9 @@ typedef struct FIELD {
         float rt_K_mins;
         
         /** Table for the fraction of precipitation that does not infiltrate **/
-        AFGEN *NotInfTB;
-        } Field;
-Field *Site; /* Place holder for the current site simulations */
+        wofost_afgen *NotInfTB;
+        } wofost_field;
+wofost_field *Site; /* Place holder for the current site simulations */
 
 
 /* Simulation time */
@@ -378,16 +378,16 @@ struct tm simTime;
 
 /* Place holder for a simulation unit */
 typedef struct SIMUNIT {
-        Plant *crp;
-        Field *ste;
-        Management *mng;
-        Soil  *soil;
+        wofost_plant *crp;
+        wofost_field *ste;
+        wofost_management *mng;
+        wofost_soil  *soil;
         int start;
         int emergence;
         int file;
         char name[100]; 
         struct SIMUNIT *next;
-        } SimUnit;
+        } wofost_simUnit;
 
 float CO2;
 
@@ -473,7 +473,7 @@ extern void GetCropData();
 extern void FillCropVariables();
 extern void GetSiteData();
 extern void FillSiteVariables();
-extern void  GetSoilData();
+extern void GetSoilData();
 extern void FillSoilVariables();
 extern void GetManagement();
 extern void FillManageVariables();
@@ -492,18 +492,18 @@ void wofost_validate_global_parameters(void);
 void wofost_start(void);
 void wofost_set_output_meta_data_info(void);
 void wofost_set_state_meta_data_info(void);
-void wofost_alloc(void);
 void initialize_wofost_local_structures(void);
+void wofost_alloc(void);
 void wofost_init(void);
 void wofost_generate_default_state(void);
 bool wofost_history(int, unsigned int *);
 void wofost_put_data(void);
 void wofost_finalize(void);
 void wofost_add_types(void);
-//void wofost_run(size_t cur_cell);
 void wofost_run(void);
+wofost_simUnit *wofost_cell(wofost_simUnit *Grid);
+wofost_simUnit *wofost_read_data(size_t);
 
-SimUnit *Grid;
-SimUnit *initial;
+wofost_simUnit **wofost_var;
 
 #endif /* WOFOST_H */
