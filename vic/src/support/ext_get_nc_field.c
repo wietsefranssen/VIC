@@ -28,6 +28,8 @@ get_active_nc_field_double(nameid_struct *nc_nameid,
     map(sizeof(double), global_domain.ncells_active, filter_active_cells, NULL,
         dvar, var);
 
+    free(dvar);
+
     return status;
 }
 
@@ -58,6 +60,8 @@ get_active_nc_field_float(nameid_struct *nc_nameid,
     // filter the active cells only
     map(sizeof(float), global_domain.ncells_active, filter_active_cells, NULL,
         fvar, var);
+
+    free(fvar);
 
     return status;
 }
@@ -91,5 +95,7 @@ get_active_nc_field_int(nameid_struct *nc_nameid,
         NULL,
         ivar, var);
 
+    free(ivar);
+    
     return status;
 }

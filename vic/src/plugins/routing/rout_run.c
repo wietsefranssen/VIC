@@ -41,8 +41,8 @@ rout_gl_run()
     for (i = 0; i < local_domain.ncells_active; i++) {
         rout_var[i].discharge[0] = 0.0;
         rout_var[i].nat_discharge[0] = 0.0;
-        cshift(rout_var[i].discharge, 1, options.RIRF_NSTEPS, 1, 1);
-        cshift(rout_var[i].nat_discharge, 1, options.RIRF_NSTEPS, 1, 1);
+        cshift(rout_var[i].discharge, options.RIRF_NSTEPS, 1, 0, 1);
+        cshift(rout_var[i].nat_discharge, options.RIRF_NSTEPS, 1, 0, 1);
     }
 
     // Alloc
@@ -254,8 +254,8 @@ rout_run(size_t cur_cell)
 
     rout_var[cur_cell].discharge[0] = 0.0;
     rout_var[cur_cell].nat_discharge[0] = 0.0;
-    cshift(rout_var[cur_cell].discharge, 1, options.RIRF_NSTEPS, 1, 1);
-    cshift(rout_var[cur_cell].nat_discharge, 1, options.RIRF_NSTEPS, 1, 1);
+    cshift(rout_var[cur_cell].discharge, options.RIRF_NSTEPS, 1, 0, 1);
+    cshift(rout_var[cur_cell].nat_discharge, options.RIRF_NSTEPS, 1, 0, 1);
 
     inflow = 0;
     for (i = 0; i < rout_con[cur_cell].Nupstream; i++) {
