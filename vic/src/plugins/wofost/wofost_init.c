@@ -38,7 +38,7 @@ wofost_read_data(size_t cur_cell)
 
     Step = 1.;    
     
-    ifp = fopen("list.txt", "r");
+    ifp = fopen("wofost_list.txt", "r");
 
     if (ifp == NULL) 
     {

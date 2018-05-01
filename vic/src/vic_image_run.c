@@ -93,7 +93,6 @@ vic_image_run(dmy_struct *dmy_current)
         timer_stop(&timer);
     }
 
-    extern wofost_simUnit **wofost_var;
     if (options.WOFOST) {
         wofost_run();
     }
