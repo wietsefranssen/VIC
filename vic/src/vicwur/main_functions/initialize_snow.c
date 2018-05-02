@@ -31,13 +31,13 @@
  *****************************************************************************/
 void
 initialize_snow(snow_data_struct **snow,
-                size_t             veg_num)
+                size_t             veg_num,
+                size_t             nelev)
 {
-    extern option_struct options;
     size_t               i, j;
 
     for (i = 0; i <= veg_num; i++) {
-        for (j = 0; j < options.SNOW_BAND; j++) {
+        for (j = 0; j < nelev; j++) {
             // Prognostic states
             snow[i][j].albedo = 0.0;
             snow[i][j].canopy_albedo = 0.0;

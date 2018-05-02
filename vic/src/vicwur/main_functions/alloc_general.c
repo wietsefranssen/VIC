@@ -40,6 +40,7 @@ alloc_general(void)
     extern save_data_struct   *save_data;
     extern soil_con_struct    *soil_con;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern veg_con_struct    **veg_con;
     extern veg_hist_struct   **veg_hist;
     extern veg_lib_struct    **veg_lib;
@@ -76,6 +77,10 @@ alloc_general(void)
     veg_con_map = malloc(local_domain.ncells_active * sizeof(*veg_con_map));
     check_alloc_status(veg_con_map, "Memory allocation error.");
 
+    // allocate memory for elevation mapping structure
+    elev_con_map = malloc(local_domain.ncells_active * sizeof(*elev_con_map));
+    check_alloc_status(elev_con_map, "Memory allocation error.");
+
     // allocate memory for vegetation structure
     veg_con = malloc(local_domain.ncells_active * sizeof(*veg_con));
     check_alloc_status(veg_con, "Memory allocation error.");
@@ -108,19 +113,19 @@ alloc_general(void)
         alloc_force(&(force[i]));
 
         // snow band allocation
-        soil_con[i].AreaFract = calloc(options.SNOW_BAND,
+        soil_con[i].AreaFract = calloc(options.ELEV_BAND,
                                        sizeof(*(soil_con[i].AreaFract)));
         check_alloc_status(soil_con[i].AreaFract, "Memory allocation error.");
-        soil_con[i].BandElev = calloc(options.SNOW_BAND,
+        soil_con[i].BandElev = calloc(options.ELEV_BAND,
                                       sizeof(*(soil_con[i].BandElev)));
         check_alloc_status(soil_con[i].BandElev, "Memory allocation error.");
-        soil_con[i].Tfactor = calloc(options.SNOW_BAND,
+        soil_con[i].Tfactor = calloc(options.ELEV_BAND,
                                      sizeof(*(soil_con[i].Tfactor)));
         check_alloc_status(soil_con[i].Tfactor, "Memory allocation error.");
-        soil_con[i].Pfactor = calloc(options.SNOW_BAND,
+        soil_con[i].Pfactor = calloc(options.ELEV_BAND,
                                      sizeof(*(soil_con[i].Pfactor)));
         check_alloc_status(soil_con[i].Pfactor, "Memory allocation error.");
-        soil_con[i].AboveTreeLine = calloc(options.SNOW_BAND,
+        soil_con[i].AboveTreeLine = calloc(options.ELEV_BAND,
                                            sizeof(*(soil_con[i].AboveTreeLine)));
         check_alloc_status(soil_con[i].AboveTreeLine,
                            "Memory allocation error.");
@@ -164,14 +169,19 @@ alloc_general(void)
             }
             initialize_veg_con(&(veg_con[i][j]));
         }
-
+        
+        // elevation tile allocation
+        
+        elev_con_map[i].ne_active = (size_t) local_domain.locations[i].nelev;
+        
         // vegetation library allocation - there is a veg library for each
         // active grid cell
 
         veg_lib[i] = calloc(options.NVEGTYPES, sizeof(*(veg_lib[i])));
         check_alloc_status(veg_lib[i], "Memory allocation error.");
 
-        all_vars[i] = make_all_vars(veg_con_map[i].nv_active - 1);
+        all_vars[i] = make_all_vars(veg_con_map[i].nv_active - 1, 
+                elev_con_map[i].ne_active);
 
         // allocate memory for veg_hist
         veg_hist[i] = calloc(veg_con_map[i].nv_active, sizeof(*(veg_hist[i])));

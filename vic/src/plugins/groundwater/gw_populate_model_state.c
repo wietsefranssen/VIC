@@ -5,6 +5,7 @@ gw_calculate_derived_states(void)
 {
     extern domain_struct       local_domain;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern soil_con_struct    *soil_con;
     extern option_struct       options;
     extern gw_var_struct    ***gw_var;
@@ -25,7 +26,7 @@ gw_calculate_derived_states(void)
 
     for (i = 0; i < local_domain.ncells_active; i++) {
         for (j = 0; j < veg_con_map[i].nv_active; j++) {
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < elev_con_map[i].ne_active; k++) {
                 in_column = false;
 
                 z_tmp = 0.0;
@@ -93,6 +94,7 @@ gw_generate_default_state(void)
     extern domain_struct       local_domain;
     extern domain_struct       global_domain;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern option_struct       options;
     extern gw_var_struct    ***gw_var;
     extern gw_con_struct      *gw_con;
@@ -131,7 +133,7 @@ gw_generate_default_state(void)
 
         for (i = 0; i < local_domain.ncells_active; i++) {
             for (j = 0; j < veg_con_map[i].nv_active; j++) {
-                for (k = 0; k < options.SNOW_BAND; k++) {
+                for (k = 0; k < elev_con_map[i].ne_active; k++) {
                     gw_var[i][j][k].zwt = (double) dvar[i];
                 }
             }
@@ -147,7 +149,7 @@ gw_generate_default_state(void)
     else {
         for (i = 0; i < local_domain.ncells_active; i++) {
             for (j = 0; j < veg_con_map[i].nv_active; j++) {
-                for (k = 0; k < options.SNOW_BAND; k++) {
+                for (k = 0; k < elev_con_map[i].ne_active; k++) {
                     gw_var[i][j][k].zwt = gw_con[i].Za_max;
                 }
             }

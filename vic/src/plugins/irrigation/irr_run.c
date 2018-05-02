@@ -8,6 +8,7 @@ irr_run(size_t cur_cell)
     extern option_struct       options;
     extern all_vars_struct    *all_vars;
     extern irr_con_map_struct *irr_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern irr_con_struct    **irr_con;
     extern irr_var_struct   ***irr_var;
     extern soil_con_struct    *soil_con;
@@ -29,7 +30,7 @@ irr_run(size_t cur_cell)
         cur_veg = irr_con[cur_cell][i].veg_index;
 
         // Reset values
-        for (j = 0; j < options.SNOW_BAND; j++) {
+        for (j = 0; j < elev_con_map[i].ne_active; j++) {
             irr_var[cur_cell][i][j].need = 0.0;
             irr_var[cur_cell][i][j].shortage = 0.0;
         }
@@ -45,7 +46,7 @@ irr_run(size_t cur_cell)
             }
         }
         if (season_day <= 0.0) {
-            for (j = 0; j < options.SNOW_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 irr_var[cur_cell][i][j].requirement = 0.0;
                 all_vars[cur_cell].cell[cur_veg][j].layer[0].Ksat =
                     soil_con[cur_cell].Ksat[0];
@@ -60,7 +61,7 @@ irr_run(size_t cur_cell)
         }
 
         // Run irrigated vegetation
-        for (j = 0; j < options.SNOW_BAND; j++) {
+        for (j = 0; j < elev_con_map[i].ne_active; j++) {
             // Get moisture content and critical moisture content of every layer
             for (k = 0; k < options.Nlayer; k++) {
                 moist[k] = 0.0;
@@ -204,6 +205,8 @@ irr_set_demand(size_t cur_cell)
     extern domain_struct       local_domain;
     extern global_param_struct global_param;
     extern option_struct       options;
+    extern irr_con_map_struct *irr_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern wu_con_struct     **wu_con;
     extern soil_con_struct    *soil_con;
     extern veg_con_struct    **veg_con;
@@ -219,7 +222,7 @@ irr_set_demand(size_t cur_cell)
         for (i = 0; i < irr_con_map[cur_cell].ni_active; i++) {
             cur_veg = irr_con[cur_cell][i].veg_index;
 
-            for (j = 0; j < options.SNOW_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 total_demand += irr_var[cur_cell][i][j].requirement *
                                 soil_con[cur_cell].AreaFract[j] *
                                 veg_con[cur_cell][cur_veg].Cv;
@@ -243,6 +246,7 @@ irr_get_withdrawn(size_t cur_cell)
     extern all_vars_struct    *all_vars;
     extern option_struct       options;
     extern irr_con_map_struct *irr_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern irr_con_struct    **irr_con;
     extern irr_var_struct   ***irr_var;
     extern wu_var_struct     **wu_var;
@@ -260,7 +264,7 @@ irr_get_withdrawn(size_t cur_cell)
     for (i = 0; i < irr_con_map[cur_cell].ni_active; i++) {
         cur_veg = irr_con[cur_cell][i].veg_index;
 
-        for (j = 0; j < options.SNOW_BAND; j++) {
+        for (j = 0; j < elev_con_map[i].ne_active; j++) {
             if (irr_var[cur_cell][i][j].leftover > 0) {
                 // Leftover water for irrigation
 

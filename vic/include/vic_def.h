@@ -296,7 +296,7 @@ typedef struct {
                             method for final step. */
     bool SHARE_LAYER_MOIST; /**< TRUE = transpiration in moisture-limited layers can draw from other layers (default) */
     unsigned short int SNOW_DENSITY;   /**< DENS_BRAS: Use algorithm of Bras, 1990; DENS_SNTHRM: Use algorithm of SNTHRM89 adapted for 1-layer pack */
-    size_t SNOW_BAND;    /**< Number of elevation bands over which to solve the
+    size_t ELEV_BAND;    /**< Number of elevation bands over which to solve the
                             snow model */
     bool SPATIAL_FROST;   /**< TRUE = use a uniform distribution to simulate the
                              spatial distribution of soil frost; FALSE = assume
@@ -695,6 +695,7 @@ typedef struct {
     double aspect;
     double ehoriz;
     double whoriz;
+    size_t elev_band_num;             /**< number of elevation bands in the grid cell */
 } soil_con_struct;
 
 /******************************************************************************

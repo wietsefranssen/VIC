@@ -50,6 +50,7 @@ vic_run(force_data_struct   *force,
     size_t                   l;
     unsigned short           iveg;
     size_t                   Nveg;
+    size_t                   Nelev;
     unsigned short           veg_class;
     unsigned short           band;
     size_t                   Nbands;
@@ -93,15 +94,17 @@ vic_run(force_data_struct   *force,
     energy_bal_struct       *energy;
     snow_data_struct        *snow;
 
-    out_prec = calloc(options.SNOW_BAND, sizeof(*out_prec));
+    Nelev = soil_con->elev_band_num;
+    
+    out_prec = calloc(Nelev, sizeof(*out_prec));
     check_alloc_status(out_prec, "Memory allocation error.");
-    out_rain = calloc(options.SNOW_BAND, sizeof(*out_rain));
+    out_rain = calloc(Nelev, sizeof(*out_rain));
     check_alloc_status(out_rain, "Memory allocation error.");
-    out_snow = calloc(options.SNOW_BAND, sizeof(*out_snow));
+    out_snow = calloc(Nelev, sizeof(*out_snow));
     check_alloc_status(out_snow, "Memory allocation error.");
-    Melt = calloc(options.SNOW_BAND, sizeof(*Melt));
+    Melt = calloc(Nelev, sizeof(*Melt));
     check_alloc_status(Melt, "Memory allocation error.");
-    snow_inflow = calloc(options.SNOW_BAND, sizeof(*snow_inflow));
+    snow_inflow = calloc(Nelev, sizeof(*snow_inflow));
     check_alloc_status(snow_inflow, "Memory allocation error.");
 
     // assign vic_run_veg_lib to veg_lib, so that the veg_lib for the correct
@@ -112,7 +115,7 @@ vic_run(force_data_struct   *force,
     /* set local pointers */
     lake_var = &all_vars->lake_var;
 
-    Nbands = options.SNOW_BAND;
+    Nbands = Nelev;
 
     /* Set number of vegetation tiles */
     Nveg = veg_con[0].vegetat_type_num;
@@ -143,7 +146,7 @@ vic_run(force_data_struct   *force,
         /** Solve Veg Tile only if Coverage Greater than 0% **/
         if (veg_con[iveg].Cv > 0.0) {
             Cv = veg_con[iveg].Cv;
-            Nbands = options.SNOW_BAND;
+            Nbands = Nelev;
 
             /** Define vegetation class number **/
             veg_class = veg_con[iveg].veg_class;
@@ -372,7 +375,7 @@ vic_run(force_data_struct   *force,
 
     // Compute gridcell-averaged albedo
     calc_gridcell_avg_albedo(&all_vars->gridcell_avg.avg_albedo,
-                             force->shortwave[NR], Nveg, overstory,
+                             force->shortwave[NR], Nveg, Nelev, overstory,
                              all_vars->energy, all_vars->snow, veg_con,
                              soil_con);
 
@@ -391,7 +394,7 @@ vic_run(force_data_struct   *force,
             /** Solve Veg Tile only if Coverage Greater than 0% **/
             if (veg_con[iveg].Cv > 0.) {
                 Cv = veg_con[iveg].Cv;
-                Nbands = options.SNOW_BAND;
+                Nbands = Nelev;
                 if (veg_con[iveg].LAKE) {
                     Cv *= (1 - lakefrac);
                     Nbands = 1;

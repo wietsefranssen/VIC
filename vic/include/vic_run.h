@@ -51,7 +51,7 @@ double calc_atmos_energy_bal(double, double, double, double, double, double,
                              double *, double *, double *, double *, bool *,
                              unsigned int*);
 double calc_density(double);
-void calc_gridcell_avg_albedo(double *, double, size_t, bool,
+void calc_gridcell_avg_albedo(double *, double, size_t, size_t, bool,
                               energy_bal_struct **, snow_data_struct **,
                               veg_con_struct *,
                               soil_con_struct *);

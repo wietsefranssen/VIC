@@ -25,7 +25,7 @@ initialize_gw_local_structures(void)
 {
     extern domain_struct       local_domain;
     extern veg_con_map_struct *veg_con_map;
-    extern option_struct       options;
+    extern elev_con_map_struct *elev_con_map;
     extern gw_var_struct    ***gw_var;
     extern gw_con_struct      *gw_con;
 
@@ -37,7 +37,7 @@ initialize_gw_local_structures(void)
         initialize_gw_con(&gw_con[i]);
 
         for (j = 0; j < veg_con_map[i].nv_active; j++) {
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < elev_con_map[i].ne_active; k++) {
                 initialize_gw_var(&(gw_var[i][j][k]));
             }
         }

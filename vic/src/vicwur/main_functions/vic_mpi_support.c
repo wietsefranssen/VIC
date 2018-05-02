@@ -381,7 +381,7 @@ create_MPI_location_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in location_struct
-    nitems = 9;
+    nitems = 10;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -421,6 +421,10 @@ create_MPI_location_struct_type(MPI_Datatype *mpi_type)
 
     // size_t nveg;
     offsets[i] = offsetof(location_struct, nveg);
+    mpi_types[i++] = MPI_AINT;
+    
+    // size_t nelev;
+    offsets[i] = offsetof(location_struct, nelev);
     mpi_types[i++] = MPI_AINT;
 
     // size_t global_idx;
@@ -628,8 +632,8 @@ create_MPI_option_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(option_struct, SNOW_DENSITY);
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
-    // size_t SNOW_BAND;
-    offsets[i] = offsetof(option_struct, SNOW_BAND);
+    // size_t ELEV_BAND;
+    offsets[i] = offsetof(option_struct, ELEV_BAND);
     mpi_types[i++] = MPI_AINT; // note there is no MPI_SIZE_T equivalent
 
     // bool SPATIAL_FROST;

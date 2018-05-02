@@ -393,16 +393,16 @@ display_current_settings(int mode)
 
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Elevation Data:\n");
-    if (options.SNOW_BAND > 1) {
-        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.SNOW_BAND);
+    if (options.ELEV_BAND > 1) {
+        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.ELEV_BAND);
     }
-    else if (options.SNOW_BAND == 1) {
+    else if (options.ELEV_BAND == 1) {
         fprintf(LOG_DEST,
                 "SNOW_BAND\t\t%zu\t(no input file needed for SNOW_BAND=1)\n",
-                options.SNOW_BAND);
+                options.ELEV_BAND);
     }
     else {
-        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.SNOW_BAND);
+        fprintf(LOG_DEST, "SNOW_BAND\t\t%zu\n", options.ELEV_BAND);
     }
 
     fprintf(LOG_DEST, "\n");
