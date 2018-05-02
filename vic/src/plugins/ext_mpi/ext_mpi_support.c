@@ -520,6 +520,17 @@ mpi_map_decomp_domain_basin(size_t   ncells,
             }
         }
     }
+    
+    free(node_ids);
+    free(basin_to_node);
+    
+    for(i = 0; i < basins.Nbasin; i++){
+        free(basins.catchment[i]);
+    }
+    free(basins.Ncells);
+    free(basins.basin_map);
+    free(basins.catchment);
+    free(basins.sorted_basins);
 }
 
 void
@@ -607,4 +618,15 @@ mpi_map_decomp_domain_file(size_t   ncells,
             }
         }
     }
+    
+    free(node_ids);
+    free(basin_to_node);
+    
+    for(i = 0; i < basins.Nbasin; i++){
+        free(basins.catchment[i]);
+    }
+    free(basins.Ncells);
+    free(basins.basin_map);
+    free(basins.catchment);
+    free(basins.sorted_basins);
 }

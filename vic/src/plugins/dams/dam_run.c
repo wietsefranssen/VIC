@@ -374,14 +374,12 @@ dam_run(size_t cur_cell)
             }
 
             // Shift array
-            cshift(dam_var[cur_cell][i].history_flow, 1, DAM_HIST_YEARS *
-                   MONTHS_PER_YEAR, 1,
-                   -1);
-            cshift(dam_var[cur_cell][i].history_demand, 1, DAM_HIST_YEARS *
-                   MONTHS_PER_YEAR, 1,
-                   -1);
-            cshift(dam_var[cur_cell][i].op_discharge, 1, MONTHS_PER_YEAR, 1, 1);
-            cshift(dam_var[cur_cell][i].op_volume, 1, MONTHS_PER_YEAR, 1, 1);
+            cshift(dam_var[cur_cell][i].history_flow, DAM_HIST_YEARS *
+                   MONTHS_PER_YEAR, 1, 0, -1);
+            cshift(dam_var[cur_cell][i].history_demand, DAM_HIST_YEARS *
+                   MONTHS_PER_YEAR, 1, 0, -1);
+            cshift(dam_var[cur_cell][i].op_discharge, MONTHS_PER_YEAR, 1, 0, 1);
+            cshift(dam_var[cur_cell][i].op_volume, MONTHS_PER_YEAR, 1, 0, 1);
         }
 
         dam_var[cur_cell][i].total_flow +=
