@@ -31,7 +31,8 @@
  *****************************************************************************/
 void
 initialize_energy(energy_bal_struct **energy,
-                  size_t              Nveg)
+                  size_t              Nveg,
+                  size_t              nelev)
 {
     extern option_struct options;
 
@@ -41,7 +42,7 @@ initialize_energy(energy_bal_struct **energy,
 
     // initialize miscellaneous energy balance terms
     for (veg = 0; veg <= Nveg; veg++) {
-        for (band = 0; band < options.SNOW_BAND; band++) {
+        for (band = 0; band < nelev; band++) {
             // Prognostic states
             energy[veg][band].AlbedoLake = 0.0;
             energy[veg][band].AlbedoOver = 0.0;

@@ -60,6 +60,7 @@ veg_con_map_struct *veg_con_map = NULL;
 veg_con_struct    **veg_con = NULL;
 veg_hist_struct   **veg_hist = NULL;
 veg_lib_struct    **veg_lib = NULL;
+elev_con_map_struct *elev_con_map = NULL;
 save_data_struct   *save_data;  // [ncells]
 double           ***out_data = NULL;  // [ncells, nvars, nelem]
 stream_struct      *output_streams = NULL;  // [nstreams]
@@ -134,7 +135,11 @@ main(int    argc,
     timer_stop(&(global_timers[TIMER_VIC_INIT]));
     // start vic run timer
     timer_start(&(global_timers[TIMER_VIC_RUN]));
-
+    // initialize vic force timer
+    timer_init(&(global_timers[TIMER_VIC_FORCE]));
+    // initialize vic write timer
+    timer_init(&(global_timers[TIMER_VIC_WRITE]));
+    
     // loop over all timesteps
     for (current = 0; current < global_param.nrecs; current++) {
         // read forcing data

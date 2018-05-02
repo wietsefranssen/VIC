@@ -5,9 +5,9 @@ gw_put_data(void)
 {
     extern domain_struct       local_domain;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern soil_con_struct    *soil_con;
     extern veg_con_struct    **veg_con;
-    extern option_struct       options;
     extern gw_var_struct    ***gw_var;
     extern double           ***out_data;
     extern node               *outvar_types;
@@ -34,7 +34,7 @@ gw_put_data(void)
         for (j = 0; j < veg_con_map[i].nv_active; j++) {
             veg_frac = veg_con[i][j].Cv;
 
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < elev_con_map[i].ne_active; k++) {
                 snow_frac = soil_con[i].AreaFract[k];
 
                 out_data[i][OUT_GW_ZWT][0] += gw_var[i][j][k].zwt *

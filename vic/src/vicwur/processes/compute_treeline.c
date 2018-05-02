@@ -43,6 +43,7 @@
 void
 compute_treeline(force_data_struct *force,
                  dmy_struct        *dmy,
+                 size_t             Nelev,
                  double             avgJulyAirTemp,
                  double            *Tfactor,
                  bool              *AboveTreeLine)
@@ -95,7 +96,7 @@ compute_treeline(force_data_struct *force,
     }
 
     // Lapse average annual July air temperature to 10C and determine elevation
-    for (band = 0; band < options.SNOW_BAND; band++) {
+    for (band = 0; band < Nelev; band++) {
         if (AnnualSum + Tfactor[band] <= 10.) {
             // Band is above treeline
             AboveTreeLine[band] = true;

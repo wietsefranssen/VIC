@@ -103,7 +103,7 @@ initialize_soil_con(soil_con_struct *soil_con)
         soil_con->frost_fract[i] = 0.;
     }
 
-    for (i = 0; i < options.SNOW_BAND; i++) {
+    for (i = 0; i < options.ELEV_BAND; i++) {
         soil_con->AboveTreeLine[i] = false;
         soil_con->BandElev[i] = 0.;
         soil_con->AreaFract[i] = 1.;

@@ -44,7 +44,7 @@ get_default_nstreams_nvars(size_t *nstreams,
     if (options.FROZEN_SOIL) {
         (*nstreams)++;
     }
-    if (options.SNOW_BAND) {
+    if (options.ELEV_BAND) {
         (*nstreams)++;
     }
     if (options.LAKES) {
@@ -74,7 +74,7 @@ get_default_nstreams_nvars(size_t *nstreams,
         streamnum++;
         nvars[streamnum] = 4;
     }
-    if (options.SNOW_BAND) {
+    if (options.ELEV_BAND) {
         streamnum++;
         if (options.FULL_ENERGY) {
             nvars[streamnum] = 13;
@@ -233,7 +233,7 @@ set_output_defaults(stream_struct **streams,
         set_output_var(&((*streams)[streamnum]), "OUT_SURF_FROST_FRAC",
                        varnum++, "%.4f", OUT_TYPE_FLOAT, 1, AGG_TYPE_DEFAULT);
     }
-    if (options.SNOW_BAND) {
+    if (options.ELEV_BAND) {
         streamnum++;
         varnum = 0;
         strcpy((*streams)[streamnum].prefix, "snowband");

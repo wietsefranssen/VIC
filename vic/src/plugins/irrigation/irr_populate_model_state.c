@@ -4,9 +4,9 @@ void
 irr_generate_default_state(void)
 {
     extern domain_struct       local_domain;
-    extern option_struct       options;
     extern all_vars_struct    *all_vars;
     extern irr_con_map_struct *irr_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern irr_con_struct    **irr_con;
     extern irr_var_struct   ***irr_var;
 
@@ -20,7 +20,7 @@ irr_generate_default_state(void)
         for (j = 0; j < irr_con_map[i].ni_active; j++) {
             cur_veg = irr_con[i][j].veg_index;
 
-            for (k = 0; k < options.SNOW_BAND; k++) {
+            for (k = 0; k < elev_con_map[i].ne_active; k++) {
                 irr_var[i][j][k].prev_store =
                     all_vars[i].cell[cur_veg][k].layer[0].moist;
             }

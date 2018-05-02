@@ -76,7 +76,7 @@ initialize_options()
     options.Nlayer = 3;
     options.Nnode = 3;
     options.ROOT_ZONES = 0;
-    options.SNOW_BAND = 1;
+    options.ELEV_BAND = 1;
     // input options
     options.ALB_SRC = FROM_VEGLIB;
     options.BASEFLOW = ARNO;

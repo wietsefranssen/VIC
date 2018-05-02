@@ -32,10 +32,8 @@
  *           for each vegetation type and bare soil.
  *****************************************************************************/
 energy_bal_struct **
-make_energy_bal(size_t nveg)
+make_energy_bal(size_t nveg, size_t nelev)
 {
-    extern option_struct options;
-
     size_t               i, j;
     energy_bal_struct  **temp = NULL;
 
@@ -44,10 +42,10 @@ make_energy_bal(size_t nveg)
 
     /** Initialize all records to unfrozen conditions */
     for (i = 0; i < nveg; i++) {
-        temp[i] = calloc(options.SNOW_BAND, sizeof(*(temp[i])));
+        temp[i] = calloc(nelev, sizeof(*(temp[i])));
         check_alloc_status(temp[i], "Memory allocation error.");
 
-        for (j = 0; j < options.SNOW_BAND; j++) {
+        for (j = 0; j < nelev; j++) {
             temp[i][j].frozen = false;
         }
     }

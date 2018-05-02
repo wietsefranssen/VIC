@@ -30,7 +30,7 @@
  * @brief    Make an array of vegitation variables for each vegitation type.
  *****************************************************************************/
 veg_var_struct **
-make_veg_var(size_t veg_type_num)
+make_veg_var(size_t veg_type_num, size_t nelev)
 {
     extern option_struct options;
 
@@ -41,11 +41,11 @@ make_veg_var(size_t veg_type_num)
     check_alloc_status(temp, "Memory allocation error.");
 
     for (i = 0; i < veg_type_num; i++) {
-        temp[i] = calloc(options.SNOW_BAND, sizeof(*(temp[i])));
+        temp[i] = calloc(nelev, sizeof(*(temp[i])));
         check_alloc_status(temp[i], "Memory allocation error.");
 
         if (options.CARBON) {
-            for (j = 0; j < options.SNOW_BAND; j++) {
+            for (j = 0; j < nelev; j++) {
                 temp[i][j].NscaleFactor = calloc(options.Ncanopy,
                                                  sizeof(*(temp[i][j].
                                                           NscaleFactor)));

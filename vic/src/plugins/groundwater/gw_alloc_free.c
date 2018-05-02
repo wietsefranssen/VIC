@@ -5,7 +5,7 @@ gw_alloc(void)
 {
     extern domain_struct       local_domain;
     extern veg_con_map_struct *veg_con_map;
-    extern option_struct       options;
+    extern elev_con_map_struct *elev_con_map;
     extern gw_con_struct      *gw_con;
     extern gw_var_struct    ***gw_var;
 
@@ -23,7 +23,7 @@ gw_alloc(void)
         check_alloc_status(gw_var[i], "Memory allocation error");
 
         for (j = 0; j < veg_con_map[i].nv_active; j++) {
-            gw_var[i][j] = malloc(options.SNOW_BAND * sizeof(*gw_var[i][j]));
+            gw_var[i][j] = malloc(elev_con_map[i].ne_active * sizeof(*gw_var[i][j]));
             check_alloc_status(gw_var[i][j], "Memory allocation error");
         }
     }
