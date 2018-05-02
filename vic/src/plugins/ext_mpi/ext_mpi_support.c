@@ -525,7 +525,7 @@ mpi_map_decomp_domain_basin(size_t   ncells,
     free(basin_to_node);
     
     for(i = 0; i < basins.Nbasin; i++){
-        free(basins.catchment);
+        free(basins.catchment[i]);
     }
     free(basins.Ncells);
     free(basins.basin_map);
