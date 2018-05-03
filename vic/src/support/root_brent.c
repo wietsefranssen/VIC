@@ -280,7 +280,7 @@ root_brent(double LowerBound,
 
         tol = 2 *DBL_EPSILON *fabs(b) + param.ROOT_BRENT_T;
         m = 0.5 * (c - b);
-
+        
         if (fabs(m) <= tol || fb == 0) {
             va_end(ap);
             return b;

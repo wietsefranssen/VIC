@@ -36,7 +36,6 @@ get_global_param(FILE *gp)
 {
     extern option_struct       options;
     extern global_param_struct global_param;
-    extern param_set_struct    param_set;
     extern filenames_struct    filenames;
     extern size_t              NF, NR;
 
@@ -837,9 +836,9 @@ get_global_param(FILE *gp)
             check_nc_status(status, "Error opening %s",
                             filenames.forcing[i].nc_filename);
 
-            get_forcing_file_info(&param_set, i);
+            get_forcing_file_info(i);
 
-            if (param_set.force_steps_per_day[i] == 0) {
+            if (global_param.force_steps_per_day[i] == 0) {
                 log_err("Forcing file time steps per day has not been "
                         "defined.  Make sure that the global file defines "
                         "FORCE_STEPS_PER_DAY.");

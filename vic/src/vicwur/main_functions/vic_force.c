@@ -45,10 +45,10 @@ vic_force(void)
     extern option_struct       options;
     extern soil_con_struct    *soil_con;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern veg_con_struct    **veg_con;
     extern veg_hist_struct   **veg_hist;
     extern parameters_struct   param;
-    extern param_set_struct    param_set;
 
     double                    *t_offset = NULL;
     double                    *dvar = NULL;
@@ -96,7 +96,7 @@ vic_force(void)
     // every year
     // global_param.forceskip[0] should also reset to 0 after the first year
     for (f = 0; f < N_FORCING_TYPES; f++) {
-        if (!param_set.TYPE[f].SUPPLIED) {
+        if (!global_param.forcesupplied[f]) {
             continue;
         }
 
@@ -144,7 +144,7 @@ vic_force(void)
                 for (v = 0; v < options.NVEGTYPES; v++) {
                     d4start[1] = v;
                     get_scatter_nc_field_double(&(filenames.forcing[f]),
-                                                param_set.TYPE[f].varname,
+                                                global_param.forcevarname[f],
                                                 d4start, d4count, dvar);
                     for (i = 0; i < local_domain.ncells_active; i++) {
                         vidx = veg_con_map[i].vidx[v];
@@ -172,7 +172,7 @@ vic_force(void)
                              global_param.forceoffset[f] + j;
 
                 get_scatter_nc_field_double(&(filenames.forcing[f]),
-                                            param_set.TYPE[f].varname,
+                                            global_param.forcevarname[f],
                                             d3start, d3count, dvar);
 
                 for (i = 0; i < local_domain.ncells_active; i++) {
@@ -247,7 +247,7 @@ vic_force(void)
         if (options.ELEV_BAND > 1) {
             Tfactor = soil_con[i].Tfactor;
             t_offset[i] = Tfactor[0];
-            for (band = 1; band < options.ELEV_BAND; band++) {
+            for (band = 1; band < elev_con_map[i].ne_active; band++) {
                 if (Tfactor[band] < t_offset[i]) {
                     t_offset[i] = Tfactor[band];
                 }
@@ -362,8 +362,7 @@ vic_force(void)
  * @brief    Determine timestep and start year, month, day, and seconds of forcing files
  *****************************************************************************/
 void
-get_forcing_file_info(param_set_struct *param_set,
-                      size_t            file_num)
+get_forcing_file_info(size_t            file_num)
 {
     extern global_param_struct global_param;
     extern filenames_struct    filenames;
@@ -407,30 +406,32 @@ get_forcing_file_info(param_set_struct *param_set,
 
     // calculate timestep in forcing file
     if (time_units == TIME_UNITS_DAYS) {
-        param_set->force_steps_per_day[file_num] =
+        global_param.force_steps_per_day[file_num] =
             (size_t) nearbyint(1. / (nc_times[1] - nc_times[0]));
     }
     else if (time_units == TIME_UNITS_HOURS) {
-        param_set->force_steps_per_day[file_num] =
+        global_param.force_steps_per_day[file_num] =
             (size_t) nearbyint(HOURS_PER_DAY / (nc_times[1] - nc_times[0]));
     }
     else if (time_units == TIME_UNITS_MINUTES) {
-        param_set->force_steps_per_day[file_num] =
+        global_param.force_steps_per_day[file_num] =
             (size_t) nearbyint(MIN_PER_DAY / (nc_times[1] - nc_times[0]));
     }
     else if (time_units == TIME_UNITS_SECONDS) {
-        param_set->force_steps_per_day[file_num] =
+        global_param.force_steps_per_day[file_num] =
             (size_t) nearbyint(SEC_PER_DAY / (nc_times[1] - nc_times[0]));
     }
-
+    global_param.force_dt[file_num] = SEC_PER_DAY /
+                            (double) global_param.force_steps_per_day[file_num];
+    
     // check that this forcing file will work
-    if (param_set->force_steps_per_day[file_num] !=
+    if (global_param.force_steps_per_day[file_num] !=
         global_param.snow_steps_per_day) {
         log_err("Forcing file timestep must match the snow model timestep.  "
                 "Snow model timesteps per day is set to %zu and the forcing "
                 "file timestep is set to %zu",
                 global_param.snow_steps_per_day,
-                param_set->force_steps_per_day[file_num])
+                global_param.force_steps_per_day[file_num])
     }
     if (calendar != global_param.calendar) {
         log_err("Calendar in forcing file (%s) does not match the calendar of "

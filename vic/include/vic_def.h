@@ -384,13 +384,17 @@ typedef struct {
     double snow_dt;                /**< Snow model time step in seconds */
     double runoff_dt;              /**< Runoff time step in seconds */
     double atmos_dt;               /**< Atmos time step in seconds */
+    double force_dt[N_FORCING_TYPES]; /**< Forcing time step in seconds */
     size_t model_steps_per_day;    /**< Number of model timesteps per day */
     size_t snow_steps_per_day;     /**< Number of snow timesteps per day */
     size_t runoff_steps_per_day;   /**< Number of runoff timesteps per day */
     size_t atmos_steps_per_day;    /**< Number of atmos timesteps per day */
+    size_t force_steps_per_day[N_FORCING_TYPES];    /**< forcing file timesteps per day */
     unsigned short int endday;     /**< Last day of model simulation */
     unsigned short int endmonth;   /**< Last month of model simulation */
     unsigned short int endyear;    /**< Last year of model simulation */
+    bool forcesupplied[N_FORCING_TYPES];  /**< Forcing supplied? */
+    char forcevarname[N_FORCING_TYPES][MAXSTRING]; /**< Forcing variable name */
     unsigned short int forceday[N_FORCING_TYPES];  /**< day forcing files starts */
     unsigned int forcesec[N_FORCING_TYPES];          /**< seconds since midnight when forcing
                                                         files starts */

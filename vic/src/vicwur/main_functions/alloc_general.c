@@ -111,24 +111,30 @@ alloc_general(void)
     for (i = 0; i < local_domain.ncells_active; i++) {
         // force allocation - allocate enough memory for NR+1 steps
         alloc_force(&(force[i]));
+        
+        // elevation tile allocation
 
+        elev_con_map[i].ne_active = (size_t) local_domain.locations[i].nelev;
+        
         // snow band allocation
-        soil_con[i].AreaFract = calloc(options.ELEV_BAND,
+        soil_con[i].AreaFract = calloc(elev_con_map[i].ne_active,
                                        sizeof(*(soil_con[i].AreaFract)));
         check_alloc_status(soil_con[i].AreaFract, "Memory allocation error.");
-        soil_con[i].BandElev = calloc(options.ELEV_BAND,
+        soil_con[i].BandElev = calloc(elev_con_map[i].ne_active,
                                       sizeof(*(soil_con[i].BandElev)));
         check_alloc_status(soil_con[i].BandElev, "Memory allocation error.");
-        soil_con[i].Tfactor = calloc(options.ELEV_BAND,
+        soil_con[i].Tfactor = calloc(elev_con_map[i].ne_active,
                                      sizeof(*(soil_con[i].Tfactor)));
         check_alloc_status(soil_con[i].Tfactor, "Memory allocation error.");
-        soil_con[i].Pfactor = calloc(options.ELEV_BAND,
+        soil_con[i].Pfactor = calloc(elev_con_map[i].ne_active,
                                      sizeof(*(soil_con[i].Pfactor)));
         check_alloc_status(soil_con[i].Pfactor, "Memory allocation error.");
-        soil_con[i].AboveTreeLine = calloc(options.ELEV_BAND,
+        soil_con[i].AboveTreeLine = calloc(elev_con_map[i].ne_active,
                                            sizeof(*(soil_con[i].AboveTreeLine)));
         check_alloc_status(soil_con[i].AboveTreeLine,
                            "Memory allocation error.");
+            
+        soil_con[i].elev_band_num = elev_con_map[i].ne_active;
 
         initialize_soil_con(&(soil_con[i]));
 
@@ -169,10 +175,6 @@ alloc_general(void)
             }
             initialize_veg_con(&(veg_con[i][j]));
         }
-        
-        // elevation tile allocation
-        
-        elev_con_map[i].ne_active = (size_t) local_domain.locations[i].nelev;
         
         // vegetation library allocation - there is a veg library for each
         // active grid cell
