@@ -52,6 +52,16 @@ init_general(void)
 
     bool                       found;
     char                       locstr[MAXSTRING];
+    size_t                     elev_area_count;
+    size_t                     elev_mean_count;
+    size_t                     elev_prec_count;
+    size_t                     root_frac_count;
+    size_t                     veg_area_count;
+    double                     elev_area_max;
+    double                     elev_mean_max;
+    double                     elev_prec_max;
+    double                     root_frac_max;
+    double                     veg_area_max;
     double                     mean;
     double                     sum;
     double                    *Cv_sum = NULL;
@@ -987,6 +997,12 @@ init_general(void)
             }
         }
         // Run some checks and corrections for soil
+        elev_area_count = 0;
+        elev_mean_count = 0;
+        elev_prec_count = 0;
+        elev_area_max = 0.0;
+        elev_mean_max = 0.0;
+        elev_prec_max = 0.0;
         for (i = 0; i < local_domain.ncells_active; i++) {
             // Make sure area fractions are positive and add to 1
             sum = 0.;
@@ -999,11 +1015,11 @@ init_general(void)
                 sum += soil_con[i].AreaFract[j];
             }
             if (!assert_close_double(sum, 1.0, 0., AREA_SUM_ERROR_THRESH)) {
-                sprint_location(locstr, &(local_domain.locations[i]));
                 if (sum > 0) {
-                    log_warn("Sum of the snow band area fractions does not "
-                             "equal 1 (%f), dividing each fraction by the "
-                             "sum\n%s", sum, locstr);
+                    elev_area_count++;
+                    if (abs(sum - 1.0) > abs(elev_area_max)) {
+                        elev_area_max = sum - 1.0;
+                    }
                     for (j = 0; j < options.ELEV_BAND; j++) {
                         soil_con[i].AreaFract[j] /= sum;
                     }
@@ -1013,19 +1029,18 @@ init_general(void)
                             locstr);
                 }
             }
-            // check that the mean elevation from the snow bands matches the
-            // grid cell mean elevation. If not reset mean
+            // check that the mean elevation from the elevation bands matches 
+            // the grid cell mean elevation. If not reset mean
             mean = 0.;
             for (j = 0; j < options.ELEV_BAND; j++) {
                 mean += soil_con[i].BandElev[j] * soil_con[i].AreaFract[j];
             }
             if (!assert_close_double(soil_con[i].elevation, mean, 0.,
                                      AREA_SUM_ERROR_THRESH)) {
-                sprint_location(locstr, &(local_domain.locations[i]));
-                log_warn("average band elevation %f not equal to grid_cell "
-                         "average elevation %f; setting grid cell elevation "
-                         "to average band elevation.\n%s",
-                         mean, soil_con[i].elevation, locstr);
+                elev_mean_count++;
+                if (abs(mean - soil_con[i].elevation) > abs(elev_mean_max)) {
+                    elev_mean_max = mean - soil_con[i].elevation;
+                }
                 soil_con[i].elevation = (double)mean;
             }
             // Tfactor: calculate the temperature factor
@@ -1059,10 +1074,10 @@ init_general(void)
                 sum += soil_con[i].Pfactor[j];
             }
             if (!assert_close_double(sum, 1.0, 0., AREA_SUM_ERROR_THRESH)) {
-                sprint_location(locstr, &(local_domain.locations[i]));
-                log_warn("Sum of the snow band precipitation fractions does "
-                         "not equal 1 (%f), dividing each fraction by the "
-                         "sum\n%s", sum, locstr);
+                elev_prec_count++;
+                if (abs(sum - 1.0) > abs(elev_prec_max)) {
+                    elev_prec_max = sum - 1.0;
+                }
                 for (j = 0; j < options.ELEV_BAND; j++) {
                     soil_con[i].Pfactor[j] /= sum;
                 }
@@ -1078,6 +1093,28 @@ init_general(void)
             }
             
             soil_con[i].elev_band_num = elev_con_map[i].ne_active;
+        }
+        if (elev_area_count > 0) {
+            log_warn("Sum of elevation area fractions != 1.0 "
+                     "(max difference %.16f) at %zu grid cells. "
+                     "Normalizing fractions... If the sum is large, "
+                     "check your elevation parameter file", 
+                     elev_area_max, elev_area_count);
+        }
+        if (elev_mean_count > 0) {
+            log_warn("Average band elevation not equal to grid_cell average "
+                     "elevation (max difference %.16f) at %zu grid cells. "
+                     "Setting grid cell elevation to average band elevation... "
+                     "If the difference is large, check your elevation "
+                     "parameter file",
+                     elev_mean_max, elev_mean_count);
+        }
+        if (elev_prec_count > 0) {
+            log_warn("Sum of elevation band precipitation fractions != 1.0 "
+                     "(max difference %.16f) at %zu grid cells. "
+                     "Normalizing fractions... If the sum is large, "
+                     "check your elevation parameter file", 
+                     elev_prec_max, elev_prec_count);
         }
     }
 
@@ -1207,6 +1244,10 @@ init_general(void)
     }
 
     // Run some checks and corrections for vegetation
+    root_frac_count = 0;
+    veg_area_count = 0;
+    root_frac_max = 0.0;
+    veg_area_max = 0.0;
     for (i = 0; i < local_domain.ncells_active; i++) {
         // Only run to options.NVEGTYPES - 1, assuming bare soil
         // is the last type
@@ -1229,11 +1270,10 @@ init_general(void)
                 }
                 if (!assert_close_double(sum, 1.0, 0.,
                                          AREA_SUM_ERROR_THRESH)) {
-                    sprint_location(locstr, &(local_domain.locations[i]));
-                    log_warn("Sum of root zone fractions !=  1.0 (%.16f) at "
-                             "grid cell %zd. Normalizing fractions. If the "
-                             "sum is large, check your vegetation parameter "
-                             "file.\n%s", sum, i, locstr);
+                    root_frac_count++;
+                    if (abs(sum - 1.0) > abs(root_frac_max)) {
+                        root_frac_max = sum - 1.0;
+                    }
                     for (k = 0; k < options.ROOT_ZONES; k++) {
                         veg_con[i][vidx].zone_fract[k] /= sum;
                     }
@@ -1270,10 +1310,10 @@ init_general(void)
         // If the sum of the tile fractions is not within a tolerance,
         // readjust Cvs to sum to 1.0
         if (!assert_close_double(Cv_sum[i], 1., 0., AREA_SUM_ERROR_THRESH)) {
-            sprint_location(locstr, &(local_domain.locations[i]));
-            log_warn("Sum of veg tile area fractions !=  1.0 (%.16f) at grid "
-                     "cell %zd. Adjusting fractions ...\n%s", Cv_sum[i], i,
-                     locstr);
+            veg_area_count++;
+            if (abs(Cv_sum[i] - 1.0) > abs(veg_area_max)) {
+                veg_area_max = Cv_sum[i] - 1.0;
+            }
             for (j = 0; j < options.NVEGTYPES; j++) {
                 vidx = veg_con_map[i].vidx[j];
                 if (vidx != NODATA_VEG) {
@@ -1281,6 +1321,18 @@ init_general(void)
                 }
             }
         }
+    }
+    if (root_frac_count > 0) {
+        log_warn("Sum of root zone fractions != 1.0 (max difference %.16f) "
+                 "at %zu grid cells. Normalizing fractions... "
+                 "If the sum is large, check your vegetation parameter file", 
+                 root_frac_max, root_frac_count);
+    }
+    if (veg_area_count > 0) {
+        log_warn("Sum of veg tile area fractions != 1.0 (max difference %.16f) "
+                 "at %zu grid cells. Normalizing fractions... "
+                 "If the sum is large, check your vegetation parameter file", 
+                 veg_area_max, veg_area_count);
     }
 
     // read blowing snow parameters

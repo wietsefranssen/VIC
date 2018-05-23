@@ -127,7 +127,7 @@ setup_logging(int    id,
         *logfile = open_file(logfilename, "w");
 
         // Print log file name to stderr
-        log_info("Initialized Log File: %s", logfilename);
+        log_info("Initialized Log File: %s [ID %d]", logfilename, id);
 
         // Set Log Destination
         LOG_DEST = *logfile;
@@ -136,7 +136,7 @@ setup_logging(int    id,
         log_info("Initialized Log File: %s", logfilename);
     }
     else {
-        log_info("Logging to stderr");
+        log_info("Logging to stderr [ID %d]", id);
     }
 }
 

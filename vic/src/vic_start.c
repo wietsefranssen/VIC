@@ -147,11 +147,11 @@ vic_start(void)
 
         for (i = 0; i < (size_t)mpi_size; i++) {
             log_info(
-                "Mpi decomposition node %zu: %d - %d (%.3f) [offset - size (fraction of total)]",
-                i, mpi_map_global_array_offsets[i],
+                "Mpi decomposition size %d (%.3f) [node %zu]",
                 mpi_map_local_array_sizes[i],
                 ((float)mpi_map_local_array_sizes[i] /
-                      (float)global_domain.ncells_active));
+                      (float)global_domain.ncells_active),
+                i);
         }
         for (i = 0; i < (size_t)mpi_size; i++) {
             if (mpi_map_local_array_sizes[i] <= 0) {
