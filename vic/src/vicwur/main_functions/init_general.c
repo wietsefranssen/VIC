@@ -87,6 +87,14 @@ init_general(void)
     double                     Zsum, dp;
     double                     tmpdp, tmpadj, Bexp;
 
+    // open parameter file
+    if (mpi_rank == VIC_MPI_ROOT) {
+        status = nc_open(filenames.params.nc_filename, NC_NOWRITE,
+                         &(filenames.params.nc_id));
+        check_nc_status(status, "Error opening %s",
+                        filenames.params.nc_filename);
+    }
+    
     // make_dmy()
     initialize_time();
     dmy = make_dmy(&global_param);

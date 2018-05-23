@@ -35,6 +35,7 @@ vic_init_output(dmy_struct *dmy_current)
 {
     extern all_vars_struct   *all_vars;
     extern force_data_struct *force;
+    extern filenames_struct   filenames;
     extern domain_struct      local_domain;
     extern filep_struct       filep;
     extern MPI_Comm           MPI_COMM_VIC;
@@ -71,9 +72,11 @@ vic_init_output(dmy_struct *dmy_current)
     }
 
     if (mpi_rank == VIC_MPI_ROOT) {
+        filep.globalparam = open_file(filenames.global, "r");
         // count the number of streams and variables in the global parameter file
         count_nstreams_nvars(filep.globalparam, &(options.Noutstreams),
                              nstream_vars);
+        fclose(filep.globalparam);
 
         // If there weren't any output streams specified, get the defaults
         if (options.Noutstreams == 0) {
@@ -111,8 +114,10 @@ vic_init_output(dmy_struct *dmy_current)
             set_output_defaults(&output_streams, dmy_current, NETCDF4_CLASSIC);
         }
         else {
+            filep.globalparam = open_file(filenames.global, "r");
             // set output defaults
             parse_output_info(filep.globalparam, &output_streams, dmy_current);
+            fclose(filep.globalparam);
         }
     }
 
