@@ -24,3 +24,24 @@ rout_start(void)
     check_nc_status(status, "Error closing %s",
                     filenames.routing.nc_filename);
 }
+
+void
+rout_validate_domain(void)
+{
+    extern filenames_struct filenames;
+
+    int                     status;
+
+    // open routing parameter file
+    status = nc_open(filenames.routing.nc_filename, NC_NOWRITE,
+                     &(filenames.routing.nc_id));
+    check_nc_status(status, "Error opening %s",
+                    filenames.routing.nc_filename);
+    
+    compare_ncdomain_with_global_domain(&filenames.routing);
+
+    // close routing parameter file
+    status = nc_close(filenames.routing.nc_id);
+    check_nc_status(status, "Error closing %s",
+                    filenames.routing.nc_filename);
+}

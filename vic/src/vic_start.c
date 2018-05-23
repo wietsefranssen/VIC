@@ -32,32 +32,20 @@
 void
 vic_start(void)
 {
-    int                        local_ncells_active;
     int                        status;
-    location_struct           *mapped_locations = NULL;
-    location_struct           *active_locations = NULL;
-    size_t                     i;
-    extern size_t             *filter_active_cells;
-    extern size_t             *mpi_map_mapping_array;
     extern filenames_struct    filenames;
     extern filep_struct        filep;
-    extern domain_struct       global_domain;
-    extern domain_struct       local_domain;
     extern global_param_struct global_param;
     extern MPI_Comm            MPI_COMM_VIC;
     extern MPI_Datatype        mpi_global_struct_type;
     extern MPI_Datatype        mpi_filenames_struct_type;
-    extern MPI_Datatype        mpi_location_struct_type;
     extern MPI_Datatype        mpi_option_struct_type;
     extern MPI_Datatype        mpi_param_struct_type;
-    extern int                *mpi_map_local_array_sizes;
-    extern int                *mpi_map_global_array_offsets;
     extern int                 mpi_rank;
-    extern int                 mpi_size;
-    extern int                 mpi_decomposition;
     extern option_struct       options;
     extern parameters_struct   param;
-    size_t                     j;
+    extern size_t              NF;
+    extern size_t              NR;
 
     // Initialize structures
     initialize_global_structures();
@@ -66,115 +54,21 @@ vic_start(void)
         // Read the global parameter file
         filep.globalparam = open_file(filenames.global, "r");
         get_global_param(filep.globalparam);
-    }
-
-    status = MPI_Bcast(&filenames, 1, mpi_filenames_struct_type,
-                       VIC_MPI_ROOT, MPI_COMM_VIC);
-    check_mpi_status(status, "MPI error.");
-
-    // Set Log Destination
-    setup_logging(mpi_rank, filenames.log_path, &(filep.logfile));
-
-    if (mpi_rank == VIC_MPI_ROOT) {
-        // set model constants
+        fclose(filep.globalparam);
+        validate_global_param();
+        
+        // Read the model constants
         if (strcasecmp(filenames.constants, "MISSING")) {
             filep.constants = open_file(filenames.constants, "r");
             get_parameters(filep.constants);
             fclose(filep.constants);
+            validate_parameters();
         }
-
-        // open parameter file
-        status = nc_open(filenames.params.nc_filename, NC_NOWRITE,
-                         &(filenames.params.nc_id));
-        check_nc_status(status, "Error opening %s",
-                        filenames.params.nc_filename);
-        // open domain file
-        status = nc_open(filenames.domain.nc_filename, NC_NOWRITE,
-                         &(filenames.domain.nc_id));
-        check_nc_status(status, "Error opening %s",
-                        filenames.domain.nc_filename);
-        // read domain info
-        get_global_domain(&(filenames.domain), &(filenames.params),
-                          &global_domain);
-        // close domain file
-        status = nc_close(filenames.domain.nc_id);
-        check_nc_status(status, "Error closing %s",
-                        filenames.domain.nc_filename);
-
-        // add the number of vegetation type to the location info in the
-        // global domain struct. This just makes life easier
-        add_nveg_to_global_domain(&(filenames.params), &global_domain);
-        // add the number of elevation bands to the location info in the
-        // global domain struct. This just makes life easier
-        add_nelev_to_global_domain(&(filenames.params), &global_domain);
-
-        // get the indices for the active cells (used in reading and writing)
-        filter_active_cells = malloc(global_domain.ncells_active *
-                                     sizeof(*filter_active_cells));
-        check_alloc_status(filter_active_cells, "Memory allocation error");
-
-        j = 0;
-        for (i = 0; i < global_domain.ncells_total; i++) {
-            if (global_domain.locations[i].run) {
-                filter_active_cells[j] = global_domain.locations[i].io_idx;
-                j++;
-            }
-        }
-        if (mpi_decomposition == MPI_DECOMPOSITION_RANDOM) {
-            // decompose the mask
-            mpi_map_decomp_domain(global_domain.ncells_active, mpi_size,
-                                  &mpi_map_local_array_sizes,
-                                  &mpi_map_global_array_offsets,
-                                  &mpi_map_mapping_array);
-        }
-        else if (mpi_decomposition == MPI_DECOMPOSITION_BASIN) {
-            // decompose the mask
-            mpi_map_decomp_domain_basin(global_domain.ncells_active, mpi_size,
-                                        &mpi_map_local_array_sizes,
-                                        &mpi_map_global_array_offsets,
-                                        &mpi_map_mapping_array);
-        }
-        else if (mpi_decomposition == MPI_DECOMPOSITION_FILE) {
-            // decompose the mask
-            mpi_map_decomp_domain_file(global_domain.ncells_active, mpi_size,
-                                       &mpi_map_local_array_sizes,
-                                       &mpi_map_global_array_offsets,
-                                       &mpi_map_mapping_array);
-        }
-        else {
-            log_err("Unknown mpi decomposition method");
-        }
-
-        for (i = 0; i < (size_t)mpi_size; i++) {
-            log_info(
-                "Mpi decomposition size %d (%.3f) [node %zu]",
-                mpi_map_local_array_sizes[i],
-                ((float)mpi_map_local_array_sizes[i] /
-                      (float)global_domain.ncells_active),
-                i);
-        }
-        for (i = 0; i < (size_t)mpi_size; i++) {
-            if (mpi_map_local_array_sizes[i] <= 0) {
-                log_err(
-                    "Mpi decomposition size node %zu <= 0; please check your decomposition method",
-                    i);
-            }
-        }
-
-        // get dimensions (number of vegetation types, soil zones, etc)
-        options.ROOT_ZONES = get_nc_dimension(&(filenames.params), "root_zone");
-        options.Nlayer = get_nc_dimension(&(filenames.params), "nlayer");
-        options.NVEGTYPES = get_nc_dimension(&(filenames.params), "veg_class");
-        if (options.ELEV_BAND == SNOW_BAND_TRUE_BUT_UNSET) {
-            options.ELEV_BAND = get_nc_dimension(&(filenames.params),
-                                                 "snow_band");
-        }
-        if (options.LAKES) {
-            options.NLAKENODES = get_nc_dimension(&(filenames.params),
-                                                  "lake_node");
-        }
-
-        // plugins
+        
+        // Start all non specific VIC structures
+        start_general();
+        
+        // Start all plugins
         if (options.ROUTING) {
             rout_start();
         }
@@ -184,23 +78,9 @@ vic_start(void)
         if (options.IRRIGATION) {
             irr_start();
         }
-
-        // Check that model parameters are valid
-        validate_parameters();
     }
 
-    // broadcast global, option, param structures as well as global valies
-    // such as NF and NR
-    status = MPI_Bcast(&NF, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
-    check_mpi_status(status, "MPI error.");
-
-    status = MPI_Bcast(&NR, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
-    check_mpi_status(status, "MPI error.");
-
-    status = MPI_Bcast(&mpi_decomposition, 1, MPI_INT, VIC_MPI_ROOT,
-                       MPI_COMM_VIC);
-    check_mpi_status(status, "MPI error.");
-
+    // broadcast option, filenames, global_param and param structures
     status = MPI_Bcast(&global_param, 1, mpi_global_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
@@ -212,74 +92,18 @@ vic_start(void)
     status = MPI_Bcast(&param, 1, mpi_param_struct_type,
                        VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-
-    // setup the local domain_structs
-
-    // First scatter the array sizes
-    status = MPI_Scatter(mpi_map_local_array_sizes, 1, MPI_INT,
-                         &local_ncells_active, 1, MPI_INT, VIC_MPI_ROOT,
-                         MPI_COMM_VIC);
-    local_domain.ncells_active = (size_t) local_ncells_active;
+    
+    status = MPI_Bcast(&filenames, 1, mpi_filenames_struct_type,
+                       VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
 
-    // Allocate memory for the local locations
-    local_domain.locations = malloc(local_domain.ncells_active *
-                                    sizeof(*local_domain.locations));
-    if (local_domain.locations == NULL) {
-        log_err("malloc error");
-    }
-    for (i = 0; i < local_domain.ncells_active; i++) {
-        initialize_location(&(local_domain.locations[i]));
-    }
-
-    // map the location vector to a temporary array so they can be scattered
-    if (mpi_rank == VIC_MPI_ROOT) {
-        mapped_locations = malloc(global_domain.ncells_active *
-                                  sizeof(*mapped_locations));
-        if (mapped_locations == NULL) {
-            log_err("malloc error");
-        }
-        for (i = 0; i < global_domain.ncells_active; i++) {
-            initialize_location(&(mapped_locations[i]));
-        }
-
-        active_locations = (location_struct *) malloc(
-            global_domain.ncells_active * sizeof(location_struct));
-        if (active_locations == NULL) {
-            log_err("malloc error");
-        }
-        for (i = 0; i < global_domain.ncells_active; i++) {
-            initialize_location(&(active_locations[i]));
-        }
-
-        for (i = 0, j = 0; i < global_domain.ncells_total; i++) {
-            if (global_domain.locations[i].run) {
-                active_locations[j] = global_domain.locations[i];
-                j++;
-            }
-        }
-
-        map(sizeof(location_struct), global_domain.ncells_active,
-            mpi_map_mapping_array, NULL, active_locations,
-            mapped_locations);
-    }
-
-    // Scatter the locations
-    status = MPI_Scatterv(mapped_locations, mpi_map_local_array_sizes,
-                          mpi_map_global_array_offsets,
-                          mpi_location_struct_type,
-                          local_domain.locations, local_domain.ncells_active,
-                          mpi_location_struct_type,
-                          VIC_MPI_ROOT, MPI_COMM_VIC);
+    // broadcast global values such as NF and NR
+    status = MPI_Bcast(&NF, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
     check_mpi_status(status, "MPI error.");
-    // Set the local index value
-    for (i = 0; i < (size_t) local_domain.ncells_active; i++) {
-        local_domain.locations[i].local_idx = i;
-    }
 
-    // cleanup
-    if (mpi_rank == VIC_MPI_ROOT) {
-        free(mapped_locations);
-        free(active_locations);
-    }
+    status = MPI_Bcast(&NR, 1, MPI_UNSIGNED_LONG, VIC_MPI_ROOT, MPI_COMM_VIC);
+    check_mpi_status(status, "MPI error.");
+
+    // Set Log Destination
+    setup_logging(mpi_rank, filenames.log_path, &(filep.logfile));
 }

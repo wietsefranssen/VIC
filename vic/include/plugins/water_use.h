@@ -46,6 +46,7 @@ typedef struct {
 
 bool wu_get_global_parameters(char *cmdstr);
 void wu_validate_global_parameters(void);
+void wu_validate_domain(void);
 void wu_alloc(void);
 void initialize_wu_local_structures(void);
 void wu_set_output_meta_data_info(void);

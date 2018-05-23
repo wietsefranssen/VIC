@@ -1,7 +1,7 @@
 /******************************************************************************
  * @section DESCRIPTION
  *
- * Initialize model parameters
+ * Read atmospheric forcing data.
  *
  * @section LICENSE
  *
@@ -27,41 +27,18 @@
 #include <vic.h>
 
 /******************************************************************************
- * @brief    Initialize model parameters
+ * @brief    Read atmospheric forcing data.
  *****************************************************************************/
 void
-vic_init(void)
+vic_force(void)
 {
     extern option_struct options;
-
-    // Initialize all non specific VIC structures
-    init_general();
     
-    // Initialize all plugins
-    if (options.ROUTING_RVIC) {
-        routing_rvic_init();
-    }
-    if (options.DAMS) {
-        initialize_dam_local_structures();
-        dam_init();
-    }
-    if (options.ROUTING) {
-        initialize_rout_local_structures();
-        rout_init();
-    }
-    if (options.EFR) {
-        initialize_efr_local_structures();
-    }
-    if (options.WATER_USE) {
-        initialize_wu_local_structures();
-    }
-    if (options.IRRIGATION) {
-        irr_alloc();
-        initialize_irr_local_structures();
-        irr_init();
-    }
-    if (options.GROUNDWATER) {
-        initialize_gw_local_structures();
-        gw_init();
+    // Force all non specific VIC structures
+    force_general();
+    
+    // Force all plugins
+    if(options.WATER_USE){
+        wu_force();
     }
 }

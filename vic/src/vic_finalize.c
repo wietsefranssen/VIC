@@ -34,7 +34,7 @@ vic_finalize(void)
 {
     extern option_struct options;
 
-    // finalize routing
+    // Free memory for all plugins
     if (options.ROUTING_RVIC) {
         routing_rvic_finalize();
     }

@@ -31,7 +31,6 @@
  *****************************************************************************/
 size_t
 get_global_domain(nameid_struct *domain_nc_nameid,
-                  nameid_struct *param_nc_nameid,
                   domain_struct *global_domain)
 {
     int    *mask = NULL;
@@ -121,10 +120,6 @@ get_global_domain(nameid_struct *domain_nc_nameid,
 
     // get lat and lon coordinates
     get_nc_latlon(domain_nc_nameid, global_domain);
-
-    // check whether lat and lon coordinates in the parameter file match those
-    // in the domain file
-    compare_ncdomain_with_global_domain(param_nc_nameid);
 
     // free memory
     free(var);

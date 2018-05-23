@@ -108,6 +108,9 @@ main(int    argc,
 
     // read global parameters
     vic_start();
+    
+    // decompose domains
+    vic_domain();
 
     // allocate memory
     vic_alloc();
@@ -144,13 +147,10 @@ main(int    argc,
         // read forcing data
         timer_continue(&(global_timers[TIMER_VIC_FORCE]));
         vic_force();
-        if (options.WATER_USE) {
-            wu_force();
-        }
         timer_stop(&(global_timers[TIMER_VIC_FORCE]));
 
         // run vic over the domain
-        vic_image_run(&(dmy[current]));
+        vic_run(&(dmy[current]));
 
         // Write history files
         timer_continue(&(global_timers[TIMER_VIC_WRITE]));

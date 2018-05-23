@@ -30,7 +30,7 @@
  * @brief    Read atmospheric forcing data.
  *****************************************************************************/
 void
-vic_force(void)
+force_general(void)
 {
     extern size_t              NF;
     extern size_t              NR;

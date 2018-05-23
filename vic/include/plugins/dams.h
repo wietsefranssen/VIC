@@ -49,6 +49,7 @@ typedef struct {
 bool dam_get_global_parameters(char *cmdstr);
 void dam_validate_global_parameters(void);
 void dam_start(void);
+void dam_validate_domain(void);
 void dam_alloc(void);
 void initialize_dam_local_structures(void);
 void dam_init(void);

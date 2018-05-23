@@ -30,7 +30,7 @@
  * @brief    Run VIC for one timestep and store output data
  *****************************************************************************/
 void
-vic_image_run(dmy_struct *dmy_current)
+vic_run(dmy_struct *dmy_current)
 {
     extern size_t              current;
     extern all_vars_struct    *all_vars;
@@ -75,13 +75,13 @@ vic_image_run(dmy_struct *dmy_current)
 
         timer_start(&timer);
         if (options.GROUNDWATER) {
-            vic_run_gw(&(force[i]), &(all_vars[i]), gw_var[i],
+            run_gw_general(&(force[i]), &(all_vars[i]), gw_var[i],
                        dmy_current, &global_param,
                        &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i],
                        &(gw_con[i]));
         }
         else {
-            vic_run(&(force[i]), &(all_vars[i]),
+            run_general(&(force[i]), &(all_vars[i]),
                     dmy_current, &global_param,
                     &lake_con, &(soil_con[i]), veg_con[i], veg_lib[i]);
         }
