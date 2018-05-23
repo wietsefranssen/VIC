@@ -39,6 +39,7 @@ vic_restore(void)
     extern domain_struct       local_domain;
     extern option_struct       options;
     extern veg_con_map_struct *veg_con_map;
+    extern elev_con_map_struct *elev_con_map;
     extern filenames_struct    filenames;
     extern metadata_struct    *state_metadata;
 
@@ -141,7 +142,7 @@ vic_restore(void)
                     d5start, d5count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].cell[v][k].layer[j].moist = dvar[i];
                     }
                 }
@@ -165,7 +166,7 @@ vic_restore(void)
                         d6start, d6count, dvar);
                     for (i = 0; i < local_domain.ncells_active; i++) {
                         v = veg_con_map[i].vidx[m];
-                        if (v >= 0) {
+                        if (v >= 0 && k < elev_con_map[i].ne_active) {
                             all_vars[i].cell[v][k].layer[j].ice[p] = dvar[i];
                         }
                     }
@@ -186,7 +187,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].veg_var[v][k].Wdew = dvar[i];
                 }
             }
@@ -206,7 +207,7 @@ vic_restore(void)
                     d4start, d4count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].veg_var[v][k].AnnualNPP = dvar[i];
                     }
                 }
@@ -225,7 +226,7 @@ vic_restore(void)
                     d4start, d4count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].veg_var[v][k].AnnualNPPPrev = dvar[i];
                     }
                 }
@@ -244,7 +245,7 @@ vic_restore(void)
                     d4start, d4count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].cell[v][k].CLitter = dvar[i];
                     }
                 }
@@ -263,7 +264,7 @@ vic_restore(void)
                     d4start, d4count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].cell[v][k].CInter = dvar[i];
                     }
                 }
@@ -280,7 +281,7 @@ vic_restore(void)
                                             d4start, d4count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].cell[v][k].CSlow = dvar[i];
                     }
                 }
@@ -298,7 +299,7 @@ vic_restore(void)
                                      d4start, d4count, ivar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].last_snow = ivar[i];
                 }
             }
@@ -317,7 +318,7 @@ vic_restore(void)
                 d4start, d4count, ivar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].MELTING = ivar[i];
                 }
             }
@@ -336,7 +337,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].coverage = dvar[i];
                 }
             }
@@ -356,7 +357,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].swq = dvar[i];
                 }
             }
@@ -375,7 +376,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].surf_temp = dvar[i];
                 }
             }
@@ -394,7 +395,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].surf_water = dvar[i];
                 }
             }
@@ -413,7 +414,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].pack_temp = dvar[i];
                 }
             }
@@ -432,7 +433,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].pack_water = dvar[i];
                 }
             }
@@ -451,7 +452,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].density = dvar[i];
                 }
             }
@@ -470,7 +471,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].coldcontent = dvar[i];
                 }
             }
@@ -489,7 +490,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].snow[v][k].snow_canopy = dvar[i];
                 }
             }
@@ -518,7 +519,7 @@ vic_restore(void)
                     d5start, d5count, dvar);
                 for (i = 0; i < local_domain.ncells_active; i++) {
                     v = veg_con_map[i].vidx[m];
-                    if (v >= 0) {
+                    if (v >= 0 && k < elev_con_map[i].ne_active) {
                         all_vars[i].energy[v][k].T[j] = dvar[i];
                     }
                 }
@@ -537,7 +538,7 @@ vic_restore(void)
                                         d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].energy[v][k].Tfoliage = dvar[i];
                 }
             }
@@ -556,7 +557,7 @@ vic_restore(void)
                                         d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].energy[v][k].LongUnderOut = dvar[i];
                 }
             }
@@ -576,7 +577,7 @@ vic_restore(void)
                 d4start, d4count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
                 v = veg_con_map[i].vidx[m];
-                if (v >= 0) {
+                if (v >= 0 && k < elev_con_map[i].ne_active) {
                     all_vars[i].energy[v][k].snow_flux = dvar[i];
                 }
             }

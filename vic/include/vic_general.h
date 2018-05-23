@@ -451,24 +451,6 @@ enum timers
 };
 
 /******************************************************************************
- * @brief    Stores forcing file input information.
- *****************************************************************************/
-typedef struct {
-    bool SUPPLIED;
-    char varname[MAXSTRING];
-} force_type_struct;
-
-/******************************************************************************
- * @brief    This structure records the parameters set by the forcing file
-             input routines.  Those filled, are used to estimate the paramters
-             needed for the model run in initialize_atmos.c.
- *****************************************************************************/
-typedef struct {
-    force_type_struct TYPE[N_FORCING_TYPES];
-    size_t force_steps_per_day[N_FORCING_TYPES];    /**< forcing file timesteps per day */
-} param_set_struct;
-
-/******************************************************************************
  * @brief   This structure stores alarm information
  *****************************************************************************/
 typedef struct {
@@ -792,7 +774,6 @@ void initialize_energy(energy_bal_struct **energy, size_t nveg, size_t nelev);
 void initialize_global(void);
 void initialize_options(void);
 void initialize_parameters(void);
-void initialize_param_set(void);
 void initialize_save_data(all_vars_struct *all_vars, force_data_struct *force,
                           soil_con_struct *soil_con, veg_con_struct *veg_con,
                           veg_lib_struct *veg_lib,
@@ -829,7 +810,6 @@ void print_alarm(alarm_struct *alarm);
 void print_cell_data(cell_data_struct *cell, size_t nlayers, size_t nfrost);
 void print_dmy(dmy_struct *dmy);
 void print_energy_bal(energy_bal_struct *eb, size_t nnodes, size_t nfronts);
-void print_force_type(force_type_struct *force_type);
 void print_global_param(global_param_struct *gp);
 void print_lake_con(lake_con_struct *lcon, size_t nlnodes);
 void print_lake_var(lake_var_struct *lvar, size_t nlnodes, size_t nfronts,
@@ -842,7 +822,6 @@ void print_option(option_struct *option);
 void print_out_data(double **out_data, metadata_struct *metadata);
 void print_out_metadata(metadata_struct *metadata, size_t nvars);
 void print_output_streams(stream_struct *outf);
-void print_param_set(param_set_struct *param_set);
 void print_parameters(parameters_struct *param);
 void print_save_data(save_data_struct *save);
 void print_snow_data(snow_data_struct *snow);
@@ -1011,7 +990,7 @@ void validate_global_param(void);
 
 bool check_save_state_flag(size_t, dmy_struct *dmy_offset);
 void display_current_settings(int);
-void get_forcing_file_info(param_set_struct *param_set, size_t file_num);
+void get_forcing_file_info(size_t file_num);
 void vic_populate_model_state(dmy_struct *dmy_current);
 
 void cshift(double *, int, int, int, int);

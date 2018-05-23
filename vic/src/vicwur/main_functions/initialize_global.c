@@ -57,6 +57,10 @@ initialize_global()
     global_param.resolution = MISSING;
     global_param.wind_h = 10.0;
     for (i = 0; i < N_FORCING_TYPES; i++) {
+        global_param.force_dt[i] = MISSING;
+        global_param.force_steps_per_day[i] = 0;
+        global_param.forcesupplied[i] = false;
+        strcpy(global_param.forcevarname[i], "MISSING");
         global_param.forceyear[i] = 0;
         global_param.forcemonth[i] = 1;
         global_param.forceday[i] = 1;

@@ -54,7 +54,6 @@ int                 mpi_size;
 int                 mpi_decomposition;
 option_struct       options;
 parameters_struct   param;
-param_set_struct    param_set;
 soil_con_struct    *soil_con = NULL;
 veg_con_map_struct *veg_con_map = NULL;
 veg_con_struct    **veg_con = NULL;

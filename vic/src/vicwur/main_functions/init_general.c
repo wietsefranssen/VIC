@@ -983,7 +983,9 @@ init_general(void)
             get_scatter_nc_field_double(&(filenames.params), "AreaFract",
                                         d3start, d3count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
-                soil_con[i].AreaFract[j] = (double) dvar[i];
+                if(j < elev_con_map[i].ne_active){
+                    soil_con[i].AreaFract[j] = (double) dvar[i];
+                }
             }
         }
         // elevation: elevation of each snow band
@@ -992,7 +994,9 @@ init_general(void)
             get_scatter_nc_field_double(&(filenames.params), "elevation",
                                         d3start, d3count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
-                soil_con[i].BandElev[j] = (double) dvar[i];
+                if(j < elev_con_map[i].ne_active){
+                    soil_con[i].BandElev[j] = (double) dvar[i];
+                }
             }
         }
         // Pfactor: precipitation multiplier for each snow band
@@ -1001,7 +1005,9 @@ init_general(void)
             get_scatter_nc_field_double(&(filenames.params), "Pfactor",
                                         d3start, d3count, dvar);
             for (i = 0; i < local_domain.ncells_active; i++) {
-                soil_con[i].Pfactor[j] = (double) dvar[i];
+                if(j < elev_con_map[i].ne_active){
+                    soil_con[i].Pfactor[j] = (double) dvar[i];
+                }
             }
         }
         // Run some checks and corrections for soil
@@ -1014,7 +1020,7 @@ init_general(void)
         for (i = 0; i < local_domain.ncells_active; i++) {
             // Make sure area fractions are positive and add to 1
             sum = 0.;
-            for (j = 0; j < options.ELEV_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 if (soil_con[i].AreaFract[j] < 0) {
                     sprint_location(locstr, &(local_domain.locations[i]));
                     log_err("Negative snow band area fraction (%f) read from "
@@ -1040,7 +1046,7 @@ init_general(void)
             // check that the mean elevation from the elevation bands matches 
             // the grid cell mean elevation. If not reset mean
             mean = 0.;
-            for (j = 0; j < options.ELEV_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 mean += soil_con[i].BandElev[j] * soil_con[i].AreaFract[j];
             }
             if (!assert_close_double(soil_con[i].elevation, mean, 0.,
@@ -1052,7 +1058,7 @@ init_general(void)
                 soil_con[i].elevation = (double)mean;
             }
             // Tfactor: calculate the temperature factor
-            for (j = 0; j < options.ELEV_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 // TBD: Ensure that Tlapse is implemented consistently
                 soil_con[i].Tfactor[j] = (soil_con[i].BandElev[j] -
                                           soil_con[i].elevation) *
@@ -1062,7 +1068,7 @@ init_general(void)
             // from file
             // TBD: Ensure that netCDF variable is appropriately named
             sum = 0.;
-            for (j = 0; j < options.ELEV_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 if (soil_con[i].Pfactor[j] < 0.) {
                     sprint_location(locstr, &(local_domain.locations[i]));
                     log_err("Snow band precipitation fraction (%f) "
@@ -1091,7 +1097,7 @@ init_general(void)
                 }
             }
             // Pfactor: convert precipitation fraction to Pfactor
-            for (j = 0; j < options.ELEV_BAND; j++) {
+            for (j = 0; j < elev_con_map[i].ne_active; j++) {
                 if (soil_con[i].AreaFract[j] > 0) {
                     soil_con[i].Pfactor[j] /= soil_con[i].AreaFract[j];
                 }

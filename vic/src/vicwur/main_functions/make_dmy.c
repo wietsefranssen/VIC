@@ -34,7 +34,7 @@
 dmy_struct *
 make_dmy(global_param_struct *global)
 {
-    extern param_set_struct param_set;
+    extern global_param_struct global_param;
 
     dmy_struct             *temp;
     dmy_struct              start_dmy, end_dmy, force_dmy;
@@ -86,7 +86,7 @@ make_dmy(global_param_struct *global)
 
     /** Determine number of forcing records to skip before model start time **/
     for (i = 0; i < N_FORCING_TYPES; i++) {
-        if (param_set.force_steps_per_day[i] != 0) {
+        if (global_param.force_steps_per_day[i] != 0) {
             force_dmy.dayseconds = global->forcesec[i];
             force_dmy.year = global->forceyear[i];
             force_dmy.day = global->forceday[i];
@@ -97,7 +97,7 @@ make_dmy(global_param_struct *global)
 
             global->forceskip[i] =
                 (unsigned int) round((start_num - force_num) *
-                                     (double) param_set.force_steps_per_day[i]);
+                                     (double) global_param.force_steps_per_day[i]);
         }
     }
 
