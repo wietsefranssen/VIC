@@ -100,7 +100,7 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
     MPI_Datatype   *mpi_types;
 
     // nitems has to equal the number of elements in global_param_struct
-    nitems = 32;
+    nitems = 36;
     blocklengths = malloc(nitems * sizeof(*blocklengths));
     check_alloc_status(blocklengths, "Memory allocation error.");
 
@@ -142,6 +142,11 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
     // double atmos_dt;
     offsets[i] = offsetof(global_param_struct, atmos_dt);
     mpi_types[i++] = MPI_DOUBLE;
+        
+    // double force_dt[N_FORCING_TYPES];
+    offsets[i] = offsetof(global_param_struct, forceday);
+    blocklengths[i] = N_FORCING_TYPES;
+    mpi_types[i++] = MPI_DOUBLE;
 
     // size_t model_steps_per_day;
     offsets[i] = offsetof(global_param_struct, model_steps_per_day);
@@ -158,6 +163,11 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
     // size_t atmos_steps_per_day;
     offsets[i] = offsetof(global_param_struct, atmos_steps_per_day);
     mpi_types[i++] = MPI_AINT;
+    
+    // size_t force_steps_per_day[N_FORCING_TYPES];
+    offsets[i] = offsetof(global_param_struct, force_steps_per_day);
+    blocklengths[i] = N_FORCING_TYPES;
+    mpi_types[i++] = MPI_DOUBLE;
 
     // unsigned short endday;
     offsets[i] = offsetof(global_param_struct, endday);
@@ -171,32 +181,42 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
     offsets[i] = offsetof(global_param_struct, endyear);
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
-    // unsigned short forceday[2];
+    // unsigned short forcesupplied[N_FORCING_TYPES];
+    offsets[i] = offsetof(global_param_struct, forcesupplied);
+    blocklengths[i] = N_FORCING_TYPES;
+    mpi_types[i++] = MPI_C_BOOL;
+    
+    // unsigned short forcevarname[N_FORCING_TYPES];
+    offsets[i] = offsetof(global_param_struct, forcevarname);
+    blocklengths[i] = N_FORCING_TYPES * MAXSTRING;
+    mpi_types[i++] = MPI_CHAR;
+    
+    // unsigned short forceday[N_FORCING_TYPES];
     offsets[i] = offsetof(global_param_struct, forceday);
     blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
-    // unsigned int forcesec[2];
+    // unsigned int forcesec[N_FORCING_TYPES];
     offsets[i] = offsetof(global_param_struct, forcesec);
     blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED;
 
-    // unsigned short forcemonth[2];
+    // unsigned short forcemonth[N_FORCING_TYPES];
     offsets[i] = offsetof(global_param_struct, forcemonth);
     blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
-    // unsigned short forceoffset[2];
+    // unsigned short forceoffset[N_FORCING_TYPES];
     offsets[i] = offsetof(global_param_struct, forceoffset);
     blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
-    // unsigned int forceskip[2];
+    // unsigned int forceskip[N_FORCING_TYPES];
     offsets[i] = offsetof(global_param_struct, forceskip);
     blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED;
 
-    // unsigned short int forceyear[2];
+    // unsigned short int forceyear[N_FORCING_TYPES];
     offsets[i] = offsetof(global_param_struct, forceyear);
     blocklengths[i] = N_FORCING_TYPES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;

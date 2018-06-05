@@ -34,7 +34,7 @@
 void
 set_force_type(char *cmdstr)
 {
-    extern param_set_struct param_set;
+    extern global_param_struct global_param;
     extern filenames_struct filenames;
 
     char                    optstr[MAXSTRING];
@@ -135,6 +135,6 @@ set_force_type(char *cmdstr)
     }
 
     strcpy(filenames.f_path_pfx[type], ncvarfile);
-    strcpy(param_set.TYPE[type].varname, ncvarname);
-    param_set.TYPE[type].SUPPLIED = true;
+    strcpy(global_param.forcevarname[type], ncvarname);
+    global_param.forcesupplied[type] = true;
 }

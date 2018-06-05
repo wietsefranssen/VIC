@@ -32,7 +32,6 @@
 void
 initialize_soil_con(soil_con_struct *soil_con)
 {
-    extern option_struct options;
     size_t               i;
     size_t               j;
 
@@ -103,7 +102,7 @@ initialize_soil_con(soil_con_struct *soil_con)
         soil_con->frost_fract[i] = 0.;
     }
 
-    for (i = 0; i < options.ELEV_BAND; i++) {
+    for (i = 0; i < soil_con->elev_band_num; i++) {
         soil_con->AboveTreeLine[i] = false;
         soil_con->BandElev[i] = 0.;
         soil_con->AreaFract[i] = 1.;
@@ -180,7 +179,6 @@ initialize_global_structures(void)
     mpi_decomposition = MPI_DECOMPOSITION_RANDOM;
 
     if (mpi_rank == VIC_MPI_ROOT) {
-        initialize_param_set();
         initialize_options();
         initialize_global();
         initialize_parameters();

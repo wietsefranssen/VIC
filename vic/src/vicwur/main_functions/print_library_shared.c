@@ -232,16 +232,6 @@ print_energy_bal(energy_bal_struct *eb,
 }
 
 /******************************************************************************
- * @brief    Print forcing type structure.
- *****************************************************************************/
-void
-print_force_type(force_type_struct *force_type)
-{
-    fprintf(LOG_DEST, "force_type %s:\n", force_type->varname);
-    fprintf(LOG_DEST, "\tSUPPLIED  : %d\n", force_type->SUPPLIED);
-}
-
-/******************************************************************************
  * @brief    Print global parameters structure.
  *****************************************************************************/
 void
@@ -263,15 +253,20 @@ print_global_param(global_param_struct *gp)
     fprintf(LOG_DEST, "\tendmonth            : %hu\n", gp->endmonth);
     fprintf(LOG_DEST, "\tendyear             : %hu\n", gp->endyear);
     for (i = 0; i < N_FORCING_TYPES; i++) {
-        fprintf(LOG_DEST, "\tforceday[%zd]        : %hu\n", i, gp->forceday[i]);
-        fprintf(LOG_DEST, "\tforcesec[%zd]        : %u\n", i, gp->forcesec[i]);
-        fprintf(LOG_DEST, "\tforcemonth[%zd]      : %hu\n", i,
-                gp->forcemonth[i]);
-        fprintf(LOG_DEST, "\tforceoffset[%zd]     : %hu\n", i,
-                gp->forceoffset[i]);
-        fprintf(LOG_DEST, "\tforceskip[%zd]       : %u\n", i, gp->forceskip[i]);
-        fprintf(LOG_DEST, "\tforceyear[%zd]       : %hu\n", i,
-                gp->forceyear[i]);
+        if(gp->forcesupplied[i]){
+            fprintf(LOG_DEST, "\tforcevarname         : %s\n", gp->forcevarname[i]);
+            fprintf(LOG_DEST, "\tforce_dt             : %.4f\n", gp->force_dt[i]);
+            fprintf(LOG_DEST, "\tforce_steps_per_day  : %zu\n", gp->force_steps_per_day[i]);
+            fprintf(LOG_DEST, "\tforceday[%zd]        : %hu\n", i, gp->forceday[i]);
+            fprintf(LOG_DEST, "\tforcesec[%zd]        : %u\n", i, gp->forcesec[i]);
+            fprintf(LOG_DEST, "\tforcemonth[%zd]      : %hu\n", i,
+                    gp->forcemonth[i]);
+            fprintf(LOG_DEST, "\tforceoffset[%zd]     : %hu\n", i,
+                    gp->forceoffset[i]);
+            fprintf(LOG_DEST, "\tforceskip[%zd]       : %u\n", i, gp->forceskip[i]);
+            fprintf(LOG_DEST, "\tforceyear[%zd]       : %hu\n", i,
+                    gp->forceyear[i]);
+        }
     }
     fprintf(LOG_DEST, "\tnrecs               : %zu\n", gp->nrecs);
     fprintf(LOG_DEST, "\tstartday            : %hu\n", gp->startday);
@@ -508,7 +503,7 @@ print_option(option_struct *option)
     fprintf(LOG_DEST, "\tSHARE_LAYER_MOIST    : %s\n",
             option->SHARE_LAYER_MOIST ? "true" : "false");
     fprintf(LOG_DEST, "\tSNOW_DENSITY         : %d\n", option->SNOW_DENSITY);
-    fprintf(LOG_DEST, "\tSNOW_BAND            : %zu\n", option->ELEV_BAND);
+    fprintf(LOG_DEST, "\tELEV_BAND            : %zu\n", option->ELEV_BAND);
     fprintf(LOG_DEST, "\tSPATIAL_FROST        : %s\n",
             option->SPATIAL_FROST ? "true" : "false");
     fprintf(LOG_DEST, "\tSPATIAL_SNOW         : %s\n",
@@ -641,22 +636,6 @@ print_out_metadata(metadata_struct *metadata,
         fprintf(LOG_DEST, "\t\tnelem: %zu\n", metadata[i].nelem);
     }
     fprintf(LOG_DEST, "\n");
-}
-
-/******************************************************************************
- * @brief    print param set structure.
- *****************************************************************************/
-void
-print_param_set(param_set_struct *param_set)
-{
-    size_t i;
-
-    fprintf(LOG_DEST, "param_set:\n");
-    for (i = 0; i < N_FORCING_TYPES; i++) {
-        print_force_type(&(param_set->TYPE[i]));
-        fprintf(LOG_DEST, "\force_steps_per_day : %zu\n",
-                param_set->force_steps_per_day[i]);
-    }
 }
 
 /******************************************************************************
