@@ -37,18 +37,11 @@ get_global_param(FILE *gp)
     extern option_struct       options;
     extern global_param_struct global_param;
     extern filenames_struct    filenames;
-    extern size_t              NF, NR;
 
     char                       cmdstr[MAXSTRING];
     char                       optstr[MAXSTRING];
     char                       flgstr[MAXSTRING];
     char                       flgstr2[MAXSTRING];
-    int                        status;
-    unsigned int               tmpstartdate;
-    unsigned int               tmpenddate;
-    unsigned short int         lastday[MONTHS_PER_YEAR];
-
-    size_t                     i;
 
     /** Read through global control file to find parameters **/
 
@@ -550,29 +543,27 @@ get_global_param(FILE *gp)
         }
         fgets(cmdstr, MAXSTRING, gp);
     }
+}
 
+void
+validate_global_param(void)
+{
+    extern option_struct       options;
+    extern global_param_struct global_param;
+    extern filenames_struct    filenames;
+    extern size_t              NF, NR;
+
+    char                       flgstr2[MAXSTRING];
+    int                        status;
+    unsigned int               tmpstartdate;
+    unsigned int               tmpenddate;
+    unsigned short int         lastday[MONTHS_PER_YEAR];
+
+    size_t                     i;
+    
     /******************************************
        Check for undefined required parameters
     ******************************************/
-    if (options.DAMS) {
-        dam_validate_global_parameters();
-    }
-    if (options.ROUTING) {
-        rout_validate_global_parameters();
-    }
-    if (options.EFR) {
-        efr_validate_global_parameters();
-    }
-    if (options.WATER_USE) {
-        wu_validate_global_parameters();
-    }
-    if (options.IRRIGATION) {
-        irr_validate_global_parameters();
-    }
-    if (options.GROUNDWATER) {
-        gw_validate_global_parameters();
-    }
-
     // Validate model time step
     if (global_param.model_steps_per_day == 0) {
         log_err("Model time steps per day has not been defined.  Make sure "
@@ -1021,6 +1012,25 @@ get_global_param(FILE *gp)
     // Default file formats (if unset)
     if (options.SAVE_STATE && options.STATE_FORMAT == UNSET_FILE_FORMAT) {
         options.STATE_FORMAT = NETCDF4_CLASSIC;
+    }
+    
+    if (options.DAMS) {
+        dam_validate_global_parameters();
+    }
+    if (options.ROUTING) {
+        rout_validate_global_parameters();
+    }
+    if (options.EFR) {
+        efr_validate_global_parameters();
+    }
+    if (options.WATER_USE) {
+        wu_validate_global_parameters();
+    }
+    if (options.IRRIGATION) {
+        irr_validate_global_parameters();
+    }
+    if (options.GROUNDWATER) {
+        gw_validate_global_parameters();
     }
 
     /*********************************

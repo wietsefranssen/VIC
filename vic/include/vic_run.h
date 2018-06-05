@@ -396,11 +396,11 @@ double trapzd(
     double a, double b, int n);
 void tridia(int, double *, double *, double *, double *, double *);
 void tridiag(double *, double *, double *, double *, unsigned int);
-int vic_run(force_data_struct *, all_vars_struct *, dmy_struct *,
+int run_general(force_data_struct *, all_vars_struct *, dmy_struct *,
             global_param_struct *, lake_con_struct *, soil_con_struct *,
             veg_con_struct *,
             veg_lib_struct *);
-int vic_run_gw(force_data_struct *, all_vars_struct *, gw_var_struct **,
+int run_gw_general(force_data_struct *, all_vars_struct *, gw_var_struct **,
                dmy_struct *, global_param_struct *, lake_con_struct *,
                soil_con_struct *,
                veg_con_struct *, veg_lib_struct *,

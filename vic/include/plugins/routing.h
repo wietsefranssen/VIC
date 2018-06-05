@@ -39,6 +39,7 @@ void get_basins_file(basin_struct *basins);
 bool rout_get_global_parameters(char *cmdstr);
 void rout_validate_global_parameters(void);
 void rout_start(void);
+void rout_validate_domain(void);
 void rout_alloc(void);
 void initialize_rout_local_structures(void);
 void rout_init(void);

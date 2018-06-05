@@ -48,6 +48,7 @@ typedef struct {
 bool irr_get_global_parameters(char *cmdstr);
 void irr_validate_global_parameters(void);
 void irr_start(void);
+void irr_validate_domain(void);
 void irr_set_output_meta_data_info(void);
 void irr_set_state_meta_data_info(void);
 void irr_alloc(void);

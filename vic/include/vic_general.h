@@ -894,7 +894,6 @@ void free_force(force_data_struct *force);
 void free_veg_hist(veg_hist_struct *veg_hist);
 void get_domain_type(char *cmdstr);
 size_t get_global_domain(nameid_struct *domain_nc_nameid,
-                         nameid_struct *param_nc_nameid,
                          domain_struct *global_domain);
 void copy_domain_info(domain_struct *domain_from, domain_struct *domain_to);
 void get_nc_latlon(nameid_struct *nc_nameid, domain_struct *nc_domain);
@@ -954,6 +953,14 @@ void set_nc_state_file_info(nc_file_struct *nc_state_file);
 void set_nc_state_var_info(nc_file_struct *nc_state_file);
 void sprint_location(char *str, location_struct *loc);
 
+// start
+void vic_start(void);
+void start_general(void);
+
+// domain
+void vic_domain(void);
+void validate_domain(void);
+
 // allocation
 void vic_alloc(void);
 void alloc_general(void);
@@ -962,25 +969,28 @@ void alloc_general(void);
 void vic_init(void);
 void init_general(void);
 
+// force
+void vic_force(void);
+void force_general(void);
+
 // finalize
 void vic_finalize(void);
 void finalize_general(void);
 
-void vic_image_run(dmy_struct *dmy_current);
+void vic_run(dmy_struct *dmy_current);
 void vic_init_output(dmy_struct *dmy_current);
 void vic_restore(void);
-void vic_start(void);
 void vic_store(dmy_struct *dmy_state, char *state_filename);
 void vic_write(stream_struct *stream, nc_file_struct *nc_hist_file,
                dmy_struct *dmy_current);
 void vic_write_output(dmy_struct *dmy);
 void write_vic_timing_table(timer_struct *timers, char *driver);
 void get_global_param(FILE *);
+void validate_global_param(void);
 
 bool check_save_state_flag(size_t, dmy_struct *dmy_offset);
 void display_current_settings(int);
 void get_forcing_file_info(size_t file_num);
-void vic_force(void);
 void vic_populate_model_state(dmy_struct *dmy_current);
 
 void cshift(double *, int, int, int, int);

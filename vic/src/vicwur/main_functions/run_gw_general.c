@@ -34,14 +34,16 @@ veg_lib_struct *vic_run_veg_lib;
 *               energy and water balance models, as well as frozen soils.
 ******************************************************************************/
 int
-vic_run(force_data_struct   *force,
-        all_vars_struct     *all_vars,
-        dmy_struct          *dmy,
-        global_param_struct *gp,
-        lake_con_struct     *lake_con,
-        soil_con_struct     *soil_con,
-        veg_con_struct      *veg_con,
-        veg_lib_struct      *veg_lib)
+run_gw_general(force_data_struct   *force,
+           all_vars_struct     *all_vars,
+           gw_var_struct      **gw_var,
+           dmy_struct          *dmy,
+           global_param_struct *gp,
+           lake_con_struct     *lake_con,
+           soil_con_struct     *soil_con,
+           veg_con_struct      *veg_con,
+           veg_lib_struct      *veg_lib,
+           gw_con_struct       *gw_con)
 {
     extern option_struct     options;
     extern parameters_struct param;
@@ -93,6 +95,7 @@ vic_run(force_data_struct   *force,
     veg_var_struct          *veg_var;
     energy_bal_struct       *energy;
     snow_data_struct        *snow;
+    gw_var_struct           *groundwater;
 
     Nelev = soil_con->elev_band_num;
     
@@ -237,6 +240,7 @@ vic_run(force_data_struct   *force,
                     veg_var = &(all_vars->veg_var[iveg][band]);
                     snow = &(all_vars->snow[iveg][band]);
                     energy = &(all_vars->energy[iveg][band]);
+                    groundwater = &(gw_var[iveg][band]);
 
                     // Convert LAI from global to local
                     veg_var->LAI /= veg_var->fcanopy;
@@ -321,22 +325,27 @@ vic_run(force_data_struct   *force,
                     sigma_slope = veg_con[iveg].sigma_slope;
                     fetch = veg_con[iveg].fetch;
 
-                    ErrorFlag = surface_fluxes(overstory, bare_albedo,
-                                               ice0, moist0, surf_atten,
-                                               &(Melt[band]), &Le, aero_resist,
-                                               displacement, gauge_correction,
-                                               &out_prec[band],
-                                               &out_rain[band],
-                                               &out_snow[band],
-                                               ref_height, roughness,
-                                               &snow_inflow[band],
-                                               tmp_wind, veg_con[iveg].root,
-                                               options.Nlayer, Nveg, band, dp,
-                                               iveg, veg_class, force, dmy,
-                                               energy, gp, cell, snow,
-                                               soil_con, veg_var, lag_one,
-                                               sigma_slope, fetch,
-                                               veg_con[iveg].CanopLayerBnd);
+                    ErrorFlag = surface_fluxes_gw(overstory, bare_albedo,
+                                                  ice0, moist0, surf_atten,
+                                                  &(Melt[band]), &Le,
+                                                  aero_resist,
+                                                  displacement,
+                                                  gauge_correction,
+                                                  &out_prec[band],
+                                                  &out_rain[band],
+                                                  &out_snow[band],
+                                                  ref_height, roughness,
+                                                  &snow_inflow[band],
+                                                  tmp_wind, veg_con[iveg].root,
+                                                  options.Nlayer, Nveg, band,
+                                                  dp,
+                                                  iveg, veg_class, force, dmy,
+                                                  energy, gp, cell, snow,
+                                                  groundwater,
+                                                  soil_con, gw_con,
+                                                  veg_var, lag_one,
+                                                  sigma_slope, fetch,
+                                                  veg_con[iveg].CanopLayerBnd);
 
                     if (ErrorFlag == ERROR) {
                         return (ERROR);

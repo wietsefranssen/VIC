@@ -38,7 +38,6 @@ finalize_general(void)
     extern force_data_struct  *force;
     extern domain_struct       global_domain;
     extern domain_struct       local_domain;
-    extern filep_struct        filep;
     extern int                *mpi_map_local_array_sizes;
     extern int                *mpi_map_global_array_offsets;
     extern int                 mpi_rank;
@@ -70,21 +69,16 @@ finalize_general(void)
     size_t                     j;
     int                        status;
     extern dmy_struct         *dmy;
-
-    if (mpi_rank == VIC_MPI_ROOT) {
-        // close the global parameter file
-        fclose(filep.globalparam);
-
-        // close the netcdf history file if it is still open
-        for (i = 0; i < options.Noutstreams; i++) {
-            if (nc_hist_files[i].open == true) {
-                status = nc_close(nc_hist_files[i].nc_id);
-                check_nc_status(status, "Error closing history file");
-            }
-            free(nc_hist_files[i].nc_vars);
+    
+    // close the netcdf history file if it is still open
+    for (i = 0; i < options.Noutstreams; i++) {
+        if (nc_hist_files[i].open == true) {
+            status = nc_close(nc_hist_files[i].nc_id);
+            check_nc_status(status, "Error closing history file");
         }
-        free(nc_hist_files);
+        free(nc_hist_files[i].nc_vars);
     }
+    free(nc_hist_files);
 
     for (i = 0; i < local_domain.ncells_active; i++) {
         free_force(&(force[i]));
