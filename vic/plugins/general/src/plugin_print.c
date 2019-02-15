@@ -1,6 +1,7 @@
 #include <vic_driver_shared_all.h>
 #include "plugin.h"
 
+
 void
 plugin_print_decomposition(size_t   mpi_size,
                            int    **mpi_map_local_array_sizes)
@@ -14,28 +15,17 @@ plugin_print_decomposition(size_t   mpi_size,
     }
 }
 
-plugin_print_global_param(void)
+void
+plugin_print_global_param(plugin_global_param_struct *gp)
 {
-    extern plugin_global_param_struct plugin_global_param;
-    
-    plugin_global_param_struct *gp;
-    
-    gp = &plugin_global_param;
-    
     fprintf(LOG_DEST, "plugin global_param:\n");
     fprintf(LOG_DEST, "\trout_steps_per_day  : %zu\n", gp->rout_steps_per_day);
     fprintf(LOG_DEST, "\trout_dt             : %.4f\n", gp->rout_dt);
 }
 
 void
-plugin_print_options(void)
+plugin_print_options(plugin_option_struct *op)
 {
-    extern plugin_option_struct plugin_options;
-    
-    plugin_option_struct *op;
-    
-    op = &plugin_options;
-    
     fprintf(LOG_DEST, "plugin option:\n");
     fprintf(LOG_DEST, "\tDECOMPOSITION        : %d\n",
             op->DECOMPOSITION);
@@ -49,13 +39,7 @@ plugin_print_options(void)
 }
 
 void
-plugin_print_parameters(void)
+plugin_print_parameters(plugin_parameters_struct *pa)
 {
-    extern plugin_parameters_struct plugin_param;
-    
-    plugin_parameters_struct *pa;
-    
-    pa = &plugin_param;
-    
     fprintf(LOG_DEST, "plugin parameters:\n");
 }

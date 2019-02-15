@@ -32,14 +32,15 @@ plugin_run(void)
                 plugin_options.DECOMPOSITION == FILE_DECOMPOSITION) {
             for (i = 0; i < local_domain.ncells_active; i++) {
                 cur_cell = routing_order[i];
-                
                 rout_basin_run(cur_cell);
             }
         } 
         else if (plugin_options.DECOMPOSITION == RANDOM_DECOMPOSITION){
-            rout_random_run();
+           //rout_random_run();
         }
     }
+    
+    rrr();
 }
 
 void

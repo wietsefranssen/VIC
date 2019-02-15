@@ -61,6 +61,7 @@ bool rout_history(int, unsigned int *);
 void rout_forcing(void);
 void rout_basin_run(size_t);
 void rout_random_run(void);
+void rrr(void);
 void rout_put_data(size_t);
 void rout_finalize(void);
 void rout_add_types(void);
