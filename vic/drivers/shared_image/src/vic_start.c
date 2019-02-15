@@ -96,8 +96,8 @@ vic_start(void)
                         filenames.domain.nc_filename);
 
         // Validate forcing files and variables
-        for(i = 0; i < N_FORCING_TYPES; i++){
-            if(param_set.TYPE[i].SUPPLIED){
+        for(i = 0; i < 2; i++){
+            if (global_param.forceyear[i] > 0) {
                 compare_ncdomain_with_global_domain(&filenames.forcing[i]);
             }
         }
