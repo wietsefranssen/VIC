@@ -25,20 +25,20 @@ rrr() {
     gather_double(var_global, var_local);
 
     for (i = 0; i < global_domain.ncells_active; i++) {
-        if (var_global[i] >= 1) log_info("###X1 mpi_rank: %d, var_global[%zu] %.4f", mpi_rank, i, var_global[i]);
+        if (var_global[i] >= 1 && var_global[i] < 100) log_info("###X1 mpi_rank: %d, var_global[%zu] %.4f", mpi_rank, i, var_global[i]);
     }
 
     for (i = 0; i < local_domain.ncells_active; i++) {
-        if (var_local[i] >= 1) log_info("###X1 mpi_rank: %d, var_local[%zu] %.4f", mpi_rank, i, var_local[i]);
+        if (var_local[i] >= 1 && var_local[i] < 100) log_info("###X1 mpi_rank: %d, var_local[%zu] %.4f", mpi_rank, i, var_local[i]);
     }
 
     scatter_double(var_global, var_local);
     for (i = 0; i < global_domain.ncells_active; i++) {
-        if (var_global[i] >= 1) log_info("###X2 mpi_rank: %d, var_global[%zu] %.4f", mpi_rank, i, var_global[i]);
+        if (var_global[i] >= 1 && var_global[i] < 100) log_info("###X2 mpi_rank: %d, var_global[%zu] %.4f", mpi_rank, i, var_global[i]);
     }
 
     for (i = 0; i < local_domain.ncells_active; i++) {
-        if (var_local[i] >= 1) log_info("###X2 mpi_rank: %d, var_local[%zu] %.4f", mpi_rank, i, var_local[i]);
+        if (var_local[i] >= 1 && var_local[i] < 100) log_info("###X2 mpi_rank: %d, var_local[%zu] %.4f", mpi_rank, i, var_local[i]);
     }
 
     free(var_global);
@@ -188,10 +188,10 @@ rout_random_run()
             force_local[i] = rout_force[i].discharge[NR];
         }
         
-        if(mpi_rank == 1 && i == 2){
-                log_info("pre storage %.4f",
-                        rout_var[i].stream);
-        }
+//        if(mpi_rank == 1 && i == 2){
+//                log_info("pre storage %.4f",
+//                        rout_var[i].stream);
+//        }
     }
 
     // Gather
@@ -244,10 +244,10 @@ rout_random_run()
                      plugin_options.UH_LENGTH, j);
             }
         
-            if(cur_cell == 7){
-                log_info("global pre storage %.4f",
-                        stream_global[cur_cell]);
-            }
+//            if(cur_cell == 7){
+//                log_info("global pre storage %.4f",
+//                        stream_global[cur_cell]);
+//            }
     
             // Aggregate current timestep discharge & stream moisture
             dis_global[cur_cell] = 0.0;
@@ -261,13 +261,13 @@ rout_random_run()
                 }
             }
         
-            if(cur_cell == 7){
-                log_info("global after storage %.4f",
-                        stream_global[cur_cell]);
-            }
-            if(stream_global[cur_cell] < 0){
-                log_err("EXIT");
-            }
+//            if(cur_cell == 7){
+//                log_info("global after storage %.4f",
+//                        stream_global[cur_cell]);
+//            }
+//            if(stream_global[cur_cell] < 0){
+//                log_err("EXIT");
+//            }
 
             // Check water balance
             if(abs(prev_stream + (inflow + runoff) - 
@@ -285,26 +285,26 @@ rout_random_run()
         }
     }
     
-    if(mpi_rank == 1){
-        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            fprintf(LOG_DEST, "%.2f\t", stream_local[i]);
-        }
-        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
-    }
+//    if(mpi_rank == 1){
+//        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
+//        for (i = 0; i < local_domain.ncells_active; i++) {
+//            fprintf(LOG_DEST, "%.2f\t", stream_local[i]);
+//        }
+//        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
+//    }
     
     // Scatter discharge
     scatter_double_2d(dt_dis_global, dt_dis_local, plugin_options.UH_LENGTH + rout_steps_per_dt);
     scatter_double(stream_global, stream_local);
     scatter_double(dis_global, dis_local);
     
-    if(mpi_rank == 1){
-        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
-        for (i = 0; i < local_domain.ncells_active; i++) {
-            fprintf(LOG_DEST, "%.2f\t", stream_local[i]);
-        }
-        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
-    }
+//    if(mpi_rank == 1){
+//        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
+//        for (i = 0; i < local_domain.ncells_active; i++) {
+//            fprintf(LOG_DEST, "%.2f\t", stream_local[i]);
+//        }
+//        fprintf(LOG_DEST, "\nstream_local %d:\n", mpi_rank);
+//    }
     
     
     // Set discharge
@@ -315,10 +315,10 @@ rout_random_run()
         rout_var[i].discharge = dis_local[i];
         rout_var[i].stream = stream_local[i];
         
-        if(mpi_rank == 1 && i == 2){
-                log_info("after storage %.4f",
-                        rout_var[i].stream);
-        }
+//        if(mpi_rank == 1 && i == 2){
+//                log_info("after storage %.4f",
+//                        rout_var[i].stream);
+//        }
     }
 
     // Free
