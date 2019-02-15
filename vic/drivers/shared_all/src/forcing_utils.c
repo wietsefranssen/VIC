@@ -154,7 +154,8 @@ count_force_vars(FILE *gp)
             }
             // else if we arive at another forcing file break out of loop
             else if (strcasecmp("FORCING1", optstr) == 0 ||
-                     strcasecmp("FORCING2", optstr) == 0) {
+                     strcasecmp("FORCING2", optstr) == 0 ||
+                     strcasecmp("FORCING3", optstr) == 0) {
                 break;
             }
         }

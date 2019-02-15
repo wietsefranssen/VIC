@@ -357,15 +357,66 @@ get_global_param(FILE *gp)
                 param_set.N_TYPES[file_num] = count_force_vars(gp);
             }
             else if (strcasecmp("FORCING2", optstr) == 0) {
-                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[1]);
-                if (strcasecmp("FALSE", filenames.f_path_pfx[1]) == 0) {
-                    strcpy(filenames.f_path_pfx[1], "MISSING");
-                }
                 file_num = 1;
+                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[file_num]);
+                if (strcasecmp("FALSE", filenames.f_path_pfx[file_num]) == 0) {
+                    strcpy(filenames.f_path_pfx[file_num], "MISSING");
+                }
                 field = 0;
                 // count the number of forcing variables in this file
                 param_set.N_TYPES[file_num] = count_force_vars(gp);
             }
+            else if (strcasecmp("FORCING3", optstr) == 0) {
+                file_num = 1;
+                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[file_num]);
+                if (strcasecmp("FALSE", filenames.f_path_pfx[file_num]) == 0) {
+                    strcpy(filenames.f_path_pfx[file_num], "MISSING");
+                }
+                field = 0;
+                // count the number of forcing variables in this file
+                param_set.N_TYPES[file_num] = count_force_vars(gp);
+            }
+            else if (strcasecmp("FORCING4", optstr) == 0) {
+                file_num = 1;
+                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[file_num]);
+                if (strcasecmp("FALSE", filenames.f_path_pfx[file_num]) == 0) {
+                    strcpy(filenames.f_path_pfx[file_num], "MISSING");
+                }
+                field = 0;
+                // count the number of forcing variables in this file
+                param_set.N_TYPES[file_num] = count_force_vars(gp);
+            }
+            else if (strcasecmp("FORCING5", optstr) == 0) {
+                file_num = 1;
+                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[file_num]);
+                if (strcasecmp("FALSE", filenames.f_path_pfx[file_num]) == 0) {
+                    strcpy(filenames.f_path_pfx[file_num], "MISSING");
+                }
+                field = 0;
+                // count the number of forcing variables in this file
+                param_set.N_TYPES[file_num] = count_force_vars(gp);
+            }
+            else if (strcasecmp("FORCING6", optstr) == 0) {
+                file_num = 1;
+                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[file_num]);
+                if (strcasecmp("FALSE", filenames.f_path_pfx[file_num]) == 0) {
+                    strcpy(filenames.f_path_pfx[file_num], "MISSING");
+                }
+                field = 0;
+                // count the number of forcing variables in this file
+                param_set.N_TYPES[file_num] = count_force_vars(gp);
+            }
+            else if (strcasecmp("FORCING7", optstr) == 0) {
+                file_num = 1;
+                sscanf(cmdstr, "%*s %s", filenames.f_path_pfx[file_num]);
+                if (strcasecmp("FALSE", filenames.f_path_pfx[file_num]) == 0) {
+                    strcpy(filenames.f_path_pfx[file_num], "MISSING");
+                }
+                field = 0;
+                // count the number of forcing variables in this file
+                param_set.N_TYPES[file_num] = count_force_vars(gp);
+            }
+
             else if (strcasecmp("FORCE_TYPE", optstr) == 0) {
                 set_force_type(cmdstr, file_num, &field);
             }
@@ -811,7 +862,16 @@ get_global_param(FILE *gp)
                         filenames.forcing[1].nc_filename);
         get_forcing_file_info(&param_set, 1);
     }
-
+    if (param_set.N_TYPES[2] != 0) {
+        sprintf(filenames.forcing[2].nc_filename, "%s%4d.nc",
+                filenames.f_path_pfx[2], global_param.startyear);
+        status = nc_open(filenames.forcing[2].nc_filename, NC_NOWRITE,
+                         &(filenames.forcing[2].nc_id));
+        check_nc_status(status, "Error opening %s",
+                        filenames.forcing[2].nc_filename);
+        get_forcing_file_info(&param_set, 2);
+    }
+// TODOWF
     if (param_set.N_TYPES[1] != 0 && global_param.forceyear[1] == 0) {
         global_param.forceyear[1] = global_param.forceyear[0];
         global_param.forcemonth[1] = global_param.forcemonth[0];
@@ -819,6 +879,14 @@ get_global_param(FILE *gp)
         global_param.forcesec[1] = global_param.forcesec[0];
         global_param.forceskip[1] = 0;
         global_param.forceoffset[1] = global_param.forceskip[1];
+    }
+    if (param_set.N_TYPES[2] != 0 && global_param.forceyear[2] == 0) {
+        global_param.forceyear[2] = global_param.forceyear[0];
+        global_param.forcemonth[2] = global_param.forcemonth[0];
+        global_param.forceday[2] = global_param.forceday[0];
+        global_param.forcesec[2] = global_param.forcesec[0];
+        global_param.forceskip[2] = 0;
+        global_param.forceoffset[2] = global_param.forceskip[2];
     }
     if (param_set.force_steps_per_day[0] == 0) {
         log_err("Forcing file time steps per day has not been "
