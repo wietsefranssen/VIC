@@ -346,7 +346,6 @@ get_global_param(FILE *gp)
             *************************************/
 
             else if (strcasecmp("FORCE_TYPE", optstr) == 0) {
-                param_set.N_TYPES[file_num] = 1;
                 set_force_type(cmdstr, file_num);
                 file_num++;
             }
@@ -543,7 +542,8 @@ get_global_param(FILE *gp)
         }
         fgets(cmdstr, MAXSTRING, gp);
     }
-    size_t N_FORCE_FILES = file_num;
+
+    param_set.N_FORCE_FILES = file_num;
     
     /******************************************
        Check for undefined required parameters
@@ -777,7 +777,7 @@ get_global_param(FILE *gp)
 
     // Get information from the forcing file(s)
     // Open first-year forcing files and get info
-    for (file_num = 0; file_num < N_FORCE_FILES; file_num++) {
+    for (file_num = 0; file_num < param_set.N_FORCE_FILES; file_num++) {
         sprintf(filenames.forcing[file_num].nc_filename, "%s%4d.nc",
                 filenames.f_path_pfx[file_num], global_param.startyear);
         status = nc_open(filenames.forcing[file_num].nc_filename, NC_NOWRITE,

@@ -486,7 +486,7 @@ typedef struct {
                                             DAILY_BINARY format */
     int FORCE_FORMAT[MAX_FORCE_FILES];            /**< ASCII or BINARY */
     int FORCE_INDEX[MAX_FORCE_FILES][N_FORCING_TYPES];
-    size_t N_TYPES[MAX_FORCE_FILES];
+    size_t N_FORCE_FILES;
 } param_set_struct;
 
 /******************************************************************************

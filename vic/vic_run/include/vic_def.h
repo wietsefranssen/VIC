@@ -65,7 +65,7 @@
 #define MAX_FROST_AREAS 10     /**< maximum number of frost sub-areas */
 #define MAX_LAKE_NODES  20     /**< maximum number of lake thermal nodes */
 #define MAX_ZWTVMOIST   11     /**< maximum number of points in water table vs moisture curve for each soil layer; should include points at lower and upper boundaries of the layer */
-#define MAX_FORCE_FILES 7
+#define MAX_FORCE_FILES 15
 
 /***** Define minimum values for model parameters *****/
 #define MINSOILDEPTH    0.001  /**< Minimum layer depth with which model can work (m) */

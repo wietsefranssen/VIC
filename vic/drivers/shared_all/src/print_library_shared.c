@@ -252,6 +252,8 @@ void
 print_global_param(global_param_struct *gp)
 {
     size_t i;
+    extern param_set_struct    param_set;
+    
 
     fprintf(LOG_DEST, "global_param:\n");
     fprintf(LOG_DEST, "\twind_h              : %.4f\n", gp->wind_h);
@@ -266,7 +268,7 @@ print_global_param(global_param_struct *gp)
     fprintf(LOG_DEST, "\tendday              : %hu\n", gp->endday);
     fprintf(LOG_DEST, "\tendmonth            : %hu\n", gp->endmonth);
     fprintf(LOG_DEST, "\tendyear             : %hu\n", gp->endyear);
-    for (i = 0; i < MAX_FORCE_FILES; i++) {
+    for (i = 0; i < param_set.N_FORCE_FILES; i++) {
         fprintf(LOG_DEST, "\tforceday[%zd]        : %hu\n", i, gp->forceday[i]);
         fprintf(LOG_DEST, "\tforcesec[%zd]        : %u\n", i, gp->forcesec[i]);
         fprintf(LOG_DEST, "\tforcemonth[%zd]      : %hu\n", i,
@@ -652,8 +654,6 @@ print_param_set(param_set_struct *param_set)
         fprintf(LOG_DEST, "\t\t%zd: %d %d\n", i, param_set->FORCE_INDEX[0][i],
                 param_set->FORCE_INDEX[1][i]);
     }
-    fprintf(LOG_DEST, "\tN_TYPES     : %zu %zu\n", param_set->N_TYPES[0],
-            param_set->N_TYPES[1]);
 }
 
 /******************************************************************************
