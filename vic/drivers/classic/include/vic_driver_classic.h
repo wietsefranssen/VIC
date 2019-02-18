@@ -39,7 +39,7 @@
  * @brief   file structures
  *****************************************************************************/
 typedef struct {
-    FILE *forcing[N_FORCE_FILES];   /**< atmospheric forcing data files */
+    FILE *forcing[MAX_FORCE_FILES];   /**< atmospheric forcing data files */
     FILE *globalparam;  /**< global parameters file */
     FILE *constants;    /**< model constants parameter file */
     FILE *init_state;   /**< initial model state file */
@@ -56,8 +56,8 @@ typedef struct {
  * @brief   This structure stores input and output filenames.
  *****************************************************************************/
 typedef struct {
-    char forcing[N_FORCE_FILES][MAXSTRING];    /**< atmospheric forcing data file names */
-    char f_path_pfx[N_FORCE_FILES][MAXSTRING]; /**< path and prefix for atmospheric forcing data file names */
+    char forcing[MAX_FORCE_FILES][MAXSTRING];    /**< atmospheric forcing data file names */
+    char f_path_pfx[MAX_FORCE_FILES][MAXSTRING]; /**< path and prefix for atmospheric forcing data file names */
     char global[MAXSTRING];        /**< global control file name */
     char constants[MAXSTRING];     /**< model constants file name */
     char init_state[MAXSTRING];    /**< initial model state file name */

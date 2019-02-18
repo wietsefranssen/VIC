@@ -249,7 +249,7 @@ display_current_settings(int mode)
 
     fprintf(LOG_DEST, "\n");
     fprintf(LOG_DEST, "Input Forcing Data:\n");
-    for (file_num = 0; file_num < N_FORCE_FILES; file_num++) {
+    for (file_num = 0; file_num < MAX_FORCE_FILES; file_num++) {
         if (global_param.forceyear[file_num] > 0) {
             fprintf(LOG_DEST, "Forcing File %d:\t\t%s*\n", file_num + 1,
                     filenames.f_path_pfx[file_num]);

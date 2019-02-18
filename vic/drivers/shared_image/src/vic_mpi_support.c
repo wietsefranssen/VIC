@@ -176,32 +176,32 @@ create_MPI_global_struct_type(MPI_Datatype *mpi_type)
 
     // unsigned short forceday[2];
     offsets[i] = offsetof(global_param_struct, forceday);
-    blocklengths[i] = N_FORCE_FILES;
+    blocklengths[i] = MAX_FORCE_FILES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // unsigned int forcesec[2];
     offsets[i] = offsetof(global_param_struct, forcesec);
-    blocklengths[i] = N_FORCE_FILES;
+    blocklengths[i] = MAX_FORCE_FILES;
     mpi_types[i++] = MPI_UNSIGNED;
 
     // unsigned short forcemonth[2];
     offsets[i] = offsetof(global_param_struct, forcemonth);
-    blocklengths[i] = N_FORCE_FILES;
+    blocklengths[i] = MAX_FORCE_FILES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // unsigned short forceoffset[2];
     offsets[i] = offsetof(global_param_struct, forceoffset);
-    blocklengths[i] = N_FORCE_FILES;
+    blocklengths[i] = MAX_FORCE_FILES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // unsigned int forceskip[2];
     offsets[i] = offsetof(global_param_struct, forceskip);
-    blocklengths[i] = N_FORCE_FILES;
+    blocklengths[i] = MAX_FORCE_FILES;
     mpi_types[i++] = MPI_UNSIGNED;
 
     // unsigned short int forceyear[2];
     offsets[i] = offsetof(global_param_struct, forceyear);
-    blocklengths[i] = N_FORCE_FILES;
+    blocklengths[i] = MAX_FORCE_FILES;
     mpi_types[i++] = MPI_UNSIGNED_SHORT;
 
     // size_t nrecs;
@@ -317,12 +317,12 @@ create_MPI_filenames_struct_type(MPI_Datatype *mpi_type)
 
     // char forcing[2][MAXSTRING];
     offsets[i] = offsetof(filenames_struct, forcing);
-    blocklengths[i] *= N_FORCE_FILES;
+    blocklengths[i] *= MAX_FORCE_FILES;
     mpi_types[i++] = MPI_CHAR;
 
     // char f_path_pfx[2][MAXSTRING];
     offsets[i] = offsetof(filenames_struct, f_path_pfx);
-    blocklengths[i] *= N_FORCE_FILES;
+    blocklengths[i] *= MAX_FORCE_FILES;
     mpi_types[i++] = MPI_CHAR;
 
     // char global[MAXSTRING];
