@@ -1,8 +1,8 @@
-site_name: VIC
+site_name: VICWUR
 site_description: Variable Infiltration Capacity Model
 site_author: UW Hydro | Computational Hydrology
-repo_url: https://github.com/UW-Hydro/VIC
-site_url: http://vic.readthedocs.org/
+repo_url: https://github.com/wietsefranssen/VIC
+site_url: http://vicwur.readthedocs.org/
 theme: readthedocs
 theme_dir: 'docs/custom_rtd_theme'
 site_favicon: vic_favicon.jpg
@@ -99,4 +99,4 @@ markdown_extensions:
 
 copyright: 'Copyright &copy; 2016, <a href="http://uw-hydro.github.io/">University of Washington Computational Hydrology Group</a>.'
 
-google_analytics: ['UA-65965729-1', 'vic.readthedocs.org']
+google_analytics: ['UA-65965729-1', 'vicwur.readthedocs.org']
