@@ -16,17 +16,17 @@ pages:
 - Home: 'index.md'
 - About:
     - VIC:
-      - 'Model Overview': 'Overview/ModelOverview.md'
-      - 'References': 'Documentation/References.md'
-      - 'FAQ': 'FAQ/FAQ.md'
-      - 'Contact': 'contact.md'
-      - 'Links': 'links.md'
+        - 'Model Overview': 'Overview/ModelOverview.md'
+        - 'References': 'Documentation/References.md'
+        - 'FAQ': 'FAQ/FAQ.md'
+        - 'Contact': 'contact.md'
+        - 'Links': 'links.md'
     - VIC-WUR:
-      - 'Model Overview': 'Overview/ModelOverview_vicwur.md'
-      - 'References': 'Documentation/References_vicwur.md'
-      - 'FAQ': 'FAQ/FAQ_vicwur.md'
-      - 'Contact': 'contact_vicwur.md'
-      - 'Links': 'links_vicwur.md'
+        - 'Model Overview': 'Overview/ModelOverview_vicwur.md'
+        - 'References': 'Documentation/References_vicwur.md'
+        - 'FAQ': 'FAQ/FAQ_vicwur.md'
+        - 'Contact': 'contact_vicwur.md'
+        - 'Links': 'links_vicwur.md'
 - Documentation:
     - 'User Guide': 'Documentation/UserGuide.md'
     - 'VIC Drivers':
