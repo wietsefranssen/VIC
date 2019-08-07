@@ -21,14 +21,13 @@ pages:
     - 'Contact': 'contact.md'
     - 'Links': 'links.md'
 - About VIC-WUR:
-    - 'Model Overview': 'Overview/ModelOverview_vicwur.md'
-    - 'References': 'Documentation/References_vicwur.md'
+    - 'Model Overview': 'Overview/ModelOverview.md'
+    - 'References': 'Documentation/References.md'
     - 'FAQ': 'FAQ/FAQ_vicwur.md'
     - 'Contact': 'contact_vicwur.md'
     - 'Links': 'links_vicwur.md'
 - Documentation:
     - 'User Guide': 'Documentation/UserGuide_vicwur.md'
-        - 'Image': 'Documentation/Drivers/Image/ImageDriver.md'
 - Development:
     - 'Development': 'Development/ModelDevelopment.md'
     - 'Release Notes': 'Development/ReleaseNotes.md'
