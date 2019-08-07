@@ -22,7 +22,7 @@ pages:
     - 'Contact': 'contact.md'
     - 'Links': 'links.md'
 - Documentation:
-    - 'User Guide': 'Documentation/UserGuide_vicwur.md'
+    - 'User Guide': 'Documentation/UserGuide.md'
 - Development:
     - 'Development': 'Development/ModelDevelopment.md'
     - 'Release Notes': 'Development/ReleaseNotes.md'
