@@ -1,12 +1,12 @@
-site_name: VICWUR
+site_name: VIC-WUR
 site_description: Variable Infiltration Capacity Model
-site_author: UW Hydro | Computational Hydrology
+site_author: Wageningen University | Water System and Global Change Group (WSG)
 repo_url: https://github.com/wietsefranssen/VIC
 site_url: http://vicwur.readthedocs.org/
 theme: readthedocs
 theme_dir: 'docs/custom_rtd_theme'
 site_favicon: vic_favicon.jpg
-copyright: 2016
+copyright: GPLv2
 docs_dir: docs
 site_dir: site
 use_directory_urls: true
@@ -15,11 +15,18 @@ pages:
 # Main pages
 - Home: 'index.md'
 - About:
-    - 'Model Overview': 'Overview/ModelOverview.md'
-    - 'References': 'Documentation/References.md'
-    - 'FAQ': 'FAQ/FAQ.md'
-    - 'Contact': 'contact.md'
-    - 'Links': 'links.md'
+    - VIC:
+      - 'Model Overview': 'Overview/ModelOverview.md'
+      - 'References': 'Documentation/References.md'
+      - 'FAQ': 'FAQ/FAQ.md'
+      - 'Contact': 'contact.md'
+      - 'Links': 'links.md'
+    - VIC-WUR:
+      - 'Model Overview': 'Overview/ModelOverview_vicwur.md'
+      - 'References': 'Documentation/References_vicwur.md'
+      - 'FAQ': 'FAQ/FAQ_vicwur.md'
+      - 'Contact': 'contact_vicwur.md'
+      - 'Links': 'links_vicwur.md'
 - Documentation:
     - 'User Guide': 'Documentation/UserGuide.md'
     - 'VIC Drivers':
